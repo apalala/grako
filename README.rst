@@ -477,6 +477,9 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+- **2.0.1**
+  * Republished to solve problems with md5 checksums on PyPi_.
+
 - **2.0.0**
     * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less poluted namespaces and smaller classes.
     * A ``last_node`` protocol allowed the removal of all mentions of variable ``_e`` from generated parsers, which are thus more readable.
