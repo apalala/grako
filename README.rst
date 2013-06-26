@@ -478,12 +478,12 @@ Changes
 =======
 
 - **2.0.2**
-  * *BUG!* Trance information off by one character.
-  * *BUG!* The AST_ for a closure might fold repeated symbols.
-  * *BUG!* It was not possible to pass buffering parameters such as `whitespace` to the parser's constructor.
+    * *BUG!* Trance information off by one character.
+    * *BUG!* The AST_ for a closure might fold repeated symbols.
+    * *BUG!* It was not possible to pass buffering parameters such as `whitespace` to the parser's constructor.
 
 - **2.0.1**
-  * Republished to solve problems with md5 checksums on PyPi_.
+    * Republished to solve problems with md5 checksums on PyPi_.
 
 - **2.0.0**
     * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less poluted namespaces and smaller classes.
