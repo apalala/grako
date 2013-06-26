@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 import sys
-from functools import wraps
 from contextlib import contextmanager
 from collections import namedtuple
 from .util import to_list
@@ -129,8 +128,6 @@ class ParseContext(object):
             if isinstance(node, list):
                 node = node[:]  # copy it
             self._concrete_stack[-1] = node
-        elif previous == node:  # FIXME: Don't know how this happens, but it does
-            return
         elif isinstance(previous, list):
             previous.append(node)
         else:
