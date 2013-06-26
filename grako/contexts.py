@@ -53,7 +53,7 @@ class ParseContext(object):
     def reset(self, text=None,
               filename=None,
               semantics=None,
-              trace=False,
+              trace=None,
               comments_re=None,
               whitespace=None,
               ignorecase=False,
