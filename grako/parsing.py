@@ -15,7 +15,6 @@ Parser.parse() will take the text to parse directly, or an instance of the
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
 import functools
-from . import buffering
 from .contexts import ParseContext, ParseInfo
 from .exceptions import (FailedParse,
                          FailedToken,
@@ -40,21 +39,14 @@ class Parser(ParseContext):
               rule_name,
               filename=None,
               semantics=None,
-              comments_re=None,
               **kwargs):
         try:
-            if isinstance(text, buffering.Buffer):
-                buffer = text
-            else:
-                if comments_re is None:
-                    comments_re = self.comments_re
-                buffer = buffering.Buffer(text,
-                                          filename=filename,
-                                          comments_re=comments_re,
-                                          **kwargs)
             self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
             self.trace = kwargs.pop('trace', self.trace)
-            self._reset_context(buffer, semantics=semantics)
+            self.reset(text=text,
+                       filename=filename,
+                       semantics=semantics,
+                       **kwargs)
             self._push_ast()
             rule = self._find_rule(rule_name)
             result = rule()

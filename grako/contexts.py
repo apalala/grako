@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from collections import namedtuple
 from .util import to_list
 from .ast import AST
+from . import buffering
 from .exceptions import (FailedParse,
                          FailedCut,
                          FailedLookahead,
@@ -20,21 +21,27 @@ ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
 
 class ParseContext(object):
     def __init__(self,
-                 buffer=None,
                  semantics=None,
                  parseinfo=False,
                  trace=False,
                  encoding='utf-8',
                  comments_re=None,
+                 whitespace=None,
+                 ignorecase=False,
+                 nameguard=True,
                  **kwargs):
         super(ParseContext, self).__init__()
 
-        self._buffer = buffer
+        self._buffer = None
         self.semantics = semantics
         self.encoding = encoding
-        self.comments_re = comments_re
         self.parseinfo = parseinfo
         self.trace = trace
+
+        self.comments_re = comments_re
+        self.whitespace = whitespace
+        self.ignorecase = ignorecase
+        self.nameguard = nameguard
 
         self._ast_stack = []
         self._concrete_stack = [None]
@@ -43,8 +50,30 @@ class ParseContext(object):
         self._memoization_cache = dict()
         self._last_node = None
 
-    def _reset_context(self, buffer=None, semantics=None):
+    def reset(self, text=None,
+              filename=None,
+              semantics=None,
+              trace=False,
+              comments_re=None,
+              whitespace=None,
+              ignorecase=False,
+              nameguard=True,
+              **kwargs):
+        if isinstance(text, buffering.Buffer):
+            buffer = text
+        else:
+            buffer = buffering.Buffer(text,
+                                      filename=filename,
+                                      comments_re=comments_re or self.comments_re,
+                                      whitespace=whitespace or self.whitespace,
+                                      ignorecase=ignorecase or self.ignorecase,
+                                      nameguard=nameguard or self.nameguard,
+                                      **kwargs)
         self._buffer = buffer
+        if trace is not None:
+            self.trace = trace
+        if semantics is not None:
+            self.semantics = semantics
         self._ast_stack = []
         self._concrete_stack = [None]
         self._rule_stack = []
