@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 import itertools
-import pygraphviz as pgv
+try:
+    import pygraphviz as pgv
+except:
+    raise
 from .rendering import NodeVisitor
 
 
