@@ -481,7 +481,7 @@ Changes
 =======
 
 - **2.0.2**
-    * *BUG!* Trance information off by one character.
+    * *BUG!* Trace information off by one character.
     * *BUG!* The AST_ for a closure might fold repeated symbols.
     * *BUG!* It was not possible to pass buffering parameters such as `whitespace` to the parser's constructor.
 
