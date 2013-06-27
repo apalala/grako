@@ -36,6 +36,17 @@ argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
                        )
+argparser.add_argument('--whitespace',
+                       metavar='characters',
+                       help='whitespace characters (use empty string to disable automatic whitespace)',
+                       )
+argparser.add_argument('--no-nameguard',
+                       help='do not protect alphanumeric tokens that are prefixes of others',
+                       dest="nameguard", action='store_false', default=True
+                       )
+argparser.add_argument('--nameguard',
+                       help=argparse.SUPPRESS, dest="nameguard", action='store_true'
+                       )
 argparser.add_argument('-b', '--binary',
                        help='generate a pickled grammar model instead of a parser',
                        action='store_true'
@@ -70,6 +81,8 @@ def main():
     name = args.name
     binary = args.binary
     draw = args.draw
+    whitespace = args.whitespace
+    nameguard = args.nameguard
 
     if binary and not outfile:
         log.error('--binary requires --outfile')
@@ -96,6 +109,8 @@ def main():
 
     try:
         model = genmodel(name, grammar, trace=args.trace, filename=filename)
+        model.whitespace = repr(whitespace)
+        model.nameguard = repr(nameguard)
 
         if binary:
             parser = pickle.dumps(model, protocol=2)
