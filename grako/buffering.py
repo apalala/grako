@@ -183,7 +183,7 @@ class Buffer(object):
             if c == '\n':
                 n += 1
                 cache.append(PosLine(i, n))
-        if self.text[-1] != '\n':
+        if self._len > 0 and self.text[-1] != '\n':
             n += 1
             cache.append(PosLine(self._len - 1, n))
         self._linecache = cache
