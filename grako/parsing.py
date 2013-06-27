@@ -39,13 +39,14 @@ class Parser(ParseContext):
               rule_name,
               filename=None,
               semantics=None,
+              trace=False,
               **kwargs):
         try:
             self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
-            self.trace = kwargs.pop('trace', self.trace)
             self.reset(text=text,
                        filename=filename,
                        semantics=semantics,
+                       trace=trace,
                        **kwargs)
             self._push_ast()
             rule = self._find_rule(rule_name)
