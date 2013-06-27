@@ -764,12 +764,12 @@ class Grammar(Renderer):
                 class {name}Semantics(object):
                 {abstract_rules}
 
-                def main(filename, startrule):
+                def main(filename, startrule, trace=False):
                     import json
                     with open(filename) as f:
                         text = f.read()
                     parser = {name}Parser(parseinfo=False)
-                    ast = parser.parse(text, startrule, filename=filename)
+                    ast = parser.parse(text, startrule, filename=filename, trace=trace)
                     print('AST:')
                     print(ast)
                     print()
@@ -778,18 +778,23 @@ class Grammar(Renderer):
                     print()
 
                 if __name__ == '__main__':
-                    import sys
-                    if '-l' in sys.argv:
+                    import argparse
+                    parser = argparse.ArgumentParser(description="Simple parser for {name}.")
+                    parser.add_argument('-l', '--list', action='store_const', const='list',
+                                        dest='command', default='parse',
+                                        help="list all rules and exit")
+                    parser.add_argument('-t', '--trace', action='store_true',
+                                        help="output trace information")
+                    parser.add_argument('file', metavar="FILE", help="the input file to parse")
+                    parser.add_argument('startrule', metavar="STARTRULE",
+                                        help="the start rule for parsing")
+                    args = parser.parse_args()
+
+                    if args.command == 'list':
                         print('Rules:')
                         for r in {name}Parser.rule_list():
                             print(r)
                         print()
-                    elif len(sys.argv) == 3:
-                        main(sys.argv[1], sys.argv[2])
                     else:
-                        print('Usage:')
-                        program = sys.argv[0].split('/')[-1]
-                        print(program, ' <filename> <startrule>')
-                        print(program, ' -l') # list rules
-                        print(program, ' -h')
+                        main(args.file, args.startrule, trace=args.trace)
                 '''
