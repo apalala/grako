@@ -453,6 +453,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
+* `Marcus Brinkmann`_ has kindly submitted patches that have resolved obscure bugs in **Grako**'s implementation, and that have made the tool more user-friendly, specially for newcomers to parsing and translation.
+
 .. _Wirth: http://en.wikipedia.org/wiki/Niklaus_Wirth
 .. _Pascal: http://en.wikipedia.org/wiki/Pascal_(programming_language)
 .. _`PL/0`: http://en.wikipedia.org/wiki/PL/0
@@ -473,6 +475,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _Japanese: http://en.wikipedia.org/wiki/Japanese_grammar
 .. _`CSAIL at MIT`:  http://www.csail.mit.edu/
 .. _`PEG and Packrat parsing mailing list`: https://lists.csail.mit.edu/mailman/listinfo/peg
+.. _`Marcus Brinkmann`: https://plus.google.com/101176674113913639019/about
 
 Changes
 =======
