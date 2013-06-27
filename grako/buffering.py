@@ -10,7 +10,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 # TODO: There could be a file buffer using random access
 import re as regexp
 import string
-from bisect import bisect as bisect
+from bisect import bisect_left
 from collections import namedtuple
 
 __all__ = ['Buffer']
@@ -63,12 +63,12 @@ class Buffer(object):
 
     @property
     def line(self):
-        n = bisect(self._linecache, PosLine(self._pos, 0))
+        n = bisect_left(self._linecache, PosLine(self._pos, 0))
         return self._linecache[n - 1][1]
 
     @property
     def col(self):
-        n = bisect(self._linecache, PosLine(self._pos, 0))
+        n = bisect_left(self._linecache, PosLine(self._pos, 0))
         start = self._linecache[n - 1][0]
         return self._pos - start - 1
 
@@ -174,13 +174,15 @@ class Buffer(object):
         return [filename] * len(text.splitlines())
 
     def _build_line_cache(self):
+        # The line cache holds the position of the last character
+        # (counting from 0) in each line (counting from 1).  At the
+        # head, we have an imaginary line 0 that ends at -1.
         cache = [PosLine(-1, 0)]
         n = 0
         for i, c in enumerate(self.text):
             if c == '\n':
                 n += 1
                 cache.append(PosLine(i, n))
-        cache.append(PosLine(len(self.text), n + 1))
         self._linecache = cache
         self._linecount = n
 
@@ -190,13 +192,15 @@ class Buffer(object):
 
     def line_info(self, pos=None):
         if pos is None:
-            pos = self.pos
-        n = bisect(self._linecache, PosLine(pos, 0))
+            pos = self._pos
+        if pos >= self._len:
+            return LineInfo(self.filename, "EOI", 0, self._len, "")
+        n = bisect_left(self._linecache, PosLine(pos, 0))
         start, line = self._linecache[n - 1]
-        col = pos - start - 1
-        start = max(0, start)
-        end = max(start, self._linecache[n].pos)
+        start = start + 1
+        end = self._linecache[n].pos + 1
         text = self.text[start:end]
+        col = pos - start
         return LineInfo(self.filename, line, col, start, text)
 
     def lookahead(self):
