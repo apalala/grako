@@ -46,8 +46,8 @@ class Buffer(object):
         self._pos = 0
         self._len = 0
         self._preprocess()
-        self._build_line_cache()
         self._len = len(self.text)
+        self._build_line_cache()
         self._re_cache = {}
 
     def _preprocess(self):
@@ -183,6 +183,9 @@ class Buffer(object):
             if c == '\n':
                 n += 1
                 cache.append(PosLine(i, n))
+        if self.text[-1] != '\n':
+            n += 1
+            cache.append(PosLine(self._len - 1, n))
         self._linecache = cache
         self._linecount = n
 
