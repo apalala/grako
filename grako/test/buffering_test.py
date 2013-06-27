@@ -59,6 +59,27 @@ class BufferingTests(unittest.TestCase):
         for n, line in enumerate(lines):
             self.assertEqual(line, self.buf.get_line(n))
 
+    def test_line_info_consistency(self):
+        lines = self.text.splitlines(True)
+        line = 0
+        col = 0
+        start = 0
+        for n, char in enumerate(self.text):
+            info = self.buf.line_info(n)
+            self.assertEqual(info.line, line)
+            self.assertEqual(info.col, col)
+            self.assertEqual(info.start, start)
+            self.assertEqual(info.text, lines[line])
+            col = col + 1
+            if char == '\n':
+                line += 1
+                col = 0
+                start = n + 1
+        text_len = len(self.text)
+        info = self.buf.line_info(text_len)
+        self.assertEqual(info.line, "EOI")
+        self.assertEqual(info.start, text_len)
+
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(BufferingTests)
 
