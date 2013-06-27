@@ -737,7 +737,7 @@ class Grammar(Renderer):
             '''
 
     template = '''\
-                #!/usr/env/bin python
+                #!/usr/bin/env python
                 # -*- coding: utf-8 -*-
                 #
                 # CAVEAT UTILITOR
