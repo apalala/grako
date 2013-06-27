@@ -676,10 +676,12 @@ class Rule(Named):
 
 
 class Grammar(Renderer):
-    def __init__(self, name, rules):
+    def __init__(self, name, rules, whitespace=None, nameguard=True):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
+        self.whitespace = repr(whitespace)
+        self.nameguard = repr(nameguard)
         self.rules = rules
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
@@ -754,6 +756,10 @@ class Grammar(Renderer):
                 __version__ = '{version}'
 
                 class {name}Parser(Parser):
+                    def __init__(self, whitespace={whitespace}, nameguard={nameguard}, **kwargs):
+                        super({name}Parser, self).__init__(whitespace=whitespace,
+                            nameguard=nameguard, **kwargs)
+
                 {rules}
 
 
