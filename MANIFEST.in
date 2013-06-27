@@ -3,7 +3,7 @@ global exclude **/*.pyo
 global exclude **/*.orig
 include *.txt
 include *.rst
-includee Makefile
+include Makefile
 include etc/grako.ebnf
 recursive-include examples *
 recursive-exclude *.orig
