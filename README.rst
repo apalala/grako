@@ -476,14 +476,15 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _`CSAIL at MIT`:  http://www.csail.mit.edu/
 .. _`PEG and Packrat parsing mailing list`: https://lists.csail.mit.edu/mailman/listinfo/peg
 .. _`Marcus Brinkmann`: https://plus.google.com/101176674113913639019/about
+.. _Marcus: https://plus.google.com/101176674113913639019/about
 
 Changes
 =======
 
 - **2.0.2**
     * *BUG!* Trace information off by one character.
-    * *BUG!* The AST_ for a closure might fold repeated symbols.
-    * *BUG!* It was not possible to pass buffering parameters such as `whitespace` to the parser's constructor.
+    * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to Marcus_).
+    * *BUG!* It was not possible to pass buffering parameters such as `whitespace` to the parser's constructor (thanks to Marcus_).
 
 - **2.0.1**
     * Republished to solve problems with md5 checksums on PyPi_.
