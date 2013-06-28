@@ -475,9 +475,9 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _Japanese: http://en.wikipedia.org/wiki/Japanese_grammar
 .. _`CSAIL at MIT`:  http://www.csail.mit.edu/
 .. _`PEG and Packrat parsing mailing list`: https://lists.csail.mit.edu/mailman/listinfo/peg
-.. _`Marcus Brinkmann`: https://plus.google.com/101176674113913639019/about
-.. _Marcus: https://plus.google.com/101176674113913639019/about
-.. _lambdafu: https://plus.google.com/101176674113913639019/about
+.. _`Marcus Brinkmann`: http://blog.marcus-brinkmann.de/
+.. _Marcus: http://blog.marcus-brinkmann.de/
+.. _lambdafu: http://blog.marcus-brinkmann.de/
 
 Changes
 =======
