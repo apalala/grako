@@ -504,7 +504,52 @@ Changes
     * Added a simple `Visitor Pattern`_ for ``Renderer`` nodes. Used it to implement diagramming.
     * Create a basic diagram of a grammar if pygraphviz_ is available.  Added the ``--draw`` option to the command-line tool.
 
-For the complete history, consult Bitbucket_ or PyPi_
+- **1.4.0**
+    * *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
+    * Semantic actions can now be implemented by a delegate.
+    * Reset synthetic method count and use decorators to increase readability of generated parsers.
+    * The **Grako** EBNF_ grammar and the bootstrap parser now align, so the grammar can be used to bootstrap **Grako**.
+    * The bootstrap parser was refactored to use semantic delegates.
+    * Proved that grammar models can be pickled, unpickled, and reused.
+    * Added the *antlr* example with an ANTLR_-to-**Grako** grammar translator.
+    * Changed the licensing to simplified BSD_.
+
+- **1.3.0**
+    * *Important memory optimization!* Remove the memoization information that a *cut* makes obsolete (thanks to Kota Mizushima).
+    * Make sure that *cut* actually applies to the nearest fork.
+    * Finish aligning model parsing with generated code parsing.
+    * Report all the rules missing in a grammar before aborting.
+    * Align the sample *etc/grako.ebnf* grammar to the language parsed by the bootstrap parser.
+    * Ensure compatibility with Python_ 2.7.4 and 3.3.1.
+    * Update credits.
+
+- **1.2.1**
+    * Align bootstrap parser with generated parser framework.
+    * Add *cuts* to bootstrap parser so errors are reported closer to their origin.
+    * *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exeption so the reported line and column make sense.
+    * Prettify the sample **Grako** grammar.
+    * Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
+    * Spell-check this document with `Vim spell`_.
+    * Lint using flake8_.
+
+- **1.2.0**
+    * Lazy rendering of template fields.
+    * Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
+    * Rendering of iterables using a specified separator, indent, and format.
+    * Basic documentation of the *rendering engine*.
+    * Added a cache of compiled regexps to ``Buffer``.
+
+- **1.1.0**
+    * *BUG!* Need to preserve state when closure iterations match partially.
+    * Improved performance by also memoizing exception results and advancement over whitespace and comments.
+    * Work with Unicode while rendering.
+    * Improved consistency between the way generated parsers and models parse.
+    * Added a table of contents to this *README*.
+    * Document ``parseinfo`` and default it to *False*.
+    * Mention the use of *context managers*.
+
+- **1.0.0**
+    First feature-complete release.
 
 .. _`Visitor Pattern`: http://en.wikipedia.org/wiki/Visitor_pattern
 .. _pygraphviz: https://pypi.python.org/pypi/pygraphviz/
