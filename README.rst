@@ -484,7 +484,7 @@ Changes
 
 - **2.1.0-rc.1**
     * Added command-line and parser options to specify the buffering treatment of
-      `whitespace` and `nameguard` (lambdafu_).
+      ``whitespace`` and ``nameguard`` (lambdafu_).
 
 - **2.0.2**
     * *BUG!* Trace information off by one character (thanks to lambdafu_).
