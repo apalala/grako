@@ -489,7 +489,7 @@ Changes
 - **2.0.2**
     * *BUG!* Trace information off by one character (thanks to lambdafu_).
     * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
-    * *BUG!* It was not possible to pass buffering parameters such as `whitespace` to the parser's constructor (thanks to lambdafu_).
+    * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
 
 - **2.0.1**
     * Republished to solve problems with md5 checksums on PyPi_.
