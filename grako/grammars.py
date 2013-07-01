@@ -19,7 +19,6 @@ from keyword import iskeyword
 import time
 from .util import indent, trim
 from .rendering import Renderer, render
-from .buffering import Buffer
 from .contexts import ParseContext, ParseInfo
 from .exceptions import (FailedParse,
                          FailedToken,

@@ -195,8 +195,9 @@ class Buffer(object):
     def line_info(self, pos=None):
         if pos is None:
             pos = self._pos
+        nmax = len(self._linecache) - 1
         if pos >= self._len:
-            return LineInfo(self.filename, "EOI", 0, self._len, "")
+            return LineInfo(self.filename, nmax, 0, self._len, "")
         n = bisect_left(self._linecache, PosLine(pos, 0))
         start, line = self._linecache[n - 1]
         start = start + 1

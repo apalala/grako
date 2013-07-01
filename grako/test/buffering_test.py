@@ -12,6 +12,7 @@ from ..buffering import Buffer
 THISDIR = os.path.dirname(os.path.abspath(__file__))
 BASEDIR = os.path.normpath(os.path.join(THISDIR, '../..'))
 
+
 class BufferingTests(unittest.TestCase):
 
     def setUp(self):
@@ -77,11 +78,13 @@ class BufferingTests(unittest.TestCase):
                 start = n + 1
         text_len = len(self.text)
         info = self.buf.line_info(text_len)
-        self.assertEqual(info.line, "EOI")
+        self.assertEqual(info.line, 1156)
         self.assertEqual(info.start, text_len)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(BufferingTests)
+
 
 def main():
     unittest.TextTestRunner(verbosity=2).run(suite())
