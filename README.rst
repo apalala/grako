@@ -482,10 +482,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-- **2.1.0-rc.2**
-    * Added back some safeguards to Buffer.
-
-- **2.1.0-rc.1**
+- **2.0.3**
     * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
 
 - **2.0.2**
