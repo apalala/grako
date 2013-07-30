@@ -183,10 +183,10 @@ class Buffer(object):
             if c == '\n':
                 n += 1
                 cache.append(PosLine(i, n))
-        self._linecount = n
         n += 1
         cache.append(PosLine(self._len - 1, n))
         self._linecache = cache
+        self._linecount = n
 
     @property
     def linecount(self):
