@@ -148,7 +148,10 @@ class Buffer(object):
 
         if result:
             self.move(len(token))
-            check_nameguard = not (self.nameguard and token.isalnum() and self.current().isalnum())
+            check_nameguard = not (self.nameguard
+                                   and token.isalnum()
+                                   and self.current() is not None
+                                   and self.current().isalnum())
             if check_nameguard:
                 return token
         self.goto(p)

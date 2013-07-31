@@ -71,7 +71,7 @@ class FailedToken(FailedParse):
 
     @property
     def message(self):
-        return "expecting '%s'" % self.token
+        return "expecting %s" % repr(self.token).lstrip('u')
 
 
 class FailedPattern(FailedParse):
@@ -81,7 +81,7 @@ class FailedPattern(FailedParse):
 
     @property
     def message(self):
-        return "expecting '%s'" % self.pattern
+        return "expecting %s" % repr(self.pattern).strip('u')
 
 
 class FailedMatch(FailedParse):
@@ -91,7 +91,7 @@ class FailedMatch(FailedParse):
 
     @property
     def message(self):
-        return "expecting '%s'" % self.name
+        return "expecting %s" % repr(self.name).strip('u')
 
 
 class FailedRef(FailedParseBase):
