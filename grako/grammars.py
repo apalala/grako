@@ -784,9 +784,16 @@ class Grammar(Renderer):
 
                 if __name__ == '__main__':
                     import argparse
+                    import sys
+                    class ListRules(argparse.Action):
+                        def __call__(self, parser, namespace, values, option_string):
+                            print('Rules:')
+                            for r in {name}Parser.rule_list():
+                                print(r)
+                            print()
+                            sys.exit(0)
                     parser = argparse.ArgumentParser(description="Simple parser for {name}.")
-                    parser.add_argument('-l', '--list', action='store_const', const='list',
-                                        dest='command', default='parse',
+                    parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                                         help="list all rules and exit")
                     parser.add_argument('-t', '--trace', action='store_true',
                                         help="output trace information")
@@ -795,11 +802,5 @@ class Grammar(Renderer):
                                         help="the start rule for parsing")
                     args = parser.parse_args()
 
-                    if args.command == 'list':
-                        print('Rules:')
-                        for r in {name}Parser.rule_list():
-                            print(r)
-                        print()
-                    else:
-                        main(args.file, args.startrule, trace=args.trace)
+                    main(args.file, args.startrule, trace=args.trace)
                 '''
