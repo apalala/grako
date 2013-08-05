@@ -81,6 +81,16 @@ class BufferingTests(unittest.TestCase):
         self.assertEqual(info.line, 1156)
         self.assertEqual(info.start, text_len)
 
+    def test_linecount(self):
+        b = Buffer('')
+        self.assertEqual(1, b.linecount)
+
+        b = Buffer('Hello World!')
+        self.assertEqual(1, b.linecount)
+
+        b = Buffer('\n')
+        self.assertEqual(2, b.linecount)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(BufferingTests)

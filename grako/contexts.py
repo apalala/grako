@@ -56,18 +56,23 @@ class ParseContext(object):
               trace=None,
               comments_re=None,
               whitespace=None,
-              ignorecase=False,
-              nameguard=True,
+              ignorecase=None,
+              nameguard=None,
               **kwargs):
+        if ignorecase is None:
+            ignorecase = self.ignorecase
+        if nameguard is None:
+            nameguard = self.nameguard
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
+                
             buffer = buffering.Buffer(text,
                                       filename=filename,
                                       comments_re=comments_re or self.comments_re,
                                       whitespace=whitespace or self.whitespace,
-                                      ignorecase=ignorecase or self.ignorecase,
-                                      nameguard=nameguard or self.nameguard,
+                                      ignorecase=ignorecase,
+                                      nameguard=nameguard,
                                       **kwargs)
         self._buffer = buffer
         if trace is not None:

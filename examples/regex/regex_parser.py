@@ -37,4 +37,4 @@ def translate(regex, trace=False):
     parser = RegexParser(trace=trace, semantics=RegexSemantics())
     model = parser.parse(regex, 'START')
     model.set_rule_numbers()
-    return model.render()
+    return model.render().encode("ascii")

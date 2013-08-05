@@ -148,7 +148,10 @@ class Buffer(object):
 
         if result:
             self.move(len(token))
-            check_nameguard = not (self.nameguard and token.isalnum() and self.current().isalnum())
+            check_nameguard = not (self.nameguard
+                                   and token.isalnum()
+                                   and self.current() is not None
+                                   and self.current().isalnum())
             if check_nameguard:
                 return token
         self.goto(p)
@@ -185,10 +188,10 @@ class Buffer(object):
             if c == '\n':
                 n += 1
                 cache.append(PosLine(i, n))
-        self._linecount = n
         n += 1
         cache.append(PosLine(self._len - 1, n))
         self._linecache = cache
+        self._linecount = n
 
     @property
     def linecount(self):
