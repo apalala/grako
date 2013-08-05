@@ -134,6 +134,10 @@ class Buffer(object):
     def is_space(self):
         return self.current() in self.whitespace
 
+    def is_name_char(self):
+        c = self.current()
+        return c is not None and c.isalnum()
+
     def match(self, token, ignorecase=None):
         ignorecase = ignorecase if ignorecase is not None else self.ignorecase
 
@@ -151,7 +155,8 @@ class Buffer(object):
             check_nameguard = not (self.nameguard
                                    and token.isalnum()
                                    and self.current() is not None
-                                   and self.current().isalnum())
+                                   and self.is_name_char()
+                                   )
             if check_nameguard:
                 return token
         self.goto(p)
