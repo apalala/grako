@@ -154,7 +154,6 @@ class Buffer(object):
             self.move(len(token))
             check_nameguard = not (self.nameguard
                                    and token.isalnum()
-                                   and self.current() is not None
                                    and self.is_name_char()
                                    )
             if check_nameguard:
