@@ -315,7 +315,7 @@ class Choice(_Model):
                     o.parse(ctx)
             firstset = ' '.join(str(urepr(f[0])) for f in self.firstset if f)
             if firstset:
-                raise FailedParse(ctx.buf, 'one of {%s}' % firstset)
+                raise FailedParse(ctx.buf, 'expecting one of {%s}' % firstset)
             raise FailedParse(ctx.buf, 'no available options')
 
     def _validate(self, rules):
