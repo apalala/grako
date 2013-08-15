@@ -608,7 +608,10 @@ class Rule(Named):
         cache = ctx._memoization_cache
 
         if key in cache:
-            return cache[key]
+            result = cache[key]
+            if isinstance(result, Exception):
+                raise result
+            return result
 
         pos = ctx._pos
         ctx._push_ast()
@@ -623,12 +626,15 @@ class Rule(Named):
                 node.add('parseinfo', ParseInfo(ctx._buffer, name, pos, ctx._pos))
 #            if self.ast_name:
 #                node = AST([(self.ast_name, node)])
+            node = self._call_semantics(ctx, name, node)
+            result = (node, ctx.pos)
+            cache[key] = result
+            return result
+        except Exception as e:
+            cache[key] = e
+            raise
         finally:
             ctx._pop_ast()
-        node = self._call_semantics(ctx, name, node)
-        result = (node, ctx.pos)
-        cache[key] = result
-        return result
 
     def _call_semantics(self, ctx, name, node):
         semantic_rule = ctx._find_semantic_rule(name)
