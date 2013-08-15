@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='grako',
-    version='2.0.3',
+    version='2.0.4',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.model', 'grako.test'],
