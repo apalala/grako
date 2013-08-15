@@ -138,6 +138,7 @@ class ParseContext(object):
                 if isinstance(prev, list):
                     prev.extend(value)
                 else:
+                    del self.ast[key]
                     self.ast[key] = [prev] + value
 
     @property

@@ -20,6 +20,15 @@ class GrammarTests(unittest.TestCase):
         m = genmodel('Keywords', grammar)
         m.parse('x')
 
+    def test_update_ast(self):
+        grammar = '''
+            foo = name:"1" [ name: bar ] ;
+            bar = { "2" } * ;
+        '''
+        m = genmodel('Keywords', grammar)
+        ast = m.parse('1 2')
+        self.assertEqual(ast.name, ['1', '2'])
+        
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
