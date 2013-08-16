@@ -49,6 +49,7 @@ class ParseContext(object):
         self._cut_stack = [False]
         self._memoization_cache = dict()
         self._last_node = None
+        self._state = None
 
     def reset(self, text=None,
               filename=None,
@@ -194,7 +195,7 @@ class ParseContext(object):
         #   http://goo.gl/VaGpj
         cutpos = self._pos
         cache = self._memoization_cache
-        cutkeys = [(p, n) for p, n in cache.keys() if p < cutpos]
+        cutkeys = [(p, n, s) for p, n, s in cache.keys() if p < cutpos]
         for key in cutkeys:
             del cache[key]
 
@@ -248,6 +249,7 @@ class ParseContext(object):
     @contextmanager
     def _try(self):
         p = self._pos
+        s = self._state
         self._push_ast()
         self.last_node = None
         try:
@@ -257,6 +259,7 @@ class ParseContext(object):
             self.last_node = cst
         except:
             self._goto(p)
+            self._state = s
             raise
         finally:
             self._pop_ast()
@@ -309,17 +312,20 @@ class ParseContext(object):
     @contextmanager
     def _if(self):
         p = self._pos
+        s = self._state
         self._push_ast()
         try:
             yield None
         finally:
             self._goto(p)
+            self._state = s
             self._pop_ast()  # simply discard
             self.last_node = None
 
     @contextmanager
     def _ifnot(self):
         p = self._pos
+        s = self._state
         self._push_ast()
         self.last_node = None
         try:
@@ -330,6 +336,7 @@ class ParseContext(object):
             self._error('', etype=FailedLookahead)
         finally:
             self._goto(p)
+            self._state = s
             self._pop_ast()  # simply discard
             self.last_node = None
 

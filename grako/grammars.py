@@ -593,8 +593,9 @@ class Rule(Named):
             if self.name[0].islower():
                 ctx._next_token()
             ctx._trace_event('ENTER ')
-            node, newpos = self._invoke_rule(self.name, ctx)
+            node, newpos, newstate = self._invoke_rule(self.name, ctx, ctx._state)
             ctx.goto(newpos)
+            ctx._state = newstate
             ctx._trace_event('SUCCESS')
             return node
         except FailedParse:
@@ -603,8 +604,8 @@ class Rule(Named):
         finally:
             ctx._rule_stack.pop()
 
-    def _invoke_rule(self, name, ctx):
-        key = (ctx.pos, name)
+    def _invoke_rule(self, name, ctx, state):
+        key = (ctx.pos, name, state)
         cache = ctx._memoization_cache
 
         if key in cache:
@@ -627,7 +628,7 @@ class Rule(Named):
 #            if self.ast_name:
 #                node = AST([(self.ast_name, node)])
             node = self._call_semantics(ctx, name, node)
-            result = (node, ctx.pos)
+            result = (node, ctx.pos, ctx._state)
             cache[key] = result
             return result
         except Exception as e:
@@ -716,8 +717,11 @@ class Grammar(Renderer):
                     filename=None,
                     semantics=None,
                     trace=False,
+                    context=None,
                     **kwargs):
-        ctx = ModelContext(self.rules, trace=trace, **kwargs)
+        ctx = context
+        if ctx is None:
+            ctx = ModelContext(self.rules, trace=trace, **kwargs)
         ctx.reset(text=text, semantics=semantics, **kwargs)
         start_rule = ctx._find_rule(start) if start else self.rules[0]
         with ctx._choice():
