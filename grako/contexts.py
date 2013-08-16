@@ -66,7 +66,7 @@ class ParseContext(object):
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
-                
+
             buffer = buffering.Buffer(text,
                                       filename=filename,
                                       comments_re=comments_re or self.comments_re,
@@ -190,8 +190,15 @@ class ParseContext(object):
         self._cut_stack[-1] = True
 
         # Kota Mizushima et al say that we can throw away
-        # memos for previous positions in the buffer.
+        # memos for previous positions in the buffer under
+        # certain circumstances, without affecting the linearity
+        # of PEG parsing.
         #   http://goo.gl/VaGpj
+        #
+        # We adopt the heuristic of always dropping the cache for
+        # positions less than the current cut position. It remains to
+        # be proven if doing it this way affects linearity. Empirically,
+        # it hasn't.
         cutpos = self._pos
         cache = self._memoization_cache
         cutkeys = [(p, n) for p, n in cache.keys() if p < cutpos]
