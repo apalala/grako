@@ -131,11 +131,6 @@ word
 
 pattern
     =
-    PATTERN
-    ;
-
-PATTERN
-    =
     '?/' >> @?/(.*?)(?=/\?)/? '/?'
     ;
 
