@@ -83,6 +83,14 @@ class Buffer(object):
             return None
         return self.text[self._pos]
 
+    def at(self, p):
+        if p >= self._len:
+            return None
+        return self.text[p]
+
+    def peek(self, n):
+        return self.at(self._pos + n)
+
     def next(self):
         if self._pos >= self._len:
             return None
