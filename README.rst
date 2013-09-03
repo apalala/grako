@@ -483,7 +483,7 @@ Changes
 =======
 
 - **2.0.4**
-    Several improvements and bug fixes (mostly by lambdafu_).
+     * Several improvements and bug fixes (mostly by lambdafu_).
 
 - **2.0.3**
     * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
