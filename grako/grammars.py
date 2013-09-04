@@ -48,6 +48,12 @@ def udrepr(s):
     return urepr(decode(s))
 
 
+def safe_name(s):
+    if iskeyword(s):
+        return s + '_'
+    return s
+
+
 class ModelContext(ParseContext):
     def __init__(self, rules, semantics=None, trace=False, **kwargs):
         super(ModelContext, self).__init__(trace=trace,
@@ -487,11 +493,8 @@ class Named(_Decorator):
         return '%s:%s' % (self.name, str(self.exp))
 
     def render_fields(self, fields):
-        name = self.name
-        if iskeyword(name):
-            name += '_'
         fields.update(n=self.counter(),
-                      name=name
+                      name=safe_name(self.name)
                       )
 
     template = '''
@@ -574,10 +577,7 @@ class RuleRef(_Model):
         return self.name
 
     def render_fields(self, fields):
-        name = self.name
-        if iskeyword(name):
-            name += '_'
-        fields.update(name=name)
+        fields.update(name=safe_name(self.name))
 
     template = "self.{name}()"
 
@@ -656,13 +656,11 @@ class Rule(Named):
     def render_fields(self, fields):
         self.reset_counter()
         name = self.name
-        if iskeyword(name):
-            name += '_'
         if self.ast_name:
             ast_name_clause = '\nself.ast = AST(%s=self.ast)\n' % self.ast_name_
         else:
             ast_name_clause = ''
-        fields.update(name=name,
+        fields.update(name=safe_name(name),
                       ast_name_clause=ast_name_clause
                       )
 
@@ -731,7 +729,7 @@ class Grammar(Renderer):
 
     def render_fields(self, fields):
         abstract_template = trim(self.abstract_rule_template)
-        abstract_rules = [abstract_template.format(name=rule.name) for rule in self.rules]
+        abstract_rules = [abstract_template.format(name=safe_name(rule.name)) for rule in self.rules]
         abstract_rules = indent('\n'.join(abstract_rules))
         fields.update(rules=indent(render(self.rules)),
                       abstract_rules=abstract_rules,
