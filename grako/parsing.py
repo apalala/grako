@@ -43,7 +43,7 @@ class Parser(ParseContext):
               **kwargs):
         try:
             self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
-            self.reset(text=text,
+            self._reset(text=text,
                        filename=filename,
                        semantics=semantics,
                        trace=trace,

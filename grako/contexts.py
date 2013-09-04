@@ -50,7 +50,7 @@ class ParseContext(object):
         self._memoization_cache = dict()
         self._last_node = None
 
-    def reset(self, text=None,
+    def _reset(self, text=None,
               filename=None,
               semantics=None,
               trace=None,
