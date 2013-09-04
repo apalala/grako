@@ -716,7 +716,7 @@ class Grammar(Renderer):
                     trace=False,
                     **kwargs):
         ctx = ModelContext(self.rules, trace=trace, **kwargs)
-        ctx.reset(text=text, semantics=semantics, **kwargs)
+        ctx._reset(text=text, semantics=semantics, **kwargs)
         start_rule = ctx._find_rule(start) if start else self.rules[0]
         with ctx._choice():
             return start_rule.parse(ctx)
