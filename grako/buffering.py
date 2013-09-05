@@ -177,7 +177,7 @@ class Buffer(object):
         else:
             re = regexp.compile(pattern,
                                 regexp.MULTILINE |
-                                regexp.IGNORECASE if ignorecase else 0)
+                                (regexp.IGNORECASE if ignorecase else 0))
             self._re_cache[re] = re
 
         matched = re.match(self.text, self.pos)
