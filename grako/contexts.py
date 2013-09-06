@@ -161,30 +161,33 @@ class ParseContext(object):
     def _add_cst_node(self, node):
         if node is None:
             return
-        previous = self._concrete_stack[-1]
+        previous = self.cst
         if previous is None:
-            if isinstance(node, list):
+            if is_list(node):
                 node = node[:]  # copy it
-            self._concrete_stack[-1] = node
+            self.cst = node
         elif is_list(previous):
             previous.append(node)
         else:
-            self._concrete_stack[-1] = [previous, node]
+            self.cst = [previous, node]
 
-    def _extend_cst(self, cst):
-        if cst is None:
+    def _extend_cst(self, node):
+        if node is None:
             return
-        if self.cst is None:
-            self.cst = cst
-        elif is_list(self.cst, list):
-            if is_list(cst):
-                self.cst.extend(cst)
+        previous = self.cst
+        if previous is None:
+            if isinstance(node, list):
+                node = node[:]  # copy it
+            self.cst = node
+        elif is_list(node):
+            if is_list(previous):
+                previous.extend(node)
             else:
-                self.cst.append(cst)
-        elif is_list(cst):
-            self.cst = [self.cst] + cst
+                self.cst = [previous] + node
+        elif is_list(previous):
+            previous.append(node)
         else:
-            self.cst = [self.cst, cst]
+            self.cst = [previous, node]
 
     def _copy_cst(self):
         cst = self.cst
@@ -283,7 +286,7 @@ class ParseContext(object):
         finally:
             self._pop_ast()
         self.ast = ast
-        self._add_cst_node(cst)
+        self._extend_cst(cst)
         self.last_node = cst
 
     @contextmanager
@@ -383,7 +386,7 @@ class ParseContext(object):
         try:
             self.cst = []
             self._repeater(block)
-            cst = self.cst
+            cst = Closure(self.cst)
         finally:
             self._pop_cst()
         self._add_cst_node(cst)
