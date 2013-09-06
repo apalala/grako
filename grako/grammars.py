@@ -15,11 +15,10 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import sys
 import re
 from copy import deepcopy
-from keyword import iskeyword
 import time
 from .util import indent, trim
 from .rendering import Renderer, render
-from .contexts import ParseContext, ParseInfo
+from .contexts import ParseContext, ParseInfo, safe_name
 from .exceptions import (FailedParse,
                          FailedToken,
                          FailedPattern,
@@ -46,12 +45,6 @@ def decode(s):
 
 def udrepr(s):
     return urepr(decode(s))
-
-
-def safe_name(s):
-    if iskeyword(s):
-        return s + '_'
-    return s
 
 
 class ModelContext(ParseContext):
@@ -576,10 +569,7 @@ class RuleRef(_Model):
     def __str__(self):
         return self.name
 
-    def render_fields(self, fields):
-        fields.update(name=safe_name(self.name))
-
-    template = "self.{name}()"
+    template = "self._{name}_()"
 
 
 class Rule(Named):
@@ -656,18 +646,15 @@ class Rule(Named):
 
     def render_fields(self, fields):
         self.reset_counter()
-        name = self.name
         if self.ast_name:
             ast_name_clause = '\nself.ast = AST(%s=self.ast)\n' % self.ast_name_
         else:
             ast_name_clause = ''
-        fields.update(name=safe_name(name),
-                      ast_name_clause=ast_name_clause
-                      )
+        fields.update(ast_name_clause=ast_name_clause)
 
     template = '''
                 @rule_def
-                def {name}(self):
+                def _{name}_(self):
                 {exp:1::}{ast_name_clause}
 
                 '''

@@ -3,6 +3,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import sys
 from contextlib import contextmanager
 from collections import namedtuple
+from keyword import iskeyword
 from .ast import AST
 from . import buffering
 from .exceptions import (FailedParse,
@@ -16,6 +17,12 @@ __all__ = ['ParseInfo', 'ParseContext']
 
 
 ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
+
+
+def safe_name(s):
+    if iskeyword(s):
+        return s + '_'
+    return s
 
 
 class ParseContext(object):
