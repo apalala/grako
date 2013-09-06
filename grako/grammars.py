@@ -428,6 +428,7 @@ class PositiveClosure(Closure):
         fields.update(n=self.counter())
 
     template = '''
+
                 def block{n}():
                 {exp:1::}
                 self._positive_closure(block{n})

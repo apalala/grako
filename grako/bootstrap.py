@@ -15,7 +15,6 @@ in the .grammars module.
 from __future__ import print_function, division, absolute_import, unicode_literals
 from .buffering import Buffer
 from .parsing import Parser, rule_def
-from .exceptions import FailedParse
 from .semantics import GrakoASTSemantics, GrakoSemantics
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
@@ -34,247 +33,236 @@ class GrakoParserBase(Parser):
                                                   **kwargs)
 
     @rule_def
-    def void(self):
-        self._token('()', 'void')
+    def _grammar_(self):
+        def block0():
+            self._rule_()
+        self._positive_closure(block0)
 
-    @rule_def
-    def token(self):
-        self.TOKEN()
-
-    @rule_def
-    def TOKEN(self):
-        with self._choice():
-            with self._option():
-                self._token("'")
-                self._cut()
-                self._pattern(r"(?:[^'\n]|\\'|\\\\)*", '@')
-                self._token("'")
-
-            with self._option():
-                self._token('"')
-                self._cut()
-                self._pattern(r'(?:[^"\n]|\\"|\\\\)*', '@')
-                self._token('"')
-            raise FailedParse(self._buffer, '<"> or' + "<'>")
-
-    @rule_def
-    def word(self):
-        self._pattern(r'[A-Za-z0-9_]+')
-
-    @rule_def
-    def qualified(self):
-        self._pattern(r'[A-Za-z0-9_]+(?:\.[-_A-Za-z0-9]+)*', 'qualified')
-
-    @rule_def
-    def call(self):
-        self.word()
-
-    @rule_def
-    def pattern(self):
-        self.PATTERN()
-
-    @rule_def
-    def PATTERN(self):
-        self._token('?/')
-        self._cut()
-        self._pattern(r'(.*?)(?=/\?)', '@')
-        self._token('/?')
-
-    @rule_def
-    def cut(self):
-        self._token('>>', 'cut')
-        self._cut()
-
-    @rule_def
-    def eof(self):
-        self._token('$')
-        self._cut()
-
-    @rule_def
-    def subexp(self):
-        self._token('(')
-        self._cut()
-        self.expre()
         self.ast['@'] = self.last_node
-        self._token(')')
+        self._check_eof()
 
     @rule_def
-    def optional(self):
-        self._token('[')
-        self._cut()
-        self.expre()
-        self.ast['@'] = self.last_node
-        self._cut()
-        self._token(']')
-
-    @rule_def
-    def plus(self):
-        if not self._try_token('-', 'symbol'):
-            self._token('+', 'symbol')
-
-    @rule_def
-    def closure(self):
-        self._token('{')
-        self._cut()
-        self.expre()
-        self.ast['exp'] = self.last_node
-        self._token('}')
-        if not self._try_token('*'):
-            try:
-                self.plus()
-                self.ast['plus'] = self.last_node
-            except FailedParse:
-                pass
-
-    @rule_def
-    def special(self):
-        self._token('?(')
-        self._cut()
-        self._pattern(r'(.*)\)?', 'special')
-
-    @rule_def
-    def kif(self):
-        self._token('&')
-        self._cut()
-        self.term()
-        self.ast['@'] = self.last_node
-
-    @rule_def
-    def knot(self):
-        self._token('!')
-        self._cut()
-        self.term()
-        self.ast['@'] = self.last_node
-
-    @rule_def
-    def atom(self):
-        with self._choice():
-            with self._option():
-                self.void()
-                self._cut()
-            with self._option():
-                self.cut()
-                self._cut()
-            with self._option():
-                self.token()
-                self._cut()
-            with self._option():
-                self.call()
-                self._cut()
-            with self._option():
-                self.pattern()
-                self._cut()
-            with self._option():
-                self.eof()
-                self._cut()
-            self._error('expecting atom')
-
-    @rule_def
-    def term(self):
-        with self._choice():
-            with self._option():
-                self.atom()
-                self._cut()
-            with self._option():
-                self.subexp()
-                self._cut()
-            with self._option():
-                self.closure()
-                self._cut()
-            with self._option():
-                self.optional()
-                self._cut()
-            with self._option():
-                self.special()
-                self._cut()
-            with self._option():
-                self.kif()
-                self._cut()
-            with self._option():
-                self.knot()
-                self._cut()
-            self._error('expecting term')
-
-    @rule_def
-    def named(self):
-        name = self.qualified()
-        if not self._try_token('+:', 'force_list'):
-            self._token(':')
-        self._cut()
-        self.ast.add('name', name)
-        self.element()
-        self.ast['value'] = self.last_node
-
-    @rule_def
-    def override(self):
-        self._token('@')
-        self._cut()
-        self.element()
-        self.ast['@'] = self.last_node
-
-    @rule_def
-    def element(self):
-        with self._choice():
-            with self._option():
-                self.named()
-                self._cut()
-            with self._option():
-                self.override()
-                self._cut()
-            with self._option():
-                self.term()
-                self._cut()
-            self._error('element')
-
-    @rule_def
-    def sequence(self):
-        def block():
-            self.element()
-            self.ast.add_list('sequence', self.last_node)
-
-        self._positive_closure(block)
-
-    @rule_def
-    def choice(self):
-        self.sequence()
-        self.ast.add_list('options', self.last_node)
-
-        def block():
-            self._token('|')
-            self._cut()
-            self.sequence()
-            self.ast.add_list('options', self.last_node)
-        self._closure(block)
-
-    @rule_def
-    def expre(self):
-        self.choice()
-
-    @rule_def
-    def rule(self):
-        self.word()
+    def _rule_(self):
+        self._word_()
         self.ast['name'] = self.last_node
-        self._cut()
         self._token('=')
         self._cut()
-        self.expre()
+        self._expre_()
         self.ast['rhs'] = self.last_node
-        if not self._try_token(';'):
-            try:
-                self._token('.')
-            except FailedParse:
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('.')
+                with self._option():
+                    self._token(';')
                 self._error('expecting one of: ; .')
         self._cut()
 
     @rule_def
-    def grammar(self):
-        def block():
-            self.rule()
-            self.ast['rules'] = self.last_node
-        self._positive_closure(block)
+    def _expre_(self):
+        with self._choice():
+            with self._option():
+                self._choice_()
+            with self._option():
+                self._sequence_()
+            self._error('no available options')
 
-        self._next_token()
-        self._check_eof()
+    @rule_def
+    def _choice_(self):
+        self._sequence_()
+        self.ast.add_list('options', self.last_node)
+
+        def block1():
+            self._token('|')
+            self._cut()
+            self._sequence_()
+            self.ast['options'] = self.last_node
+        self._positive_closure(block1)
+
+    @rule_def
+    def _sequence_(self):
+        def block1():
+            self._element_()
+        self._positive_closure(block1)
+
+        self.ast['sequence'] = self.last_node
+
+    @rule_def
+    def _element_(self):
+        with self._choice():
+            with self._option():
+                self._named_()
+            with self._option():
+                self._override_()
+            with self._option():
+                self._term_()
+            self._error('no available options')
+
+    @rule_def
+    def _named_(self):
+        self._word_()
+        self.ast['name'] = self.last_node
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('+:')
+                    self.ast['force_list'] = self.last_node
+                with self._option():
+                    self._token(':')
+                self._error('expecting one of: +: :')
+        self._element_()
+        self.ast['value'] = self.last_node
+
+    @rule_def
+    def _override_(self):
+        self._token('@')
+        self._element_()
+        self.ast['@'] = self.last_node
+
+    @rule_def
+    def _term_(self):
+        with self._choice():
+            with self._option():
+                self._void_()
+            with self._option():
+                self._subexp_()
+            with self._option():
+                self._closure_()
+            with self._option():
+                self._optional_()
+            with self._option():
+                self._special_()
+            with self._option():
+                self._kif_()
+            with self._option():
+                self._knot_()
+            with self._option():
+                self._atom_()
+            self._error('no available options')
+
+    @rule_def
+    def _subexp_(self):
+        self._token('(')
+        self._cut()
+        self._expre_()
+        self.ast['@'] = self.last_node
+        self._token(')')
+        self._cut()
+
+    @rule_def
+    def _closure_(self):
+        self._token('{')
+        self._cut()
+        self._expre_()
+        self.ast['exp'] = self.last_node
+        self._token('}')
+        self._cut()
+        with self._group():
+            with self._choice():
+                with self._option():
+                    with self._group():
+                        with self._choice():
+                            with self._option():
+                                self._token('-')
+                            with self._option():
+                                self._token('+')
+                            self._error('expecting one of: - +')
+                    self.ast['plus'] = self.last_node
+                with self._option():
+                    with self._optional():
+                        self._token('*')
+                self._error('expecting one of: - * +')
+        self._cut()
+
+    @rule_def
+    def _optional_(self):
+        self._token('[')
+        self._cut()
+        self._expre_()
+        self.ast['@'] = self.last_node
+        self._token(']')
+        self._cut()
+
+    @rule_def
+    def _special_(self):
+        self._token('?(')
+        self._cut()
+        self._pattern(r'(.*)')
+        self.ast['@'] = self.last_node
+        self._token(')?')
+        self._cut()
+
+    @rule_def
+    def _kif_(self):
+        self._token('&')
+        self._term_()
+        self.ast['@'] = self.last_node
+
+    @rule_def
+    def _knot_(self):
+        self._token('!')
+        self._term_()
+        self.ast['@'] = self.last_node
+
+    @rule_def
+    def _atom_(self):
+        with self._choice():
+            with self._option():
+                self._cut_()
+            with self._option():
+                self._token_()
+            with self._option():
+                self._call_()
+            with self._option():
+                self._pattern_()
+            with self._option():
+                self._eof_()
+            self._error('no available options')
+
+    @rule_def
+    def _call_(self):
+        self._word_()
+
+    @rule_def
+    def _void_(self):
+        self._token('()')
+
+    @rule_def
+    def _cut_(self):
+        self._token('>>')
+
+    @rule_def
+    def _token_(self):
+        with self._choice():
+            with self._option():
+                self._token('"')
+                self._cut()
+                self._pattern(r'([^"\\\n]|\\"|\\\\)*')
+                self.ast['@'] = self.last_node
+                self._token('"')
+            with self._option():
+                self._token("'")
+                self._cut()
+                self._pattern(r"([^'\\\n]|\\'|\\\\)*")
+                self.ast['@'] = self.last_node
+                self._token("'")
+            self._error('expecting one of: \' "')
+
+    @rule_def
+    def _word_(self):
+        self._pattern(r'[-_A-Za-z0-9]+')
+
+    @rule_def
+    def _pattern_(self):
+        self._token('?/')
+        self._cut()
+        self._pattern(r'(.*?)(?=/\?)')
+        self.ast['@'] = self.last_node
+        self._token('/?')
+
+    @rule_def
+    def _eof_(self):
+        self._token('$')
 
 
 class GrakoParser(GrakoParserBase):
