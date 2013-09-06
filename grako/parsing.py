@@ -80,8 +80,9 @@ class Parser(ParseContext):
         try:
             self._trace_event('ENTER ')
             self._last_node = None
-            node, newpos = self._invoke_rule(pos, rule, name)
+            node, newpos, newstate = self._invoke_rule(pos, rule, name, self._state)
             self._goto(newpos)
+            self._state = newstate
             self._trace_event('SUCCESS')
             self._add_cst_node(node)
             self._last_node = node
@@ -93,8 +94,8 @@ class Parser(ParseContext):
         finally:
             self._rule_stack.pop()
 
-    def _invoke_rule(self, pos, rule, name):
-        key = (pos, rule)
+    def _invoke_rule(self, pos, rule, name, state):
+        key = (pos, rule, state)
         cache = self._memoization_cache
 
         if key in cache:
@@ -121,7 +122,7 @@ class Parser(ParseContext):
                     node = semantic_rule(node)
                 except FailedSemantics as e:
                     self._error(str(e), FailedParse)
-            cache[key] = result = (node, self._pos)
+            cache[key] = result = (node, self._pos, self._state)
             return result
         except Exception as e:
             cache[key] = e
