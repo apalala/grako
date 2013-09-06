@@ -137,6 +137,14 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("1234", nameguard=False)
         self.assertEquals(['2', '3'], ast.foo)
 
+    def test_group_ast(self):
+        grammar = '''
+            start = '1' ('2' '3') '4' $ ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("1234", nameguard=False)
+        self.assertEquals(['1', '2', '3', '4'], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

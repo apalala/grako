@@ -186,7 +186,7 @@ The expressions, in reverse order of operator precedence, can be:
         Match ``e1`` and then match ``e2``.
 
     ``( e )``
-        Grouping. Match ``e``. Note that the AST_ for the group will be a list if more than one element is matched.
+        Grouping. Match ``e``.
 
     ``[ e ]``
         Optionally match ``e``.
@@ -485,6 +485,7 @@ Changes
 
 - **2.1.0**
     * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
+    * Grouping expressions no longer produce a list as CST_.
     * *BUG*! Again, make sure tha closures always return a list.
     * Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
     * Again, protect the names of methods for rules with a leading and trailing underscore.  It's the only way to avoid unexpected name clashes.
