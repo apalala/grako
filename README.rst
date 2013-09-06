@@ -482,6 +482,11 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+- **2.1.0**
+     * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the optional hadn't been present.
+    * Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
+      * Several minor bug fixes (lambdafu_).
+
 - **2.0.4**
      * Several improvements and bug fixes (mostly by lambdafu_).
 
