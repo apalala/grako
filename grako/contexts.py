@@ -369,6 +369,7 @@ class ParseContext(object):
     def _closure(self, block):
         self._push_cst()
         try:
+            self.cst = []
             self._repeater(block)
             cst = to_list(self.cst)
         finally:
@@ -380,6 +381,7 @@ class ParseContext(object):
     def _positive_closure(self, block):
         self._push_cst()
         try:
+            self.cst = []
             with self._try():
                 block()
             self._repeater(block)
