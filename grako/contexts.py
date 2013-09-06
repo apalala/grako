@@ -130,18 +130,6 @@ class ParseContext(object):
             self.ast.add(name, node, force_list)
         return node
 
-    def _update_ast(self, ast):
-        for key, value in ast.items():
-            if key not in self.ast or not isinstance(value, list):
-                self._add_ast_node(key, value)
-            else:
-                prev = self.ast[key]
-                if isinstance(prev, list):
-                    prev.extend(value)
-                else:
-                    del self.ast[key]
-                    self.ast[key] = [prev] + value
-
     @property
     def cst(self):
         return self._concrete_stack[-1]
@@ -183,6 +171,15 @@ class ParseContext(object):
             self.cst = [self.cst] + cst
         else:
             self.cst = [self.cst, cst]
+
+    def _copy_cst(self):
+        cst = self.cst
+        if cst is None:
+            return None
+        elif isinstance(cst, list):
+            return cst[:]
+        else:
+            return cst
 
     def _is_cut_set(self):
         return self._cut_stack[-1]
@@ -257,21 +254,25 @@ class ParseContext(object):
     def _try(self):
         p = self._pos
         s = self._state
+        ast_copy = self.ast.copy()
+        cst_copy = self._copy_cst()
         self._push_ast()
         self.last_node = None
         try:
+            self.ast = ast_copy
+            self.cst = cst_copy
             yield None
             ast = self.ast
             cst = self.cst
-            self.last_node = cst
         except:
             self._goto(p)
             self._state = s
             raise
         finally:
             self._pop_ast()
-        self._update_ast(ast)
-        self._add_cst_node(cst)
+        self.ast = ast
+        self.cst = cst
+        self.last_node = cst
 
     @contextmanager
     def _option(self):

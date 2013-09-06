@@ -5,6 +5,7 @@ from grako.tool import genmodel
 from grako.grammars import ModelContext
 from grako.exceptions import FailedSemantics
 
+
 class GrammarTests(unittest.TestCase):
     def test_keywords_in_rule_names(self):
         grammar = '''
@@ -28,7 +29,16 @@ class GrammarTests(unittest.TestCase):
         '''
         m = genmodel('Keywords', grammar)
         ast = m.parse('1 2')
-        self.assertEqual(ast.name, ['1', '2'])
+        self.assertEqual(['1', ['2']], ast.name)
+
+        grammar = '''
+            start = items: { item } * $ ;
+            item = @{ subitem } * "0" ;
+            subitem = ?/1+/? ;
+        '''
+        m = genmodel('Update', grammar)
+        ast = m.parse("1101110100", nameguard=False)
+        self.assertEquals(['11', ['111'], ['1'], []], ast.items)
 
     def test_stateful(self):
         # Parser for mediawiki-style unordered lists.
@@ -47,6 +57,7 @@ class GrammarTests(unittest.TestCase):
         (* The following rules are placeholders for state validations and grammar rules.  *)
         ul_marker = () ;
         '''
+
         class StatefulSemantics(object):
             def __init__(self, parser):
                 self._context = parser
@@ -89,7 +100,28 @@ class GrammarTests(unittest.TestCase):
         self.assertEqual(ast, "<ul><li><ul><li>abc</li></ul></li></ul>")
         ast = model.parse('*abc\n**def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
         self.assertEqual(ast, "<ul><li>abc<ul><li>def</li></ul></li></ul>")
-        
+
+    def test_optional_closure(self):
+        grammar = 'start = foo+:"x" foo:{"y"}* {foo:"z"}* ;'
+        model = genmodel("test", grammar)
+        ast = model.parse("xyyzz", nameguard=False)
+        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+
+        grammar = 'start = foo+:"x" [foo+:{"y"}*] {foo:"z"}* ;'
+        model = genmodel("test", grammar)
+        ast = model.parse("xyyzz", nameguard=False)
+        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+
+        grammar = 'start = foo+:"x" foo:[{"y"}*] {foo:"z"}* ;'
+        model = genmodel("test", grammar)
+        ast = model.parse("xyyzz", nameguard=False)
+        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+
+        grammar = 'start = foo+:"x" [foo:{"y"}*] {foo:"z"}* ;'
+        model = genmodel("test", grammar)
+        ast = model.parse("xyyzz", nameguard=False)
+        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
