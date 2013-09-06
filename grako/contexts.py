@@ -4,7 +4,6 @@ import sys
 from contextlib import contextmanager
 from collections import namedtuple
 from keyword import iskeyword
-from .util import to_list
 from .ast import AST
 from . import buffering
 from .exceptions import (FailedParse,
@@ -56,6 +55,7 @@ class ParseContext(object):
         self._cut_stack = [False]
         self._memoization_cache = dict()
         self._last_node = None
+        self._state = None
 
     def _reset(self, text=None,
               filename=None,
@@ -136,18 +136,6 @@ class ParseContext(object):
             self.ast.add(name, node, force_list)
         return node
 
-    def _update_ast(self, ast):
-        for key, value in ast.items():
-            if key not in self.ast or not isinstance(value, list):
-                self._add_ast_node(key, value)
-            else:
-                prev = self.ast[key]
-                if isinstance(prev, list):
-                    prev.extend(value)
-                else:
-                    del self.ast[key]
-                    self.ast[key] = [prev] + value
-
     @property
     def cst(self):
         return self._concrete_stack[-1]
@@ -190,6 +178,15 @@ class ParseContext(object):
         else:
             self.cst = [self.cst, cst]
 
+    def _copy_cst(self):
+        cst = self.cst
+        if cst is None:
+            return None
+        elif isinstance(cst, list):
+            return cst[:]
+        else:
+            return cst
+
     def _is_cut_set(self):
         return self._cut_stack[-1]
 
@@ -208,7 +205,7 @@ class ParseContext(object):
         # it hasn't.
         cutpos = self._pos
         cache = self._memoization_cache
-        cutkeys = [(p, n) for p, n in cache.keys() if p < cutpos]
+        cutkeys = [(p, n, s) for p, n, s in cache.keys() if p < cutpos]
         for key in cutkeys:
             del cache[key]
 
@@ -262,20 +259,26 @@ class ParseContext(object):
     @contextmanager
     def _try(self):
         p = self._pos
+        s = self._state
+        ast_copy = self.ast.copy()
+        cst_copy = self._copy_cst()
         self._push_ast()
         self.last_node = None
         try:
+            self.ast = ast_copy
+            self.cst = cst_copy
             yield None
             ast = self.ast
             cst = self.cst
-            self.last_node = cst
         except:
             self._goto(p)
+            self._state = s
             raise
         finally:
             self._pop_ast()
-        self._update_ast(ast)
-        self._add_cst_node(cst)
+        self.ast = ast
+        self.cst = cst
+        self.last_node = cst
 
     @contextmanager
     def _option(self):
@@ -323,17 +326,20 @@ class ParseContext(object):
     @contextmanager
     def _if(self):
         p = self._pos
+        s = self._state
         self._push_ast()
         try:
             yield None
         finally:
             self._goto(p)
+            self._state = s
             self._pop_ast()  # simply discard
             self.last_node = None
 
     @contextmanager
     def _ifnot(self):
         p = self._pos
+        s = self._state
         self._push_ast()
         self.last_node = None
         try:
@@ -344,6 +350,7 @@ class ParseContext(object):
             self._error('', etype=FailedLookahead)
         finally:
             self._goto(p)
+            self._state = s
             self._pop_ast()  # simply discard
             self.last_node = None
 
@@ -368,8 +375,9 @@ class ParseContext(object):
     def _closure(self, block):
         self._push_cst()
         try:
+            self.cst = []
             self._repeater(block)
-            cst = to_list(self.cst)
+            cst = self.cst
         finally:
             self._pop_cst()
         self._add_cst_node(cst)
@@ -379,10 +387,11 @@ class ParseContext(object):
     def _positive_closure(self, block):
         self._push_cst()
         try:
+            self.cst = []
             with self._try():
                 block()
             self._repeater(block)
-            cst = to_list(self.cst)
+            cst = self.cst
         finally:
             self._pop_cst()
         self._add_cst_node(cst)

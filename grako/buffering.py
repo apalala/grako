@@ -114,16 +114,15 @@ class Buffer(object):
 
     def eatcomments(self):
         if self.comments_re is not None:
-            opts = regexp.MULTILINE if '\n' in self.comments_re else 0
-            while self.matchre(self.comments_re, opts):
+            while self.matchre(self.comments_re, regexp.MULTILINE):
                 pass
 
     def next_token(self):
         p = None
         while self._pos != p:
             p = self._pos
-            self.eatwhitespace()
             self.eatcomments()
+            self.eatwhitespace()
 
     def skip_to(self, c):
         p = self._pos
@@ -178,7 +177,7 @@ class Buffer(object):
         else:
             re = regexp.compile(pattern,
                                 regexp.MULTILINE |
-                                regexp.IGNORECASE if ignorecase else 0)
+                                (regexp.IGNORECASE if ignorecase else 0))
             self._re_cache[re] = re
 
         matched = re.match(self.text, self.pos)
