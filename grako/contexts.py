@@ -25,6 +25,14 @@ def safe_name(s):
     return s
 
 
+def is_list(o):
+    return type(o) == list
+
+
+class Closure(list):
+    pass
+
+
 class ParseContext(object):
     def __init__(self,
                  semantics=None,
@@ -158,7 +166,7 @@ class ParseContext(object):
             if isinstance(node, list):
                 node = node[:]  # copy it
             self._concrete_stack[-1] = node
-        elif isinstance(previous, list):
+        elif is_list(previous):
             previous.append(node)
         else:
             self._concrete_stack[-1] = [previous, node]
@@ -168,12 +176,12 @@ class ParseContext(object):
             return
         if self.cst is None:
             self.cst = cst
-        elif isinstance(self.cst, list):
-            if isinstance(cst, list):
+        elif is_list(self.cst, list):
+            if is_list(cst):
                 self.cst.extend(cst)
             else:
                 self.cst.append(cst)
-        elif isinstance(cst, list):
+        elif is_list(cst):
             self.cst = [self.cst] + cst
         else:
             self.cst = [self.cst, cst]
@@ -261,12 +269,10 @@ class ParseContext(object):
         p = self._pos
         s = self._state
         ast_copy = self.ast.copy()
-        cst_copy = self._copy_cst()
         self._push_ast()
         self.last_node = None
         try:
             self.ast = ast_copy
-            self.cst = cst_copy
             yield None
             ast = self.ast
             cst = self.cst
@@ -277,7 +283,7 @@ class ParseContext(object):
         finally:
             self._pop_ast()
         self.ast = ast
-        self.cst = cst
+        self._add_cst_node(cst)
         self.last_node = cst
 
     @contextmanager
@@ -391,7 +397,7 @@ class ParseContext(object):
             with self._try():
                 block()
             self._repeater(block)
-            cst = self.cst
+            cst = Closure(self.cst)
         finally:
             self._pop_cst()
         self._add_cst_node(cst)
