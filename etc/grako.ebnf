@@ -71,7 +71,7 @@ subexp
 
 closure
     =
-    '{' >> exp:expre '}' >> (plus:['-' | '+'] | ['*']) >>
+    '{' >> exp:expre '}' >> (plus:('-' | '+') | ['*']) >>
     ;
 
 optional
