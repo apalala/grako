@@ -483,7 +483,7 @@ Changes
 =======
 
 - **2.1.0**
-     * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the optional hadn't been present.
+    * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the optional hadn't been present.
     * *BUG*! **Again**, make sure tha closures always return a list.
     * Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
       * Again, protect the names of methods for rules with a leading and trailing underscore.  It's the only way to avoid unexpected name clashes.
