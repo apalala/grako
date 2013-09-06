@@ -150,7 +150,8 @@ class _Decorator(_Model):
 class Group(_Decorator):
     def parse(self, ctx):
         with ctx._group():
-            return self.exp.parse(ctx)
+            self.exp.parse(ctx)
+            return ctx.last_node
 
     def __str__(self):
         exp = str(self.exp)
@@ -188,6 +189,7 @@ class Token(_Model):
 
         ctx._trace_match(self.token, None)
         ctx._add_cst_node(token)
+        ctx.last_node = token
         return token
 
     def _first(self, k, F):
@@ -220,6 +222,7 @@ class Pattern(_Model):
             raise FailedPattern(ctx.buf, self.pattern)
         ctx._trace_match(token, self.pattern)
         ctx._add_cst_node(token)
+        ctx.last_node = token
         return token
 
     def _first(self, k, F):
@@ -277,6 +280,7 @@ class Sequence(_Model):
             tree = s.parse(ctx)
             if tree is not None:
                 result.append(tree)
+        ctx.last_node = result
         return result
 
     def _validate(self, rules):
@@ -311,7 +315,10 @@ class Choice(_Model):
         with ctx._choice():
             for o in self.options:
                 with ctx._option():
-                    o.parse(ctx)
+                    node = o.parse(ctx)
+                    ctx.last_node = node
+                    return node
+
             firstset = ' '.join(str(urepr(f[0])) for f in self.firstset if f)
             if firstset:
                 raise FailedParse(ctx.buf, 'expecting one of {%s}' % firstset)
@@ -430,6 +437,7 @@ class PositiveClosure(Closure):
 class Optional(_Decorator):
 
     def parse(self, ctx):
+        ctx.last_node = None
         with ctx._optional():
             return self.exp.parse(ctx)
 
