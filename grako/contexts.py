@@ -3,7 +3,6 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import sys
 from contextlib import contextmanager
 from collections import namedtuple
-from .util import to_list
 from .ast import AST
 from . import buffering
 from .exceptions import (FailedParse,
@@ -371,7 +370,7 @@ class ParseContext(object):
         try:
             self.cst = []
             self._repeater(block)
-            cst = to_list(self.cst)
+            cst = self.cst
         finally:
             self._pop_cst()
         self._add_cst_node(cst)
@@ -385,7 +384,7 @@ class ParseContext(object):
             with self._try():
                 block()
             self._repeater(block)
-            cst = to_list(self.cst)
+            cst = self.cst
         finally:
             self._pop_cst()
         self._add_cst_node(cst)
