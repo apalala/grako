@@ -7,7 +7,7 @@ from . import grammars
 
 class GrakoASTSemantics(object):
 
-    def subexp(self, ast):
+    def group(self, ast):
         return simplify_list(ast.exp)
 
     def element(self, ast):
@@ -52,7 +52,7 @@ class GrakoSemantics(object):
     def void(self, ast):
         return grammars.Void()
 
-    def subexp(self, ast):
+    def group(self, ast):
         return grammars.Group(ast)
 
     def optional(self, ast):

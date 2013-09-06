@@ -49,13 +49,13 @@ named
 
 override
     =
-    '@' @element
+    '@' >> @element
     ;
 
 term
     =
       void
-    | subexp
+    | group
     | closure
     | optional
     | special
@@ -64,7 +64,7 @@ term
     | atom
     ;
 
-subexp
+group
     =
     '(' >> @expre ')' >>
     ;
@@ -86,12 +86,12 @@ special
 
 kif
     =
-    '&' @term
+    '&' >> @term
     ;
 
 knot
     =
-    '!' @term
+    '!' >> @term
     ;
 
 atom
@@ -110,12 +110,12 @@ call
 
 void
     =
-    '()'
+    '()' >>
     ;
 
 cut
     =
-    '>>'
+    '>>' >>
     ;
 
 token
@@ -131,10 +131,10 @@ word
 
 pattern
     =
-    '?/' >> @?/(.*?)(?=/\?)/? '/?'
+    '?/' >> @?/(.*?)(?=/\?)/? '/?' >>
     ;
 
 eof
     =
-    '$'
+    '$' >>
     ;

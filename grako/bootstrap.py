@@ -116,6 +116,7 @@ class GrakoParserBase(Parser):
     @rule_def
     def _override_(self):
         self._token('@')
+        self._cut()
         self._element_()
         self.ast['@'] = self.last_node
 
@@ -125,7 +126,7 @@ class GrakoParserBase(Parser):
             with self._option():
                 self._void_()
             with self._option():
-                self._subexp_()
+                self._group_()
             with self._option():
                 self._closure_()
             with self._option():
@@ -141,7 +142,7 @@ class GrakoParserBase(Parser):
             self._error('no available options')
 
     @rule_def
-    def _subexp_(self):
+    def _group_(self):
         self._token('(')
         self._cut()
         self._expre_()
@@ -195,12 +196,14 @@ class GrakoParserBase(Parser):
     @rule_def
     def _kif_(self):
         self._token('&')
+        self._cut()
         self._term_()
         self.ast['@'] = self.last_node
 
     @rule_def
     def _knot_(self):
         self._token('!')
+        self._cut()
         self._term_()
         self.ast['@'] = self.last_node
 
@@ -259,10 +262,12 @@ class GrakoParserBase(Parser):
         self._pattern(r'(.*?)(?=/\?)')
         self.ast['@'] = self.last_node
         self._token('/?')
+        self._cut()
 
     @rule_def
     def _eof_(self):
         self._token('$')
+        self._cut()
 
 
 class GrakoParser(GrakoParserBase):
