@@ -493,20 +493,6 @@ Changes
     * Several minor bug fixes (lambdafu_).
 
 - **2.0.4**
-     * Several improvements and bug fixes (mostly by lambdafu_).
-
-- **2.0.3**
-    * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
-
-- **2.0.2**
-    * *BUG!* Trace information off by one character (thanks to lambdafu_).
-    * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
-    * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
-
-- **2.0.1**
-    * Republished to solve problems with md5 checksums on PyPi_.
-
-- **2.0.0**
     * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less poluted namespaces and smaller classes.
     * A ``last_node`` protocol allowed the removal of all mentions of variable ``_e`` from generated parsers, which are thus more readable.
     * Refactored *closures* to be more pythonic (there are **no** anonymous blocks in Python_!).
@@ -515,6 +501,11 @@ Changes
     * Now *tokens* accept Python_ escape sequences.
     * Added a simple `Visitor Pattern`_ for ``Renderer`` nodes. Used it to implement diagramming.
     * Create a basic diagram of a grammar if pygraphviz_ is available.  Added the ``--draw`` option to the command-line tool.
+    * *BUG!* Trace information off by one character (thanks to lambdafu_).
+    * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
+    * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
+    * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
+     * Several improvements and bug fixes (mostly by lambdafu_).
 
 - **1.4.0**
     * *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
@@ -536,6 +527,11 @@ Changes
     * Update credits.
 
 - **1.2.1**
+    * Lazy rendering of template fields.
+    * Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
+    * Rendering of iterables using a specified separator, indent, and format.
+    * Basic documentation of the *rendering engine*.
+    * Added a cache of compiled regexps to ``Buffer``.
     * Align bootstrap parser with generated parser framework.
     * Add *cuts* to bootstrap parser so errors are reported closer to their origin.
     * *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exeption so the reported line and column make sense.
@@ -543,13 +539,6 @@ Changes
     * Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
     * Spell-check this document with `Vim spell`_.
     * Lint using flake8_.
-
-- **1.2.0**
-    * Lazy rendering of template fields.
-    * Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
-    * Rendering of iterables using a specified separator, indent, and format.
-    * Basic documentation of the *rendering engine*.
-    * Added a cache of compiled regexps to ``Buffer``.
 
 - **1.1.0**
     * *BUG!* Need to preserve state when closure iterations match partially.
