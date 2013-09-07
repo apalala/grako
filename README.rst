@@ -505,7 +505,7 @@ Changes
     * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
     * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
     * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
-     * Several improvements and bug fixes (mostly by lambdafu_).
+    * Several improvements and bug fixes (mostly by lambdafu_).
 
 - **1.4.0**
     * *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
