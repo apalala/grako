@@ -69,7 +69,7 @@ A **Grako** generated parser consists of the following classes:
 
 * A *parser* class derived from ``Parser`` which implements the parser using one method for each grammar rule::
 
-    def myrulename(self):
+    def _myrulename_(self):
 
 * A *semantics delegate class* with one semantic method per grammar rule. Each method receives as its single parameter the `Abstract Syntax Tree`_ (AST_) built from the rule invocation::
 
