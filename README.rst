@@ -186,7 +186,7 @@ The expressions, in reverse order of operator precedence, can be:
         Match ``e1`` and then match ``e2``.
 
     ``( e )``
-        Grouping. Match ``e``.
+        Grouping. Match ``e``. For example: ``('a' | 'b')``.
 
     ``[ e ]``
         Optionally match ``e``.
