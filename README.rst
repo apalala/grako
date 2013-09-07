@@ -550,7 +550,7 @@ Changes
     * Mention the use of *context managers*.
 
 - **1.0.0**
-    First feature-complete release.
+    * First feature-complete release.
 
 .. _`Visitor Pattern`: http://en.wikipedia.org/wiki/Visitor_pattern
 .. _pygraphviz: https://pypi.python.org/pypi/pygraphviz/
