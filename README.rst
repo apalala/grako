@@ -398,7 +398,7 @@ The project ``examples/antlr2grako`` contains a ANTLR_ to **Grako** grammar tans
 License
 =======
 
-**Grako** is Copyright 2012-2013 by `ResQSoft Inc.`_ and  `Juancarlo Añez`_
+**Grako** is Copyright (C) 2012-2013 by `ResQSoft Inc.`_ and  `Juancarlo Añez`_
 
 .. _`ResQSoft Inc.`:  http://www.resqsoft.com/
 .. _ResQSoft:  http://www.resqsoft.com/
