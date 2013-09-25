@@ -339,7 +339,7 @@ class ParseContext(object):
             cst = self.cst
         finally:
             self._pop_cst()
-        self._add_cst_node(cst)
+        self._extend_cst(cst)
         self.last_node = cst
 
     @contextmanager

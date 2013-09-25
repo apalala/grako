@@ -12,7 +12,7 @@ Grako
 
 **Grako** is *different* from other PEG_ parser generators in that the generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed; there are no complicated *if-then-else* sequences for decision making or backtracking. *Positive and negative lookaheads*, and the *cut* element with its cleaning of the memoization cache allow for additional, hand-crafted optimizations at the grammar level, and delegation to Python_'s re_ module for *lexemes* allows for (Perl_-like) powerful and efficient lexical analysis. The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for enhanced CPU-cache hits.
 
-**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 3000 lines of Python_, it is possible to study all its source code in a single session. **Grako**'s only dependencies are on the Python_ 2.7, 3.x, or PyPy_ standard libraries.
+**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 3000 lines of Python_, it is possible to study all its source code in a single session. **Grako**'s only dependencies are on the Python_ 2.7, 3.3, or PyPy_ standard libraries.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 
@@ -40,7 +40,7 @@ Rationale
 
 * When ambiguity is the norm in the parsed language (as is the case in several legacy_ ones), an LL or LR grammar becomes contaminated with myriads of lookaheads. PEG_ parsers address ambiguity from the onset. Memoization, and relying on the exception-handling system makes backtracking very efficient.
 
-* Semantic actions, like `Abstract Syntax Tree`_ (AST_)  transformation, *do not*  belong in the grammar. Semantic actions in the grammar create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
+* Semantic actions, like `Abstract Syntax Tree`_ (AST_)  transformation, *do not*  belong in the grammar. Semantic actions in the grammar create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
 
 * Pre-processing (like dealing with includes, fixed column formats, or Python_'s structure through indentation) belong in well-designed program code, and not in the grammar.
 
@@ -53,6 +53,7 @@ Rationale
 .. _`Abstract Syntax Tree`: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _AST: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _ASTs: http://en.wikipedia.org/wiki/Abstract_syntax_tree
+.. _CST:  http://en.wikipedia.org/wiki/Concrete_syntax_tree
 .. _EBNF: http://en.wikipedia.org/wiki/Ebnf
 .. _memoizing: http://en.wikipedia.org/wiki/Memoization
 .. _PEG: http://en.wikipedia.org/wiki/Parsing_expression_grammar
@@ -68,7 +69,7 @@ A **Grako** generated parser consists of the following classes:
 
 * A *parser* class derived from ``Parser`` which implements the parser using one method for each grammar rule::
 
-    def myrulename(self):
+    def _myrulename_(self):
 
 * A *semantics delegate class* with one semantic method per grammar rule. Each method receives as its single parameter the `Abstract Syntax Tree`_ (AST_) built from the rule invocation::
 
@@ -185,7 +186,7 @@ The expressions, in reverse order of operator precedence, can be:
         Match ``e1`` and then match ``e2``.
 
     ``( e )``
-        Grouping. Match ``e``. Note that the AST_ for the group will be a list if more than one element is matched.
+        Grouping. Match ``e``. For example: ``('a' | 'b')``.
 
     ``[ e ]``
         Optionally match ``e``.
@@ -397,7 +398,7 @@ The project ``examples/antlr2grako`` contains a ANTLR_ to **Grako** grammar tans
 License
 =======
 
-**Grako** is Copyright 2012-2013 by `ResQSoft Inc.`_ and  `Juancarlo Añez`_
+**Grako** is Copyright (C) 2012-2013 by `ResQSoft Inc.`_ and  `Juancarlo Añez`_
 
 .. _`ResQSoft Inc.`:  http://www.resqsoft.com/
 .. _ResQSoft:  http://www.resqsoft.com/
@@ -483,7 +484,8 @@ Changes
 =======
 
 - **2.1.0**
-    * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the optional hadn't been present.
+    * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
+    * Grouping expressions no longer produce a list as CST_.
     * *BUG*! Again, make sure tha closures always return a list.
     * Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
     * Again, protect the names of methods for rules with a leading and trailing underscore.  It's the only way to avoid unexpected name clashes.
@@ -491,20 +493,6 @@ Changes
     * Several minor bug fixes (lambdafu_).
 
 - **2.0.4**
-     * Several improvements and bug fixes (mostly by lambdafu_).
-
-- **2.0.3**
-    * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
-
-- **2.0.2**
-    * *BUG!* Trace information off by one character (thanks to lambdafu_).
-    * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
-    * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
-
-- **2.0.1**
-    * Republished to solve problems with md5 checksums on PyPi_.
-
-- **2.0.0**
     * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less poluted namespaces and smaller classes.
     * A ``last_node`` protocol allowed the removal of all mentions of variable ``_e`` from generated parsers, which are thus more readable.
     * Refactored *closures* to be more pythonic (there are **no** anonymous blocks in Python_!).
@@ -513,6 +501,11 @@ Changes
     * Now *tokens* accept Python_ escape sequences.
     * Added a simple `Visitor Pattern`_ for ``Renderer`` nodes. Used it to implement diagramming.
     * Create a basic diagram of a grammar if pygraphviz_ is available.  Added the ``--draw`` option to the command-line tool.
+    * *BUG!* Trace information off by one character (thanks to lambdafu_).
+    * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
+    * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
+    * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
+    * Several improvements and bug fixes (mostly by lambdafu_).
 
 - **1.4.0**
     * *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
@@ -534,6 +527,11 @@ Changes
     * Update credits.
 
 - **1.2.1**
+    * Lazy rendering of template fields.
+    * Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
+    * Rendering of iterables using a specified separator, indent, and format.
+    * Basic documentation of the *rendering engine*.
+    * Added a cache of compiled regexps to ``Buffer``.
     * Align bootstrap parser with generated parser framework.
     * Add *cuts* to bootstrap parser so errors are reported closer to their origin.
     * *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exeption so the reported line and column make sense.
@@ -541,13 +539,6 @@ Changes
     * Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
     * Spell-check this document with `Vim spell`_.
     * Lint using flake8_.
-
-- **1.2.0**
-    * Lazy rendering of template fields.
-    * Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
-    * Rendering of iterables using a specified separator, indent, and format.
-    * Basic documentation of the *rendering engine*.
-    * Added a cache of compiled regexps to ``Buffer``.
 
 - **1.1.0**
     * *BUG!* Need to preserve state when closure iterations match partially.
@@ -559,7 +550,7 @@ Changes
     * Mention the use of *context managers*.
 
 - **1.0.0**
-    First feature-complete release.
+    * First feature-complete release.
 
 .. _`Visitor Pattern`: http://en.wikipedia.org/wiki/Visitor_pattern
 .. _pygraphviz: https://pypi.python.org/pypi/pygraphviz/
