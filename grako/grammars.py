@@ -628,10 +628,12 @@ class Rule(Named):
 #                node = AST([(self.ast_name, node)])
             node = self._call_semantics(ctx, name, node)
             result = (node, ctx.pos, ctx._state)
-            cache[key] = result
+            if ctx._in_lookahead():
+                cache[key] = result
             return result
         except Exception as e:
-            cache[key] = e
+            if ctx._in_lookahead():
+                cache[key] = e
             raise
         finally:
             ctx._pop_ast()

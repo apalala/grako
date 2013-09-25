@@ -122,10 +122,13 @@ class Parser(ParseContext):
                     node = semantic_rule(node)
                 except FailedSemantics as e:
                     self._error(str(e), FailedParse)
-            cache[key] = result = (node, self._pos, self._state)
+            result = (node, self._pos, self._state)
+            if not self._in_lookahead():
+                cache[key] = result
             return result
         except Exception as e:
-            cache[key] = e
+            if not self._in_lookahead():
+                cache[key] = e
             raise
         finally:
             self._pop_ast()

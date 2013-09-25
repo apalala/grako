@@ -64,6 +64,7 @@ class ParseContext(object):
         self._memoization_cache = dict()
         self._last_node = None
         self._state = None
+        self._lookahead = 0
 
     def _reset(self, text=None,
               filename=None,
@@ -226,6 +227,15 @@ class ParseContext(object):
     def _pop_cut(self):
         return self._cut_stack.pop()
 
+    def _enter_lookahead(self):
+        self._lookahead += 1
+
+    def _leave_lookahead(self):
+        self._lookahead -= 1
+
+    def _in_lookahead(self):
+        return self._lookahead > 0
+
     def _rulestack(self):
         stack = '.'.join(self._rule_stack)
         if len(stack) > 60:
@@ -337,9 +347,11 @@ class ParseContext(object):
         p = self._pos
         s = self._state
         self._push_ast()
+        self._enter_lookahead()
         try:
             yield None
         finally:
+            self._leave_lookahead()
             self._goto(p)
             self._state = s
             self._pop_ast()  # simply discard
@@ -351,6 +363,7 @@ class ParseContext(object):
         s = self._state
         self._push_ast()
         self.last_node = None
+        self._enter_lookahead()
         try:
             yield None
         except FailedParse:
@@ -358,6 +371,7 @@ class ParseContext(object):
         else:
             self._error('', etype=FailedLookahead)
         finally:
+            self._leave_lookahead()
             self._goto(p)
             self._state = s
             self._pop_ast()  # simply discard
