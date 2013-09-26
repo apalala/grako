@@ -23,6 +23,7 @@ from .exceptions import (FailedParse,
                          FailedToken,
                          FailedPattern,
                          FailedRef,
+                         FailedCut,
                          FailedSemantics,
                          GrammarError)
 
@@ -720,8 +721,13 @@ class Grammar(Renderer):
             ctx = ModelContext(self.rules, trace=trace, **kwargs)
         ctx._reset(text=text, semantics=semantics, **kwargs)
         start_rule = ctx._find_rule(start) if start else self.rules[0]
-        with ctx._choice():
-            return start_rule.parse(ctx)
+        try:
+            with ctx._choice():
+                return start_rule.parse(ctx)
+        except FailedCut as e:
+            raise e.nested
+        finally:
+            ctx._clear_cache()
 
     def codegen(self):
         return self.render()

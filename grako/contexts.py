@@ -66,6 +66,9 @@ class ParseContext(object):
         self._state = None
         self._lookahead = 0
 
+    def _clear_cache(self):
+        self._memoization_cache = dict()
+
     def _reset(self, text=None,
               filename=None,
               semantics=None,
@@ -321,8 +324,6 @@ class ParseContext(object):
             yield None
         except OptionSucceeded:
             pass
-        except FailedCut as e:
-            raise e.nested
 
     @contextmanager
     def _optional(self):

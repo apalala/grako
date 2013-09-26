@@ -17,6 +17,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import functools
 from .contexts import ParseContext, ParseInfo
 from .exceptions import (FailedParse,
+                         FailedCut,
                          FailedToken,
                          FailedPattern,
                          FailedRef,
@@ -53,8 +54,10 @@ class Parser(ParseContext):
             result = rule()
             self.ast[rule_name] = result
             return result
+        except FailedCut as e:
+            raise e.nested
         finally:
-            self._memoization_cache = dict()
+            self._clear_cache()
 
     @classmethod
     def rule_list(cls):
