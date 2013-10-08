@@ -43,6 +43,7 @@ class ParseContext(object):
                  whitespace=None,
                  ignorecase=False,
                  nameguard=True,
+                 memoize_lookaheads=True,
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -65,23 +66,27 @@ class ParseContext(object):
         self._last_node = None
         self._state = None
         self._lookahead = 0
+        self._memoize_lookaheads = memoize_lookaheads
 
     def _clear_cache(self):
         self._memoization_cache = dict()
 
     def _reset(self, text=None,
-              filename=None,
-              semantics=None,
-              trace=None,
-              comments_re=None,
-              whitespace=None,
-              ignorecase=None,
-              nameguard=None,
+               filename=None,
+               semantics=None,
+               trace=None,
+               comments_re=None,
+               whitespace=None,
+               ignorecase=None,
+               nameguard=None,
+               memoize_lookaheads=None,
               **kwargs):
         if ignorecase is None:
             ignorecase = self.ignorecase
         if nameguard is None:
             nameguard = self.nameguard
+        if memoize_lookaheads is not None:
+            self._memoize_lookaheads = memoize_lookaheads
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
@@ -236,8 +241,8 @@ class ParseContext(object):
     def _leave_lookahead(self):
         self._lookahead -= 1
 
-    def _in_lookahead(self):
-        return self._lookahead > 0
+    def _memoize_lookahead(self):
+        return self._memoize_lookaheads or self._lookahead == 0
 
     def _rulestack(self):
         stack = '.'.join(self._rule_stack)

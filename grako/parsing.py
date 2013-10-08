@@ -126,11 +126,11 @@ class Parser(ParseContext):
                 except FailedSemantics as e:
                     self._error(str(e), FailedParse)
             result = (node, self._pos, self._state)
-            if not self._in_lookahead():
+            if self._memoize_lookahead():
                 cache[key] = result
             return result
         except Exception as e:
-            if not self._in_lookahead():
+            if self._memoize_lookahead():
                 cache[key] = e
             raise
         finally:
