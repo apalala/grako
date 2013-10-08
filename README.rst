@@ -485,7 +485,7 @@ Changes
 
 - **2.2.0**
     * *BUG!* A failed ``cut`` must trickle up the rule call hierarchy so parsing errors are reported as close as possible to their source.
-    * Optionally, do not memoize during positive or negative looakeads. This allows lookaheads to fail semantically without committing to the fail.
+    * Optionally, do not memoize during positive or negative lookaheads. This allows lookaheads to fail semantically without committing to the fail.
 
 - **2.1.0**
     * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
