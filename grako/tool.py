@@ -36,23 +36,20 @@ argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
                        )
-argparser.add_argument('--whitespace',
+argparser.add_argument('-w', '--whitespace',
                        metavar='characters',
                        help='whitespace characters (use empty string to disable automatic whitespace)',
                        )
-argparser.add_argument('--no-nameguard',
+argparser.add_argument('-n', '--no-nameguard',
                        help='do not protect alphanumeric tokens that are prefixes of others',
                        dest="nameguard", action='store_false', default=True
-                       )
-argparser.add_argument('--nameguard',
-                       help=argparse.SUPPRESS, dest="nameguard", action='store_true'
                        )
 argparser.add_argument('-b', '--binary',
                        help='generate a pickled grammar model instead of a parser',
                        action='store_true'
                        )
 argparser.add_argument('-d', '--draw',
-                       help='generate a diagram of the grammar',
+                       help='generate a diagram of the grammar (requires --outfile)',
                        action='store_true'
                        )
 

@@ -102,23 +102,24 @@ if **Grako** was installed using *easy_install* or *pip*.
 The *-h* and *--help* parameters provide full usage information::
 
         $ python -m grako -h
-        usage: grako [-h] [-m name] [-o outfile] [-v] grammar
+        usage: grako [-h] [-m name] [-o outfile] [-t] [--whitespace characters] [--no-nameguard] [-b] [-d] grammar
 
         Grako (for grammar compiler) takes grammars in a variation of EBNF as input,
         and outputs a memoizing PEG parser in Python.
 
         positional arguments:
-          grammar               The file name of the grammar to generate a parser for
+        grammar               The filename of the grammar to generate a parser for
 
         optional arguments:
-          -h, --help            show this help message and exit
-          -m name, --name name  An optional name for the grammar. It defaults to the
-                                basename of the grammar file's name
-          -o outfile, --outfile outfile
-                                specify where the output should go (default is stdout)
-          -t, --trace           produce verbose parsing output
-          -b, --binary          generate a pickled grammar model instead of a parser
-          -d, --draw            generate a diagram of the grammar
+        -h, --help            show this help message and exit
+        -m name, --name name  An optional name for the grammar. It defaults to the basename of the grammar file's name
+        -o outfile, --outfile outfile specify where the output should go (default is stdout)
+        -t, --trace           produce verbose parsing output
+        --whitespace characters
+                              whitespace characters (use empty string to disable automatic whitespace)
+        -n, --no-nameguard    do not protect alphanumeric tokens that are prefixes of others
+        -b, --binary          generate a pickled grammar model instead of a parser
+        -d, --draw            generate a diagram of the grammar
 
         $
 
