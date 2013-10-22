@@ -48,8 +48,10 @@ class AST(dict):
         return super(AST, self).__getattribute__(name)
 
     def copy(self):
-        ch = AST(self)
-        return ch
+        return AST((
+            (k, v[:] if isinstance(v, list) else v)
+            for k, v in self.items()
+        ))
 
     def add(self, key, value, force_list=False):
         previous = self[key]
