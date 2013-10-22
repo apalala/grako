@@ -484,6 +484,11 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+2.2.1
+-----
+
+    * *BUG!* `AST.copy()` was too shallow, so an AST_ could be modified by a closure iteration that matched partially and failed. `copy()` now clones AST_ values of type `list`.
+
 2.2.0
 -----
 
