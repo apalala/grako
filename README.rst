@@ -498,12 +498,12 @@ Changes
 2.2.1
 -----
 
-    * *BUG!* `AST.copy()` was too shallow, so an AST_ could be modified by a closure iteration that matched partially and failed. `copy()` now clones AST_ values of type `list`.
+    * *BUG!* ``AST.copy()`` was too shallow, so an AST_ could be modified by a closure iteration that matched partially and eventually failed. Now ``AST.copy()`` clones AST_ values of type `list` to avoid that situation.
 
 2.2.0
 -----
 
-    * *BUG!* A failed ``cut`` must trickle up the rule call hierarchy so parsing errors are reported as close as possible to their source.
+    * *BUG!* A failed ``cut`` must trickle up the rule-call hierarchy so parsing errors are reported as close to their source as possible.
     * Optionally, do not memoize during positive or negative lookaheads. This allows lookaheads to fail semantically without committing to the fail.
 
 2.1.0
