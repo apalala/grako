@@ -399,6 +399,21 @@ antlr2grako
 
 The project ``examples/antlr2grako`` contains a ANTLR_ to **Grako** grammar tanslator.  The project is a good example of the use of models and templates in translation. The program, ``antlr2grako.py`` generates the **Grako** gramar on standard ouput, but because the model used is **Grako**'s own, the same code can be used to directly generate a parser from an ANTLR_ grammar. Please take a look at the examples *README* to know about limitations.
 
+Other Open-source Examples
+==========================
+
+* **Christian Ledermann** wrote  parsewkt_ a parser for `Well-known text`_ (WTK_) using **Grako**.
+
+.. _parsewkt: https://github.com/cleder/parsewkt
+.. _`Well-known text`: http://en.wikipedia.org/wiki/Well-known_text
+.. _WTK: http://en.wikipedia.org/wiki/Well-known_text
+
+
+* **Marcus Brinkmann** wrote smc.mw_ a parser for a MediaWiki_-style language.
+
+.. _smc.mw: https://github.com/lambdafu/smc.mw
+.. _MediaWiki: http://www.mediawiki.org/wiki/MediaWiki
+
 
 License
 =======
