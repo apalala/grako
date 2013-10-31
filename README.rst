@@ -510,6 +510,11 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+2.2.2
+-----
+
+    * *BUG!* The choice operator must restore context even when some of the choices match partially and then fail.
+
 2.2.1
 -----
 
