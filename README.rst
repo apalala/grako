@@ -514,6 +514,7 @@ Changes
 -----
 
     * *BUG!* The choice operator must restore context even when some of the choices match partially and then fail.
+    * *BUG!* ``Grammar.parse()`` needs to initialize the AST_ stack.
 
 2.2.1
 -----
