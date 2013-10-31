@@ -325,10 +325,12 @@ class ParseContext(object):
 
     @contextmanager
     def _choice(self):
-        try:
-            yield None
-        except OptionSucceeded:
-            pass
+        self.last_node = None
+        with self._try():
+            try:
+                yield None
+            except OptionSucceeded:
+                pass
 
     @contextmanager
     def _optional(self):
