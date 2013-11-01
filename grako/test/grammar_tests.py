@@ -145,6 +145,46 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("1234", nameguard=False)
         self.assertEquals(['1', '2', '3', '4'], ast)
 
+    def test_partial_options(self):
+        grammar = '''
+            start
+                =
+                [a]
+                [
+                    'A' 'A'
+                |
+                    'A' 'B'
+                ]
+                $
+                ;
+            a
+                =
+                'A' !('A'|'B')
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("AB", nameguard=False)
+        self.assertEquals(['A', 'B'], ast)
+
+    def test_partial_choice(self):
+        grammar = '''
+            start
+                =
+                o:[o]
+                x:'A'
+                $
+                ;
+            o
+                =
+                'A' a:'A'
+                |
+                'A' b:'B'
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("A", nameguard=False)
+        self.assertEquals({'x': 'A', 'o': None}, ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
