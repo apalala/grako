@@ -9,6 +9,7 @@ from . import buffering
 from .exceptions import (FailedParse,
                          FailedCut,
                          FailedLookahead,
+                         FailedSemantics,
                          OptionSucceeded
                          )
 
@@ -284,6 +285,47 @@ class ParseContext(object):
 
     def _fail(self):
         self._error('fail')
+
+    def _invoke_rule(self, rule, name):
+        pos = self._pos
+        state = self._state
+        key = (pos, rule, state)
+        cache = self._memoization_cache
+
+        if key in cache:
+            result = cache[key]
+            if isinstance(result, Exception):
+                raise result
+            return result
+
+        self._push_ast()
+        try:
+            if name[0].islower():
+                self._next_token()
+            rule(self)
+            node = self.ast
+            if not node:
+                node = self.cst
+            elif '@' in node:
+                node = node['@']  # override the AST
+            elif self.parseinfo:
+                node.add('parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
+            semantic_rule = self._find_semantic_rule(name)
+            if semantic_rule:
+                try:
+                    node = semantic_rule(node)
+                except FailedSemantics as e:
+                    self._error(str(e), FailedParse)
+            result = (node, self._pos, self._state)
+            if self._memoize_lookahead():
+                cache[key] = result
+            return result
+        except Exception as e:
+            if self._memoize_lookahead():
+                cache[key] = e
+            raise
+        finally:
+            self._pop_ast()
 
     @contextmanager
     def _try(self):

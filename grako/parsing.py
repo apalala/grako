@@ -15,13 +15,12 @@ Parser.parse() will take the text to parse directly, or an instance of the
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
 import functools
-from .contexts import ParseContext, ParseInfo
+from .contexts import ParseContext
 from .exceptions import (FailedParse,
                          FailedCut,
                          FailedToken,
                          FailedPattern,
                          FailedRef,
-                         FailedSemantics,
                          MissingSemanticFor)
 
 
@@ -83,7 +82,7 @@ class Parser(ParseContext):
         try:
             self._trace_event('ENTER ')
             self._last_node = None
-            node, newpos, newstate = self._invoke_rule(pos, rule, name, self._state)
+            node, newpos, newstate = self._invoke_rule(rule, name)
             self._goto(newpos)
             self._state = newstate
             self._trace_event('SUCCESS')
@@ -96,45 +95,6 @@ class Parser(ParseContext):
             raise
         finally:
             self._rule_stack.pop()
-
-    def _invoke_rule(self, pos, rule, name, state):
-        key = (pos, rule, state)
-        cache = self._memoization_cache
-
-        if key in cache:
-            result = cache[key]
-            if isinstance(result, Exception):
-                raise result
-            return result
-
-        self._push_ast()
-        try:
-            if name[0].islower():
-                self._next_token()
-            rule(self)
-            node = self.ast
-            if not node:
-                node = self.cst
-            elif '@' in node:
-                node = node['@']  # override the AST
-            elif self.parseinfo:
-                node.add('parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
-            semantic_rule = self._find_semantic_rule(name)
-            if semantic_rule:
-                try:
-                    node = semantic_rule(node)
-                except FailedSemantics as e:
-                    self._error(str(e), FailedParse)
-            result = (node, self._pos, self._state)
-            if self._memoize_lookahead():
-                cache[key] = result
-            return result
-        except Exception as e:
-            if self._memoize_lookahead():
-                cache[key] = e
-            raise
-        finally:
-            self._pop_ast()
 
     def _token(self, token, node_name=None, force_list=False):
         self._next_token()

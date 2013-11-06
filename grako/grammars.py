@@ -18,7 +18,7 @@ from copy import deepcopy
 import time
 from .util import indent, trim
 from .rendering import Renderer, render
-from .contexts import ParseContext, ParseInfo, safe_name
+from .contexts import ParseContext, safe_name
 from .exceptions import (FailedParse,
                          FailedToken,
                          FailedPattern,
@@ -593,7 +593,7 @@ class Rule(Named):
             if self.name[0].islower():
                 ctx._next_token()
             ctx._trace_event('ENTER ')
-            node, newpos, newstate = self._invoke_rule(self.name, ctx, ctx._state)
+            node, newpos, newstate = ctx._invoke_rule(self.exp.parse, self.name)
             ctx.goto(newpos)
             ctx._state = newstate
             ctx._trace_event('SUCCESS')
@@ -603,41 +603,6 @@ class Rule(Named):
             raise
         finally:
             ctx._rule_stack.pop()
-
-    def _invoke_rule(self, name, ctx, state):
-        key = (ctx.pos, name, state)
-        cache = ctx._memoization_cache
-
-        if key in cache:
-            result = cache[key]
-            if isinstance(result, Exception):
-                raise result
-            return result
-
-        pos = ctx._pos
-        ctx._push_ast()
-        try:
-            self.exp.parse(ctx)
-            node = ctx.ast
-            if not node:
-                node = ctx.cst
-            elif '@' in node:
-                node = node['@']
-            elif ctx.parseinfo:
-                node.add('parseinfo', ParseInfo(ctx._buffer, name, pos, ctx._pos))
-#            if self.ast_name:
-#                node = AST([(self.ast_name, node)])
-            node = self._call_semantics(ctx, name, node)
-            result = (node, ctx.pos, ctx._state)
-            if ctx._memoize_lookahead():
-                cache[key] = result
-            return result
-        except Exception as e:
-            if ctx._memoize_lookahead():
-                cache[key] = e
-            raise
-        finally:
-            ctx._pop_ast()
 
     def _call_semantics(self, ctx, name, node):
         semantic_rule = ctx._find_semantic_rule(name)
