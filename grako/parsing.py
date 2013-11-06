@@ -48,7 +48,6 @@ class Parser(ParseContext):
                        semantics=semantics,
                        trace=trace,
                        **kwargs)
-            self._push_ast()
             rule = self._find_rule(rule_name)
             result = rule()
             self.ast[rule_name] = result

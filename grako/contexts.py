@@ -59,7 +59,7 @@ class ParseContext(object):
         self.ignorecase = ignorecase
         self.nameguard = nameguard
 
-        self._ast_stack = []
+        self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
@@ -104,7 +104,7 @@ class ParseContext(object):
             self.trace = trace
         if semantics is not None:
             self.semantics = semantics
-        self._ast_stack = []
+        self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
