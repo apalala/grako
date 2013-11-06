@@ -75,27 +75,6 @@ class Parser(ParseContext):
     def result(self):
         return self.ast
 
-    def _call(self, rule):
-        name = rule.__name__.strip('_')
-        self._rule_stack.append(name)
-        pos = self._pos
-        try:
-            self._trace_event('ENTER ')
-            self._last_node = None
-            node, newpos, newstate = self._invoke_rule(rule, name)
-            self._goto(newpos)
-            self._state = newstate
-            self._trace_event('SUCCESS')
-            self._add_cst_node(node)
-            self._last_node = node
-            return node
-        except FailedParse:
-            self._trace_event('FAILED')
-            self._goto(pos)
-            raise
-        finally:
-            self._rule_stack.pop()
-
     def _token(self, token, node_name=None, force_list=False):
         self._next_token()
         if self._buffer.match(token) is None:
@@ -167,5 +146,6 @@ class Parser(ParseContext):
 def rule_def(rule):
     @functools.wraps(rule)
     def wrapper(self):
-        return self._call(rule)
+        name = rule.__name__.strip('_')
+        return self._call(rule, name)
     return wrapper
