@@ -5,6 +5,7 @@
 ^MANIFEST$
 ^dist$
 ^build$
+^grako.egg-info/
 ^examples/.*/grako$
 ^examples/.*/antlr_parser
 ^examples/.*/python.ebnf$
