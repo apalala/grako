@@ -510,6 +510,11 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+2.2.3-rc.1
+-----
+
+    * *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
+
 2.2.2
 -----
 
