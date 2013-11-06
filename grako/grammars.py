@@ -556,15 +556,9 @@ class RuleRef(_Model):
     def parse(self, ctx):
         try:
             rule = ctx._find_rule(self.name)
-            if self.name[0].islower():
-                ctx._next_token()
-            node = rule.parse(ctx)
-            ctx._add_cst_node(node)
-            return node
+            return rule.parse(ctx)
         except KeyError:
             raise FailedRef(ctx.buf, self.name)
-        except FailedParse:
-            raise
 
     def _validate(self, rules):
         if self.name not in rules:
@@ -588,21 +582,7 @@ class Rule(Named):
         self.ast_name = ast_name
 
     def parse(self, ctx):
-        ctx._rule_stack.append(self.name)
-        try:
-            if self.name[0].islower():
-                ctx._next_token()
-            ctx._trace_event('ENTER ')
-            node, newpos, newstate = ctx._invoke_rule(self.exp.parse, self.name)
-            ctx.goto(newpos)
-            ctx._state = newstate
-            ctx._trace_event('SUCCESS')
-            return node
-        except FailedParse:
-            ctx._trace_event('FAILED')
-            raise
-        finally:
-            ctx._rule_stack.pop()
+        return ctx._call(self.exp.parse, self.name)
 
     def _call_semantics(self, ctx, name, node):
         semantic_rule = ctx._find_semantic_rule(name)
