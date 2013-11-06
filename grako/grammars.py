@@ -18,7 +18,7 @@ from copy import deepcopy
 import time
 from .util import indent, trim
 from .rendering import Renderer, render
-from .contexts import ParseContext, ParseInfo, safe_name
+from .contexts import ParseContext, safe_name
 from .exceptions import (FailedParse,
                          FailedToken,
                          FailedPattern,
@@ -556,15 +556,9 @@ class RuleRef(_Model):
     def parse(self, ctx):
         try:
             rule = ctx._find_rule(self.name)
-            if self.name[0].islower():
-                ctx._next_token()
-            node = rule.parse(ctx)
-            ctx._add_cst_node(node)
-            return node
+            return rule.parse(ctx)
         except KeyError:
             raise FailedRef(ctx.buf, self.name)
-        except FailedParse:
-            raise
 
     def _validate(self, rules):
         if self.name not in rules:
@@ -588,56 +582,7 @@ class Rule(Named):
         self.ast_name = ast_name
 
     def parse(self, ctx):
-        ctx._rule_stack.append(self.name)
-        try:
-            if self.name[0].islower():
-                ctx._next_token()
-            ctx._trace_event('ENTER ')
-            node, newpos, newstate = self._invoke_rule(self.name, ctx, ctx._state)
-            ctx.goto(newpos)
-            ctx._state = newstate
-            ctx._trace_event('SUCCESS')
-            return node
-        except FailedParse:
-            ctx._trace_event('FAILED')
-            raise
-        finally:
-            ctx._rule_stack.pop()
-
-    def _invoke_rule(self, name, ctx, state):
-        key = (ctx.pos, name, state)
-        cache = ctx._memoization_cache
-
-        if key in cache:
-            result = cache[key]
-            if isinstance(result, Exception):
-                raise result
-            return result
-
-        pos = ctx._pos
-        ctx._push_ast()
-        try:
-            self.exp.parse(ctx)
-            node = ctx.ast
-            if not node:
-                node = ctx.cst
-            elif '@' in node:
-                node = node['@']
-            elif ctx.parseinfo:
-                node.add('parseinfo', ParseInfo(ctx._buffer, name, pos, ctx._pos))
-#            if self.ast_name:
-#                node = AST([(self.ast_name, node)])
-            node = self._call_semantics(ctx, name, node)
-            result = (node, ctx.pos, ctx._state)
-            if ctx._memoize_lookahead():
-                cache[key] = result
-            return result
-        except Exception as e:
-            if ctx._memoize_lookahead():
-                cache[key] = e
-            raise
-        finally:
-            ctx._pop_ast()
+        return ctx._call(self.exp.parse, self.name)
 
     def _call_semantics(self, ctx, name, node):
         semantic_rule = ctx._find_semantic_rule(name)
@@ -721,14 +666,12 @@ class Grammar(Renderer):
             ctx = ModelContext(self.rules, trace=trace, **kwargs)
         ctx._reset(text=text, semantics=semantics, **kwargs)
         start_rule = ctx._find_rule(start) if start else self.rules[0]
-        ctx._push_ast()
         try:
             with ctx._choice():
                 return start_rule.parse(ctx)
         except FailedCut as e:
             raise e.nested
         finally:
-            ctx._pop_ast()
             ctx._clear_cache()
 
     def codegen(self):

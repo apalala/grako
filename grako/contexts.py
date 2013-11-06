@@ -9,6 +9,7 @@ from . import buffering
 from .exceptions import (FailedParse,
                          FailedCut,
                          FailedLookahead,
+                         FailedSemantics,
                          OptionSucceeded
                          )
 
@@ -58,7 +59,7 @@ class ParseContext(object):
         self.ignorecase = ignorecase
         self.nameguard = nameguard
 
-        self._ast_stack = []
+        self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
@@ -103,7 +104,7 @@ class ParseContext(object):
             self.trace = trace
         if semantics is not None:
             self.semantics = semantics
-        self._ast_stack = []
+        self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
@@ -284,6 +285,67 @@ class ParseContext(object):
 
     def _fail(self):
         self._error('fail')
+
+    def _call(self, rule, name):
+        self._rule_stack.append(name)
+        pos = self._pos
+        try:
+            self._trace_event('ENTER ')
+            self._last_node = None
+            node, newpos, newstate = self._invoke_rule(rule, name)
+            self._goto(newpos)
+            self._state = newstate
+            self._trace_event('SUCCESS')
+            self._add_cst_node(node)
+            self._last_node = node
+            return node
+        except FailedParse:
+            self._trace_event('FAILED')
+            self._goto(pos)
+            raise
+        finally:
+            self._rule_stack.pop()
+
+    def _invoke_rule(self, rule, name):
+        pos = self._pos
+        state = self._state
+        key = (pos, rule, state)
+        cache = self._memoization_cache
+
+        if key in cache:
+            result = cache[key]
+            if isinstance(result, Exception):
+                raise result
+            return result
+
+        self._push_ast()
+        try:
+            if name[0].islower():
+                self._next_token()
+            rule(self)
+            node = self.ast
+            if not node:
+                node = self.cst
+            elif '@' in node:
+                node = node['@']  # override the AST
+            elif self.parseinfo:
+                node.add('parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
+            semantic_rule = self._find_semantic_rule(name)
+            if semantic_rule:
+                try:
+                    node = semantic_rule(node)
+                except FailedSemantics as e:
+                    self._error(str(e), FailedParse)
+            result = (node, self._pos, self._state)
+            if self._memoize_lookahead():
+                cache[key] = result
+            return result
+        except Exception as e:
+            if self._memoize_lookahead():
+                cache[key] = e
+            raise
+        finally:
+            self._pop_ast()
 
     @contextmanager
     def _try(self):
