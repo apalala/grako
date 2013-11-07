@@ -356,7 +356,7 @@ class ParseContext(object):
         self.last_node = None
         try:
             self.ast = ast_copy
-            yield None
+            yield
             ast = self.ast
             cst = self.cst
         except:
@@ -375,7 +375,7 @@ class ParseContext(object):
         self._push_cut()
         try:
             with self._try():
-                yield None
+                yield
             raise OptionSucceeded()
         except FailedCut:
             raise
@@ -390,7 +390,7 @@ class ParseContext(object):
         self.last_node = None
         with self._try():
             try:
-                yield None
+                yield
             except OptionSucceeded:
                 pass
 
@@ -399,13 +399,13 @@ class ParseContext(object):
         self.last_node = None
         with self._choice():
             with self._option():
-                yield None
+                yield
 
     @contextmanager
     def _group(self):
         self._push_cst()
         try:
-            yield None
+            yield
             cst = self.cst
         finally:
             self._pop_cst()
@@ -419,7 +419,7 @@ class ParseContext(object):
         self._push_ast()
         self._enter_lookahead()
         try:
-            yield None
+            yield
         finally:
             self._leave_lookahead()
             self._goto(p)
