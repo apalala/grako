@@ -429,23 +429,13 @@ class ParseContext(object):
 
     @contextmanager
     def _ifnot(self):
-        p = self._pos
-        s = self._state
-        self._push_ast()
-        self.last_node = None
-        self._enter_lookahead()
         try:
-            yield None
+            with self._if():
+                yield
         except FailedParse:
             pass
         else:
             self._error('', etype=FailedLookahead)
-        finally:
-            self._leave_lookahead()
-            self._goto(p)
-            self._state = s
-            self._pop_ast()  # simply discard
-            self.last_node = None
 
     def _repeater(self, f):
         while True:
