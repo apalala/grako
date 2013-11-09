@@ -46,9 +46,9 @@ Rationale
 
 * Semantic actions, like `Abstract Syntax Tree`_ (AST_)  transformation, *do not*  belong in the grammar. Semantic actions in the grammar create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
 
-* Pre-processing (like dealing with includes, fixed column formats, or Python_'s structure through indentation) belong in well-designed program code, and not in the grammar.
+* Pre-processing (like dealing with includes, fixed column formats, or Python_'s structure through indentation) belongs in well-designed program code, and not in the grammar.
 
-* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case); it is not so for grammar description languages. As a grammar language becomes more complex, it becomes increasingly difficult to find who can maintain a parser. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to an university student, it's probably too complicated).
+* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case). It is not so for grammar description languages. As a grammar language becomes more complex it becomes increasingly difficult to find who can maintain a parser. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to an college student, it's probably too complicated, or not well understood).
 
 * Generated parsers should be humanly-readable and debuggable. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
 
