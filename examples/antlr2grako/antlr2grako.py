@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 import sys
+import io
 from os import path
 from grako.buffering import Buffer
 from antlr_parser import ANTLRParser as ANTLRParserBase
@@ -17,9 +18,11 @@ class ANTLRParser(ANTLRParserBase):
                                               'grammar',
                                               filename=filename,
                                               **kwargs)
+
+
 def main(filename, trace):
     parser = ANTLRParser()
-    with open(filename) as f:
+    with io.open(filename) as f:
         buffer = Buffer(f.read(),
                         filename=filename,
                         comments_re=COMMENTS_RE,
@@ -31,6 +34,7 @@ def main(filename, trace):
                              semantics=semantics,
                              trace=trace)
         print(model)
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

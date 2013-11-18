@@ -227,7 +227,7 @@ class Buffer(object):
             return ''
         info = self.line_info()
         text = info.text[info.col:info.col + 1 + 80]
-        text = text.split('\n')[0].encode('unicode-escape')
+        text = text.split('\n')[0]
         return '<%d:%d>%s' % (info.line + 1, info.col + 1, text)
 
     def get_line(self, n=None):
