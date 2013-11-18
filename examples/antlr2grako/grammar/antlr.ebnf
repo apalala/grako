@@ -119,9 +119,9 @@ element
     =
       named
     | predicate_or_action
+    | optional
     | closure
     | positive_closure
-    | optional
     | atom
     ;
 
@@ -166,7 +166,7 @@ syntactic_predicate
 
 optional
     =
-    @atom '?' >>
+    @(closure|positive_closure|atom) '?' >>
     ;
 
 closure
@@ -186,11 +186,18 @@ atom
     | negative
     | syntactic_predicate
     | subexp
+    | newrange
     | range
     | terminal
     | non_terminal
     )
     ['^'|'!']
+    [annotation]
+    ;
+
+annotation
+    =
+    '<' id '=' id '>'
     ;
 
 eof
@@ -201,6 +208,16 @@ eof
 range
     =
     first:char '..' >> last:char
+    ;
+
+newrange
+    =
+    NEWRANGE
+    ;
+
+NEWRANGE
+    =
+    '[' @?/([^\]]|\\])+/? ']'
     ;
 
 subexp

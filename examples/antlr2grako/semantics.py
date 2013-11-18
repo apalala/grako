@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
+import re
 from grako import grammars as model
 
 
@@ -68,6 +69,9 @@ class ANTLRSemantics(object):
 
     def range(self, ast):
         return model.Pattern('[%s-%s]' % (ast.first, ast.last))
+
+    def newrange(self, ast):
+        return model.Pattern('[%s]' % re.escape(ast))
 
     def non_terminal(self, ast):
         return model.RuleRef(ast)

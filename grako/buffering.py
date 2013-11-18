@@ -164,7 +164,7 @@ class Buffer(object):
                                    and self.is_name_char()
                                    )
             if check_nameguard:
-                return token
+                return str(token)
         self.goto(p)
 
     def matchre(self, pattern, ignorecase=None):
@@ -184,7 +184,7 @@ class Buffer(object):
         if matched:
             token = matched.group()
             self._pos += len(token)
-            return token
+            return str(token)
 
     def get_fileinfo(self, text, filename):
         return [filename] * len(text.splitlines())

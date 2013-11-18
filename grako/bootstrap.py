@@ -240,13 +240,13 @@ class GrakoParserBase(Parser):
             with self._option():
                 self._token('"')
                 self._cut()
-                self._pattern(r'([^"\\\n]|\\"|\\\\)*')
+                self._pattern(r'([^"\n]|\\"|\\\\)*')
                 self.ast['@'] = self.last_node
                 self._token('"')
             with self._option():
                 self._token("'")
                 self._cut()
-                self._pattern(r"([^'\\\n]|\\'|\\\\)*")
+                self._pattern(r"([^'\n]|\\'|\\\\)*")
                 self.ast['@'] = self.last_node
                 self._token("'")
             self._error('expecting one of: \' "')

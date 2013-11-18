@@ -264,7 +264,7 @@ class ParseContext(object):
 
     def _trace(self, msg, *params):
         if self.trace:
-            print(unicode(msg % params).encode(self.encoding), file=sys.stderr)
+            print(msg % params, file=sys.stderr)
 
     def _trace_event(self, event):
         if self.trace:
