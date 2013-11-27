@@ -521,21 +521,6 @@ class NamedList(Named):
                 '''
 
 
-class Override(_Decorator):
-    def parse(self, ctx):
-        result = super(Override, self).parse(ctx)
-        ctx._add_ast_node('@', result)
-        return result
-
-    def __str__(self):
-        return '@%s' % str(self.exp)
-
-    template = '''
-                {exp}
-                self.ast['@'] = self.last_node\
-                '''
-
-
 class Special(_Model):
     def __init__(self, special):
         super(Special, self).__init__()
