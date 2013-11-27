@@ -510,10 +510,12 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-2.2.3-rc.1
+2.2.3
 -----
 
     * *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
+
+    * *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.3.
 
 2.2.2
 -----
