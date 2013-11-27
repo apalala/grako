@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='grako',
-    version='2.2.3-rc.1',
+    version='2.3.0',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.model', 'grako.test'],
