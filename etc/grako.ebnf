@@ -44,7 +44,12 @@ element
 
 named
     =
-    name:word (force_list:'+:'|':') value:element
+    name:name (force_list:'+:'|':') value:element
+    ;
+
+name
+    =
+    word|'@'
     ;
 
 override

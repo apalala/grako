@@ -100,7 +100,7 @@ class GrakoParserBase(Parser):
 
     @rule_def
     def _named_(self):
-        self._word_()
+        self._name_()
         self.ast['name'] = self.last_node
         with self._group():
             with self._choice():
@@ -109,9 +109,18 @@ class GrakoParserBase(Parser):
                     self.ast['force_list'] = self.last_node
                 with self._option():
                     self._token(':')
-                self._error('expecting one of: +: :')
+                self._error('expecting one of: : +:')
         self._element_()
         self.ast['value'] = self.last_node
+
+    @rule_def
+    def _name_(self):
+        with self._choice():
+            with self._option():
+                self._word_()
+            with self._option():
+                self._token('@')
+            self._error('expecting one of: @')
 
     @rule_def
     def _override_(self):
