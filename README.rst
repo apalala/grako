@@ -236,21 +236,28 @@ The expressions, in reverse order of operator precedence, can be:
     ``name+:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added.
 
-    ``@e``
-        The override operator. Make the AST_ for the complete rule be the AST_ for ``e``.
+    ``@:e``
+        The override operator. Make the AST_ for the complete rule be the AST_ for ``e``. If more than one item is added, the entry is converted to a list.
 
         The override operator is useful to recover only part of the right hand side of a rule without the need to name it, and then add a semantic action to recover the interesting part.
 
         This is a typical use of the override operator::
 
-            subexp = '(' @expre ')' .
+            subexp = '(' @:expre ')' .
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
 
-..        Combined with named rules (see below), the ``@`` operator allows creating exactly the required AST_ without the need for semantic rules::
-..
-            closure:closure = @expre '*' .
+    ``@+:e``
+        Like ``@:e``, but make the AST_ always be a list.
 
+        This operator is convenient in cases such as::
+
+            arglist = '(' @+:arg {',' @+:arg}* ')' .
+
+        in which the delimiting tokens are of no interest.
+
+    ``@e``
+        A convenient shortcut for ``@:e``.
 
     ``$``
         The *end of text* symbol. Verify that the end of the input text has been reached.
@@ -510,12 +517,15 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-2.2.3
+2.3.0
 -----
+    * Now the ``@`` operator behaves as a special case of the ``name:`` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as `@+:e`, with the expected semantics.
 
     * *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
 
     * *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.3.
+
+    * *BUG!* Compability betweein Python_ 2.7/3.x `print()` statements.
 
 2.2.2
 -----
@@ -523,19 +533,11 @@ Changes
     * *BUG!* The choice operator must restore context even when some of the choices match partially and then fail.
     * *BUG!* ``Grammar.parse()`` needs to initialize the AST_ stack.
 
-2.2.1
------
-
     * *BUG!* ``AST.copy()`` was too shallow, so an AST_ could be modified by a closure iteration that matched partially and eventually failed. Now ``AST.copy()`` clones AST_ values of type ``list`` to avoid that situation.
-
-2.2.0
------
 
     * *BUG!* A failed ``cut`` must trickle up the rule-call hierarchy so parsing errors are reported as close to their source as possible.
     * Optionally, do not memoize during positive or negative lookaheads. This allows lookaheads to fail semantically without committing to the fail.
 
-2.1.0
------
     * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
     * Grouping expressions no longer produce a list as CST_.
     * *BUG*! Again, make sure tha closures always return a list.

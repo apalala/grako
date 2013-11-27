@@ -185,6 +185,41 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("A", nameguard=False)
         self.assertEquals({'x': 'A', 'o': None}, ast)
 
+    def test_new_override(self):
+        grammar = '''
+            start
+                =
+                @:'a' {@:'b'}
+                $
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("abb", nameguard=False)
+        self.assertEquals(['a', 'b', 'b'], ast)
+
+    def test_list_override(self):
+        grammar = '''
+            start
+                =
+                @+:'a' {@'b'}
+                $
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("a", nameguard=False)
+        self.assertEquals(['a'], ast)
+
+        grammar = '''
+            start
+                =
+                @:'a' {@'b'}
+                $
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("a", nameguard=False)
+        self.assertEquals('a', ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

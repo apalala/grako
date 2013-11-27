@@ -88,7 +88,7 @@ class GrakoSemantics(object):
             return grammars.Named(ast.name, ast.value)
 
     def override(self, ast):
-        return grammars.Override(ast)
+        return grammars.Named('@', ast)
 
     def element(self, ast):
         return ast
