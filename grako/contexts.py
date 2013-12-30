@@ -257,10 +257,14 @@ class ParseContext(object):
     def _find_semantic_rule(self, name):
         if self.semantics is None:
             return None
+
         result = getattr(self.semantics, name, None)
-        if result is None or not callable(result):
-            return None
-        return result
+        if callable(result):
+            return result
+
+        result = getattr(self.semantics, '_default', None)
+        if callable(result):
+            return result
 
     def _trace(self, msg, *params):
         if self.trace:
