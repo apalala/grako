@@ -6,6 +6,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import sys
 sys.path.append('tmp')
 import os
+import shutil
 import json
 import pickle
 import unittest
@@ -22,6 +23,8 @@ class BootstrapTests(unittest.TestCase):
     def test_bootstrap(self):
         print()
 
+        if os.path.isfile('tmp/00.ast'):
+            shutil.rmtree('tmp')
         if not os.path.isdir('tmp'):
             os.mkdir('tmp')
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
