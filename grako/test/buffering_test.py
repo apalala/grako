@@ -78,7 +78,7 @@ class BufferingTests(unittest.TestCase):
                 start = n + 1
         text_len = len(self.text)
         info = self.buf.line_info(text_len)
-        self.assertEqual(info.line, 1156)
+        self.assertEqual(info.line, 1 + len(self.text.splitlines()))
         self.assertEqual(info.start, text_len)
 
     def test_linecount(self):
