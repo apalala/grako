@@ -19,54 +19,71 @@ from grako.bootstrap import (GrakoParser,
 
 class BootstrapTests(unittest.TestCase):
 
-    def bootstrap_test():
+    def test_bootstrap(self):
+        print()
+
         if not os.path.isdir('tmp'):
             os.mkdir('tmp')
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
-        text = open('etc/grako.ebnf').read()
+        with open('etc/grako.ebnf') as f:
+            text = str(f.read())
         g = GrakoParser('Grako', parseinfo=False)
-        g.parse(text)
-        open('tmp/00.ebnf', 'w').write(text)
+        grammar0 = g.parse(text)
+        ast0 = json.dumps(grammar0, indent=2)
+        with open('tmp/00.ast', 'w') as f:
+            f.write(ast0)
 
         print('-' * 20, 'phase 01 - parse with parser generator')
-        text = open('tmp/00.ebnf').read()
+        with open('etc/grako.ebnf') as f:
+            text = str(f.read())
         g = GrakoGrammarGenerator('Grako', parseinfo=False)
-        g.parse(text)
+        g.parse(text, trace=False)
+
         generated_grammar1 = str(g.ast['grammar'])
-        open('tmp/01.ebnf', 'w').write(generated_grammar1)
+        with open('tmp/01.ebnf', 'w') as f:
+            f.write(generated_grammar1)
 
         print('-' * 20, 'phase 02 - parse previous output with the parser generator')
-        text = open('tmp/01.ebnf').read()
+        with open('tmp/01.ebnf', 'r') as f:
+            text = str(f.read())
         g = GrakoGrammarGenerator('Grako')
-        g.parse(text)
+        g.parse(text, trace=False)
         generated_grammar2 = str(g.ast['grammar'])
-        open('tmp/02.ebnf', 'w').write(generated_grammar2)
+        with open('tmp/02.ebnf', 'w') as f:
+            f.write(generated_grammar2)
         assert generated_grammar2 == generated_grammar1
 
         print('-' * 20, 'phase 03 - repeat')
-        text = open('tmp/02.ebnf').read()
+        with open('tmp/02.ebnf') as f:
+            text = f.read()
         g = GrakoParser('Grako', parseinfo=False)
         ast3 = g.parse(text)
-        open('tmp/03.ast', 'w').write(json.dumps(ast3, indent=2))
+        with open('tmp/03.ast', 'w') as f:
+            f.write(json.dumps(ast3, indent=2))
 
         print('-' * 20, 'phase 04 - repeat')
-        text = open('tmp/02.ebnf').read()
+        with open('tmp/02.ebnf') as f:
+            text = f.read()
         g = GrakoGrammarGenerator('Grako')
         g.parse(text)
         parser = g.ast['grammar']
     #    pprint(parser.first_sets, indent=2, depth=3)
         generated_grammar4 = str(parser)
-        open('tmp/04.ebnf', 'w').write(generated_grammar4)
+        with open('tmp/04.ebnf', 'w') as f:
+            f.write(generated_grammar4)
         assert generated_grammar4 == generated_grammar2
 
         print('-' * 20, 'phase 05 - parse using the grammar model')
-        text = open('tmp/04.ebnf').read()
+        with open('tmp/04.ebnf') as f:
+            text = f.read()
         ast5 = parser.parse(text)
-        open('tmp/05.ast', 'w').write(json.dumps(ast5, indent=2))
+        with open('tmp/05.ast', 'w') as f:
+            f.write(json.dumps(ast5, indent=2))
 
         print('-' * 20, 'phase 06 - generate parser code')
         gencode6 = parser.codegen()
-        open('tmp/g06.py', 'w').write(gencode6)
+        with open('tmp/g06.py', 'w') as f:
+            f.write(gencode6)
 
         print('-' * 20, 'phase 07 - import generated code')
         from g06 import GrakoParser as GenParser  # @UnresolvedImport
@@ -81,11 +98,13 @@ class BootstrapTests(unittest.TestCase):
         assert ast5 == ast8
 
         print('-' * 20, 'phase 09 - Generate parser with semantics')
-        text = open('etc/grako.ebnf').read()
+        with open('etc/grako.ebnf') as f:
+            text = f.read()
         parser = GrakoGrammarGenerator('Grako')
         g9 = parser.parse(text)
         generated_grammar9 = str(g9)
-        open('tmp/09.ebnf', 'w').write(generated_grammar9)
+        with open('tmp/09.ebnf', 'w') as f:
+            f.write(generated_grammar9)
         assert generated_grammar9 == generated_grammar1
 
         print('-' * 20, 'phase 10 - Parse with a model using a semantics')
@@ -95,9 +114,11 @@ class BootstrapTests(unittest.TestCase):
                     comments_re=COMMENTS_RE
                     )
         generated_grammar10 = str(g10)
-        open('tmp/10.ebnf', 'w').write(generated_grammar10)
+        with open('tmp/10.ebnf', 'w') as f:
+            f.write(generated_grammar10)
         gencode10 = g10.codegen()
-        open('tmp/g10.py', 'w').write(gencode10)
+        with open('tmp/g10.py', 'w') as f:
+            f.write(gencode10)
 
         print('-' * 20, 'phase 11 - Pickle the model and try again.')
         with open('tmp/11.grako', 'wb') as f:
@@ -109,9 +130,11 @@ class BootstrapTests(unittest.TestCase):
                         semantics=GrakoSemantics('Grako'),
                         comments_re=COMMENTS_RE
                         )
-        open('tmp/11.ebnf', 'w').write(str(110))
+        with open('tmp/11.ebnf', 'w') as f:
+            f.write(str(110))
         gencode11 = r11.codegen()
-        open('tmp/g11.py', 'w').write(gencode11)
+        with open('tmp/g11.py', 'w') as f:
+            f.write(gencode11)
 
         print('-' * 20, 'phase 12 - Visitor')
 
@@ -125,7 +148,8 @@ class BootstrapTests(unittest.TestCase):
 
         v = PrintNameVisitor()
         g11.accept(v)
-        open('tmp/12.txt', 'w').write('\n'.join(v.visited))
+        with open('tmp/12.txt', 'w') as f:
+            f.write('\n'.join(v.visited))
 
         print('-' * 20, 'phase 13 - Graphics')
         try:
