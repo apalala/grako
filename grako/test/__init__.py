@@ -10,9 +10,8 @@ if __name__ == '__main__':
     from . import buffering_test
     from . import grammar_tests
 
-    bootstrap_tests.main()
-
     suite = unittest.TestSuite(tests=[
+        bootstrap_tests.suite(),
         buffering_test.suite(),
         grammar_tests.suite()
     ])

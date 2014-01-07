@@ -9,16 +9,13 @@ import random
 import unittest
 from ..buffering import Buffer
 
-THISDIR = os.path.dirname(os.path.abspath(__file__))
-BASEDIR = os.path.normpath(os.path.join(THISDIR, '../..'))
-
 
 class BufferingTests(unittest.TestCase):
 
     def setUp(self):
-        testfile = os.path.join(BASEDIR, 'etc/test_text')
+        testfile = os.path.splitext(__file__)[0] + '.py'
         with open(testfile) as f:
-            self.text = f.read()
+            self.text = str(f.read())
         self.buf = Buffer(self.text, whitespace='')
 
     def test_pos_consistency(self):
