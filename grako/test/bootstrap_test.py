@@ -51,7 +51,7 @@ class BootstrapTests(unittest.TestCase):
         generated_grammar2 = str(g.ast['grammar'])
         with open('tmp/02.ebnf', 'w') as f:
             f.write(generated_grammar2)
-        assert generated_grammar2 == generated_grammar1
+        self.assertEqual(generated_grammar2, generated_grammar1)
 
         print('-' * 20, 'phase 03 - repeat')
         with open('tmp/02.ebnf') as f:
@@ -71,7 +71,7 @@ class BootstrapTests(unittest.TestCase):
         generated_grammar4 = str(parser)
         with open('tmp/04.ebnf', 'w') as f:
             f.write(generated_grammar4)
-        assert generated_grammar4 == generated_grammar2
+        self.assertEqual(generated_grammar4, generated_grammar2)
 
         print('-' * 20, 'phase 05 - parse using the grammar model')
         with open('tmp/04.ebnf') as f:
@@ -91,11 +91,11 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 08 - compile using generated code')
         parser = GenParser(trace=False)
         result = parser.parse(text, 'grammar')
-        assert result == parser.ast['grammar']
+        self.assertEqual(result, parser.ast['grammar'])
         ast8 = parser.ast['grammar']
         json8 = json.dumps(ast8, indent=2)
         open('tmp/08.ast', 'w').write(json8)
-        assert ast5 == ast8
+        self.assertEqual(ast5, ast8)
 
         print('-' * 20, 'phase 09 - Generate parser with semantics')
         with open('etc/grako.ebnf') as f:
@@ -105,7 +105,7 @@ class BootstrapTests(unittest.TestCase):
         generated_grammar9 = str(g9)
         with open('tmp/09.ebnf', 'w') as f:
             f.write(generated_grammar9)
-        assert generated_grammar9 == generated_grammar1
+        self.assertEqual(generated_grammar9, generated_grammar1)
 
         print('-' * 20, 'phase 10 - Parse with a model using a semantics')
         g10 = g9.parse(text,
