@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Base definitions for models of programs.
 
