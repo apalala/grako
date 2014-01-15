@@ -34,9 +34,8 @@ class Node(Renderer):
         self._parent = None
         self._children = []
 
-        if ast:
-            self._adopt_children(ast)
-            self.__postinit__(ast)
+        self._adopt_children(ast)
+        self.__postinit__(ast)
 
     def __postinit__(self, ast):
         pass
