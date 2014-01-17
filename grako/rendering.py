@@ -90,6 +90,12 @@ class Renderer(object):
         except KeyError as e:
             raise KeyError(str(e), type(self))
 
+    def __str__(self):
+        return self.render()
+
+    def __repr__(self):
+        return str(self)
+
 
 class NodeVisitor(object):
     def visit(self, obj, *args, **kwargs):
