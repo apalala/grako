@@ -6,7 +6,7 @@ setup(
     version='2.3.1-rc.1',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
-    packages=['grako', 'grako.model', 'grako.test'],
+    packages=['grako', 'grako.test'],
     scripts=['scripts/grako'],
     url='http://bitbucket.org/apalala/grako',
     license='BSD License',
