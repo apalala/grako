@@ -5,7 +5,7 @@ try:
     import pygraphviz as pgv
 except:
     raise
-from .rendering import NodeVisitor
+from .model import NodeVisitor
 
 
 __all__ = ['draw']
@@ -118,7 +118,7 @@ class GraphvizVisitor(NodeVisitor):
     def _visit_decorator(self, d):
         return d.exp.accept(self)
 
-    def visit_grammar(self, g):
+    def visit_Grammar(self, g):
         self.push_graph(g.name + '0')
         try:
             vrules = [r.accept(self) for r in reversed(g.rules)]
@@ -136,7 +136,7 @@ class GraphvizVisitor(NodeVisitor):
         s, t = vrules[0][0], vrules[-1][1]
         return (s, t)
 
-    def visit_rule(self, r):
+    def visit_Rule(self, r):
         self.push_graph(r.name)
         try:
             i, e = self._visit_decorator(r)
@@ -148,29 +148,29 @@ class GraphvizVisitor(NodeVisitor):
         finally:
             self.pop_graph()
 
-    def visit_ruleref(self, rr):
+    def visit_RuleRef(self, rr):
         n = self.ref_node(rr.name)
         return (n, n)
 
-    def visit_special(self, s):
+    def visit_Special(self, s):
         n = self.node(s.special)
         return (n, n)
 
-    def visit_override(self, o):
+    def visit_Override(self, o):
         return self._visit_decorator(o)
 
-    def visit_named(self, n):
+    def visit_Named(self, n):
         return self._visit_decorator(n)
 
-    def visit_namedlist(self, n):
+    def visit_NamedList(self, n):
         return self._visit_decorator(n)
 
-    def visit_cut(self, c):
+    def visit_Cut(self, c):
         # c = self.node('>>')
         # return (c, c)
         return None
 
-    def visit_optional(self, o):
+    def visit_Optional(self, o):
         i, e = self._visit_decorator(o)
         ni = self.dot()
         ne = self.dot()
@@ -179,7 +179,7 @@ class GraphvizVisitor(NodeVisitor):
         self.zedge(e, ne)
         return (ni, ne)
 
-    def visit_closure(self, r):
+    def visit_Closure(self, r):
         self.push_graph(rankdir='TB')
         try:
             i, e = self._visit_decorator(r)
@@ -190,7 +190,7 @@ class GraphvizVisitor(NodeVisitor):
         finally:
             self.pop_graph()
 
-    def visit_positiveclosure(self, r):
+    def visit_PositiveClosure(self, r):
         i, e = self._visit_decorator(r)
         if i == e:
             self.redge(e, i)
@@ -198,10 +198,10 @@ class GraphvizVisitor(NodeVisitor):
             self.edge(e, i)
         return (i, e)
 
-    def visit_group(self, g):
+    def visit_Group(self, g):
         return self._visit_decorator(g)
 
-    def visit_choice(self, c):
+    def visit_Choice(self, c):
         vopt = [o.accept(self) for o in c.options]
         ni = self.dot()
         ne = self.dot()
@@ -210,7 +210,7 @@ class GraphvizVisitor(NodeVisitor):
             self.edge(e, ne)
         return (ni, ne)
 
-    def visit_sequence(self, s):
+    def visit_Sequence(self, s):
         vseq = [x.accept(self) for x in s.sequence]
         vseq = [x for x in vseq if x is not None]
         i, _ = vseq[0]
@@ -222,31 +222,31 @@ class GraphvizVisitor(NodeVisitor):
                 self.edge(n, n1)
         return (i, e)
 
-    def visit_lookahead(self, l):
+    def visit_Lookahead(self, l):
         i, e = self._visit_decorator(l)
         n = self.node('&')
         self.edge(n, e)
         return (n, e)
 
-    def visit_lookahead_not(self, l):
+    def visit_LookaheadNot(self, l):
         i, e = self._visit_decorator(l)
         n = self.node('!')
         self.edge(n, e)
         return (n, e)
 
-    def visit_pattern(self, p):
+    def visit_Pattern(self, p):
         n = self.tnode(p.pattern)
         return (n, n)
 
-    def visit_token(self, t):
+    def visit_Token(self, t):
         n = self.tnode(t.token)
         return (n, n)
 
-    def visit_void(self, v):
+    def visit_Void(self, v):
         n = self.dot()
         return (n, n)
 
-    def visit_eof(self, v):
+    def visit_EOF(self, v):
         # n = self.node('$')
         # return (n, n)
         return None

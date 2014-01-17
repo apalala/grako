@@ -10,7 +10,7 @@ import shutil
 import json
 import pickle
 import unittest
-from grako.rendering import NodeVisitor
+from grako.model import NodeVisitor
 from grako.semantics import GrakoSemantics
 from grako.bootstrap import (GrakoParser,
                              GrakoGrammarGenerator,
@@ -165,6 +165,7 @@ class BootstrapTests(unittest.TestCase):
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(BootstrapTests)
+
 
 def main():
     unittest.TextTestRunner(verbosity=2).run(suite())
