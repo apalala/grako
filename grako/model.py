@@ -75,9 +75,6 @@ class Node(object):
             text = self.parseinfo.buffer.text
             return text[self.parseinfo.pos:self.parseinfo.endpos]
 
-    def accept(self, visitor, *args, **kwargs):
-        return visitor.visit(self, *args, **kwargs)
-
     def _adopt_children(self, ast):
         if isinstance(ast, Node):
             ast._parent = self
@@ -89,7 +86,7 @@ class Node(object):
                 self._adopt_children(c)
 
 
-class NodeVisitor(object):
+class NodeTraverser(object):
     def _find_visitor(self, obj):
         name = 'visit_' + obj.__class__.__name__
         return getattr(self, name, None)
@@ -100,17 +97,25 @@ class NodeVisitor(object):
             return visitor(obj, *args, **kwargs)
 
 
-class DdepthFirstVisitor(object):
+class DepthFirstTraverser(NodeTraverser):
     def visit(self, obj, *args, **kwargs):
         # assume obj is a Node
         children = [self.visit(c, *args, **kwargs) for c in obj.children]
-        return super(DdepthFirstVisitor, self).visit(obj, children, *args, **kwargs)
+        return super(DepthFirstTraverser, self).visit(obj, children, *args, **kwargs)
 
 
-class DelegatingVisitor(object):
+class DelegatingTraverser(NodeTraverser):
     def __init__(self, delegate):
         self.delegate = delegate
 
     def _find_visitor(self, obj):
         name = obj.__class__.__name__
         return getattr(self.delegate, name, None)
+
+    def visit(self, obj, *args, **kwargs):
+        visitor = self._find_visitor(obj)
+        return visitor.visit(obj, *args, **kwargs)
+
+
+class DFSDelegatingTraverser(DepthFirstTraverser, DelegatingTraverser):
+    pass

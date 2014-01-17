@@ -10,7 +10,7 @@ import shutil
 import json
 import pickle
 import unittest
-from grako.model import NodeVisitor
+from grako.model import NodeTraverser
 from grako.semantics import GrakoSemantics
 from grako.bootstrap import (GrakoParser,
                              GrakoGrammarGenerator,
@@ -139,18 +139,18 @@ class BootstrapTests(unittest.TestCase):
         with open('tmp/g11.py', 'w') as f:
             f.write(gencode11)
 
-        print('-' * 20, 'phase 12 - Visitor')
+        print('-' * 20, 'phase 12 - Traverser')
 
-        class PrintNameVisitor(NodeVisitor):
+        class PrintNameTraverser(NodeTraverser):
             def __init__(self):
                 self.visited = []
 
             def visit(self, o):
                 self.visited.append(o.__class__.__name__)
-                super(PrintNameVisitor, self).visit(o)
+                super(PrintNameTraverser, self).visit(o)
 
-        v = PrintNameVisitor()
-        g11.accept(v)
+        v = PrintNameTraverser()
+        v.visit(g11)
         with open('tmp/12.txt', 'w') as f:
             f.write('\n'.join(v.visited))
 

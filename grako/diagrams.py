@@ -5,15 +5,15 @@ try:
     import pygraphviz as pgv
 except:
     raise
-from .model import NodeVisitor
+from .model import NodeTraverser
 
 
 __all__ = ['draw']
 
 
-class GraphvizVisitor(NodeVisitor):
+class GraphvizTraverser(NodeTraverser):
     def __init__(self):
-        super(GraphvizVisitor, self).__init__()
+        super(GraphvizTraverser, self).__init__()
         self.top_graph = pgv.AGraph(directed=True,
                                     rankdir='LR',
                                     packMode='clust',
@@ -116,12 +116,12 @@ class GraphvizVisitor(NodeVisitor):
         return list(itertools.chain(*args))
 
     def _visit_decorator(self, d):
-        return d.exp.accept(self)
+        return self.visit(d.exp)
 
     def visit_Grammar(self, g):
         self.push_graph(g.name + '0')
         try:
-            vrules = [r.accept(self) for r in reversed(g.rules)]
+            vrules = [self.visit(r) for r in reversed(g.rules)]
         finally:
             self.pop_graph()
         self.push_graph(g.name + '1')
@@ -202,7 +202,7 @@ class GraphvizVisitor(NodeVisitor):
         return self._visit_decorator(g)
 
     def visit_Choice(self, c):
-        vopt = [o.accept(self) for o in c.options]
+        vopt = [self.visit(o) for o in c.options]
         ni = self.dot()
         ne = self.dot()
         for i, e in vopt:
@@ -211,7 +211,7 @@ class GraphvizVisitor(NodeVisitor):
         return (ni, ne)
 
     def visit_Sequence(self, s):
-        vseq = [x.accept(self) for x in s.sequence]
+        vseq = [self.visit(x) for x in s.sequence]
         vseq = [x for x in vseq if x is not None]
         i, _ = vseq[0]
         _, e = vseq[-1]
@@ -253,6 +253,6 @@ class GraphvizVisitor(NodeVisitor):
 
 
 def draw(filename, grammar):
-    visitor = GraphvizVisitor()
-    grammar.accept(visitor)
+    visitor = GraphvizTraverser()
+    visitor.visit(grammar)
     visitor.draw(filename)
