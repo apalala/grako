@@ -24,7 +24,7 @@ class Node(object):
     def __init__(self, ctx, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
-        if not parseinfo:
+        if parseinfo is None:
             parseinfo = ast.parseinfo if hasattr(ast, 'parseinfo') else None
         self._parseinfo = parseinfo
 
