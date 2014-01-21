@@ -25,6 +25,9 @@ def render(item, join='', **fields):
 
 
 class RenderingFormatter(string.Formatter):
+    def render(self, item):
+        return render(item)
+
     def format_field(self, value, spec):
         if ':' not in spec:
             return super(RenderingFormatter, self).format_field(render(value), spec)
@@ -47,9 +50,9 @@ class RenderingFormatter(string.Formatter):
             fmt = '%s'
 
         if isiter(value):
-            return indent(sep.join(fmt % render(v) for v in value), ind, mult)
+            return indent(sep.join(fmt % self.render(v) for v in value), ind, mult)
         else:
-            return indent(fmt % render(value), ind, mult)
+            return indent(fmt % self.render(value), ind, mult)
 
 
 class Renderer(object):
