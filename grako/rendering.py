@@ -103,16 +103,3 @@ class Renderer(object):
 
     def __repr__(self):
         return str(self)
-
-
-class NodeRenderer(Renderer):
-    """ Like Renderer, except that fields are obtained from
-        the given *node* object.
-    """
-    def __init__(self, node, template=None):
-        super(NodeRenderer, self).__init__(template=template)
-        self.node = node
-
-    def render(self, template=None, **fields):
-        fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
-        super(NodeRenderer, self).render(template=template, **fields)

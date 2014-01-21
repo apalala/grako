@@ -105,34 +105,3 @@ class DepthFirstTraverser(NodeTraverser):
         # assume node is a Node
         children = [self.traverse(c, *args, **kwargs) for c in node.children]
         return super(DepthFirstTraverser, self).traverse(node, children, *args, **kwargs)
-
-
-class DelegatingTraverser(NodeTraverser):
-    def __init__(self, delegate):
-        self.delegate = delegate
-
-    def _find_traverser(self, node):
-        name = node.__class__.__name__
-        traverser = getattr(self.delegate, name, None)
-        if not callable(traverser):
-            return super(DelegatingTraverser, self)._find_traverser(node)
-
-
-class DFSDelegatingTraverser(DelegatingTraverser, DepthFirstTraverser):
-    pass
-
-
-class TransformTraverser(NodeTraverser):
-    """ A traverser that trust the visits to produce an objec that
-        can be set to have fields with the transforms/visits of the fields
-        in the original node.
-    """
-
-    def traverse(self, node, *args, **kwargs):
-        transform = super(TransformTraverser, self).traverse(node, *args, **kwargs)
-        if not isinstance(transform, object):
-            raise TypeError('Transforms must be objects')
-
-        for name, value in vars(node).items():
-            if not name.startswith('_'):
-                setattr(transform, name, self.traverse(value, *args, **kwargs))
