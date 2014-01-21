@@ -87,35 +87,35 @@ class Node(object):
 
 
 class NodeTraverser(object):
-    def _find_visitor(self, node):
-        name = '_visit_' + node.__class__.__name__
-        visitor = getattr(self, name, None)
-        if callable(visitor):
-            return visitor
-        return getattr(self, '_visit_default', None)
+    def _find_traverser(self, node):
+        name = '_traverse_' + node.__class__.__name__
+        traverser = getattr(self, name, None)
+        if callable(traverser):
+            return traverser
+        return getattr(self, '_traverse_default', None)
 
-    def visit(self, node, *args, **kwargs):
-        visitor = self._find_visitor(node)
-        if callable(visitor):
-            return visitor(node, *args, **kwargs)
+    def traverse(self, node, *args, **kwargs):
+        traverser = self._find_traverser(node)
+        if callable(traverser):
+            return traverser(node, *args, **kwargs)
 
 
 class DepthFirstTraverser(NodeTraverser):
-    def visit(self, node, *args, **kwargs):
+    def traverse(self, node, *args, **kwargs):
         # assume node is a Node
-        children = [self.visit(c, *args, **kwargs) for c in node.children]
-        return super(DepthFirstTraverser, self).visit(node, children, *args, **kwargs)
+        children = [self.traverse(c, *args, **kwargs) for c in node.children]
+        return super(DepthFirstTraverser, self).traverse(node, children, *args, **kwargs)
 
 
 class DelegatingTraverser(NodeTraverser):
     def __init__(self, delegate):
         self.delegate = delegate
 
-    def _find_visitor(self, node):
+    def _find_traverser(self, node):
         name = node.__class__.__name__
-        visitor = getattr(self.delegate, name, None)
-        if not callable(visitor):
-            return super(DelegatingTraverser, self)._find_visitor(node)
+        traverser = getattr(self.delegate, name, None)
+        if not callable(traverser):
+            return super(DelegatingTraverser, self)._find_traverser(node)
 
 
 class DFSDelegatingTraverser(DelegatingTraverser, DepthFirstTraverser):
@@ -128,11 +128,11 @@ class TransformTraverser(NodeTraverser):
         in the original node.
     """
 
-    def visit(self, node, *args, **kwargs):
-        transform = super(TransformTraverser, self).visit(node, *args, **kwargs)
+    def traverse(self, node, *args, **kwargs):
+        transform = super(TransformTraverser, self).traverse(node, *args, **kwargs)
         if not isinstance(transform, object):
             raise TypeError('Transforms must be objects')
 
         for name, value in vars(node).items():
             if not name.startswith('_'):
-                setattr(transform, name, self.visit(value, *args, **kwargs))
+                setattr(transform, name, self.traverse(value, *args, **kwargs))

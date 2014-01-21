@@ -143,16 +143,16 @@ class BootstrapTests(unittest.TestCase):
 
         class PrintNameTraverser(NodeTraverser):
             def __init__(self):
-                self.visited = []
+                self.traversed = []
 
-            def visit(self, o):
-                self.visited.append(o.__class__.__name__)
-                super(PrintNameTraverser, self).visit(o)
+            def traverse(self, o):
+                self.traversed.append(o.__class__.__name__)
+                super(PrintNameTraverser, self).traverse(o)
 
         v = PrintNameTraverser()
-        v.visit(g11)
+        v.traverse(g11)
         with open('tmp/12.txt', 'w') as f:
-            f.write('\n'.join(v.visited))
+            f.write('\n'.join(v.traversed))
 
         print('-' * 20, 'phase 13 - Graphics')
         try:
