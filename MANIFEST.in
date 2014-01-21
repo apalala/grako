@@ -1,7 +1,6 @@
 include *.txt
 include *.rst
 include Makefile
-include requirements.txt
 recursive-include etc *
 recursive-include examples *
 recursive-exclude examples genparser.py
