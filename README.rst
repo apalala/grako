@@ -517,6 +517,24 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+2.4.0-rc.x
+-----------
+
+    * The aim of this release is to make the minimum changes necessary to allow downstream translators to have different target languages with as little code replication as possible.
+
+    * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only trial-and-error will tell.
+
+    * There's new functionality pulled from downstream in ``grako.model`` and ``graok.rendering``. ``grako.model`` is now a module instead of a package.
+
+    * The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
+
+    * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows for producing meaningful errors when something in the semantics is missing.
+
+    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.2.y, and PyPy_ 2.2.x.
+
+.. _tox: https://testrun.org/tox/latest/
+
+
 2.3.0
 -----
     * Now the ``@`` operator behaves as a special case of the ``name:`` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as `@+:e`, with the expected semantics.
