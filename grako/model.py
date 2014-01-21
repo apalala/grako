@@ -118,5 +118,5 @@ class DelegatingTraverser(NodeTraverser):
             return super(DelegatingTraverser, self)._find_visitor(node)
 
 
-class DFSDelegatingTraverser(DepthFirstTraverser, DelegatingTraverser):
+class DFSDelegatingTraverser(DelegatingTraverser, DepthFirstTraverser):
     pass
