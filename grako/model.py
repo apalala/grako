@@ -87,39 +87,35 @@ class Node(object):
 
 
 class NodeTraverser(object):
-    def _find_visitor(self, obj):
-        name = 'visit_' + obj.__class__.__name__
+    def _find_visitor(self, node):
+        name = '_visit_' + node.__class__.__name__
         visitor = getattr(self, name, None)
         if callable(visitor):
             return visitor
-        return getattr(self, 'visit_default', None)
+        return getattr(self, '_visit_default', None)
 
-    def visit(self, obj, *args, **kwargs):
-        visitor = self._find_visitor(obj)
+    def visit(self, node, *args, **kwargs):
+        visitor = self._find_visitor(node)
         if callable(visitor):
-            return visitor(obj, *args, **kwargs)
+            return visitor(node, *args, **kwargs)
 
 
 class DepthFirstTraverser(NodeTraverser):
-    def visit(self, obj, *args, **kwargs):
-        # assume obj is a Node
-        children = [self.visit(c, *args, **kwargs) for c in obj.children]
-        return super(DepthFirstTraverser, self).visit(obj, children, *args, **kwargs)
+    def visit(self, node, *args, **kwargs):
+        # assume node is a Node
+        children = [self.visit(c, *args, **kwargs) for c in node.children]
+        return super(DepthFirstTraverser, self).visit(node, children, *args, **kwargs)
 
 
 class DelegatingTraverser(NodeTraverser):
     def __init__(self, delegate):
         self.delegate = delegate
 
-    def _find_visitor(self, obj):
-        name = obj.__class__.__name__
+    def _find_visitor(self, node):
+        name = node.__class__.__name__
         visitor = getattr(self.delegate, name, None)
         if not callable(visitor):
-            return super(DelegatingTraverser, self)._find_visitor(obj)
-
-    def visit(self, obj, *args, **kwargs):
-        visitor = self._find_visitor(obj)
-        return visitor.visit(obj, *args, **kwargs)
+            return super(DelegatingTraverser, self)._find_visitor(node)
 
 
 class DFSDelegatingTraverser(DepthFirstTraverser, DelegatingTraverser):
