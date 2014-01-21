@@ -89,7 +89,10 @@ class Node(object):
 class NodeTraverser(object):
     def _find_visitor(self, obj):
         name = 'visit_' + obj.__class__.__name__
-        return getattr(self, name, None)
+        visitor = getattr(self, name, None)
+        if callable(visitor):
+            return visitor
+        return getattr(self, 'visit_default', None)
 
     def visit(self, obj, *args, **kwargs):
         visitor = self._find_visitor(obj)
@@ -110,7 +113,9 @@ class DelegatingTraverser(NodeTraverser):
 
     def _find_visitor(self, obj):
         name = obj.__class__.__name__
-        return getattr(self.delegate, name, None)
+        visitor = getattr(self.delegate, name, None)
+        if not callable(visitor):
+            return super(DelegatingTraverser, self)._find_visitor(obj)
 
     def visit(self, obj, *args, **kwargs):
         visitor = self._find_visitor(obj)
