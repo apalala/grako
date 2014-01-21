@@ -120,3 +120,19 @@ class DelegatingTraverser(NodeTraverser):
 
 class DFSDelegatingTraverser(DelegatingTraverser, DepthFirstTraverser):
     pass
+
+
+class TransformTraverser(NodeTraverser):
+    """ A traverser that trust the visits to produce an objec that
+        can be set to have fields with the transforms/visits of the fields
+        in the original node.
+    """
+
+    def visit(self, node, *args, **kwargs):
+        transform = super(TransformTraverser, self).visit(node, *args, **kwargs)
+        if not isinstance(transform, object):
+            raise TypeError('Transforms must be objects')
+
+        for name, value in vars(node).items():
+            if not name.startswith('_'):
+                setattr(transform, name, self.visit(value, *args, **kwargs))

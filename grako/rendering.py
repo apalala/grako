@@ -53,6 +53,14 @@ class RenderingFormatter(string.Formatter):
 
 
 class Renderer(object):
+    """ Renders the fileds in the current object using a template
+        provided statically, on the constructor, or as a parameter
+        to render().
+
+        Fields with a leading underscore are not made available to
+        the template. Additional fields may be made available by
+        overriding render_fields().
+    """
     template = ''
     _counter = itertools.count()
     formatter = RenderingFormatter()
@@ -92,3 +100,16 @@ class Renderer(object):
 
     def __repr__(self):
         return str(self)
+
+
+class NodeRenderer(Renderer):
+    """ Like Renderer, except that fields are obtained from
+        the given *node* object.
+    """
+    def __init__(self, node, template=None):
+        super(NodeRenderer, self).__init__(template=template)
+        self.node = node
+
+    def render(self, template=None, **fields):
+        fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
+        super(NodeRenderer, self).render(template=template, **fields)
