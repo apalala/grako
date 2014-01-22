@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from grako.model import Node
 from grako.rendering import Renderer, RenderingFormatter
 
 
@@ -16,6 +17,12 @@ class DelegatingRenderingFormatter(RenderingFormatter):
         if result is None:
             result = super(DelegatingRenderingFormatter).render(item)
         return result
+
+    def convert_field(self, value, conversion):
+        if isinstance(value, Node):
+            return self.render(value)
+        else:
+            return super(RenderingFormatter, self).convert_field(value, conversion)
 
 
 class ModelRenderer(Renderer):

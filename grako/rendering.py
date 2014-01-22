@@ -28,11 +28,6 @@ class RenderingFormatter(string.Formatter):
     def render(self, item):
         return render(item)
 
-    def convert_field(self, value, conversion):
-        if conversion == 'r' or conversion == 'a':
-            return super(RenderingFormatter, self).convert_field(value)
-        return self.render(value)
-
     def format_field(self, value, spec):
         if ':' not in spec:
             return super(RenderingFormatter, self).format_field(render(value), spec)
