@@ -33,8 +33,8 @@ class ModelRenderer(Renderer):
 
         self.formatter = ctx.formatter
 
-        # FIXME: Could copy node fields to self right here
-        # to allow simpler (copied) render_fields methods
+        for name, value in vars(node).items():
+            setattr(self, name, value)
 
     def render(self, template=None, **fields):
         fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
