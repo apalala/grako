@@ -2,7 +2,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 from grako.model import Node
-from grako.rendering import Renderer, RenderingFormatter
+from grako.rendering import render, Renderer, RenderingFormatter
 
 
 class DelegatingRenderingFormatter(RenderingFormatter):
@@ -51,7 +51,7 @@ class CodeGenerator(object):
     def render(self, item):
         rendererClass = self._find_renderer(item)
         if rendererClass is None:
-            return rendererClass
+            return render(item)
         assert issubclass(rendererClass, ModelRenderer)
         renderer = rendererClass(self, item)
         return renderer.render()
