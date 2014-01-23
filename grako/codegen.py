@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from grako.util import indent
 from grako.model import Node
 from grako.rendering import render, Renderer, RenderingFormatter
 
@@ -35,6 +36,14 @@ class ModelRenderer(Renderer):
 
         for name, value in vars(node).items():
             setattr(self, name, value)
+
+    def rend(self, item):
+        """ A shortcut for self.formatter.render()
+        """
+        return self.formatter.render(item)
+
+    def indent(self, item):
+        return indent(self.rend(item))
 
     def render(self, template=None, **fields):
         fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
