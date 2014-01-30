@@ -95,8 +95,13 @@ class Renderer(object):
 
         try:
             return self.formatter.format(trim(template), **fields)
-        except KeyError as e:
-            raise KeyError(str(e), type(self))
+        except KeyError:
+            # find the missing key
+            keys = (p[1] for p in self.formatter.parse(template))
+            for key in keys:
+                if key and not key in fields:
+                    raise KeyError(key, type(self))
+            raise
 
     def __str__(self):
         return self.render()
