@@ -13,10 +13,10 @@ class DelegatingRenderingFormatter(RenderingFormatter):
         self.delegate = delegate
 
     #override
-    def render(self, item):
-        result = self.delegate.render(item)
+    def render(self, item, join='', **fields):
+        result = self.delegate.render(item, join=join, **fields)
         if result is None:
-            result = super(DelegatingRenderingFormatter).render(item)
+            result = super(DelegatingRenderingFormatter).render(item, join=join, **fields)
         return result
 
     def convert_field(self, value, conversion):
@@ -57,10 +57,10 @@ class CodeGenerator(object):
     def _find_renderer(self, item):
         pass
 
-    def render(self, item):
+    def render(self, item, join='', **fields):
         rendererClass = self._find_renderer(item)
         if rendererClass is None:
-            return render(item)
+            return render(item, join=join, **fields)
         assert issubclass(rendererClass, ModelRenderer)
         renderer = rendererClass(self, item)
-        return renderer.render()
+        return renderer.render(**fields)
