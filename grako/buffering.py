@@ -12,6 +12,7 @@ import re as regexp
 import string
 from bisect import bisect_left
 from collections import namedtuple
+from .util import ustr
 
 __all__ = ['Buffer']
 
@@ -31,7 +32,7 @@ class Buffer(object):
                  nameguard=True,
                  **kwargs):
         self.original_text = text
-        self.text = text
+        self.text = ustr(text)
         self.filename = filename if filename is not None else ''
         self.whitespace = set(whitespace
                               if whitespace is not None
