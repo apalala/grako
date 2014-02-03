@@ -268,7 +268,8 @@ class ParseContext(object):
 
     def _trace(self, msg, *params):
         if self.trace:
-            print(msg % params, file=sys.stderr)
+            msg = msg % params
+            print(msg.encode('utf-8'), file=sys.stderr)
 
     def _trace_event(self, event):
         if self.trace:
