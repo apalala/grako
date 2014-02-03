@@ -37,6 +37,11 @@ class ModelRenderer(Renderer):
         for name, value in vars(node).items():
             setattr(self, name, value)
 
+        self.__postinit__()
+
+    def __postinit__(self):
+        pass
+
     def rend(self, item, join='', **fields):
         """ A shortcut for self.formatter.render()
         """
