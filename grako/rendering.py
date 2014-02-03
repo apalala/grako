@@ -25,8 +25,8 @@ def render(item, join='', **fields):
 
 
 class RenderingFormatter(string.Formatter):
-    def render(self, item):
-        return render(item)
+    def render(self, item, join='', **fields):
+        return render(item, join=join, **fields)
 
     def format_field(self, value, spec):
         if ':' not in spec:

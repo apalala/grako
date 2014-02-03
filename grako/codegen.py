@@ -37,10 +37,10 @@ class ModelRenderer(Renderer):
         for name, value in vars(node).items():
             setattr(self, name, value)
 
-    def rend(self, item):
+    def rend(self, item, join='', **fields):
         """ A shortcut for self.formatter.render()
         """
-        return self.formatter.render(item)
+        return self.formatter.render(item, join=join, **fields)
 
     def indent(self, item):
         return indent(self.rend(item))
