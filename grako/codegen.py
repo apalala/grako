@@ -42,6 +42,9 @@ class ModelRenderer(Renderer):
     def __postinit__(self):
         pass
 
+    def get_renderer(self, item):
+        return self.ctx.get_renderer(item)
+
     def rend(self, item, join='', **fields):
         """ A shortcut for self.formatter.render()
         """
@@ -62,10 +65,15 @@ class CodeGenerator(object):
     def _find_renderer(self, item):
         pass
 
-    def render(self, item, join='', **fields):
+    def get_renderer(self, item):
         rendererClass = self._find_renderer(item)
         if rendererClass is None:
-            return render(item, join=join, **fields)
+            return None
         assert issubclass(rendererClass, ModelRenderer)
-        renderer = rendererClass(self, item)
+        return rendererClass(self, item)
+
+    def render(self, item, join='', **fields):
+        renderer = self.get_renderer(item)
+        if renderer is None:
+            return render(item, join=join, **fields)
         return renderer.render(**fields)
