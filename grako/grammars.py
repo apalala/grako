@@ -235,7 +235,7 @@ class Pattern(_Model):
         return '?/%s/?' % self.pattern
 
     def render_fields(self, fields):
-        raw_repr = 'r' + repr(self.pattern).replace("\\\\", '\\')
+        raw_repr = 'r' + urepr(self.pattern).replace("\\\\", '\\')
         fields.update(pattern=raw_repr)
 
     template = 'self._pattern({pattern})'
@@ -615,8 +615,8 @@ class Grammar(_Model):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
-        self.whitespace = repr(whitespace)
-        self.nameguard = repr(nameguard)
+        self.whitespace = urepr(whitespace)
+        self.nameguard = urepr(nameguard)
         self.rules = rules
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
