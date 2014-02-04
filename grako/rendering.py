@@ -80,7 +80,20 @@ class Renderer(object):
     def reset_counter(cls):
         Renderer._counter = itertools.count()
 
+    def rend(self, item, join='', **fields):
+        """ A shortcut for self.formatter.render()
+        """
+        return self.formatter.render(item, join=join, **fields)
+
+    def indent(self, item, ind=1, multiplier=4):
+        return indent(self.rend(item), indent=ind, multiplier=4)
+
+    def trim(self, item, tabwidth=4):
+        return trim(self.rend(item), tabwidth=tabwidth)
+
     def render_fields(self, fields):
+        """ Pre-render fields before rendering the template.
+        """
         pass
 
     def render(self, template=None, **fields):
