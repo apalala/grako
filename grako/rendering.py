@@ -64,7 +64,7 @@ class Renderer(object):
         the template. Additional fields may be made available by
         overriding render_fields().
     """
-    template = ''
+    template = '{__class__}'
     _counter = itertools.count()
     formatter = RenderingFormatter()
 
@@ -97,6 +97,7 @@ class Renderer(object):
         pass
 
     def render(self, template=None, **fields):
+        fields.update(__class__=self.__class__.__name__)
         fields.update({k: v for k, v in vars(self).items() if not k.startswith('_')})
 
         override = self.render_fields(fields)
