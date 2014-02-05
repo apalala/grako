@@ -61,7 +61,10 @@ class CodeGenerator(object):
         if rendererClass is None:
             return None
         assert issubclass(rendererClass, ModelRenderer)
-        return rendererClass(self, item)
+        try:
+            return rendererClass(self, item)
+        except Exception as e:
+            raise type(e)(str(e), rendererClass.__name__)
 
     def render(self, item, join='', **fields):
         renderer = self.get_renderer(item)
