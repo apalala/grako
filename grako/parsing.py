@@ -148,3 +148,13 @@ def rule_def(rule):
         name = rule.__name__.strip('_')
         return self._call(rule, name)
     return wrapper
+
+
+def rule_def_params(*params, **kwparams):
+    def decorator(rule):
+        @functools.wraps(rule)
+        def wrapper(self, *args, **kwargs):
+            name = rule.__name__.strip('_')
+            return self._call(rule, name, *params, **kwparams)
+        return wrapper
+    return decorator

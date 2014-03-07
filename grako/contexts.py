@@ -291,13 +291,13 @@ class ParseContext(object):
     def _fail(self):
         self._error('fail')
 
-    def _call(self, rule, name):
+    def _call(self, rule, name, *params, **kwparams):
         self._rule_stack.append(name)
         pos = self._pos
         try:
             self._trace_event('ENTER ')
             self._last_node = None
-            node, newpos, newstate = self._invoke_rule(rule, name)
+            node, newpos, newstate = self._invoke_rule(rule, name, *params, **kwparams)
             self._goto(newpos)
             self._state = newstate
             self._trace_event('SUCCESS')
@@ -311,7 +311,7 @@ class ParseContext(object):
         finally:
             self._rule_stack.pop()
 
-    def _invoke_rule(self, rule, name):
+    def _invoke_rule(self, rule, name, *params, **kwparams):
         pos = self._pos
         state = self._state
         key = (pos, rule, state)
@@ -338,7 +338,7 @@ class ParseContext(object):
             semantic_rule = self._find_semantic_rule(name)
             if semantic_rule:
                 try:
-                    node = semantic_rule(node)
+                    node = semantic_rule(node, *params, **kwparams)
                 except FailedSemantics as e:
                     self._error(str(e), FailedParse)
             result = (node, self._pos, self._state)

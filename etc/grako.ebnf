@@ -16,7 +16,35 @@ grammar
 
 rule
     =
-    name:word '=' >> rhs:expre ('.' | ';') >>
+    name:word
+    [
+        '('  >>
+            (
+                params:params ',' >> kwparams:kwparams
+            |
+                kwparams:kwparams
+            |
+                params:params
+            )
+        ')'
+    ]
+    '=' >>
+    rhs:expre ('.' | ';') >>
+    ;
+
+params
+    =
+    [@+:literal {',' >> @+:literal}]
+    ;
+
+kwparams
+    =
+    @+:pair {',' >> @+:pair}
+    ;
+
+pair
+    =
+    @+:word '=' >> @+:literal
     ;
 
 expre
@@ -123,10 +151,21 @@ cut
     '>>' >>
     ;
 
+literal
+    =
+      token
+    | number
+    ;
+
 token
     =
       '"' >> @?/([^"\\\n]|\\"|\\\\)*/? '"'
     | "'" >> @?/([^'\\\n]|\\'|\\\\)*/? "'"
+    ;
+
+number
+    =
+    ?/[0-9]+/?
     ;
 
 word
