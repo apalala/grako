@@ -15,7 +15,7 @@ in the .grammars module.
 from __future__ import print_function, division, absolute_import, unicode_literals
 from .buffering import Buffer
 from .semantics import GrakoASTSemantics, GrakoSemantics
-from .rootparser import GrakoBootstrapParser
+from .bootstrap import GrakoBootstrapParser
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
