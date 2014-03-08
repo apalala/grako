@@ -302,7 +302,7 @@ By default, **Grako** generated parsers skip the usual whitespace characters (wh
 
     parser = MyParser(text, whitespace='\t ')
 
-will not consider end-of-line characters as whitespace.
+will consider the tab (``\t``) and space characters to be whitespace, but not so with other typical whitespace characters such as the end-of-line (``\n``).
 
 If you don't define any whitespace characters::
 
