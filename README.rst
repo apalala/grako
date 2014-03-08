@@ -302,7 +302,7 @@ By default, **Grako** generated parsers skip the usual whitespace characters (wh
 
     parser = MyParser(text, whitespace='\t ')
 
-will not consider end-of-line characters as whitespace.
+will consider the tab (``\t``) and space characters to be whitespace, but not so with other typical whitespace characters such as the end-of-line (``\n``).
 
 If you don't define any whitespace characters::
 
@@ -335,6 +335,21 @@ Semantic Actions
 ================
 
 There are no constructs for semantic actions in **Grako** grammars. This is on purpose, as we believe that semantic actions obscure the declarative nature of grammars and provide for poor modularization from the parser execution perspective.
+
+Semantic actions are defined in a class, and applied by passing an object of the class to the `parse()` method of the parser as the `semantics=` paramenter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
+
+    class MySemantics(object):
+        def some_rule_name(self, ast):
+            return ''.join(ast)
+
+        def _default(self, ast):
+            pass
+
+If there's no method matching the rule's name, **Grako** will try to invoke a `_default()` method if it's defined::
+
+    def _default(self, ast):
+
+Nothing will happen neither the per-rule method nor `_default()` are defined.
 
 The per-rule methods in classes implementing the semantics provide enough opportunity to do rule post-processing operations, like verifications (for inadequate use of keywords as identifiers), or AST_ transformation.
 
@@ -425,7 +440,7 @@ Other Open-source Examples
 License
 =======
 
-**Grako** is Copyright (C) 2012-2013 by `ResQSoft Inc.`_ and  `Juancarlo Añez`_
+**Grako** is Copyright (C) 2012-2014 by `ResQSoft Inc.`_ and  `Juancarlo Añez`_
 
 .. _`ResQSoft Inc.`:  http://www.resqsoft.com/
 .. _ResQSoft:  http://www.resqsoft.com/
@@ -517,20 +532,20 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-2.4.0-rc.x
------------
+2.4.0
+-----
 
     * The aim of this release is to make the minimum changes necessary to allow downstream translators to have different target languages with as little code replication as possible.
 
-    * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only trial-and-error will tell.
-
-    * There's new functionality pulled from downstream in ``grako.model`` and ``graok.rendering``. ``grako.model`` is now a module instead of a package.
+    * There's new functionality pulled from downstream in ``grako.model`` and ``grako.rendering``. ``grako.model`` is now a module instead of a package.
 
     * The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
 
     * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows for producing meaningful errors when something in the semantics is missing.
 
     * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.2.y, and PyPy_ 2.2.x.
+
+    * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only testing will tell.
 
 .. _tox: https://testrun.org/tox/latest/
 
