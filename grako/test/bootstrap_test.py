@@ -12,10 +12,10 @@ import pickle
 import unittest
 from grako.model import NodeTraverser
 from grako.semantics import GrakoSemantics
-from grako.bootstrap import (GrakoParser,
-                             GrakoGrammarGenerator,
-                             COMMENTS_RE
-                             )
+from grako.parser import (GrakoParser,
+                          GrakoGrammarGenerator,
+                          COMMENTS_RE
+                          )
 
 
 class BootstrapTests(unittest.TestCase):
