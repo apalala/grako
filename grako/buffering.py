@@ -12,6 +12,7 @@ import re as regexp
 import string
 from bisect import bisect_left
 from collections import namedtuple
+from .util import ustr
 
 __all__ = ['Buffer']
 
@@ -31,7 +32,7 @@ class Buffer(object):
                  nameguard=True,
                  **kwargs):
         self.original_text = text
-        self.text = text
+        self.text = ustr(text)
         self.filename = filename if filename is not None else ''
         self.whitespace = set(whitespace
                               if whitespace is not None
@@ -110,7 +111,7 @@ class Buffer(object):
         ws = self.whitespace
         while p < le and self.text[p] in ws:
             p += 1
-        self._pos = p
+        self.goto(p)
 
     def eatcomments(self):
         if self.comments_re is not None:
@@ -129,7 +130,7 @@ class Buffer(object):
         le = self._len
         while p < le and self.text[p] != c:
             p += 1
-        self._pos = p
+        self.goto(p)
 
     def skip_past(self, c):
         self.skip_to(c)
@@ -183,7 +184,7 @@ class Buffer(object):
         matched = re.match(self.text, self.pos)
         if matched:
             token = matched.group()
-            self._pos += len(token)
+            self.move(len(token))
             return token
 
     def get_fileinfo(self, text, filename):

@@ -25,6 +25,9 @@ def render(item, join='', **fields):
 
 
 class RenderingFormatter(string.Formatter):
+    def render(self, item, join='', **fields):
+        return render(item, join=join, **fields)
+
     def format_field(self, value, spec):
         if ':' not in spec:
             return super(RenderingFormatter, self).format_field(render(value), spec)
@@ -47,13 +50,21 @@ class RenderingFormatter(string.Formatter):
             fmt = '%s'
 
         if isiter(value):
-            return indent(sep.join(fmt % render(v) for v in value), ind, mult)
+            return indent(sep.join(fmt % self.render(v) for v in value), ind, mult)
         else:
-            return indent(fmt % render(value), ind, mult)
+            return indent(fmt % self.render(value), ind, mult)
 
 
 class Renderer(object):
-    template = ''
+    """ Renders the fileds in the current object using a template
+        provided statically, on the constructor, or as a parameter
+        to render().
+
+        Fields with a leading underscore are not made available to
+        the template. Additional fields may be made available by
+        overriding render_fields().
+    """
+    template = '{__class__}'
     _counter = itertools.count()
     formatter = RenderingFormatter()
 
@@ -69,13 +80,24 @@ class Renderer(object):
     def reset_counter(cls):
         Renderer._counter = itertools.count()
 
-    def accept(self, visitor, *args, **kwargs):
-        return visitor.visit(self, *args, **kwargs)
+    def rend(self, item, join='', **fields):
+        """ A shortcut for self.formatter.render()
+        """
+        return self.formatter.render(item, join=join, **fields)
+
+    def indent(self, item, ind=1, multiplier=4):
+        return indent(self.rend(item), indent=ind, multiplier=4)
+
+    def trim(self, item, tabwidth=4):
+        return trim(self.rend(item), tabwidth=tabwidth)
 
     def render_fields(self, fields):
+        """ Pre-render fields before rendering the template.
+        """
         pass
 
     def render(self, template=None, **fields):
+        fields.update(__class__=self.__class__.__name__)
         fields.update({k: v for k, v in vars(self).items() if not k.startswith('_')})
 
         override = self.render_fields(fields)
@@ -87,14 +109,16 @@ class Renderer(object):
 
         try:
             return self.formatter.format(trim(template), **fields)
-        except KeyError as e:
-            raise KeyError(str(e), type(self))
+        except KeyError:
+            # find the missing key
+            keys = (p[1] for p in self.formatter.parse(template))
+            for key in keys:
+                if key and not key in fields:
+                    raise KeyError(key, type(self))
+            raise
 
+    def __str__(self):
+        return self.render()
 
-class NodeVisitor(object):
-    def visit(self, obj, *args, **kwargs):
-        name = obj.__class__.__name__
-        name = 'visit_' + name.lower()
-        method = getattr(self, name, None)
-        if method:
-            return method(obj, *args, **kwargs)
+    def __repr__(self):
+        return str(self)

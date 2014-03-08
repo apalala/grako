@@ -14,10 +14,12 @@ computed, but they are not.
 from __future__ import print_function, division, absolute_import, unicode_literals
 import sys
 import re
-from copy import deepcopy
+from collections import defaultdict
+from copy import copy
 import time
 from .util import indent, trim
 from .rendering import Renderer, render
+from .model import Node
 from .contexts import ParseContext, safe_name
 from .exceptions import (FailedParse,
                          FailedToken,
@@ -66,7 +68,7 @@ class ModelContext(ParseContext):
         return self.rules[name]
 
 
-class _Model(Renderer):
+class _Model(Renderer, Node):
     def __init__(self):
         super(_Model, self).__init__()
         self._first_set = None
@@ -102,15 +104,15 @@ class Fail(_Model):
 
 
 class Comment(_Model):
-    def __init__(self, text):
+    def __init__(self, comment):
         super(Comment, self).__init__()
-        self.text = text.strip()
+        self.comment = comment.strip()
 
     def __str__(self):
         return self.render()
 
     template = '''
-        (* {text} *)
+        (* {comment} *)
 
         '''
 
@@ -233,7 +235,7 @@ class Pattern(_Model):
         return '?/%s/?' % self.pattern
 
     def render_fields(self, fields):
-        raw_repr = 'r' + repr(self.pattern).replace("\\\\", '\\')
+        raw_repr = 'r' + urepr(self.pattern).replace("\\\\", '\\')
         fields.update(pattern=raw_repr)
 
     template = 'self._pattern({pattern})'
@@ -608,13 +610,13 @@ class Rule(Named):
                 '''
 
 
-class Grammar(Renderer):
+class Grammar(_Model):
     def __init__(self, name, rules, whitespace=None, nameguard=True):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
-        self.whitespace = repr(whitespace)
-        self.nameguard = repr(nameguard)
+        self.whitespace = urepr(whitespace)
+        self.nameguard = urepr(nameguard)
         self.rules = rules
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
@@ -628,13 +630,13 @@ class Grammar(Renderer):
         return self._first_sets
 
     def _calc_first_sets(self, k=1):
-        F = dict()
-        while True:
-            F1 = deepcopy(F)
+        F = defaultdict(set)
+        F1 = None
+        while F1 != F:
+            F1 = copy(F)
             for rule in self.rules:
-                F[rule.name] = F.get(rule.name, set()) | rule._first(k, F)
-            if F1 == F:
-                break
+                F[rule.name] |= rule._first(k, F)
+
         for rule in self.rules:
             rule._first_set = F[rule.name]
         return F

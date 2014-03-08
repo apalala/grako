@@ -336,6 +336,21 @@ Semantic Actions
 
 There are no constructs for semantic actions in **Grako** grammars. This is on purpose, as we believe that semantic actions obscure the declarative nature of grammars and provide for poor modularization from the parser execution perspective.
 
+Semantic actions are defined in a class, and applied by passing an object of the class to the `parse()` method of the parser as the `semantics=` paramenter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
+
+    class MySemantics(object):
+        def some_rule_name(self, ast):
+            return ''.join(ast)
+
+        def _default(self, ast):
+            pass
+
+If there's no method matching the rule's name, **Grako** will try to invoke a `_default()` method if it's defined::
+
+    def _default(self, ast):
+
+Nothing will happen neither the per-rule method nor `_default()` are defined.
+
 The per-rule methods in classes implementing the semantics provide enough opportunity to do rule post-processing operations, like verifications (for inadequate use of keywords as identifiers), or AST_ transformation.
 
 For finer-grained control it is enough to declare more rules, as the impact on the parsing times will be minimal.
@@ -516,6 +531,24 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 Changes
 =======
+
+2.4.0-rc.x
+-----------
+
+    * The aim of this release is to make the minimum changes necessary to allow downstream translators to have different target languages with as little code replication as possible.
+
+    * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only trial-and-error will tell.
+
+    * There's new functionality pulled from downstream in ``grako.model`` and ``graok.rendering``. ``grako.model`` is now a module instead of a package.
+
+    * The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
+
+    * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows for producing meaningful errors when something in the semantics is missing.
+
+    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.2.y, and PyPy_ 2.2.x.
+
+.. _tox: https://testrun.org/tox/latest/
+
 
 2.3.0
 -----

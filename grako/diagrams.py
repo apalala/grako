@@ -5,15 +5,15 @@ try:
     import pygraphviz as pgv
 except:
     raise
-from .rendering import NodeVisitor
+from .model import NodeTraverser
 
 
 __all__ = ['draw']
 
 
-class GraphvizVisitor(NodeVisitor):
+class GraphvizTraverser(NodeTraverser):
     def __init__(self):
-        super(GraphvizVisitor, self).__init__()
+        super(GraphvizTraverser, self).__init__()
         self.top_graph = pgv.AGraph(directed=True,
                                     rankdir='LR',
                                     packMode='clust',
@@ -115,13 +115,13 @@ class GraphvizVisitor(NodeVisitor):
     def concat(*args):
         return list(itertools.chain(*args))
 
-    def _visit_decorator(self, d):
-        return d.exp.accept(self)
+    def __traverse_decorator(self, d):
+        return self.traverse(d.exp)
 
-    def visit_grammar(self, g):
+    def _traverse_Grammar(self, g):
         self.push_graph(g.name + '0')
         try:
-            vrules = [r.accept(self) for r in reversed(g.rules)]
+            vrules = [self.traverse(r) for r in reversed(g.rules)]
         finally:
             self.pop_graph()
         self.push_graph(g.name + '1')
@@ -136,10 +136,10 @@ class GraphvizVisitor(NodeVisitor):
         s, t = vrules[0][0], vrules[-1][1]
         return (s, t)
 
-    def visit_rule(self, r):
+    def _traverse_Rule(self, r):
         self.push_graph(r.name)
         try:
-            i, e = self._visit_decorator(r)
+            i, e = self.__traverse_decorator(r)
             s = self.rule_node(r.name, id=r.name)
             self.edge(s, i)
             t = self.end_node()
@@ -148,30 +148,30 @@ class GraphvizVisitor(NodeVisitor):
         finally:
             self.pop_graph()
 
-    def visit_ruleref(self, rr):
+    def _traverse_RuleRef(self, rr):
         n = self.ref_node(rr.name)
         return (n, n)
 
-    def visit_special(self, s):
+    def _traverse_Special(self, s):
         n = self.node(s.special)
         return (n, n)
 
-    def visit_override(self, o):
-        return self._visit_decorator(o)
+    def _traverse_Override(self, o):
+        return self.__traverse_decorator(o)
 
-    def visit_named(self, n):
-        return self._visit_decorator(n)
+    def _traverse_Named(self, n):
+        return self.__traverse_decorator(n)
 
-    def visit_namedlist(self, n):
-        return self._visit_decorator(n)
+    def _traverse_NamedList(self, n):
+        return self.__traverse_decorator(n)
 
-    def visit_cut(self, c):
+    def _traverse_Cut(self, c):
         # c = self.node('>>')
         # return (c, c)
         return None
 
-    def visit_optional(self, o):
-        i, e = self._visit_decorator(o)
+    def _traverse_Optional(self, o):
+        i, e = self.__traverse_decorator(o)
         ni = self.dot()
         ne = self.dot()
         self.zedge(ni, i)
@@ -179,10 +179,10 @@ class GraphvizVisitor(NodeVisitor):
         self.zedge(e, ne)
         return (ni, ne)
 
-    def visit_closure(self, r):
+    def _traverse_Closure(self, r):
         self.push_graph(rankdir='TB')
         try:
-            i, e = self._visit_decorator(r)
+            i, e = self.__traverse_decorator(r)
             ni = self.dot()
             self.edge(ni, i)
             self.edge(e, ni)
@@ -190,19 +190,19 @@ class GraphvizVisitor(NodeVisitor):
         finally:
             self.pop_graph()
 
-    def visit_positiveclosure(self, r):
-        i, e = self._visit_decorator(r)
+    def _traverse_PositiveClosure(self, r):
+        i, e = self.__traverse_decorator(r)
         if i == e:
             self.redge(e, i)
         else:
             self.edge(e, i)
         return (i, e)
 
-    def visit_group(self, g):
-        return self._visit_decorator(g)
+    def _traverse_Group(self, g):
+        return self.__traverse_decorator(g)
 
-    def visit_choice(self, c):
-        vopt = [o.accept(self) for o in c.options]
+    def _traverse_Choice(self, c):
+        vopt = [self.traverse(o) for o in c.options]
         ni = self.dot()
         ne = self.dot()
         for i, e in vopt:
@@ -210,8 +210,8 @@ class GraphvizVisitor(NodeVisitor):
             self.edge(e, ne)
         return (ni, ne)
 
-    def visit_sequence(self, s):
-        vseq = [x.accept(self) for x in s.sequence]
+    def _traverse_Sequence(self, s):
+        vseq = [self.traverse(x) for x in s.sequence]
         vseq = [x for x in vseq if x is not None]
         i, _ = vseq[0]
         _, e = vseq[-1]
@@ -222,37 +222,37 @@ class GraphvizVisitor(NodeVisitor):
                 self.edge(n, n1)
         return (i, e)
 
-    def visit_lookahead(self, l):
-        i, e = self._visit_decorator(l)
+    def _traverse_Lookahead(self, l):
+        i, e = self.__traverse_decorator(l)
         n = self.node('&')
         self.edge(n, e)
         return (n, e)
 
-    def visit_lookahead_not(self, l):
-        i, e = self._visit_decorator(l)
+    def _traverse_LookaheadNot(self, l):
+        i, e = self.__traverse_decorator(l)
         n = self.node('!')
         self.edge(n, e)
         return (n, e)
 
-    def visit_pattern(self, p):
+    def _traverse_Pattern(self, p):
         n = self.tnode(p.pattern)
         return (n, n)
 
-    def visit_token(self, t):
+    def _traverse_Token(self, t):
         n = self.tnode(t.token)
         return (n, n)
 
-    def visit_void(self, v):
+    def _traverse_Void(self, v):
         n = self.dot()
         return (n, n)
 
-    def visit_eof(self, v):
+    def _traverse_EOF(self, v):
         # n = self.node('$')
         # return (n, n)
         return None
 
 
 def draw(filename, grammar):
-    visitor = GraphvizVisitor()
-    grammar.accept(visitor)
-    visitor.draw(filename)
+    traverser = GraphvizTraverser()
+    traverser.traverse(grammar)
+    traverser.draw(filename)

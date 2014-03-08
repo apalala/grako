@@ -1,6 +1,7 @@
 include *.txt
 include *.rst
 include Makefile
+include tox.ini
 recursive-include etc *
 recursive-include examples *
 recursive-exclude examples genparser.py

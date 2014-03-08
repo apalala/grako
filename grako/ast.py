@@ -16,9 +16,6 @@ class AST(dict):
     # ActiveState Recipe:
     # http://code.activestate.com/recipes/473786-dictionary-with-attribute-style-access/
 
-    def __init__(self, *args, **kwargs):
-        super(AST, self).__init__(*args, **kwargs)
-
     def __getstate__(self):
         return self.__dict__.items()
 
@@ -36,9 +33,6 @@ class AST(dict):
         if name in self:
             return super(AST, self).__getitem__(name)
 
-    def __delitem__(self, name):
-        return super(AST, self).__delitem__(name)
-
     __getattr__ = __getitem__
     __setattr__ = __setitem__
 
@@ -48,10 +42,13 @@ class AST(dict):
         return super(AST, self).__getattribute__(name)
 
     def copy(self):
-        return AST((
+        haslists = any(isinstance(v, list) for v in self.values())
+        if not haslists:
+            return AST(self)
+        return AST(
             (k, v[:] if isinstance(v, list) else v)
             for k, v in self.items()
-        ))
+        )
 
     def add(self, key, value, force_list=False):
         previous = self[key]
