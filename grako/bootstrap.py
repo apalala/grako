@@ -12,7 +12,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import * # @UnusedWildImport
 from grako.exceptions import * # @UnusedWildImport
 
-__version__ = '14.067.17.23.03'
+__version__ = '14.067.18.00.47'
 
 class GrakoBootstrapParser(Parser):
     def __init__(self, whitespace=None, nameguard=True, **kwargs):
@@ -62,7 +62,7 @@ class GrakoBootstrapParser(Parser):
                     self._token('.')
                 with self._option():
                     self._token(';')
-                self._error('expecting one of: . ;')
+                self._error('expecting one of: ; .')
         self._cut()
 
     @rule_def
@@ -146,7 +146,7 @@ class GrakoBootstrapParser(Parser):
                     self.ast['force_list'] = self.last_node
                 with self._option():
                     self._token(':')
-                self._error('expecting one of: : +:')
+                self._error('expecting one of: +: :')
         self._element_()
         self.ast['value'] = self.last_node
 
@@ -213,12 +213,12 @@ class GrakoBootstrapParser(Parser):
                                 self._token('-')
                             with self._option():
                                 self._token('+')
-                            self._error('expecting one of: + -')
+                            self._error('expecting one of: - +')
                     self.ast['plus'] = self.last_node
                 with self._option():
                     with self._optional():
                         self._token('*')
-                self._error('expecting one of: + * -')
+                self._error('expecting one of: * - +')
         self._cut()
 
     @rule_def
@@ -299,16 +299,16 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._token('"')
                 self._cut()
-                self._pattern(r'([^"\\\n]|\\"|\\\\)*')
+                self._pattern(r'([^"\n]|\\"|\\\\)*')
                 self.ast['@'] = self.last_node
                 self._token('"')
             with self._option():
                 self._token("'")
                 self._cut()
-                self._pattern(r"([^'\\\n]|\\'|\\\\)*")
+                self._pattern(r"([^'\n]|\\'|\\\\)*")
                 self.ast['@'] = self.last_node
                 self._token("'")
-            self._error('expecting one of: " \'')
+            self._error('expecting one of: \' "')
 
     @rule_def
     def _number_(self):
