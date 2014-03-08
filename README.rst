@@ -545,9 +545,9 @@ Changes
 
     * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.2.y, and PyPy_ 2.2.x.
 
-.. _tox: https://testrun.org/tox/latest/
-
     * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only testing will tell.
+
+.. _tox: https://testrun.org/tox/latest/
 
 
 2.3.0
