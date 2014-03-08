@@ -20,9 +20,9 @@ rule
     [
         '('  >>
             (
-                params:params ',' >> kwparams:kwparams
-            |
                 kwparams:kwparams
+            |
+                params:params ',' >> kwparams:kwparams
             |
                 params:params
             )
@@ -34,7 +34,7 @@ rule
 
 params
     =
-    [@+:literal {',' >> @+:literal}]
+    @+:literal {',' >> @+:literal}
     ;
 
 kwparams
@@ -155,6 +155,7 @@ literal
     =
       token
     | number
+    | word
     ;
 
 token
