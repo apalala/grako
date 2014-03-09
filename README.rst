@@ -543,7 +543,7 @@ Changes
 
     * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows for producing meaningful errors when something in the semantics is missing.
 
-    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.2.y, and PyPy_ 2.2.x.
+    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.3.y, and PyPy_ 2.2.x.
 
     * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only testing will tell.
 
