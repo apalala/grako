@@ -20,7 +20,7 @@ class Node(object):
     """
 
     inline = True
-    template = '{clasname}'
+    template = '{classname}'
 
     def __init__(self, ctx, ast=None, parseinfo=None):
         super(Node, self).__init__()
@@ -29,7 +29,7 @@ class Node(object):
             parseinfo = ast.parseinfo if hasattr(ast, 'parseinfo') else None
         self._parseinfo = parseinfo
 
-        self.clasname = self.__class__.__name__
+        self.classname = self.__class__.__name__
         self._parent = None
         self._children = []
 
@@ -141,7 +141,6 @@ class ModelBuilder(object):
         return nodetype
 
     def _default(self, ast, *args, **kwargs):
-        print('DEFAULT', args)
         if not args:
             return ast
         nodetype = self._get_nodetype(args[0])

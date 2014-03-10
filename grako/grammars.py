@@ -600,9 +600,9 @@ class Rule(Named):
 
         params = kwparams = ''
         if self.params:
-            params = ', '.join(str(p) for p in self.params)
+            params = ', '.join(repr(str(p)) for p in self.params)
         if self.kwparams:
-            kwparams = ', '.join('%s=%s' % (k, v) for k, v in self.kwparams.items())
+            kwparams = ', '.join('%s=%s' % (k, repr(str(v))) for k, v in self.kwparams.items())
 
         if params and kwparams:
             params = params + ', ' + kwparams
