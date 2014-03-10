@@ -5,6 +5,7 @@ Base definitions for models of programs.
 ** under construction **
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
+from ast import AST
 
 EOLCOL = 50
 
@@ -36,7 +37,11 @@ class Node(object):
         self.__postinit__(ast)
 
     def __postinit__(self, ast):
-        pass
+        if not isinstance(ast, AST):
+            self.value = ast
+        else:
+            for name, value in ast.items():
+                setattr(self, name, value)
 
     @property
     def context(self):
@@ -85,6 +90,12 @@ class Node(object):
             for c in ast:
                 self._adopt_children(c)
 
+    def __str__(self):
+        return str({k: v for k, v in vars(self).items()
+                        if not k.startswith('_')
+                    }
+                   )
+
 
 class NodeTraverser(object):
     def _find_traverser(self, node):
@@ -105,3 +116,34 @@ class DepthFirstTraverser(NodeTraverser):
         # assume node is a Node
         children = [self.traverse(c, *args, **kwargs) for c in node.children]
         return super(DepthFirstTraverser, self).traverse(node, children, *args, **kwargs)
+
+
+class ModelBuilder(object):
+    """ Intended as a semantic action for parsing, a ModelBuilder creates
+        nodes using the class name given as first parameter to a grammar
+        rule, and synthesizes the class/type if it's not known.
+    """
+    def __init__(self, context=None, baseType=Node, nodetypes=None):
+        self.ctx = context
+        self.baseType = baseType
+
+        self.nodetypes = nodetypes or dict()
+
+    def _register_nodetype(self, nodetype):
+        self.nodetypes[nodetype.__name__] = nodetype
+
+    def _get_nodetype(self, typename):
+        if typename in self.nodetypes:
+            return self.nodetypes[typename]
+        # create a new type
+        nodetype = type(typename, (self.baseType,), {})
+        self._register_nodetype(nodetype)
+        return nodetype
+
+    def _default(self, ast, *args, **kwargs):
+        print('DEFAULT', args)
+        if not args:
+            return ast
+        nodetype = self._get_nodetype(args[0])
+        node = nodetype(self.ctx, ast=AST)
+        return node
