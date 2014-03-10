@@ -564,9 +564,11 @@ class RuleRef(_Model):
 
 
 class Rule(Named):
-    def __init__(self, name, exp, ast_name=None):
+    def __init__(self, name, exp, params, kwparams, ast_name=None):
         super(Rule, self).__init__(name, exp)
         self.ast_name = ast_name
+        self.params = params
+        self.kwparams = kwparams
 
     def parse(self, ctx):
         return ctx._call(self.exp.parse, self.name)
@@ -596,8 +598,29 @@ class Rule(Named):
             ast_name_clause = ''
         fields.update(ast_name_clause=ast_name_clause)
 
+        params = kwparams = ''
+        if self.params:
+            params = ', '.join(str(p) for p in self.params)
+        if self.kwparams:
+            kwparams = ', '.join('%s=%s' % (k, v) for k, v in self.kwparams.items())
+
+        if params and kwparams:
+            params = params + ', ' + kwparams
+        elif kwparams:
+            params = kwparams
+
+        if params:
+            self.template = self.params_template
+            fields.update(params=params)
+
     template = '''
                 @rule_def
+                def _{name}_(self):
+                {exp:1::}{ast_name_clause}
+
+                '''
+    params_template = '''
+                @rule_def_params({params})
                 def _{name}_(self):
                 {exp:1::}{ast_name_clause}
 

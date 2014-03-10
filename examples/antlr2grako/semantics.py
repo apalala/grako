@@ -12,7 +12,7 @@ class ANTLRSemantics(object):
         return model.Grammar(self.name, ast.rules)
 
     def rule(self, ast):
-        return model.Rule(ast.name, ast.exp)
+        return model.Rule(ast.name, ast.exp, ast.params, ast.kwparams)
 
     def alternatives(self, ast):
         options = [o for o in ast.options if o is not None]
