@@ -30,9 +30,10 @@ class Node(object):
         self._parseinfo = parseinfo
 
         self.classname = self.__class__.__name__
+        self.value = None
+
         self._parent = None
         self._children = []
-
         self._adopt_children(ast)
         self.__postinit__(ast)
 
@@ -91,7 +92,7 @@ class Node(object):
                 self._adopt_children(c)
 
     def __str__(self):
-        return str({k: v for k, v in vars(self).items()
+        return str({k: str(v) for k, v in vars(self).items()
                         if not k.startswith('_')
                     }
                    )
