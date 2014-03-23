@@ -154,7 +154,13 @@ To add semantic actions, just pass a semantic delegate to the parse method::
 The EBNF Grammar Syntax
 =======================
 
-**Grako** uses a variant of the standard EBNF_ syntax. A grammar consists of a sequence of one or more rules of the form::
+**Grako** uses a variant of the standard EBNF_ syntax.
+
+
+Rules
+-----
+
+A grammar consists of a sequence of one or more rules of the form::
 
     name = expre ;
 
@@ -181,6 +187,9 @@ Rule names that start with an uppercase character::
    FRAGMENT = ?/[a-z]+/?
 
 *do not* advance over whitespace before beginning to parse. This feature becomes handy when defining complex lexical elements, as it allows breaking them into several rules.
+
+Expressions
+-----------
 
 The expressions, in reverse order of operator precedence, can be:
 
@@ -365,6 +374,26 @@ The abstract parser will honor as a semantic action a method declared as::
 
     def preproc(self, ast):
 
+Rules with Arguments
+====================
+
+**Grako** allows rules to specify Python_-style arguments::
+
+    addition(add, op='+') =  addend '+'
+
+The arguments values are fixed at grammar-compilation time.
+
+Semantic methods must be prepared to receive any arguments declared in the corresponding rule::
+
+    def addition(self, ast, name, op=None):
+        ...
+
+When working with rule arguments, it is good to define a `_default()` method that is ready to take any combination of standard and keyword arguments::
+
+    def _default(self, ast, *args, **kwargs):
+        ...
+
+Note than when multiple rules with the same name are combined with rule arguments the results are curently undefined.
 
 Templates and Translation
 =========================
@@ -532,6 +561,14 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.0.0-rc.1
+----------
+
+    * Now grammar rules may declare Python_ style arguments that get passed to their corresponding semantic methods.
+
+    * Internals and examples were upgraded to use the latest **Grako** features.
+
+
 2.4.0
 -----
 
@@ -543,7 +580,7 @@ Changes
 
     * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows for producing meaningful errors when something in the semantics is missing.
 
-    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.3.y, and PyPy_ 2.2.x.
+    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.3.x, and PyPy_ 2.2.x.
 
     * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only testing will tell.
 
