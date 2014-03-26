@@ -334,7 +334,7 @@ class ParseContext(object):
             elif '@' in node:
                 node = node['@']  # override the AST
             elif self.parseinfo:
-                node.add('parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
+                node.add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
             semantic_rule = self._find_semantic_rule(name)
             if semantic_rule:
                 try:
