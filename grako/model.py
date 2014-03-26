@@ -11,26 +11,18 @@ EOLCOL = 50
 
 
 class Node(object):
-    """ Base class for model nodes, in charge of the rendering infrastructure.
-
-        Rendering consists of providing arguments through object attributes
-        and the :meth:render_fields method for them to be applied to a
-        :class:`string.Template` instance created from the *template* class
-        variable.
+    """ Base class for model nodes
     """
 
     inline = True
-    template = '{classname}'
 
     def __init__(self, ctx, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
+        self._ast = ast
         if parseinfo is None:
-            parseinfo = ast.parseinfo if hasattr(ast, 'parseinfo') else None
+            parseinfo = ast._parseinfo if hasattr(ast, '_parseinfo') else None
         self._parseinfo = parseinfo
-
-        self.classname = self.__class__.__name__
-        self.value = None
 
         self._parent = None
         self._children = []
@@ -42,11 +34,12 @@ class Node(object):
             self.value = ast
         else:
             for name, value in ast.items():
-                setattr(self, name, value)
+                if not name.startswith('_'):
+                    setattr(self, name, value)
 
     @property
-    def context(self):
-        return self.ctx
+    def ast(self):
+        return self._ast
 
     @property
     def parent(self):
@@ -64,6 +57,10 @@ class Node(object):
 
     @property
     def ctx(self):
+        return self._ctx
+
+    @property
+    def context(self):
         return self._ctx
 
     @property
@@ -145,5 +142,5 @@ class ModelBuilder(object):
         if not args:
             return ast
         nodetype = self._get_nodetype(args[0])
-        node = nodetype(self.ctx, ast=AST)
+        node = nodetype(self.ctx, ast=ast)
         return node
