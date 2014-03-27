@@ -42,8 +42,12 @@ class ModelRenderer(Renderer):
     def node(self):
         return self._node
 
+    @property
+    def codegen(self):
+        return self._codegen
+
     def get_renderer(self, item):
-        return self._codegen.get_renderer(item)
+        return self.codegen.get_renderer(item)
 
     def render(self, template=None, **fields):
         if isinstance(self.node, Node):
