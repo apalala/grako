@@ -20,8 +20,8 @@ class Node(object):
         super(Node, self).__init__()
         self._ctx = ctx
         self._ast = ast
-        if parseinfo is None:
-            parseinfo = ast._parseinfo if hasattr(ast, '_parseinfo') else None
+        if parseinfo is None and isinstance(ast, AST):
+            parseinfo = ast._parseinfo
         self._parseinfo = parseinfo
 
         self._parent = None
