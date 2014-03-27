@@ -60,6 +60,12 @@ class ModelRenderer(Renderer):
         return super(ModelRenderer, self).render(template=template, **fields)
 
 
+class NullModelRenderer(ModelRenderer):
+    """A `ModelRenderer` that generates nothing.
+    """
+    template = ''
+
+
 class CodeGenerator(object):
     """
     A **CodeGenerator** is an abstract class that finds a
