@@ -5,7 +5,7 @@ Base definitions for models of programs.
 ** under construction **
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
-from ast import AST
+from .ast import AST
 
 EOLCOL = 50
 
