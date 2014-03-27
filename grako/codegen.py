@@ -33,19 +33,10 @@ class ModelRenderer(Renderer):
 
         self.formatter = codegen.formatter
 
-        # FIXME: What if the node is not an AST or object?
-        # if isinstance(node, Node):
-        #    for name, value in vars(node).items():
-        #        if not name.startswith('_'):
-        #            setattr(self, name, value)
-        #else:
-        #    self.value = node
-
         self.__postinit__()
 
     def __postinit__(self):
         pass
-
 
     @property
     def node(self):
@@ -55,8 +46,10 @@ class ModelRenderer(Renderer):
         return self._codegen.get_renderer(item)
 
     def render(self, template=None, **fields):
-        # FIXME: Not needed if Node copies AST entries to attributes
-        fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
+        if isinstance(self.node, Node):
+            fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
+        else:
+            fields.update(value=self.node)
         return super(ModelRenderer, self).render(template=template, **fields)
 
 
