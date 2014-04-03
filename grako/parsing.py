@@ -46,7 +46,7 @@ class Parser(ParseContext):
             self._reset(text=text,
                        filename=filename,
                        semantics=semantics,
-                       trace=trace,
+                       trace=trace or self.trace,
                        **kwargs)
             rule = self._find_rule(rule_name)
             result = rule()
