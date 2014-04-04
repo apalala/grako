@@ -65,3 +65,11 @@ class AST(dict):
 
     def add_list(self, key, value):
         return self.add(key, value, force_list=True)
+
+    @property
+    def parseinfo(self):
+        """ Make the special attribute `_parseinfo` be available
+            as a property without an underscore in the name.
+            This patch helps with backwards compatibility.
+        """
+        return self._parseinfo

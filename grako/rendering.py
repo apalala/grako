@@ -19,7 +19,7 @@ def render(item, join='', **fields):
     elif isinstance(item, Renderer):
         return item.render(join=join, **fields)
     elif isiter(item):
-        return join.join(render(e, join=join, **fields) for e in iter(item) if e is not None)
+        return join.join(render(e, **fields) for e in iter(item) if e is not None)
     else:
         return ustr(item)
 
@@ -66,7 +66,7 @@ class Renderer(object):
     """
     template = '{__class__}'
     _counter = itertools.count()
-    formatter = RenderingFormatter()
+    _formatter = RenderingFormatter()
 
     def __init__(self, template=None):
         if template is not None:
@@ -80,10 +80,18 @@ class Renderer(object):
     def reset_counter(cls):
         Renderer._counter = itertools.count()
 
+    @property
+    def formatter(self):
+        return self._formatter
+
+    @formatter.setter
+    def formatter(self, value):
+        self._formatter = value
+
     def rend(self, item, join='', **fields):
-        """ A shortcut for self.formatter.render()
+        """ A shortcut for self._formatter.render()
         """
-        return self.formatter.render(item, join=join, **fields)
+        return self._formatter.render(item, join=join, **fields)
 
     def indent(self, item, ind=1, multiplier=4):
         return indent(self.rend(item), indent=ind, multiplier=4)
@@ -108,10 +116,10 @@ class Renderer(object):
                 template = self.template
 
         try:
-            return self.formatter.format(trim(template), **fields)
+            return self._formatter.format(trim(template), **fields)
         except KeyError:
             # find the missing key
-            keys = (p[1] for p in self.formatter.parse(template))
+            keys = (p[1] for p in self._formatter.parse(template))
             for key in keys:
                 if key and not key in fields:
                     raise KeyError(key, type(self))

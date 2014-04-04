@@ -8,7 +8,7 @@ import sys
 import os
 import argparse
 import pickle
-from .bootstrap import GrakoGrammarGenerator
+from .parser import GrakoGrammarGenerator
 from .exceptions import GrakoException
 
 DESCRIPTION = ('Grako (for grammar compiler) takes grammars'

@@ -12,10 +12,10 @@ import pickle
 import unittest
 from grako.model import NodeTraverser
 from grako.semantics import GrakoSemantics
-from grako.bootstrap import (GrakoParser,
-                             GrakoGrammarGenerator,
-                             COMMENTS_RE
-                             )
+from grako.parser import (GrakoParser,
+                          GrakoGrammarGenerator,
+                          COMMENTS_RE
+                          )
 
 
 class BootstrapTests(unittest.TestCase):
@@ -30,7 +30,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
         with open('etc/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoParser('Grako', parseinfo=False)
+        g = GrakoParser('GrakoBootstrap', parseinfo=False)
         grammar0 = g.parse(text)
         ast0 = json.dumps(grammar0, indent=2)
         with open('tmp/00.ast', 'w') as f:
@@ -39,7 +39,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 01 - parse with parser generator')
         with open('etc/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoGrammarGenerator('Grako', parseinfo=False)
+        g = GrakoGrammarGenerator('GrakoBootstrap', parseinfo=False)
         g.parse(text, trace=False)
 
         generated_grammar1 = str(g.ast['grammar'])
@@ -49,7 +49,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 02 - parse previous output with the parser generator')
         with open('tmp/01.ebnf', 'r') as f:
             text = str(f.read())
-        g = GrakoGrammarGenerator('Grako')
+        g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text, trace=False)
         generated_grammar2 = str(g.ast['grammar'])
         with open('tmp/02.ebnf', 'w') as f:
@@ -59,7 +59,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 03 - repeat')
         with open('tmp/02.ebnf') as f:
             text = f.read()
-        g = GrakoParser('Grako', parseinfo=False)
+        g = GrakoParser('GrakoBootstrap', parseinfo=False)
         ast3 = g.parse(text)
         with open('tmp/03.ast', 'w') as f:
             f.write(json.dumps(ast3, indent=2))
@@ -67,7 +67,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 04 - repeat')
         with open('tmp/02.ebnf') as f:
             text = f.read()
-        g = GrakoGrammarGenerator('Grako')
+        g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text)
         parser = g.ast['grammar']
     #    pprint(parser.first_sets, indent=2, depth=3)
@@ -89,7 +89,7 @@ class BootstrapTests(unittest.TestCase):
             f.write(gencode6)
 
         print('-' * 20, 'phase 07 - import generated code')
-        from g06 import GrakoParser as GenParser  # @UnresolvedImport
+        from g06 import GrakoBootstrapParser as GenParser  # @UnresolvedImport
 
         print('-' * 20, 'phase 08 - compile using generated code')
         parser = GenParser(trace=False)
@@ -103,7 +103,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 09 - Generate parser with semantics')
         with open('etc/grako.ebnf') as f:
             text = f.read()
-        parser = GrakoGrammarGenerator('Grako')
+        parser = GrakoGrammarGenerator('GrakoBootstrap')
         g9 = parser.parse(text)
         generated_grammar9 = str(g9)
         with open('tmp/09.ebnf', 'w') as f:
@@ -113,7 +113,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 10 - Parse with a model using a semantics')
         g10 = g9.parse(text,
                     start_rule='grammar',
-                    semantics=GrakoSemantics('Grako'),
+                    semantics=GrakoSemantics('GrakoBootstrap'),
                     comments_re=COMMENTS_RE
                     )
         generated_grammar10 = str(g10)
@@ -130,7 +130,7 @@ class BootstrapTests(unittest.TestCase):
             g11 = pickle.load(f)
         r11 = g11.parse(text,
                         start_rule='grammar',
-                        semantics=GrakoSemantics('Grako'),
+                        semantics=GrakoSemantics('GrakoBootstrap'),
                         comments_re=COMMENTS_RE
                         )
         with open('tmp/11.ebnf', 'w') as f:

@@ -5,42 +5,41 @@ Base definitions for models of programs.
 ** under construction **
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
+from .ast import AST
 
 EOLCOL = 50
 
 
 class Node(object):
-    """ Base class for model nodes, in charge of the rendering infrastructure.
-
-        Rendering consists of providing arguments through object attributes
-        and the :meth:render_fields method for them to be applied to a
-        :class:`string.Template` instance created from the *template* class
-        variable.
+    """ Base class for model nodes
     """
 
     inline = True
-    template = '{clasname}'
 
     def __init__(self, ctx, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
-        if parseinfo is None:
-            parseinfo = ast.parseinfo if hasattr(ast, 'parseinfo') else None
+        self._ast = ast
+        if parseinfo is None and isinstance(ast, AST):
+            parseinfo = ast._parseinfo
         self._parseinfo = parseinfo
 
-        self.clasname = self.__class__.__name__
         self._parent = None
         self._children = []
-
         self._adopt_children(ast)
         self.__postinit__(ast)
 
     def __postinit__(self, ast):
-        pass
+        if not isinstance(ast, AST):
+            self.value = ast
+        else:
+            for name, value in ast.items():
+                if not name.startswith('_'):
+                    setattr(self, name, value)
 
     @property
-    def context(self):
-        return self.ctx
+    def ast(self):
+        return self._ast
 
     @property
     def parent(self):
@@ -58,6 +57,10 @@ class Node(object):
 
     @property
     def ctx(self):
+        return self._ctx
+
+    @property
+    def context(self):
         return self._ctx
 
     @property
@@ -85,6 +88,12 @@ class Node(object):
             for c in ast:
                 self._adopt_children(c)
 
+    def __str__(self):
+        return str({k: str(v) for k, v in vars(self).items()
+                        if not k.startswith('_')
+                    }
+                   )
+
 
 class NodeTraverser(object):
     def _find_traverser(self, node):
@@ -105,3 +114,33 @@ class DepthFirstTraverser(NodeTraverser):
         # assume node is a Node
         children = [self.traverse(c, *args, **kwargs) for c in node.children]
         return super(DepthFirstTraverser, self).traverse(node, children, *args, **kwargs)
+
+
+class ModelBuilder(object):
+    """ Intended as a semantic action for parsing, a ModelBuilder creates
+        nodes using the class name given as first parameter to a grammar
+        rule, and synthesizes the class/type if it's not known.
+    """
+    def __init__(self, context=None, baseType=Node, nodetypes=None):
+        self.ctx = context
+        self.baseType = baseType
+
+        self.nodetypes = nodetypes or dict()
+
+    def _register_nodetype(self, nodetype):
+        self.nodetypes[nodetype.__name__] = nodetype
+
+    def _get_nodetype(self, typename):
+        if typename in self.nodetypes:
+            return self.nodetypes[typename]
+        # create a new type
+        nodetype = type(typename, (self.baseType,), {})
+        self._register_nodetype(nodetype)
+        return nodetype
+
+    def _default(self, ast, *args, **kwargs):
+        if not args:
+            return ast
+        nodetype = self._get_nodetype(args[0])
+        node = nodetype(self.ctx, ast=ast)
+        return node

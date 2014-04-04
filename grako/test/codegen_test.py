@@ -10,7 +10,7 @@ class Generator(CodeGenerator):
     def __init__(self):
         super(Generator, self).__init__()
 
-    def _find_renderer(self, item):
+    def _find_renderer_class(self, item):
         name = item.__class__.__name__
         return getattr(self, name, None)
 

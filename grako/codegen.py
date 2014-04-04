@@ -26,42 +26,65 @@ class DelegatingRenderingFormatter(RenderingFormatter):
 
 
 class ModelRenderer(Renderer):
-    def __init__(self, ctx, node, template=None):
+    def __init__(self, codegen, node, template=None):
         super(ModelRenderer, self).__init__(template=template)
-        self.ctx = ctx
-        self.node = node
+        self._codegen = codegen
+        self._node = node
 
-        self.formatter = ctx.formatter
-
-        for name, value in vars(node).items():
-            setattr(self, name, value)
+        self.formatter = codegen.formatter
 
         self.__postinit__()
 
     def __postinit__(self):
         pass
 
+    @property
+    def node(self):
+        return self._node
+
+    @property
+    def codegen(self):
+        return self._codegen
+
     def get_renderer(self, item):
-        return self.ctx.get_renderer(item)
+        return self.codegen.get_renderer(item)
 
     def render(self, template=None, **fields):
-        fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
+        if isinstance(self.node, Node):
+            fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
+        else:
+            fields.update(value=self.node)
         return super(ModelRenderer, self).render(template=template, **fields)
 
 
+class NullModelRenderer(ModelRenderer):
+    """A `ModelRenderer` that generates nothing.
+    """
+    template = ''
+
+
 class CodeGenerator(object):
+    """
+    A **CodeGenerator** is an abstract class that finds a
+    ``ModelRenderer`` class with the same name as each model's node and
+    uses it to render the node.
+    """
     def __init__(self):
         self.formatter = DelegatingRenderingFormatter(self)
 
-    def _find_renderer(self, item):
+    def _find_renderer_class(self, item):
+        """
+        This method is used to find a ``ModelRenderer`` for the given
+        item. It must be overriden in concrete classes.
+        """
         pass
 
     def get_renderer(self, item):
-        rendererClass = self._find_renderer(item)
+        rendererClass = self._find_renderer_class(item)
         if rendererClass is None:
             return None
-        assert issubclass(rendererClass, ModelRenderer)
         try:
+            assert issubclass(rendererClass, ModelRenderer)
             return rendererClass(self, item)
         except Exception as e:
             raise type(e)(str(e), rendererClass.__name__)

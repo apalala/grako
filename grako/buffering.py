@@ -131,13 +131,15 @@ class Buffer(object):
         while p < le and self.text[p] != c:
             p += 1
         self.goto(p)
+        return p
 
     def skip_past(self, c):
         self.skip_to(c)
         self.next()
+        return self.pos
 
     def skip_to_eol(self):
-        self.skip_to('\n')
+        return self.skip_to('\n')
 
     def is_space(self):
         return self.current() in self.whitespace
