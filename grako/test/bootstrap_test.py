@@ -158,7 +158,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 13 - Graphics')
         try:
             from grako.diagrams import draw
-        except:
+        except ImportError:
             print('PyGraphViz not found!')
         else:
             draw('tmp/13.png', g11)
