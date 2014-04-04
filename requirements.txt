@@ -1,8 +1,14 @@
 argparse==1.2.1
+enum34==0.9.23
 flake8==2.1.0
 graphviz==0.1.1
+ipaddress==1.0.6
+isort==3.6.2
 mccabe==0.2.1
+natsort==3.1.1
 pep8==1.4.6
+pies==2.6.1
+pies2overrides==2.6.1
 py==1.4.19
 pyflakes==0.7.3
 pygraphviz==1.2
