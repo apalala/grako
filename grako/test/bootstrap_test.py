@@ -2,20 +2,21 @@
 """
 This awkward set of tests tries to make Grako bang its head against iself.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
-import sys
-sys.path.append('tmp')
-import os
-import shutil
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import json
+import os
 import pickle
+import shutil
+import sys
 import unittest
+
 from grako.model import NodeTraverser
+from grako.parser import COMMENTS_RE, GrakoGrammarGenerator, GrakoParser
 from grako.semantics import GrakoSemantics
-from grako.parser import (GrakoParser,
-                          GrakoGrammarGenerator,
-                          COMMENTS_RE
-                          )
+
+sys.path.append('tmp')
 
 
 class BootstrapTests(unittest.TestCase):

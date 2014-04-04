@@ -2,7 +2,8 @@
 """
 The Grako test suite.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 if __name__ == '__main__':
     import unittest

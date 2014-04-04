@@ -3,10 +3,13 @@
 The Renderer class provides the infrastructure for generating template-based
 code. It's used by the .grammars module for parser generation.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import itertools
 import string
-from .util import trim, ustr, isiter, strtype, indent
+
+from .util import indent, isiter, strtype, trim, ustr
 
 
 def render(item, join='', **fields):

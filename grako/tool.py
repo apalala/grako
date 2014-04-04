@@ -3,13 +3,16 @@
 Parse and translate an EBNF grammar into a Python parser for
 the described language.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
-import sys
-import os
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import argparse
+import os
 import pickle
-from .parser import GrakoGrammarGenerator
+import sys
+
 from .exceptions import GrakoException
+from .parser import GrakoGrammarGenerator
 
 DESCRIPTION = ('Grako (for grammar compiler) takes grammars'
                ' in a variation of EBNF as input, and outputs a memoizing'

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import itertools
+
+from .model import NodeTraverser
+
 try:
     import pygraphviz as pgv
 except:
     raise
-from .model import NodeTraverser
 
 
 __all__ = ['draw']

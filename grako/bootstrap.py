@@ -8,9 +8,11 @@
 # next time the file is generated.
 #
 
-from __future__ import print_function, division, absolute_import, unicode_literals
-from grako.parsing import * # @UnusedWildImport
-from grako.exceptions import * # @UnusedWildImport
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from grako.exceptions import *  # @UnusedWildImport
+from grako.parsing import *  # @UnusedWildImport
 
 __version__ = '14.067.18.00.47'
 

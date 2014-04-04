@@ -6,13 +6,17 @@ Line analysis and caching are done so the parser can freely move with goto(p)
 to any position in the parsed text, and still recover accurate information
 about source lines and content.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
-# TODO: There could be a file buffer using random access
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import re as regexp
 import string
 from bisect import bisect_left
 from collections import namedtuple
+
 from .util import ustr
+
+# TODO: There could be a file buffer using random access
 
 __all__ = ['Buffer']
 

@@ -3,7 +3,8 @@
 Define the AST class, a direct descendant of dict that's used during parsing
 to store the values of named elements of grammar rules.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 __all__ = ['AST']
 

@@ -13,15 +13,14 @@ the .buffering module.
 Parser.parse() will take the text to parse directly, or an instance of the
 .buffeing.Buffer class.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import functools
+
 from .contexts import ParseContext
-from .exceptions import (FailedParse,
-                         FailedCut,
-                         FailedToken,
-                         FailedPattern,
-                         FailedRef,
-                         MissingSemanticFor)
+from .exceptions import (FailedCut, FailedParse, FailedPattern, FailedRef,
+                         FailedToken, MissingSemanticFor)
 
 
 class CheckSemanticsMixin(object):

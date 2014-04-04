@@ -1,13 +1,15 @@
 #!/usr/env/bin python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
-import sys
-import io
-from os import path
-from grako.buffering import Buffer
-from antlr_parser import ANTLRParser as ANTLRParserBase
-from semantics import ANTLRSemantics
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
+import io
+import sys
+from os import path
+
+from antlr_parser import ANTLRParser as ANTLRParserBase
+from grako.buffering import Buffer
+from semantics import ANTLRSemantics
 
 COMMENTS_RE = r'/\*(?:.|\n)*?\*/|//[^\n]*?\n'
 

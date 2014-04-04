@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 from collections import OrderedDict
-from .util import simplify_list
+
 from . import grammars
+from .util import simplify_list
 
 
 class GrakoASTSemantics(object):

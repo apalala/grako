@@ -3,10 +3,13 @@
 Tests for consistency of the line information caches kept by
 grako.buffering.Buffer.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import os
 import random
 import unittest
+
 from ..buffering import Buffer
 
 

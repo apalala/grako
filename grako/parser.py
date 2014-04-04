@@ -12,10 +12,12 @@ The GrakoGrammarGenerator class, a descendant of GrakoParserRoot constructs
 a model of the grammar using semantic actions the model elements defined
 in the .grammars module.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from .bootstrap import GrakoBootstrapParser
 from .buffering import Buffer
 from .semantics import GrakoASTSemantics, GrakoSemantics
-from .bootstrap import GrakoBootstrapParser
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 

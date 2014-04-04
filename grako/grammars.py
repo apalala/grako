@@ -11,23 +11,21 @@ Models calculate the LL(k) FIRST function to aid in providing more significant
 error messages when a choice fails to parse. FOLLOW(k) and LA(k) should be
 computed, but they are not.
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
-import sys
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import re
+import sys
+import time
 from collections import defaultdict
 from copy import copy
-import time
-from .util import indent, trim
-from .rendering import Renderer, render
-from .model import Node
+
 from .contexts import ParseContext, safe_name
-from .exceptions import (FailedParse,
-                         FailedToken,
-                         FailedPattern,
-                         FailedRef,
-                         FailedCut,
-                         FailedSemantics,
-                         GrammarError)
+from .exceptions import (FailedCut, FailedParse, FailedPattern, FailedRef,
+                         FailedSemantics, FailedToken, GrammarError)
+from .model import Node
+from .rendering import render, Renderer
+from .util import indent, trim
 
 
 def check(result):

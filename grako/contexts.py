@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
-import sys
-from contextlib import contextmanager
-from collections import namedtuple
-from keyword import iskeyword
-from .ast import AST
-from . import buffering
-from .exceptions import (FailedParse,
-                         FailedCut,
-                         FailedLookahead,
-                         FailedSemantics,
-                         OptionSucceeded
-                         )
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
+import sys
+from collections import namedtuple
+from contextlib import contextmanager
+from keyword import iskeyword
+
+from . import buffering
+from .ast import AST
+from .exceptions import (FailedCut, FailedLookahead, FailedParse,
+                         FailedSemantics, OptionSucceeded)
 
 __all__ = ['ParseInfo', 'ParseContext']
 

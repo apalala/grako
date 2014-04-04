@@ -8,7 +8,8 @@ of the .buffering.Buffer class, and with as little overhead as possible for
 exceptions that will not be parsing errors (remember that Grako uses the
 exception system to backtrack).
 """
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 
 class GrakoException(Exception):

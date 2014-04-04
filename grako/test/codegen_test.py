@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from grako.model import Node
-from grako.codegen import ModelRenderer, CodeGenerator
 import unittest
+
+from grako.codegen import CodeGenerator, ModelRenderer
+from grako.model import Node
 
 
 class Generator(CodeGenerator):

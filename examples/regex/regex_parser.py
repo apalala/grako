@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
-from parser_base import RegexParser
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import model
+from parser_base import RegexParser
 
 
 class RegexSemantics(object):
