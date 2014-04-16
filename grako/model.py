@@ -6,7 +6,6 @@ Base definitions for models of programs.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-
 from .ast import AST
 
 EOLCOL = 50
@@ -36,8 +35,9 @@ class Node(object):
             self.value = ast
         else:
             for name, value in ast.items():
-                if not name.startswith('_'):
-                    setattr(self, name, value)
+                if hasattr(self, name):
+                    name = '_' + name
+                setattr(self, name, value)
 
     @property
     def ast(self):
