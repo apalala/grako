@@ -99,10 +99,17 @@ class Node(object):
 
 class NodeTraverser(object):
     def _find_traverser(self, node):
-        name = '_traverse_' + node.__class__.__name__
-        traverser = getattr(self, name, None)
-        if callable(traverser):
-            return traverser
+        classes = [node.__class__]
+        while classes:
+            cls = classes.pop()
+            name = '_traverse_' + cls.__name__
+            traverser = getattr(self, name, None)
+            if callable(traverser):
+                return traverser
+            for b in cls.__bases__:
+                if not b in classes:
+                    classes.append(b)
+
         return getattr(self, '_traverse_default', None)
 
     def traverse(self, node, *args, **kwargs):
