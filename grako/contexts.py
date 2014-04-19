@@ -43,7 +43,7 @@ class ParseContext(object):
                  comments_re=None,
                  whitespace=None,
                  ignorecase=False,
-                 nameguard=True,
+                 nameguard=None,
                  memoize_lookaheads=True,
                  **kwargs):
         super(ParseContext, self).__init__()
@@ -91,14 +91,14 @@ class ParseContext(object):
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
-
-            buffer = buffering.Buffer(text,
-                                      filename=filename,
-                                      comments_re=comments_re or self.comments_re,
-                                      whitespace=whitespace or self.whitespace,
-                                      ignorecase=ignorecase,
-                                      nameguard=nameguard,
-                                      **kwargs)
+            buffer = buffering.Buffer(
+                text,
+                filename=filename,
+                comments_re=comments_re or self.comments_re,
+                whitespace=whitespace if whitespace is not None else self.whitespace,
+                ignorecase=ignorecase,
+                nameguard=nameguard,
+                **kwargs)
         self._buffer = buffer
         if trace is not None:
             self.trace = trace

@@ -611,7 +611,7 @@ class Rule(Named):
 
 
 class Grammar(_Model):
-    def __init__(self, name, rules, whitespace=None, nameguard=True):
+    def __init__(self, name, rules, whitespace=None, nameguard=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
@@ -693,18 +693,18 @@ class Grammar(_Model):
                 #
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
-                from grako.parsing import * # @UnusedWildImport
-                from grako.exceptions import * # @UnusedWildImport
+                from grako.parsing import * # noqa
+                from grako.exceptions import * # noqa
+
 
                 __version__ = '{version}'
 
+
                 class {name}Parser(Parser):
-                    def __init__(self, whitespace={whitespace}, nameguard={nameguard}, **kwargs):
-                        super({name}Parser, self).__init__(whitespace=whitespace,
-                            nameguard=nameguard, **kwargs)
+                    def __init__(self, whitespace={whitespace}, **kwargs):
+                        super({name}Parser, self).__init__(whitespace=whitespace, **kwargs)
 
                 {rules}
-
 
                 class {name}SemanticParser(CheckSemanticsMixin, {name}Parser):
                     pass
@@ -713,12 +713,18 @@ class Grammar(_Model):
                 class {name}Semantics(object):
                 {abstract_rules}
 
-                def main(filename, startrule, trace=False):
+
+                def main(filename, startrule, trace=False, whitespace=None):
                     import json
                     with open(filename) as f:
                         text = f.read()
                     parser = {name}Parser(parseinfo=False)
-                    ast = parser.parse(text, startrule, filename=filename, trace=trace)
+                    ast = parser.parse(
+                        text,
+                        startrule,
+                        filename=filename,
+                        trace=trace,
+                        whitespace=whitespace)
                     print('AST:')
                     print(ast)
                     print()
@@ -728,7 +734,9 @@ class Grammar(_Model):
 
                 if __name__ == '__main__':
                     import argparse
+                    import string
                     import sys
+
                     class ListRules(argparse.Action):
                         def __call__(self, parser, namespace, values, option_string):
                             print('Rules:')
@@ -736,15 +744,17 @@ class Grammar(_Model):
                                 print(r)
                             print()
                             sys.exit(0)
+
                     parser = argparse.ArgumentParser(description="Simple parser for {name}.")
                     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                                         help="list all rules and exit")
                     parser.add_argument('-t', '--trace', action='store_true',
                                         help="output trace information")
+                    parser.add_argument('-w', '--whitespace', type=str, default=string.whitespace,
+                                        help="whitespace specification")
                     parser.add_argument('file', metavar="FILE", help="the input file to parse")
                     parser.add_argument('startrule', metavar="STARTRULE",
                                         help="the start rule for parsing")
                     args = parser.parse_args()
 
-                    main(args.file, args.startrule, trace=args.trace)
-                '''
+                    main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace) '''

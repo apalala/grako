@@ -29,7 +29,7 @@ class Buffer(object):
                  comments_re=None,
                  ignorecase=False,
                  trace=False,
-                 nameguard=True,
+                 nameguard=None,
                  **kwargs):
         self.original_text = text
         self.text = ustr(text)
@@ -39,8 +39,10 @@ class Buffer(object):
                               else string.whitespace)
         self.comments_re = comments_re
         self.ignorecase = ignorecase
-        self.trace = trace
-        self.nameguard = nameguard
+        self.trace = True
+        self.nameguard = (nameguard
+                          if nameguard is not None
+                          else bool(self.whitespace))
         self._fileinfo = self.get_fileinfo(text, filename)
         self._linecache = []
         self._linecount = 0
