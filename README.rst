@@ -119,7 +119,7 @@ The *-h* and *--help* parameters provide full usage information::
         -m name, --name name  An optional name for the grammar. It defaults to the basename of the grammar file's name
         -o outfile, --outfile outfile specify where the output should go (default is stdout)
         -t, --trace           produce verbose parsing output
-        --whitespace characters
+        -w, --whitespace characters
                               whitespace characters (use empty string to disable automatic whitespace)
         -n, --no-nameguard    do not protect alphanumeric tokens that are prefixes of others
         -b, --binary          generate a pickled grammar model instead of a parser
@@ -568,6 +568,15 @@ Changes
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
+
+2.4.1
+-----
+    * *BUG* The `whitespace` parameter was not being passed consistently, and its
+      interaction with the `nameguard` parameter was not well thought-out (`whitespace=''` must imply `nameguard=False`).
+
+    * Added `--whitespace` parameter to generated `main()`.
+
+    * Tested agains Python_ 3.4.
 
 2.4.0
 -----
