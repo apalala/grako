@@ -39,6 +39,7 @@ class Parser(ParseContext):
               filename=None,
               semantics=None,
               trace=False,
+              whitespace=None,
               **kwargs):
         try:
             self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
@@ -46,6 +47,7 @@ class Parser(ParseContext):
                        filename=filename,
                        semantics=semantics,
                        trace=trace or self.trace,
+                       whitespace=whitespace if whitespace is not None else self.whitespace,
                        **kwargs)
             rule = self._find_rule(rule_name)
             result = rule()
