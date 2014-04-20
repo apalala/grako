@@ -535,7 +535,7 @@ Changes
 2.4.1
 -----
     * *BUG* The `whitespace` parameter was not being passed consistently, and its
-      interaction with the `nameguard` parameter was not well thought-out (`whitespace=''` must imply `nameguard=False`).
+      interaction with the `nameguard` parameter was not well thought-out (`whitespace==''` must imply `nameguard==False`).
 
     * Added `--whitespace` parameter to generated `main()`.
 
