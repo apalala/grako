@@ -407,10 +407,9 @@ class Closure(_Decorator):
     def render(self, **fields):
         if {()} in self.exp.firstset:
             raise GrammarError('may repeat empty sequence')
-        return super(Closure, self).render(**fields)
+        return '\n' + super(Closure, self).render(**fields)
 
-    template = '''
-
+    template = '''\
                 def block{n}():
                 {exp:1::}
                 self._closure(block{n})\
@@ -532,7 +531,7 @@ class NamedList(Named):
 
     template = '''
                 {exp}
-                self.ast.add_list('{name}', self.last_node)\
+                self.ast._append('{name}', self.last_node)\
                 '''
 
 

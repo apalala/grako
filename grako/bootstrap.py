@@ -70,33 +70,33 @@ class GrakoBootstrapParser(Parser):
     @rule_def
     def _params_(self):
         self._literal_()
-        self.ast.add_list('@', self.last_node)
+        self.ast._append('@', self.last_node)
         def block1():
             self._token(',')
             self._cut()
             self._literal_()
-            self.ast.add_list('@', self.last_node)
+            self.ast._append('@', self.last_node)
         self._closure(block1)
 
     @rule_def
     def _kwparams_(self):
         self._pair_()
-        self.ast.add_list('@', self.last_node)
+        self.ast._append('@', self.last_node)
         def block1():
             self._token(',')
             self._cut()
             self._pair_()
-            self.ast.add_list('@', self.last_node)
+            self.ast._append('@', self.last_node)
         self._closure(block1)
 
     @rule_def
     def _pair_(self):
         self._word_()
-        self.ast.add_list('@', self.last_node)
+        self.ast._append('@', self.last_node)
         self._token('=')
         self._cut()
         self._literal_()
-        self.ast.add_list('@', self.last_node)
+        self.ast._append('@', self.last_node)
 
     @rule_def
     def _expre_(self):
@@ -110,7 +110,7 @@ class GrakoBootstrapParser(Parser):
     @rule_def
     def _choice_(self):
         self._sequence_()
-        self.ast.add_list('options', self.last_node)
+        self.ast._append('options', self.last_node)
         def block1():
             self._token('|')
             self._cut()

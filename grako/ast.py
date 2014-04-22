@@ -28,7 +28,7 @@ class AST(dict):
         return "%s(%s)" % (self.__class__.__name__, super(AST, self).__repr__())
 
     def __setitem__(self, key, value):
-        self.add(key, value)
+        self._add(key, value)
 
     def __getitem__(self, name):
         if name in self:
@@ -47,7 +47,7 @@ class AST(dict):
             if name not in self:
                 self['name'] = None
 
-    def copy(self):
+    def _copy(self):
         haslists = any(isinstance(v, list) for v in self.values())
         if not haslists:
             return AST(self)
@@ -56,7 +56,7 @@ class AST(dict):
             for k, v in self.items()
         )
 
-    def add(self, key, value, force_list=False):
+    def _add(self, key, value, force_list=False):
         previous = self[key]
         if previous is None:
             if force_list:
@@ -69,8 +69,8 @@ class AST(dict):
             super(AST, self).__setitem__(key, [previous, value])
         return self
 
-    def add_list(self, key, value):
-        return self.add(key, value, force_list=True)
+    def _append(self, key, value):
+        return self._add(key, value, force_list=True)
 
     @property
     def parseinfo(self):

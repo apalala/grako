@@ -149,7 +149,7 @@ class ParseContext(object):
 
     def _add_ast_node(self, name, node, force_list=False):
         if name is not None:  # and node:
-            self.ast.add(name, node, force_list)
+            self.ast._add(name, node, force_list)
         return node
 
     @property
@@ -354,7 +354,7 @@ class ParseContext(object):
     def _try(self):
         p = self._pos
         s = self._state
-        ast_copy = self.ast.copy()
+        ast_copy = self.ast._copy()
         self._push_ast()
         self.last_node = None
         try:
