@@ -604,9 +604,6 @@ class Rule(Named):
             result._define(self.defines())
         return result
 
-    def defines(self):
-        return self.exp.defines()
-
     def _call_semantics(self, ctx, name, node):
         semantic_rule = ctx._find_semantic_rule(name)
         if semantic_rule:
