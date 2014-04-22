@@ -30,9 +30,9 @@ class AST(dict):
     def __setitem__(self, key, value):
         self._add(key, value)
 
-    def __getitem__(self, name):
-        if name in self:
-            return super(AST, self).__getitem__(name)
+    def __getitem__(self, key):
+        if self.__contains__(key):
+            return super(AST, self).__getitem__(key)
 
     __getattr__ = __getitem__
     __setattr__ = __setitem__
@@ -43,7 +43,6 @@ class AST(dict):
         return super(AST, self).__getattribute__(name)
 
     def _define(self, keys):
-        return
         for key in keys:
             if not self.__contains__(key):
                 super(AST, self).__setitem__(key, None)
@@ -58,7 +57,7 @@ class AST(dict):
         )
 
     def _add(self, key, value, force_list=False):
-        previous = self[key]
+        previous = self.get(key, None)
         if previous is None:
             if force_list:
                 super(AST, self).__setitem__(key, [value])
