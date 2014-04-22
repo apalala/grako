@@ -647,22 +647,25 @@ class Rule(Named):
             self.template = self.params_template
             fields.update(params=params)
 
-        defines = repr(list(sorted(self.defines())))
-        defines = defines.replace("u'", "'")
+        defines = list(sorted(self.defines()))
+        if not defines:
+            defines = ''
+        else:
+            defines = repr(defines).replace("u'", "'")
+            defines = '\n\n    self.ast._define(%s)' % defines
         fields.update(defines=defines)
 
     template = '''
                 @rule_def
                 def _{name}_(self):
-                {exp:1::}{ast_name_clause}
-                    self.ast._define({defines})
+                {exp:1::}{ast_name_clause}{defines}
 
                 '''
 
     params_template = '''
                 @rule_def_params({params})
                 def _{name}_(self):
-                {exp:1::}{ast_name_clause}
+                {exp:1::}{ast_name_clause}{defines}
 
                 '''
 
