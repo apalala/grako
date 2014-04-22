@@ -8,21 +8,21 @@
 # next time the file is generated.
 #
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import print_function, division, absolute_import, unicode_literals
+from grako.parsing import * # noqa
+from grako.exceptions import * # noqa
 
-from grako.exceptions import *  # @UnusedWildImport
-from grako.parsing import *  # @UnusedWildImport
 
-__version__ = '14.067.18.00.47'
+__version__ = '14.112.13.20.38'
+
 
 class GrakoBootstrapParser(Parser):
-    def __init__(self, whitespace=None, nameguard=True, **kwargs):
-        super(GrakoBootstrapParser, self).__init__(whitespace=whitespace,
-            nameguard=nameguard, **kwargs)
+    def __init__(self, whitespace=None, **kwargs):
+        super(GrakoBootstrapParser, self).__init__(whitespace=whitespace, **kwargs)
 
     @rule_def
     def _grammar_(self):
+
         def block1():
             self._rule_()
         self._positive_closure(block1)
@@ -64,13 +64,14 @@ class GrakoBootstrapParser(Parser):
                     self._token('.')
                 with self._option():
                     self._token(';')
-                self._error('expecting one of: ; .')
+                self._error('expecting one of: . ;')
         self._cut()
 
     @rule_def
     def _params_(self):
         self._literal_()
         self.ast._append('@', self.last_node)
+
         def block1():
             self._token(',')
             self._cut()
@@ -82,6 +83,7 @@ class GrakoBootstrapParser(Parser):
     def _kwparams_(self):
         self._pair_()
         self.ast._append('@', self.last_node)
+
         def block1():
             self._token(',')
             self._cut()
@@ -111,6 +113,7 @@ class GrakoBootstrapParser(Parser):
     def _choice_(self):
         self._sequence_()
         self.ast._append('options', self.last_node)
+
         def block1():
             self._token('|')
             self._cut()
@@ -120,6 +123,7 @@ class GrakoBootstrapParser(Parser):
 
     @rule_def
     def _sequence_(self):
+
         def block1():
             self._element_()
         self._positive_closure(block1)
@@ -148,7 +152,7 @@ class GrakoBootstrapParser(Parser):
                     self.ast['force_list'] = self.last_node
                 with self._option():
                     self._token(':')
-                self._error('expecting one of: +: :')
+                self._error('expecting one of: : +:')
         self._element_()
         self.ast['value'] = self.last_node
 
@@ -215,12 +219,12 @@ class GrakoBootstrapParser(Parser):
                                 self._token('-')
                             with self._option():
                                 self._token('+')
-                            self._error('expecting one of: - +')
+                            self._error('expecting one of: + -')
                     self.ast['plus'] = self.last_node
                 with self._option():
                     with self._optional():
                         self._token('*')
-                self._error('expecting one of: * - +')
+                self._error('expecting one of: + * -')
         self._cut()
 
     @rule_def
@@ -310,7 +314,7 @@ class GrakoBootstrapParser(Parser):
                 self._pattern(r"([^'\n]|\\'|\\\\)*")
                 self.ast['@'] = self.last_node
                 self._token("'")
-            self._error('expecting one of: \' "')
+            self._error('expecting one of: " \'')
 
     @rule_def
     def _number_(self):
@@ -333,7 +337,6 @@ class GrakoBootstrapParser(Parser):
     def _eof_(self):
         self._token('$')
         self._cut()
-
 
 
 class GrakoBootstrapSemanticParser(CheckSemanticsMixin, GrakoBootstrapParser):
@@ -428,12 +431,18 @@ class GrakoBootstrapSemantics(object):
     def eof(self, ast):
         return ast
 
-def main(filename, startrule, trace=False):
+
+def main(filename, startrule, trace=False, whitespace=None):
     import json
     with open(filename) as f:
         text = f.read()
     parser = GrakoBootstrapParser(parseinfo=False)
-    ast = parser.parse(text, startrule, filename=filename, trace=trace)
+    ast = parser.parse(
+        text,
+        startrule,
+        filename=filename,
+        trace=trace,
+        whitespace=whitespace)
     print('AST:')
     print(ast)
     print()
@@ -443,7 +452,9 @@ def main(filename, startrule, trace=False):
 
 if __name__ == '__main__':
     import argparse
+    import string
     import sys
+
     class ListRules(argparse.Action):
         def __call__(self, parser, namespace, values, option_string):
             print('Rules:')
@@ -451,14 +462,17 @@ if __name__ == '__main__':
                 print(r)
             print()
             sys.exit(0)
+
     parser = argparse.ArgumentParser(description="Simple parser for GrakoBootstrap.")
     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                         help="list all rules and exit")
     parser.add_argument('-t', '--trace', action='store_true',
                         help="output trace information")
+    parser.add_argument('-w', '--whitespace', type=str, default=string.whitespace,
+                        help="whitespace specification")
     parser.add_argument('file', metavar="FILE", help="the input file to parse")
     parser.add_argument('startrule', metavar="STARTRULE",
                         help="the start rule for parsing")
     args = parser.parse_args()
 
-    main(args.file, args.startrule, trace=args.trace)
+    main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace)
