@@ -42,10 +42,11 @@ class AST(dict):
             return self[name]
         return super(AST, self).__getattribute__(name)
 
-    def _define(self, names):
-        for name in names:
-            if name not in self:
-                self['name'] = None
+    def _define(self, keys):
+        return
+        for key in keys:
+            if not self.__contains__(key):
+                super(AST, self).__setitem__(key, None)
 
     def _copy(self):
         haslists = any(isinstance(v, list) for v in self.values())
