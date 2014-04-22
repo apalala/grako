@@ -74,6 +74,9 @@ class _Model(Renderer, Node):
     def parse(self, ctx):
         return None
 
+    def defines(self):
+        return set()
+
     @property
     def firstset(self, k=1):
         if self._first_set is None:
@@ -135,6 +138,9 @@ class _Decorator(_Model):
 
     def parse(self, ctx):
         return self.exp.parse(ctx)
+
+    def defines(self):
+        return self.exp.defines()
 
     def _validate(self, rules):
         return self.exp._validate(rules)
@@ -284,6 +290,9 @@ class Sequence(_Model):
         ctx.last_node = result
         return result
 
+    def defines(self):
+        return set().union(*(s.defines() for s in self.sequence))
+
     def _validate(self, rules):
         return all(s._validate(rules) for s in self.sequence)
 
@@ -324,6 +333,9 @@ class Choice(_Model):
             if firstset:
                 raise FailedParse(ctx.buf, 'expecting one of {%s}' % firstset)
             raise FailedParse(ctx.buf, 'no available options')
+
+    def defines(self):
+        return set().union(*(o.defines() for o in self.options))
 
     def _validate(self, rules):
         return all(o._validate(rules) for o in self.options)
@@ -492,6 +504,9 @@ class Named(_Decorator):
         ctx._add_ast_node(self.name, value)
         return value
 
+    def defines(self):
+        return {self.name} | super(Named, self).defines()
+
     def __str__(self):
         return '%s:%s' % (self.name, str(self.exp))
 
@@ -525,10 +540,16 @@ class Override(Named):
     def __init__(self, exp):
         super(Override, self).__init__('@', exp)
 
+    def defines(self):
+        return set()
+
 
 class OverrideList(NamedList):
     def __init__(self, exp):
         super(OverrideList, self).__init__('@', exp)
+
+    def defines(self):
+        return set()
 
 
 class Special(_Model):
@@ -581,6 +602,9 @@ class Rule(Named):
     def parse(self, ctx):
         return ctx._call(self.exp.parse, self.name)
 
+    def defines(self):
+        return self.exp.defines()
+
     def _call_semantics(self, ctx, name, node):
         semantic_rule = ctx._find_semantic_rule(name)
         if semantic_rule:
@@ -621,12 +645,17 @@ class Rule(Named):
             self.template = self.params_template
             fields.update(params=params)
 
+        defines = repr(list(sorted(self.defines())))
+        defines = defines.replace("u'", "'")
+        fields.update(defines=defines)
+
     template = '''
                 @rule_def
                 def _{name}_(self):
                 {exp:1::}{ast_name_clause}
 
                 '''
+
     params_template = '''
                 @rule_def_params({params})
                 def _{name}_(self):
