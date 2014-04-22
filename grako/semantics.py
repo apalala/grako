@@ -85,13 +85,19 @@ class GrakoSemantics(object):
         return ast
 
     def named(self, ast):
-        if ast.force_list:
-            return grammars.NamedList(ast.name, ast.value)
+        if ast.name != '@':
+            if not ast.force_list:
+                return grammars.Named(ast.name, ast.value)
+            else:
+                return grammars.NamedList(ast.name, ast.value)
         else:
-            return grammars.Named(ast.name, ast.value)
+            if not ast.force_list:
+                return grammars.Override(ast.value)
+            else:
+                return grammars.OverrideList(ast.value)
 
     def override(self, ast):
-        return grammars.Named('@', ast)
+        return grammars.Override(ast)
 
     def element(self, ast):
         return ast

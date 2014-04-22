@@ -521,6 +521,16 @@ class NamedList(Named):
                 '''
 
 
+class Override(Named):
+    def __init__(self, exp):
+        super(Override, self).__init__('@', exp)
+
+
+class OverrideList(NamedList):
+    def __init__(self, exp):
+        super(OverrideList, self).__init__('@', exp)
+
+
 class Special(_Model):
     def __init__(self, special):
         super(Special, self).__init__()
