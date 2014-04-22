@@ -26,6 +26,7 @@ from .exceptions import (FailedCut, FailedParse, FailedPattern, FailedRef,
 from .model import Node
 from .rendering import render, Renderer
 from .util import indent, trim
+from .ast import AST
 
 
 def check(result):
@@ -599,7 +600,10 @@ class Rule(Named):
         self.kwparams = kwparams
 
     def parse(self, ctx):
-        return ctx._call(self.exp.parse, self.name)
+        result = ctx._call(self.exp.parse, self.name)
+        if isinstance(result, AST):
+            result._define(self.defines())
+        return result
 
     def defines(self):
         return self.exp.defines()
@@ -652,7 +656,7 @@ class Rule(Named):
                 @rule_def
                 def _{name}_(self):
                 {exp:1::}{ast_name_clause}
-
+                    self.ast._define({defines})
                 '''
 
     params_template = '''
