@@ -55,12 +55,12 @@ expre
 
 choice
     =
-    options+:sequence {'|' >> options:sequence}+
+    @+:sequence {'|' >> @+:sequence}+
     ;
 
 sequence
     =
-    sequence:{element}+
+    {element}+
     ;
 
 element
@@ -99,7 +99,7 @@ term
 
 group
     =
-    '(' >> @expre ')' >>
+    '(' >> @:expre ')' >>
     ;
 
 closure
@@ -109,17 +109,17 @@ closure
 
 optional
     =
-    '[' >> @expre ']' >>
+    '[' >> @:expre ']' >>
     ;
 
 special
     =
-    '?(' >> @?/(.*)/? ')?' >>
+    '?(' >> @:?/(.*)/? ')?' >>
     ;
 
 kif
     =
-    '&' >> @term
+    '&' >> @:term
     ;
 
 knot
@@ -160,8 +160,8 @@ literal
 
 token
     =
-      '"' >> @?/([^"\n]|\\"|\\\\)*/? '"'
-    | "'" >> @?/([^'\n]|\\'|\\\\)*/? "'"
+      '"' >> @:?/([^"\n]|\\"|\\\\)*/? '"'
+    | "'" >> @:?/([^'\n]|\\'|\\\\)*/? "'"
     ;
 
 number
@@ -176,7 +176,7 @@ word
 
 pattern
     =
-    '?/' >> @?/(.*?)(?=/\?)/? '/?' >>
+    '?/' >> @:?/(.*?)(?=/\?)/? '/?' >>
     ;
 
 eof

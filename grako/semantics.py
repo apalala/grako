@@ -11,17 +11,17 @@ from .util import simplify_list
 class GrakoASTSemantics(object):
 
     def group(self, ast):
-        return simplify_list(ast.exp)
+        return simplify_list(ast)
 
     def element(self, ast):
         return simplify_list(ast)
 
     def sequence(self, ast):
-        return simplify_list(ast.sequence)
+        return simplify_list(ast)
 
     def choice(self, ast):
-        if len(ast.options) == 1:
-            return simplify_list(ast.options)
+        if len(ast) == 1:
+            return simplify_list(ast[0])
         return ast
 
 
@@ -103,16 +103,16 @@ class GrakoSemantics(object):
         return ast
 
     def sequence(self, ast):
-        seq = ast.sequence
+        seq = ast
         assert isinstance(seq, list), str(seq)
         if len(seq) == 1:
             return simplify_list(seq)
         return grammars.Sequence(seq)
 
     def choice(self, ast):
-        if len(ast.options) == 1:
-            return ast.options[0]
-        return grammars.Choice(ast.options)
+        if len(ast) == 1:
+            return ast[0]
+        return grammars.Choice(ast)
 
     def expre(self, ast):
         return ast
