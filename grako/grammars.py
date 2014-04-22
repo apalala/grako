@@ -591,10 +591,10 @@ class RuleRef(_Model):
     template = "self._{name}_()"
 
 
-class Rule(Named):
-    def __init__(self, name, exp, params, kwparams, ast_name=None):
-        super(Rule, self).__init__(name, exp)
-        self.ast_name = ast_name
+class Rule(_Decorator):
+    def __init__(self, name, exp, params, kwparams):
+        super(Rule, self).__init__(exp)
+        self.name = name
         self.params = params
         self.kwparams = kwparams
 
@@ -623,11 +623,6 @@ class Rule(Named):
 
     def render_fields(self, fields):
         self.reset_counter()
-        if self.ast_name:
-            ast_name_clause = '\nself.ast = AST(%s=self.ast)\n' % self.ast_name_
-        else:
-            ast_name_clause = ''
-        fields.update(ast_name_clause=ast_name_clause)
 
         params = kwparams = ''
         if self.params:
@@ -655,14 +650,14 @@ class Rule(Named):
     template = '''
                 @rule_def
                 def _{name}_(self):
-                {exp:1::}{ast_name_clause}{defines}
+                {exp:1::}{defines}
 
                 '''
 
     params_template = '''
                 @rule_def_params({params})
                 def _{name}_(self):
-                {exp:1::}{ast_name_clause}{defines}
+                {exp:1::}{defines}
 
                 '''
 
