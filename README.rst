@@ -539,7 +539,7 @@ Changes
 
     * Added `--whitespace` parameter to generated `main()`.
 
-    * Tested agains Python_ 3.4.
+    * Tested on Python_ 3.4.
 
 2.4.0
 -----
