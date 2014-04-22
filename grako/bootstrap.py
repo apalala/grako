@@ -16,7 +16,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.112.13.57.25'
+__version__ = '14.112.14.33.07'
 
 
 class GrakoBootstrapParser(Parser):
@@ -32,7 +32,6 @@ class GrakoBootstrapParser(Parser):
 
         self.ast['@'] = self.last_node
         self._check_eof()
-        self.ast._define([])
 
     @rule_def
     def _rule_(self):
@@ -70,6 +69,7 @@ class GrakoBootstrapParser(Parser):
                     self._token(';')
                 self._error('expecting one of: . ;')
         self._cut()
+
         self.ast._define(['kwparams', 'name', 'params', 'rhs'])
 
     @rule_def
@@ -83,7 +83,6 @@ class GrakoBootstrapParser(Parser):
             self._literal_()
             self.ast._append('@', self.last_node)
         self._closure(block1)
-        self.ast._define([])
 
     @rule_def
     def _kwparams_(self):
@@ -96,7 +95,6 @@ class GrakoBootstrapParser(Parser):
             self._pair_()
             self.ast._append('@', self.last_node)
         self._closure(block1)
-        self.ast._define([])
 
     @rule_def
     def _pair_(self):
@@ -106,7 +104,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._literal_()
         self.ast._append('@', self.last_node)
-        self.ast._define([])
 
     @rule_def
     def _expre_(self):
@@ -116,7 +113,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._sequence_()
             self._error('no available options')
-        self.ast._define([])
 
     @rule_def
     def _choice_(self):
@@ -133,9 +129,9 @@ class GrakoBootstrapParser(Parser):
     @rule_def
     def _sequence_(self):
 
-        def block1():
+        def block0():
             self._element_()
-        self._positive_closure(block1)
+        self._positive_closure(block0)
 
     @rule_def
     def _element_(self):
@@ -147,7 +143,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._term_()
             self._error('no available options')
-        self.ast._define([])
 
     @rule_def
     def _named_(self):
@@ -163,6 +158,7 @@ class GrakoBootstrapParser(Parser):
                 self._error('expecting one of: : +:')
         self._element_()
         self.ast['value'] = self.last_node
+
         self.ast._define(['force_list', 'name', 'value'])
 
     @rule_def
@@ -173,7 +169,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._token('@')
             self._error('expecting one of: @')
-        self.ast._define([])
 
     @rule_def
     def _override_(self):
@@ -181,7 +176,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._element_()
         self.ast['@'] = self.last_node
-        self.ast._define([])
 
     @rule_def
     def _term_(self):
@@ -203,7 +197,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._atom_()
             self._error('no available options')
-        self.ast._define([])
 
     @rule_def
     def _group_(self):
@@ -213,7 +206,6 @@ class GrakoBootstrapParser(Parser):
         self.ast['@'] = self.last_node
         self._token(')')
         self._cut()
-        self.ast._define([])
 
     @rule_def
     def _closure_(self):
@@ -239,6 +231,7 @@ class GrakoBootstrapParser(Parser):
                         self._token('*')
                 self._error('expecting one of: + * -')
         self._cut()
+
         self.ast._define(['exp', 'plus'])
 
     @rule_def
@@ -249,7 +242,6 @@ class GrakoBootstrapParser(Parser):
         self.ast['@'] = self.last_node
         self._token(']')
         self._cut()
-        self.ast._define([])
 
     @rule_def
     def _special_(self):
@@ -259,7 +251,6 @@ class GrakoBootstrapParser(Parser):
         self.ast['@'] = self.last_node
         self._token(')?')
         self._cut()
-        self.ast._define([])
 
     @rule_def
     def _kif_(self):
@@ -267,7 +258,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._term_()
         self.ast['@'] = self.last_node
-        self.ast._define([])
 
     @rule_def
     def _knot_(self):
@@ -275,7 +265,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._term_()
         self.ast['@'] = self.last_node
-        self.ast._define([])
 
     @rule_def
     def _atom_(self):
@@ -291,24 +280,20 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._eof_()
             self._error('no available options')
-        self.ast._define([])
 
     @rule_def
     def _call_(self):
         self._word_()
-        self.ast._define([])
 
     @rule_def
     def _void_(self):
         self._token('()')
         self._cut()
-        self.ast._define([])
 
     @rule_def
     def _cut_(self):
         self._token('>>')
         self._cut()
-        self.ast._define([])
 
     @rule_def
     def _literal_(self):
@@ -320,7 +305,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._word_()
             self._error('no available options')
-        self.ast._define([])
 
     @rule_def
     def _token_(self):
@@ -338,17 +322,14 @@ class GrakoBootstrapParser(Parser):
                 self.ast['@'] = self.last_node
                 self._token("'")
             self._error('expecting one of: " \'')
-        self.ast._define([])
 
     @rule_def
     def _number_(self):
         self._pattern(r'[0-9]+')
-        self.ast._define([])
 
     @rule_def
     def _word_(self):
         self._pattern(r'[-_A-Za-z0-9]+')
-        self.ast._define([])
 
     @rule_def
     def _pattern_(self):
@@ -358,13 +339,11 @@ class GrakoBootstrapParser(Parser):
         self.ast['@'] = self.last_node
         self._token('/?')
         self._cut()
-        self.ast._define([])
 
     @rule_def
     def _eof_(self):
         self._token('$')
         self._cut()
-        self.ast._define([])
 
 
 class GrakoBootstrapSemanticParser(CheckSemanticsMixin, GrakoBootstrapParser):
