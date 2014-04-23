@@ -7,6 +7,7 @@ from collections import namedtuple
 from contextlib import contextmanager
 from keyword import iskeyword
 
+from .util import notnone
 from . import buffering
 from .ast import AST
 from .exceptions import (FailedCut, FailedLookahead, FailedParse,
@@ -93,7 +94,7 @@ class ParseContext(object):
                 text,
                 filename=filename,
                 comments_re=comments_re or self.comments_re,
-                whitespace=whitespace if whitespace is not None else self.whitespace,
+                whitespace=notnone(whitespace, default=self.whitespace),
                 ignorecase=ignorecase,
                 nameguard=nameguard,
                 **kwargs)

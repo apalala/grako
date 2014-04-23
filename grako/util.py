@@ -76,3 +76,7 @@ def indent(text, indent=1, multiplier=4):
 
 def format_if(fmt, values):
     return fmt % values if values else ''
+
+
+def notnone(value, default=None):
+    return value if value is not None else default

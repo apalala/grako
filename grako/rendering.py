@@ -112,11 +112,10 @@ class Renderer(object):
         fields.update({k: v for k, v in vars(self).items() if not k.startswith('_')})
 
         override = self.render_fields(fields)
-        if template is None:
-            if override is not None:
-                template = override
-            else:
-                template = self.template
+        if override is not None:
+            template = override
+        elif template is None:
+            template = self.template
 
         try:
             return self._formatter.format(trim(template), **fields)

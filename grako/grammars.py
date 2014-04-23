@@ -283,13 +283,8 @@ class Sequence(_Model):
             assert isinstance(s, _Model), str(s)
 
     def parse(self, ctx):
-        result = []
-        for s in self.sequence:
-            tree = s.parse(ctx)
-            if tree is not None:
-                result.append(tree)
-        ctx.last_node = result
-        return result
+        ctx.last_node = [s.parse(ctx) for s in self.sequence]
+        return ctx.last_node
 
     def defines(self):
         return set().union(*(s.defines() for s in self.sequence))
@@ -326,9 +321,8 @@ class Choice(_Model):
         with ctx._choice():
             for o in self.options:
                 with ctx._option():
-                    node = o.parse(ctx)
-                    ctx.last_node = node
-                    return node
+                    ctx.last_node = o.parse(ctx)
+                    return ctx.last_node
 
             firstset = ' '.join(str(urepr(f[0])) for f in self.firstset if f)
             if firstset:

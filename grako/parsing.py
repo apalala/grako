@@ -123,10 +123,10 @@ class Parser(ParseContext):
 
     def _find_rule(self, name):
         rule = getattr(self, '_' + name + '_', None)
-        if rule is not None and isinstance(rule, type(self._find_rule)):
+        if isinstance(rule, type(self._find_rule)):
             return rule
         rule = getattr(self, name, None)
-        if rule is not None and isinstance(rule, type(self._find_rule)):
+        if isinstance(rule, type(self._find_rule)):
             return rule
         raise FailedRef(self._buffer, name)
 
