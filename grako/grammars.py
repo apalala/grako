@@ -196,12 +196,7 @@ class Token(_Model):
         return set([(self.token,)])
 
     def __str__(self):
-        if "'" in self.token:
-            if '"' in self.token:
-                return "'%s'" % self.token.encode('string-escape').decode()
-            else:
-                return '"%s"' % self.token
-        return "'%s'" % self.token
+        return urepr(self.token)
 
     def render_fields(self, fields):
         fields.update(token=urepr(self.token))

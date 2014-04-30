@@ -25,11 +25,10 @@ def to_list(o):
 def ustr(s):
     if sys.version_info[0] >= 3:
         return str(s)
+    elif isinstance(s, str):
+        return s.decode('utf-8')
     else:
-        if isinstance(s, str):
-            return s.decode('utf-8')
-        else:
-            return unicode(s)
+        return unicode(s)
 
 
 def simplify_list(x):
