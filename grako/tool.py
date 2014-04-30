@@ -5,7 +5,7 @@ the described language.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-
+import codecs
 import argparse
 import os
 import pickle
@@ -100,7 +100,7 @@ def main():
     if outfile and os.path.isfile(outfile):
         os.unlink(outfile)
 
-    grammar = open(filename, 'r').read()
+    grammar = codecs.open(filename, 'r', encoding='utf-8').read()
 
     if outfile:
         dirname = os.path.dirname(outfile)
@@ -121,7 +121,7 @@ def main():
             from . import diagrams
             diagrams.draw(outfile, model)
         elif outfile:
-            with open(outfile, 'w') as f:
+            with codecs.open(outfile, 'w', encoding='utf-8') as f:
                 f.write(parser)
         else:
             print(parser)

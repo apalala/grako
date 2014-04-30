@@ -26,7 +26,10 @@ def ustr(s):
     if sys.version_info[0] >= 3:
         return str(s)
     else:
-        return unicode(s)
+        if isinstance(s, str):
+            return s.decode('utf-8')
+        else:
+            return unicode(s)
 
 
 def simplify_list(x):
