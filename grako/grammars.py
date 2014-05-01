@@ -334,7 +334,7 @@ class Choice(_Model):
         template = trim(self.option_template)
         options = [template.format(option=indent(render(o))) for o in self.options]
         options = '\n'.join(o for o in options)
-        firstset = ' '.join(f[0] for f in self.firstset if f)
+        firstset = ' '.join(f[0] for f in sorted(self.firstset) if f)
         if firstset:
             error = 'expecting one of: ' + firstset
         else:
