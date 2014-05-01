@@ -535,6 +535,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Marcus Brinkmann`_ has kindly submitted patches that have resolved obscure bugs in **Grako**'s implementation, and that have made the tool more user-friendly, specially for newcomers to parsing and translation.
 
+* `Robert Speer` cleaned up the nonsense in trying to have Unicode handling be compatible with 2.7.x and 3.x.
+
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
 .. _`LL(1)`: http://en.wikipedia.org/wiki/LL(1)
@@ -557,6 +559,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _`Marcus Brinkmann`: http://blog.marcus-brinkmann.de/
 .. _Marcus: http://blog.marcus-brinkmann.de/
 .. _lambdafu: http://blog.marcus-brinkmann.de/
+.. _`Robert Speer`: https://bitbucket.org/r_speer
 
 Changes
 =======
