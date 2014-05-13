@@ -31,6 +31,15 @@ def ustr(s):
         return unicode(s)
 
 
+def udecode(s):
+    if sys.version_info[0] >= 3:
+        return str(s)
+    else:
+        if not isinstance(s, str):
+            s = ustr(s)
+        return s.encode('utf-8')
+
+
 def simplify_list(x):
     if isinstance(x, list) and len(x) == 1:
         return simplify_list(x[0])

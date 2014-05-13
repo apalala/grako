@@ -7,7 +7,7 @@ from collections import namedtuple
 from contextlib import contextmanager
 from keyword import iskeyword
 
-from .util import notnone
+from .util import notnone, udecode
 from . import buffering
 from .ast import AST
 from .exceptions import (FailedCut, FailedLookahead, FailedParse,
@@ -268,14 +268,14 @@ class ParseContext(object):
     def _trace(self, msg, *params):
         if self.trace:
             msg = msg % params
-            print(msg, file=sys.stderr)
+            print(udecode(msg), file=sys.stderr)
 
     def _trace_event(self, event):
         if self.trace:
-            self._trace('%s \n%s   \n%s \n\t%s \n',
+            self._trace('%s \n%s   \n%s \n%s \n',
                         event,
-                        self._buffer.line_info().filename,
                         self._rulestack(),
+                        self._buffer.line_info().filename,
                         self._buffer.lookahead()
                         )
 
