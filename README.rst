@@ -379,9 +379,19 @@ Rules with Arguments
 
 **Grako** allows rules to specify Python_-style arguments::
 
-    addition(add, op='+') =  addend '+'
+    addition(add, op='+')
+        =
+        addend '+' addend
+        ;
 
 The arguments values are fixed at grammar-compilation time.
+
+An alternative syntax is available if no *kyeword parameters* are required::
+
+    addition:add, '+'
+        =
+        addend '+' addend
+        ;
 
 Semantic methods must be prepared to receive any arguments declared in the corresponding rule::
 

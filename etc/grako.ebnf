@@ -18,6 +18,8 @@ rule
     =
     name:word
     [
+        ':' >> params:params
+    |
         '('  >>
             (
                 kwparams:kwparams

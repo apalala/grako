@@ -16,7 +16,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.112.14.33.07'
+__version__ = '14.133.14.29.23'
 
 
 class GrakoBootstrapParser(Parser):
@@ -38,25 +38,32 @@ class GrakoBootstrapParser(Parser):
         self._word_()
         self.ast['name'] = self.last_node
         with self._optional():
-            self._token('(')
-            self._cut()
-            with self._group():
-                with self._choice():
-                    with self._option():
-                        self._kwparams_()
-                        self.ast['kwparams'] = self.last_node
-                    with self._option():
-                        self._params_()
-                        self.ast['params'] = self.last_node
-                        self._token(',')
-                        self._cut()
-                        self._kwparams_()
-                        self.ast['kwparams'] = self.last_node
-                    with self._option():
-                        self._params_()
-                        self.ast['params'] = self.last_node
-                    self._error('no available options')
-            self._token(')')
+            with self._choice():
+                with self._option():
+                    self._token(':')
+                    self._params_()
+                    self.ast['params'] = self.last_node
+                with self._option():
+                    self._token('(')
+                    self._cut()
+                    with self._group():
+                        with self._choice():
+                            with self._option():
+                                self._kwparams_()
+                                self.ast['kwparams'] = self.last_node
+                            with self._option():
+                                self._params_()
+                                self.ast['params'] = self.last_node
+                                self._token(',')
+                                self._cut()
+                                self._kwparams_()
+                                self.ast['kwparams'] = self.last_node
+                            with self._option():
+                                self._params_()
+                                self.ast['params'] = self.last_node
+                            self._error('no available options')
+                    self._token(')')
+                self._error('no available options')
         self._token('=')
         self._cut()
         self._expre_()
@@ -155,7 +162,7 @@ class GrakoBootstrapParser(Parser):
                     self.ast['force_list'] = self.last_node
                 with self._option():
                     self._token(':')
-                self._error('expecting one of: : +:')
+                self._error('expecting one of: +: :')
         self._element_()
         self.ast['value'] = self.last_node
 
@@ -229,7 +236,7 @@ class GrakoBootstrapParser(Parser):
                 with self._option():
                     with self._optional():
                         self._token('*')
-                self._error('expecting one of: + * -')
+                self._error('expecting one of: * + -')
         self._cut()
 
         self.ast._define(['exp', 'plus'])
