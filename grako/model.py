@@ -130,11 +130,14 @@ class ModelBuilder(object):
         nodes using the class name given as first parameter to a grammar
         rule, and synthesizes the class/type if it's not known.
     """
-    def __init__(self, context=None, baseType=Node, nodetypes=None):
+    def __init__(self, context=None, baseType=Node, types=None):
         self.ctx = context
         self.baseType = baseType
 
-        self.nodetypes = nodetypes or dict()
+        self.nodetypes = dict()
+
+        for t in types or ():
+            self._register_nodetype(t)
 
     def _register_nodetype(self, nodetype):
         self.nodetypes[nodetype.__name__] = nodetype
