@@ -6,6 +6,7 @@ Base definitions for models of programs.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+import collections
 from .ast import AST
 
 EOLCOL = 50
@@ -120,9 +121,14 @@ class NodeTraverser(object):
 
 class DepthFirstTraverser(NodeTraverser):
     def traverse(self, node, *args, **kwargs):
-        # assume node is a Node
-        children = [self.traverse(c, *args, **kwargs) for c in node.children]
-        return super(DepthFirstTraverser, self).traverse(node, children, *args, **kwargs)
+        strv = super(DepthFirstTraverser, self).traverse
+        if isinstance(node, Node):
+            children = [self.traverse(c, *args, **kwargs) for c in node.children]
+            return strv(node, children, *args, **kwargs)
+        elif isinstance(node, collections.Iterable):
+            return [strv(e) for e in node]
+        else:
+            return strv(node)
 
 
 class ModelBuilder(object):
