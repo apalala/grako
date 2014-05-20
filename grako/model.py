@@ -92,6 +92,8 @@ class Node(object):
                 self._adopt_children(c)
 
     def __str__(self):
+        if hasattr(self, 'value'):
+            return str(self.value)
         return str({k: str(v) for k, v in vars(self).items()
                         if not k.startswith('_')
                     }
@@ -121,14 +123,14 @@ class NodeTraverser(object):
 
 class DepthFirstTraverser(NodeTraverser):
     def traverse(self, node, *args, **kwargs):
-        strv = super(DepthFirstTraverser, self).traverse
+        tv = super(DepthFirstTraverser, self).traverse
         if isinstance(node, Node):
             children = [self.traverse(c, *args, **kwargs) for c in node.children]
-            return strv(node, children, *args, **kwargs)
+            return tv(node, children, *args, **kwargs)
         elif isinstance(node, collections.Iterable):
-            return [strv(e) for e in node]
+            return [tv(e) for e in node]
         else:
-            return strv(node)
+            return tv(node)
 
 
 class ModelBuilder(object):
@@ -149,6 +151,7 @@ class ModelBuilder(object):
         self.nodetypes[nodetype.__name__] = nodetype
 
     def _get_nodetype(self, typename):
+        typename = str(typename)
         if typename in self.nodetypes:
             return self.nodetypes[typename]
         # create a new type
