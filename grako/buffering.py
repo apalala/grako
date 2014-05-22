@@ -37,7 +37,7 @@ class Buffer(object):
                  **kwargs):
         self.original_text = text
         self.text = ustr(text)
-        self.filename = filename if filename is not None else ''
+        self.filename = filename or ''
         self.whitespace = set(whitespace
                               if whitespace is not None
                               else string.whitespace)
@@ -47,18 +47,40 @@ class Buffer(object):
         self.nameguard = (nameguard
                           if nameguard is not None
                           else bool(self.whitespace))
-        self._fileinfo = self.get_fileinfo(text, filename)
-        self._linecache = []
-        self._linecount = 0
         self._pos = 0
         self._len = 0
+        self._linecount = 0
+        self._line_index = []
         self._preprocess()
-        self._len = len(self.text)
+        self._linecache = []
         self._build_line_cache()
+        self._len = len(self.text)
         self._re_cache = {}
 
-    def _preprocess(self):
-        pass
+    def _preprocess(self, *args, **kwargs):
+        lines, index = self._preprocess_block(self.filename, self.text)
+        self.text = ''.join(lines)
+        self._line_index = index
+
+    def _preprocess_block(self, name, block, **kwargs):
+        lines = block.splitlines(True)
+        index = self._block_index(name, len(lines))
+        return self.process_block(name, lines, index, **kwargs)
+
+    def _block_index(self, name, n):
+        return list(zip(n * [name], range(n)))
+
+    def process_block(self, name, lines, index, **kwargs):
+        return lines, index
+
+    def include(self, lines, index, i, j, name, block, **kwargs):
+        assert len(lines) == len(index)
+        blines, bindex = self._preprocess_block(name, block, **kwargs)
+        assert len(blines) == len(bindex)
+        lines[i:j + 1] = blines
+        index[i:j + 1] = bindex
+        assert len(lines) == len(index)
+        return j + len(blines)
 
     @property
     def pos(self):
@@ -195,21 +217,21 @@ class Buffer(object):
             self.move(len(token))
             return token
 
-    def get_fileinfo(self, text, filename):
-        return [filename] * len(text.splitlines())
-
     def _build_line_cache(self):
         # The line cache holds the position of the last character
         # (counting from 0) in each line (counting from 1).  At the
         # head, we have an imaginary line 0 that ends at -1.
-        cache = [PosLine(-1, 0)]
+        lines = self.text.splitlines(True)
+        i = -1
         n = 0
-        for i, c in enumerate(self.text):
-            if c == '\n':
-                n += 1
-                cache.append(PosLine(i, n))
+        cache = []
+        for n, s in enumerate(lines):
+            cache.append(PosLine(i, n))
+            i += len(s)
         n += 1
-        cache.append(PosLine(self._len - 1, n))
+        if lines and lines[-1][-1] in '\r\n':
+            n += 1
+        cache.append(PosLine(i, n))
         self._linecache = cache
         self._linecount = n
 
@@ -229,7 +251,9 @@ class Buffer(object):
         end = self._linecache[n].pos + 1
         text = self.text[start:end]
         col = pos - start
-        return LineInfo(self.filename, line, col, start, text)
+        n = min(len(self._line_index) - 1, line)
+        filename, line = self._line_index[n]
+        return LineInfo(filename, line, col, start, text)
 
     def lookahead(self):
         if self.atend():
