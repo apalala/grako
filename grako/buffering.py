@@ -9,6 +9,7 @@ about source lines and content.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import os
 import re as regexp
 import string
 from bisect import bisect_left
@@ -27,7 +28,8 @@ LineInfo = namedtuple('LineInfo', ['filename', 'line', 'col', 'start', 'text'])
 
 
 class Buffer(object):
-    def __init__(self, text,
+    def __init__(self,
+                 text,
                  filename=None,
                  whitespace=None,
                  comments_re=None,
@@ -81,6 +83,19 @@ class Buffer(object):
         index[i:j + 1] = bindex
         assert len(lines) == len(index)
         return j + len(blines)
+
+    def include_file(self, name, lines, index, i, j):
+        text = self.get_include(name)
+        return self.include(name, lines, index, i, i, text)
+
+    def get_include(self, name):
+        base = os.path.dirname(self.filename)
+        include = os.path.join(base, name)
+        try:
+            with open(include) as f:
+                return f.read()
+        except IOError:
+            raise ParseError('include not found: %s' % name)
 
     @property
     def pos(self):

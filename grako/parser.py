@@ -15,24 +15,49 @@ in the .grammars module.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from .bootstrap import GrakoBootstrapParser
+from .exceptions import ParseError
 from .buffering import Buffer
 from .semantics import GrakoASTSemantics, GrakoSemantics
+from .bootstrap import GrakoBootstrapParser
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
 COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
 
 
+class GrakoBuffer(Buffer):
+    def process_block(self, name, lines, index, **kwargs):
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            if line.startswith('..'):
+                name, arg = line.split('..')[1], ''
+                if '::' in name:
+                    name, arg = name.split('::')
+                name, arg = name.strip(), arg.strip()
+                i = self.pragma(name, arg, lines, index, i)
+            else:
+                i += 1
+        return lines, index
+
+    def pragma(self, name, arg, lines, index, i):
+        if name == 'include':
+            return self.include_file(arg, lines, index, i, i)
+        else:
+            raise ParseError('Unknown pragma: %s' % name)
+
+
 class GrakoParserBase(GrakoBootstrapParser):
 
     def parse(self, text, rule='grammar', filename=None, **kwargs):
         if not isinstance(text, Buffer):
-            text = Buffer(text, comments_re=COMMENTS_RE, **kwargs)
-        return super(GrakoParserBase, self).parse(text,
-                                                  rule,
-                                                  filename=filename,
-                                                  **kwargs)
+            text = GrakoBuffer(text, comments_re=COMMENTS_RE, **kwargs)
+        return super(GrakoParserBase, self).parse(
+            text,
+            rule,
+            filename=filename,
+            **kwargs
+        )
 
 
 class GrakoParser(GrakoParserBase):
