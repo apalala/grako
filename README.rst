@@ -291,6 +291,16 @@ When a rule has named elements, the unnamed ones are excluded from the AST_ (the
 ..    That will make the default AST_ returned to be a dict with a single item ``name`` as key, and the AST_ from the right-hand side of the rule as value.
 
 
+Include Directive
+-----------------
+
+**Grako** grammars support file inclusion through the include directive:
+
+    \.. include \:: filename
+
+The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the `grako.parser` module for a usage example.
+
+
 Abstract Syntax Trees (ASTs)
 ============================
 
