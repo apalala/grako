@@ -16,7 +16,6 @@ from __future__ import (absolute_import, division, print_function,
 
 import re
 import sys
-import time
 from collections import defaultdict
 from copy import copy
 
@@ -25,7 +24,7 @@ from .exceptions import (FailedCut, FailedParse, FailedPattern, FailedRef,
                          FailedSemantics, FailedToken, GrammarError)
 from .model import Node
 from .rendering import render, Renderer
-from .util import indent, trim
+from .util import indent, trim, timestamp
 from .ast import AST
 
 
@@ -763,7 +762,7 @@ class Grammar(_Model):
         abstract_rules = indent('\n'.join(abstract_rules))
         fields.update(rules=indent(render(self.rules)),
                       abstract_rules=abstract_rules,
-                      version=time.strftime('%y.%j.%H.%M.%S', time.gmtime())
+                      version=timestamp()
                       )
 
     abstract_rule_template = '''

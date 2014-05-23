@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import collections
 import sys
+import datetime
 
 __all__ = ['simplify_list', 'trim', 'indent']
 
@@ -91,3 +92,7 @@ def format_if(fmt, values):
 
 def notnone(value, default=None):
     return value if value is not None else default
+
+
+def timestamp():
+    return '.'.join(str(t) for t in datetime.datetime.utcnow().utctimetuple())
