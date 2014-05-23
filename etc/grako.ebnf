@@ -17,37 +17,37 @@ grammar
 
 rule
     =
-    name:word >>
+    name:word ^
     [
-        ':' >> params:params
+        ':' ^ params:params
     |
-        '('  >>
+        '('  ^
             (
                 kwparams:kwparams
             |
-                params:params ',' >> kwparams:kwparams
+                params:params ',' ^ kwparams:kwparams
             |
                 params:params
             )
         ')'
     ]
-    '=' >>
-    rhs:expre ('.' | ';') >>
+    '=' ^
+    rhs:expre ('.' | ';') ^
     ;
 
 params
     =
-    @+:literal {',' >> @+:literal}
+    @+:literal {',' ^ @+:literal}
     ;
 
 kwparams
     =
-    @+:pair {',' >> @+:pair}
+    @+:pair {',' ^ @+:pair}
     ;
 
 pair
     =
-    @+:word '=' >> @+:literal
+    @+:word '=' ^ @+:literal
     ;
 
 expre
@@ -58,7 +58,7 @@ expre
 
 choice
     =
-    @+:sequence {'|' >> @+:sequence}+
+    @+:sequence {'|' ^ @+:sequence}+
     ;
 
 sequence
@@ -80,12 +80,12 @@ named
 
 name
     =
-    word|'@'
+    word | '@'
     ;
 
 override
     =
-    '@' >> @element
+    '@' ^ @element
     ;
 
 term
@@ -102,32 +102,32 @@ term
 
 group
     =
-    '(' >> @:expre ')' >>
+    '(' ^ @:expre ')' ^
     ;
 
 closure
     =
-    '{' >> exp:expre '}' >> (plus:('-' | '+') | ['*']) >>
+    '{' ^ exp:expre '}' ^ (plus:('-' | '+') | ['*']) ^
     ;
 
 optional
     =
-    '[' >> @:expre ']' >>
+    '[' ^ @:expre ']' ^
     ;
 
 special
     =
-    '?(' >> @:?/(.*)/? ')?' >>
+    '?(' ^ @:?/(.*)/? ')?' ^
     ;
 
 kif
     =
-    '&' >> @:term
+    '&' ^ @:term
     ;
 
 knot
     =
-    '!' >> @term
+    '!' ^ @term
     ;
 
 atom
@@ -146,12 +146,12 @@ call
 
 void
     =
-    '()' >>
+    '()' ^
     ;
 
 cut
     =
-    ('^'|'>>') >>
+    ('^' | '>>') ^
     ;
 
 literal
@@ -163,8 +163,8 @@ literal
 
 token
     =
-      '"' >> @:?/([^"\n]|\\"|\\\\)*/? '"'
-    | "'" >> @:?/([^'\n]|\\'|\\\\)*/? "'"
+      '"' ^ @:?/([^"\n]|\\"|\\\\)*/? '"'
+    | "'" ^ @:?/([^'\n]|\\'|\\\\)*/? "'"
     ;
 
 number
@@ -179,10 +179,10 @@ word
 
 pattern
     =
-    '?/' >> @:?/(.*?)(?=/\?)/? '/?' >>
+    '?/' ^ @:?/(.*?)(?=/\?)/? '/?' ^
     ;
 
 eof
     =
-    '$' >>
+    '$' ^
     ;
