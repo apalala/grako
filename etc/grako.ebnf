@@ -19,7 +19,7 @@ rule
     =
     name:word ^
     [
-        ':' ^ params:params
+        '::' ^ params:params
     |
         '('  ^
             (
