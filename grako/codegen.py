@@ -16,14 +16,14 @@ class DelegatingRenderingFormatter(RenderingFormatter):
     def render(self, item, join='', **fields):
         result = self.delegate.render(item, join=join, **fields)
         if result is None:
-            result = super(DelegatingRenderingFormatter).render(item, join=join, **fields)
+            result = super(DelegatingRenderingFormatter, self).render(item, join=join, **fields)
         return result
 
     def convert_field(self, value, conversion):
         if isinstance(value, Node):
             return self.render(value)
         else:
-            return super(RenderingFormatter, self).convert_field(value, conversion)
+            return super(DelegatingRenderingFormatter, self).convert_field(value, conversion)
 
 
 class ModelRenderer(Renderer):
