@@ -33,20 +33,20 @@ class GrakoBuffer(Buffer):
         i = 0
         while i < len(lines):
             line = lines[i]
-            if line.startswith('..'):
-                name, arg = line.split('..')[1], ''
-                if '::' in name:
-                    name, arg = name.split('::')
-                name, arg = name.strip(), arg.strip()
-                i = self.pragma(name, arg, lines, index, i)
+            if line.startswith('..'):  # it's a pragma
+                directive, arg = line.split('..')[1], ''
+                if '::' in directive:
+                    directive, arg = directive.split('::')
+                directive, arg = directive.strip(), arg.strip()
+                i = self.pragma(name, directive, arg, lines, index, i)
             else:
                 i += 1
         return lines, index
 
-    def pragma(self, name, arg, lines, index, i):
+    def pragma(self, source, name, arg, lines, index, i):
         # we only recognize the 'include' pragama
         if name == 'include':
-            return self.include_file(arg, lines, index, i, i)
+            return self.include_file(source, arg, lines, index, i, i)
         else:
             raise ParseError('Unknown pragma: %s' % name)
 

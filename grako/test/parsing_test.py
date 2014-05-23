@@ -11,7 +11,7 @@ from ..parser import GrakoBuffer
 
 
 class MockIncludeBuffer(GrakoBuffer):
-    def get_include(self, name):
+    def get_include(self, source, name):
         return '\nINCLUDED "%s"\n' % name
 
 

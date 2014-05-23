@@ -33,6 +33,7 @@ class Buffer(object):
                  text,
                  filename=None,
                  whitespace=None,
+                 tabwidth=None,
                  comments_re=None,
                  ignorecase=False,
                  trace=False,
@@ -44,6 +45,7 @@ class Buffer(object):
         self.whitespace = set(whitespace
                               if whitespace is not None
                               else string.whitespace)
+        self.tabwidth = tabwidth
         self.comments_re = comments_re
         self.ignorecase = ignorecase
         self.trace = True
@@ -66,6 +68,8 @@ class Buffer(object):
         self._line_index = index
 
     def _preprocess_block(self, name, block, **kwargs):
+        if self.tabwidth is not None:
+            block = block.replace('\t', ' ' * self.tabwidth)
         lines = block.splitlines(True)
         index = self._block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
@@ -84,18 +88,18 @@ class Buffer(object):
         assert len(lines) == len(index)
         return j + len(blines)
 
-    def include_file(self, name, lines, index, i, j):
-        text = self.get_include(name)
+    def include_file(self, source, name, lines, index, i, j):
+        text = self.get_include(source, name)
         return self.include(lines, index, i, i, name, text)
 
-    def get_include(self, name):
-        base = os.path.dirname(self.filename)
-        include = os.path.join(base, name)
+    def get_include(self, source, filename):
+        base = os.path.dirname(source)
+        include = os.path.join(base, filename)
         try:
             with open(include) as f:
                 return f.read()
         except IOError:
-            raise ParseError('include not found: %s' % name)
+            raise ParseError('include not found: %s' % filename)
 
     @property
     def pos(self):
