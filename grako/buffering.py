@@ -14,6 +14,7 @@ import re as regexp
 import string
 from bisect import bisect_left
 from collections import namedtuple
+from .exceptions import ParseError
 
 from .util import ustr
 
@@ -76,7 +77,6 @@ class Buffer(object):
         return lines, index
 
     def include(self, lines, index, i, j, name, block, **kwargs):
-        assert len(lines) == len(index)
         blines, bindex = self._preprocess_block(name, block, **kwargs)
         assert len(blines) == len(bindex)
         lines[i:j + 1] = blines
@@ -86,7 +86,7 @@ class Buffer(object):
 
     def include_file(self, name, lines, index, i, j):
         text = self.get_include(name)
-        return self.include(name, lines, index, i, i, text)
+        return self.include(lines, index, i, i, name, text)
 
     def get_include(self, name):
         base = os.path.dirname(self.filename)

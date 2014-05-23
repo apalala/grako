@@ -27,6 +27,9 @@ COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
 
 class GrakoBuffer(Buffer):
     def process_block(self, name, lines, index, **kwargs):
+        # search for pragmas of the form
+        # .. pragma_name :: params
+
         i = 0
         while i < len(lines):
             line = lines[i]
@@ -41,6 +44,7 @@ class GrakoBuffer(Buffer):
         return lines, index
 
     def pragma(self, name, arg, lines, index, i):
+        # we only recognize the 'include' pragama
         if name == 'include':
             return self.include_file(arg, lines, index, i, i)
         else:
