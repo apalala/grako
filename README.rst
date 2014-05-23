@@ -389,7 +389,7 @@ Rules with Arguments
 
 **Grako** allows rules to specify Python_-style arguments::
 
-    addition(add, op='+')
+    addition(Add, op='+')
         =
         addend '+' addend
         ;
@@ -398,7 +398,7 @@ The arguments values are fixed at grammar-compilation time.
 
 An alternative syntax is available if no *kyeword parameters* are required::
 
-    addition:add, '+'
+    addition::Add, '+'
         =
         addend '+' addend
         ;

@@ -62,7 +62,9 @@ class ModelContext(ParseContext):
 class _Model(Renderer, Node):
     def __init__(self):
         super(_Model, self).__init__()
+        self._lookahead = None
         self._first_set = None
+        self._follow_set = set()
 
     def parse(self, ctx):
         return None
@@ -71,16 +73,29 @@ class _Model(Renderer, Node):
         return set()
 
     @property
+    def lookahead(self, k=1):
+        if self._lookahead is None:
+            self._lookahead = dot(self.firstset, self.followset, k)
+        return self._lookahead
+
+    @property
     def firstset(self, k=1):
         if self._first_set is None:
             self._first_set = self._first(k, {})
         return self._first_set
+
+    @property
+    def followset(self, k=1):
+        return self._follow_set
 
     def _validate(self, rules):
         return True
 
     def _first(self, k, F):
         return set()
+
+    def _follow(self, k, FL, A):
+        return A
 
 
 class Void(_Model):
@@ -140,6 +155,9 @@ class _Decorator(_Model):
 
     def _first(self, k, F):
         return self.exp._first(k, F)
+
+    def _follow(self, k, FL, A):
+        return self.exp._follow(k, FL, A)
 
     def __str__(self):
         return str(self.exp)
@@ -284,6 +302,15 @@ class Sequence(_Model):
             result = dot(result, s._first(k, F), k)
         return result
 
+    def _follow(self, k, FL, A):
+        fs = A
+        for x in reversed(self.sequence):
+            if isinstance(x, RuleRef):
+                FL[x.name] |= fs
+            x._follow(k, FL, fs)
+            fs = dot(x.firstset, fs, k)
+        return A
+
     def __str__(self):
         return ' '.join(str(s).strip() for s in self.sequence)
 
@@ -310,9 +337,9 @@ class Choice(_Model):
                     ctx.last_node = o.parse(ctx)
                     return ctx.last_node
 
-            firstset = ' '.join(str(urepr(f[0])) for f in self.firstset if f)
-            if firstset:
-                raise FailedParse(ctx.buf, 'expecting one of {%s}' % firstset)
+            lookahead = ' '.join(str(urepr(f[0])) for f in self.lookahead if f)
+            if lookahead:
+                raise FailedParse(ctx.buf, 'expecting one of {%s}' % lookahead)
             raise FailedParse(ctx.buf, 'no available options')
 
     def defines(self):
@@ -326,6 +353,11 @@ class Choice(_Model):
         for o in self.options:
             result |= o._first(k, F)
         return result
+
+    def _follow(self, k, FL, A):
+        for o in self.options:
+            o._follow(k, FL, A)
+        return A
 
     def __str__(self):
         return '  ' + '\n| '.join(str(o).strip() for o in self.options)
@@ -562,8 +594,10 @@ class RuleRef(_Model):
         return True
 
     def _first(self, k, F):
-        self._first_set = F.get(self.name, set())
-        return self._first_set
+        result = F.get(self.name, None)
+        if result is None:
+            result = {('<%s>' % self.name,)}
+        return result
 
     def __str__(self):
         return self.name
@@ -597,6 +631,9 @@ class Rule(_Decorator):
         if self._first_set:
             return self._first_set
         return self.exp._first(k, F)
+
+    def _follow(self, k, FL, A):
+        return self.exp._follow(k, FL, FL[self.name])
 
     def __str__(self):
         return trim(self.str_template) % (self.name, indent(str(self.exp)))
@@ -659,7 +696,7 @@ class Grammar(_Model):
         self.rules = rules
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
-        self._first_sets = self._calc_first_sets()
+        self._calc_lookahead_sets()
 
     def _validate(self, ruleset):
         return all(rule._validate(ruleset) for rule in self.rules)
@@ -667,6 +704,10 @@ class Grammar(_Model):
     @property
     def first_sets(self):
         return self._first_sets
+
+    def _calc_lookahead_sets(self, k=1):
+        self._calc_first_sets()
+        self._calc_follow_sets()
 
     def _calc_first_sets(self, k=1):
         F = defaultdict(set)
@@ -678,7 +719,17 @@ class Grammar(_Model):
 
         for rule in self.rules:
             rule._first_set = F[rule.name]
-        return F
+
+    def _calc_follow_sets(self, k=1):
+        FL = defaultdict(set)
+        FL1 = None
+        while FL1 != FL:
+            FL1 = copy(FL)
+            for rule in self.rules:
+                rule._follow(k, FL, set())
+
+        for rule in self.rules:
+            rule._follow_set = FL[rule.name]
 
     def parse(self, text,
                     start=None,
