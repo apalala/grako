@@ -236,8 +236,11 @@ The expressions, in reverse order of operator precedence, can be:
     ``!()``
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
 
+    ``^``
+        The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
+
     ``>>``
-        The cut expression. After this point, prevent other options from being considered even if the current option fails to parse.
+        Alternative syntax for the *cut* expression.
 
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If more than one item is added with the same ``name``, the entry is converted to a list.

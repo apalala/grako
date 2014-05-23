@@ -17,7 +17,7 @@ grammar
 
 rule
     =
-    name:word
+    name:word >>
     [
         ':' >> params:params
     |
@@ -151,7 +151,7 @@ void
 
 cut
     =
-    '>>' >>
+    ('^'|'>>') >>
     ;
 
 literal
