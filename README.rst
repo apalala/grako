@@ -532,6 +532,12 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+2.4.2
+-----
+    * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.
+
+    * *BUG* Incorrect invocation of overriden methods in `DelegatingRenderingFormatter`.
+
 2.4.1
 -----
     * *BUG* The `whitespace` parameter was not being passed consistently, and its
