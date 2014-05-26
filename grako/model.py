@@ -6,6 +6,9 @@ Base definitions for models of programs.
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from .ast import AST
+
+
 EOLCOL = 50
 
 
@@ -76,14 +79,19 @@ class Node(object):
             return text[self.parseinfo.pos:self.parseinfo.endpos]
 
     def _adopt_children(self, ast):
-        if isinstance(ast, Node):
-            ast._parent = self
-            self._children.append(ast)
-        elif isinstance(ast, dict):
-            self._adopt_children(list(ast.values()))
+        def adopt(node):
+            if isinstance(node, Node):
+                node._parent = self
+                self._children.append(node)
+
+        if isinstance(ast, AST):
+            for c in ast.values():
+                adopt(c)
         elif isinstance(ast, list):
             for c in ast:
-                self._adopt_children(c)
+                adopt(c)
+        else:
+            adopt(ast)
 
 
 class NodeTraverser(object):
