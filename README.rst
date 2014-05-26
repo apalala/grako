@@ -590,13 +590,16 @@ Changes
 3.0.0-rc.1
 ----------
 
-    * Now grammar rules may declare Python_ style arguments that get passed to their corresponding semantic methods.
+    * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
-
-2.4.1
+2.4.2
 -----
+    * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.
+
+    * *BUG* Incorrect invocation of overriden methods in `DelegatingRenderingFormatter`.
+
     * *BUG* The `whitespace` parameter was not being passed consistently, and its
       interaction with the `nameguard` parameter was not well thought-out (`whitespace==''` must imply `nameguard==False`).
 
