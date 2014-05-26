@@ -86,7 +86,10 @@ class Node(object):
 
         if isinstance(ast, AST):
             for c in ast.values():
-                adopt(c)
+                if isinstance(c, list):
+                    self._adopt_children(c)
+                else:
+                    adopt(c)
         elif isinstance(ast, list):
             for c in ast:
                 adopt(c)
