@@ -82,14 +82,19 @@ class Node(object):
             return text[self.parseinfo.pos:self.parseinfo.endpos]
 
     def _adopt_children(self, ast):
-        if isinstance(ast, Node):
-            ast._parent = self
-            self._children.append(ast)
-        elif isinstance(ast, dict):
-            self._adopt_children(list(ast.values()))
+        def adopt(node):
+            if isinstance(node, Node):
+                node._parent = self
+                self._children.append(node)
+
+        if isinstance(ast, AST):
+            for c in ast.values():
+                adopt(c)
         elif isinstance(ast, list):
             for c in ast:
-                self._adopt_children(c)
+                adopt(c)
+        else:
+            adopt(ast)
 
     def __str__(self):
         return str({k: str(v) for k, v in vars(self).items()
