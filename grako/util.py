@@ -93,4 +93,4 @@ def notnone(value, default=None):
 
 
 def timestamp():
-    return '.'.join(str(t) for t in datetime.datetime.utcnow().utctimetuple())
+    return '.'.join('%2.2d' % t for t in datetime.datetime.utcnow().utctimetuple()[:-2])
