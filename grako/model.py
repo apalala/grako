@@ -18,7 +18,7 @@ class Node(object):
 
     inline = True
 
-    def __init__(self, ctx, ast=None, parseinfo=None):
+    def __init__(self, ctx=None, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
         self._ast = ast
@@ -106,32 +106,32 @@ class Node(object):
                    )
 
 
-class NodeTraverser(object):
-    def _find_traverser(self, node):
+class NodeWalker(object):
+    def _find_walker(self, node):
         classes = [node.__class__]
         while classes:
             cls = classes.pop()
-            name = '_traverse_' + cls.__name__
-            traverser = getattr(self, name, None)
-            if callable(traverser):
-                return traverser
+            name = 'walk_' + cls.__name__
+            walker = getattr(self, name, None)
+            if callable(walker):
+                return walker
             for b in cls.__bases__:
                 if not b in classes:
                     classes.append(b)
 
-        return getattr(self, '_traverse_default', None)
+        return getattr(self, 'walk_default', None)
 
-    def traverse(self, node, *args, **kwargs):
-        traverser = self._find_traverser(node)
-        if callable(traverser):
-            return traverser(node, *args, **kwargs)
+    def walk(self, node, *args, **kwargs):
+        walker = self._find_walker(node)
+        if callable(walker):
+            return walker(node, *args, **kwargs)
 
 
-class DepthFirstTraverser(NodeTraverser):
-    def traverse(self, node, *args, **kwargs):
-        tv = super(DepthFirstTraverser, self).traverse
+class DepthFirstWalker(NodeWalker):
+    def walk(self, node, *args, **kwargs):
+        tv = super(DepthFirstWalker, self).walk
         if isinstance(node, Node):
-            children = [self.traverse(c, *args, **kwargs) for c in node.children]
+            children = [self.walk(c, *args, **kwargs) for c in node.children]
             return tv(node, children, *args, **kwargs)
         elif isinstance(node, collections.Iterable):
             return [tv(e, [], *args, **kwargs) for e in node]

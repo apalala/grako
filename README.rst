@@ -598,6 +598,8 @@ Changes
 
     * Parse exceptions will now show the sequence of rule invocations that led to the failure.
 
+    * Changed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
+
 2.4.2
 -----
     * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.

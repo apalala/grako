@@ -12,7 +12,7 @@ import shutil
 import sys
 import unittest
 
-from grako.model import NodeTraverser
+from grako.model import DepthFirstWalker
 from grako.parser import COMMENTS_RE, GrakoGrammarGenerator, GrakoParser
 from grako.semantics import GrakoSemantics
 
@@ -140,20 +140,19 @@ class BootstrapTests(unittest.TestCase):
         with open('tmp/g11.py', 'w') as f:
             f.write(gencode11)
 
-        print('-' * 20, 'phase 12 - Traverser')
+        print('-' * 20, 'phase 12 - Walker')
 
-        class PrintNameTraverser(NodeTraverser):
+        class PrintNameWalker(DepthFirstWalker):
             def __init__(self):
-                self.traversed = []
+                self.walked = []
 
-            def traverse(self, o):
-                self.traversed.append(o.__class__.__name__)
-                super(PrintNameTraverser, self).traverse(o)
+            def walk_default(self, o, children):
+                self.walked.append(o.__class__.__name__)
 
-        v = PrintNameTraverser()
-        v.traverse(g11)
+        v = PrintNameWalker()
+        v.walk(g11)
         with open('tmp/12.txt', 'w') as f:
-            f.write('\n'.join(v.traversed))
+            f.write('\n'.join(v.walked))
 
         print('-' * 20, 'phase 13 - Graphics')
         try:
