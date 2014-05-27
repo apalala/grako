@@ -61,6 +61,7 @@ class ModelContext(ParseContext):
 class _Model(Renderer, Node):
     def __init__(self):
         super(_Model, self).__init__()
+        Node.__init__(self)
         self._lookahead = None
         self._first_set = None
         self._follow_set = set()
@@ -142,6 +143,7 @@ class _Decorator(_Model):
         assert isinstance(exp, _Model), str(exp)
         super(_Decorator, self).__init__()
         self.exp = exp
+        self._adopt_children(exp)
 
     def parse(self, ctx):
         return self.exp.parse(ctx)
@@ -282,6 +284,7 @@ class Sequence(_Model):
         super(Sequence, self).__init__()
         assert isinstance(sequence, list), str(sequence)
         self.sequence = sequence
+        self._adopt_children(sequence)
         for s in self.sequence:
             assert isinstance(s, _Model), str(s)
 
@@ -326,6 +329,7 @@ class Choice(_Model):
         super(Choice, self).__init__()
         assert isinstance(options, list), urepr(options)
         self.options = options
+        self._adopt_children(options)
         for o in self.options:
             assert isinstance(o, _Model), str(o)
 
@@ -459,7 +463,6 @@ class PositiveClosure(Closure):
 
 
 class Optional(_Decorator):
-
     def parse(self, ctx):
         ctx.last_node = None
         with ctx._optional():
@@ -693,6 +696,7 @@ class Grammar(_Model):
         self.whitespace = urepr(whitespace)
         self.nameguard = nameguard
         self.rules = rules
+        self._adopt_children(rules)
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
         self._calc_lookahead_sets()
