@@ -16,7 +16,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '2014.5.23.13.26.47.4.143.0'
+__version__ = '2014.5.27.14.30.11.1.147.0'
 
 
 class GrakoBootstrapParser(Parser):
@@ -38,7 +38,8 @@ class GrakoBootstrapParser(Parser):
         self._word_()
         self.ast['name'] = self.last_node
         self._cut()
-        with self._optional():
+
+        def block1():
             with self._choice():
                 with self._option():
                     self._token('::')
@@ -66,6 +67,7 @@ class GrakoBootstrapParser(Parser):
                             self._error('expecting one of: <kwparams> <params>')
                     self._token(')')
                 self._error('expecting one of: ( ::')
+        self._closure(block1)
         self._token('=')
         self._cut()
         self._expre_()
@@ -194,6 +196,8 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._group_()
             with self._option():
+                self._positive_closure_()
+            with self._option():
                 self._closure_()
             with self._option():
                 self._optional_()
@@ -205,7 +209,7 @@ class GrakoBootstrapParser(Parser):
                 self._knot_()
             with self._option():
                 self._atom_()
-            self._error('expecting one of: <atom> <closure> <group> <kif> <knot> <optional> <special> <void>')
+            self._error('expecting one of: <atom> <closure> <group> <kif> <knot> <optional> <positive_closure> <special> <void>')
 
     @rule_def
     def _group_(self):
@@ -217,31 +221,30 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
     @rule_def
-    def _closure_(self):
+    def _positive_closure_(self):
         self._token('{')
-        self._cut()
         self._expre_()
-        self.ast['exp'] = self.last_node
+        self.ast['@'] = self.last_node
         self._token('}')
-        self._cut()
         with self._group():
             with self._choice():
                 with self._option():
-                    with self._group():
-                        with self._choice():
-                            with self._option():
-                                self._token('-')
-                            with self._option():
-                                self._token('+')
-                            self._error('expecting one of: + -')
-                    self.ast['plus'] = self.last_node
+                    self._token('-')
                 with self._option():
-                    with self._optional():
-                        self._token('*')
-                self._error('expecting one of: * + -')
+                    self._token('+')
+                self._error('expecting one of: + -')
         self._cut()
 
-        self.ast._define(['exp', 'plus'])
+    @rule_def
+    def _closure_(self):
+        self._token('{')
+        self._expre_()
+        self.ast['@'] = self.last_node
+        self._token('}')
+        self._cut()
+        with self._optional():
+            self._token('*')
+        self._cut()
 
     @rule_def
     def _optional_(self):
@@ -406,6 +409,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def group(self, ast):
+        return ast
+
+    def positive_closure(self, ast):
         return ast
 
     def closure(self, ast):

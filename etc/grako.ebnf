@@ -92,6 +92,7 @@ term
     =
       void
     | group
+    | positive_closure
     | closure
     | optional
     | special
@@ -105,9 +106,14 @@ group
     '(' ^ @:expre ')' ^
     ;
 
+positive_closure
+    =
+    '{'  @:expre '}' ('-' | '+')  ^
+    ;
+
 closure
     =
-    '{' ^ exp:expre '}' ^ (plus:('-' | '+') | ['*']) ^
+    '{' @:expre '}' ^ ['*'] ^
     ;
 
 optional

@@ -64,10 +64,11 @@ class GrakoSemantics(object):
     def plus(self, ast):
         return ast
 
+    def positive_closure(self, ast):
+        return grammars.PositiveClosure(ast)
+
     def closure(self, ast):
-        if ast.plus:
-            return grammars.PositiveClosure(ast.exp)
-        return grammars.Closure(ast.exp)
+        return grammars.Closure(ast)
 
     def special(self, ast):
         return grammars.Special(ast.special)
