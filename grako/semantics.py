@@ -104,7 +104,7 @@ class GrakoSemantics(object):
         seq = ast
         assert isinstance(seq, list), str(seq)
         if len(seq) == 1:
-            return simplify_list(seq)
+            return seq[0]
         return grammars.Sequence(seq)
 
     def choice(self, ast):
