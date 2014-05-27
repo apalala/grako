@@ -34,12 +34,6 @@ class GrakoSemantics(object):
     def token(self, ast):
         return grammars.Token(ast)
 
-    def word(self, ast):
-        return ast
-
-    def qualified(self, ast):
-        return ast.qualified
-
     def call(self, ast):
         return grammars.RuleRef(ast)
 
@@ -61,9 +55,6 @@ class GrakoSemantics(object):
     def optional(self, ast):
         return grammars.Optional(ast)
 
-    def plus(self, ast):
-        return ast
-
     def positive_closure(self, ast):
         return grammars.PositiveClosure(ast)
 
@@ -71,19 +62,13 @@ class GrakoSemantics(object):
         return grammars.Closure(ast)
 
     def special(self, ast):
-        return grammars.Special(ast.special)
+        return grammars.Special(ast)
 
     def kif(self, ast):
         return grammars.Lookahead(ast)
 
     def knot(self, ast):
         return grammars.LookaheadNot(ast)
-
-    def atom(self, ast):
-        return ast
-
-    def term(self, ast):
-        return ast
 
     def named_list(self, ast):
         return grammars.NamedList(ast.name, ast.value)
@@ -97,9 +82,6 @@ class GrakoSemantics(object):
     def override(self, ast):
         return grammars.Override(ast)
 
-    def element(self, ast):
-        return ast
-
     def sequence(self, ast):
         seq = ast
         assert isinstance(seq, list), str(seq)
@@ -111,9 +93,6 @@ class GrakoSemantics(object):
         if len(ast) == 1:
             return ast[0]
         return grammars.Choice(ast)
-
-    def expre(self, ast):
-        return ast
 
     def rule(self, ast):
         name = ast.name
