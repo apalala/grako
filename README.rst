@@ -594,6 +594,10 @@ Changes
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
+    * The default *cut* operator is now `^`.
+
+    * Parse exceptions will now show the sequence of rule invocations that led to the failure.
+
 2.4.2
 -----
     * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.

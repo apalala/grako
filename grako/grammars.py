@@ -129,7 +129,7 @@ class EOF(_Model):
     def parse(self, ctx):
         ctx._next_token()
         if not ctx.buf.atend():
-            raise FailedParse(ctx.buf, 'Expecting end of text.')
+            ctx._error('Expecting end of text.')
 
     def __str__(self):
         return '$'
@@ -202,7 +202,7 @@ class Token(_Model):
         ctx._next_token()
         token = ctx.buf.match(self.token)
         if token is None:
-            raise FailedToken(ctx.buf, self.token)
+            ctx._error(self.token, etype=FailedToken)
 
         ctx._trace_match(self.token, None)
         ctx._add_cst_node(token)
@@ -230,7 +230,7 @@ class Pattern(_Model):
     def parse(self, ctx):
         token = ctx.buf.matchre(self._re)
         if token is None:
-            raise FailedPattern(ctx.buf, self.pattern)
+            ctx._error(self.pattern, etype=FailedPattern)
         ctx._trace_match(token, self.pattern)
         ctx._add_cst_node(token)
         ctx.last_node = token
@@ -338,8 +338,8 @@ class Choice(_Model):
 
             lookahead = ' '.join(str(urepr(f[0])) for f in self.lookahead if f)
             if lookahead:
-                raise FailedParse(ctx.buf, 'expecting one of {%s}' % lookahead)
-            raise FailedParse(ctx.buf, 'no available options')
+                ctx._error('expecting one of {%s}' % lookahead)
+            ctx._error('no available options')
 
     def defines(self):
         return set().union(*(o.defines() for o in self.options))
@@ -584,7 +584,7 @@ class RuleRef(_Model):
             rule = ctx._find_rule(self.name)
             return rule.parse(ctx)
         except KeyError:
-            raise FailedRef(ctx.buf, self.name)
+            ctx.error(self.name, etype=FailedRef)
 
     def _validate(self, rules):
         if self.name not in rules:

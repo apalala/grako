@@ -19,7 +19,7 @@ from __future__ import (absolute_import, division, print_function,
 import functools
 
 from .contexts import ParseContext
-from .exceptions import (FailedCut, FailedParse, FailedPattern, FailedRef,
+from .exceptions import (FailedCut, FailedPattern, FailedRef,
                          FailedToken, MissingSemanticFor)
 
 
@@ -78,7 +78,7 @@ class Parser(ParseContext):
     def _token(self, token, node_name=None, force_list=False):
         self._next_token()
         if self._buffer.match(token) is None:
-            raise FailedToken(self._buffer, token)
+            self._error(token, etype=FailedToken)
         self._trace_match(token, node_name)
         self._add_ast_node(node_name, token, force_list)
         self._add_cst_node(token)
@@ -101,7 +101,7 @@ class Parser(ParseContext):
     def _pattern(self, pattern, node_name=None, force_list=False):
         token = self._buffer.matchre(pattern)
         if token is None:
-            raise FailedPattern(self._buffer, pattern)
+            self._error(pattern, etype=FailedPattern)
         self._trace_match(token, pattern)
         self._add_ast_node(node_name, token, force_list)
         self._add_cst_node(token)
@@ -128,7 +128,7 @@ class Parser(ParseContext):
         rule = getattr(self, name, None)
         if isinstance(rule, type(self._find_rule)):
             return rule
-        raise FailedRef(self._buffer, name)
+        self._error(name, etype=FailedRef)
 
     def _eof(self):
         return self._buffer.atend()
@@ -139,7 +139,7 @@ class Parser(ParseContext):
     def _check_eof(self):
         self._next_token()
         if not self._buffer.atend():
-            raise FailedParse(self._buffer, 'Expecting end of text.')
+            self._error('Expecting end of text.')
 
 
 # decorator

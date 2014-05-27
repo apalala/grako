@@ -41,8 +41,9 @@ class FailedSemantics(ParseError):
 
 
 class FailedParseBase(ParseError):
-    def __init__(self, buf, item):
+    def __init__(self, buf, stack, item):
         self.buf = buf
+        self.stack = stack
         self.pos = buf.pos
         self.item = item
 
@@ -52,12 +53,13 @@ class FailedParseBase(ParseError):
 
     def __str__(self):
         info = self.buf.line_info(self.pos)
-        template = "{}({}:{}) {} :\n{}\n{}^"
+        template = "{}({}:{}) {} :\n{}\n{}^\n{}"
         return template.format(info.filename,
                                info.line + 1, info.col + 1,
                                self.message,
                                info.text,
-                               ' ' * info.col
+                               ' ' * info.col,
+                               '\n'.join(self.stack)
                                )
 
 
@@ -66,8 +68,8 @@ class FailedParse(FailedParseBase):
 
 
 class FailedToken(FailedParse):
-    def __init__(self, buf, token):
-        super(FailedToken, self).__init__(buf, token)
+    def __init__(self, buf, stack, token):
+        super(FailedToken, self).__init__(buf, stack, token)
         self.token = token
 
     @property
@@ -76,8 +78,8 @@ class FailedToken(FailedParse):
 
 
 class FailedPattern(FailedParse):
-    def __init__(self, buf, pattern):
-        super(FailedPattern, self).__init__(buf, pattern)
+    def __init__(self, buf, stack, pattern):
+        super(FailedPattern, self).__init__(buf, stack, pattern)
         self.pattern = pattern
 
     @property
@@ -96,8 +98,8 @@ class FailedMatch(FailedParse):
 
 
 class FailedRef(FailedParseBase):
-    def __init__(self, buf, name):
-        super(FailedRef, self).__init__(buf, name)
+    def __init__(self, buf, stack, name):
+        super(FailedRef, self).__init__(buf, stack, name)
         self.name = name
 
     @property
@@ -107,7 +109,7 @@ class FailedRef(FailedParseBase):
 
 class FailedCut(FailedParse):
     def __init__(self, nested):
-        super(FailedCut, self).__init__(nested.buf, nested.item)
+        super(FailedCut, self).__init__(nested.buf, nested.stack, nested.item)
         self.pos = nested.pos
         self.nested = nested
 

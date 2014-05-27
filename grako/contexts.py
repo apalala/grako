@@ -285,7 +285,11 @@ class ParseContext(object):
             self._trace('MATCHED <%s> /%s/\n\t%s', token, name, self._buffer.lookahead())
 
     def _error(self, item, etype=FailedParse):
-        raise etype(self._buffer, item)
+        raise etype(
+            self._buffer,
+            list(reversed(self._rule_stack[:])),
+            item
+        )
 
     def _fail(self):
         self._error('fail')
