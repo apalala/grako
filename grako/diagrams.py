@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import itertools
 
-from .model import NodeTraverser
+from .model import NodeWalker
 
 try:
     import pygraphviz as pgv
@@ -15,9 +15,9 @@ except:
 __all__ = ['draw']
 
 
-class GraphvizTraverser(NodeTraverser):
+class GraphvizWalker(NodeWalker):
     def __init__(self):
-        super(GraphvizTraverser, self).__init__()
+        super(GraphvizWalker, self).__init__()
         self.top_graph = pgv.AGraph(directed=True,
                                     rankdir='LR',
                                     packMode='clust',
@@ -119,13 +119,13 @@ class GraphvizTraverser(NodeTraverser):
     def concat(*args):
         return list(itertools.chain(*args))
 
-    def __traverse_decorator(self, d):
-        return self.traverse(d.exp)
+    def _walk_decorator(self, d):
+        return self.walk(d.exp)
 
-    def _traverse_Grammar(self, g):
+    def walk_Grammar(self, g):
         self.push_graph(g.name + '0')
         try:
-            vrules = [self.traverse(r) for r in reversed(g.rules)]
+            vrules = [self.walk(r) for r in reversed(g.rules)]
         finally:
             self.pop_graph()
         self.push_graph(g.name + '1')
@@ -140,10 +140,10 @@ class GraphvizTraverser(NodeTraverser):
         s, t = vrules[0][0], vrules[-1][1]
         return (s, t)
 
-    def _traverse_Rule(self, r):
+    def walk_Rule(self, r):
         self.push_graph(r.name)
         try:
-            i, e = self.__traverse_decorator(r)
+            i, e = self._walk_decorator(r)
             s = self.rule_node(r.name, id=r.name)
             self.edge(s, i)
             t = self.end_node()
@@ -152,30 +152,30 @@ class GraphvizTraverser(NodeTraverser):
         finally:
             self.pop_graph()
 
-    def _traverse_RuleRef(self, rr):
+    def walk_RuleRef(self, rr):
         n = self.ref_node(rr.name)
         return (n, n)
 
-    def _traverse_Special(self, s):
+    def walk_Special(self, s):
         n = self.node(s.special)
         return (n, n)
 
-    def _traverse_Override(self, o):
-        return self.__traverse_decorator(o)
+    def walk_Override(self, o):
+        return self._walk_decorator(o)
 
-    def _traverse_Named(self, n):
-        return self.__traverse_decorator(n)
+    def walk_Named(self, n):
+        return self._walk_decorator(n)
 
-    def _traverse_NamedList(self, n):
-        return self.__traverse_decorator(n)
+    def walk_NamedList(self, n):
+        return self._walk_decorator(n)
 
-    def _traverse_Cut(self, c):
+    def walk_Cut(self, c):
         # c = self.node('>>')
         # return (c, c)
         return None
 
-    def _traverse_Optional(self, o):
-        i, e = self.__traverse_decorator(o)
+    def walk_Optional(self, o):
+        i, e = self._walk_decorator(o)
         ni = self.dot()
         ne = self.dot()
         self.zedge(ni, i)
@@ -183,10 +183,10 @@ class GraphvizTraverser(NodeTraverser):
         self.zedge(e, ne)
         return (ni, ne)
 
-    def _traverse_Closure(self, r):
+    def walk_Closure(self, r):
         self.push_graph(rankdir='TB')
         try:
-            i, e = self.__traverse_decorator(r)
+            i, e = self._walk_decorator(r)
             ni = self.dot()
             self.edge(ni, i)
             self.edge(e, ni)
@@ -194,19 +194,19 @@ class GraphvizTraverser(NodeTraverser):
         finally:
             self.pop_graph()
 
-    def _traverse_PositiveClosure(self, r):
-        i, e = self.__traverse_decorator(r)
+    def walk_PositiveClosure(self, r):
+        i, e = self._walk_decorator(r)
         if i == e:
             self.redge(e, i)
         else:
             self.edge(e, i)
         return (i, e)
 
-    def _traverse_Group(self, g):
-        return self.__traverse_decorator(g)
+    def walk_Group(self, g):
+        return self._walk_decorator(g)
 
-    def _traverse_Choice(self, c):
-        vopt = [self.traverse(o) for o in c.options]
+    def walk_Choice(self, c):
+        vopt = [self.walk(o) for o in c.options]
         ni = self.dot()
         ne = self.dot()
         for i, e in vopt:
@@ -214,8 +214,8 @@ class GraphvizTraverser(NodeTraverser):
             self.edge(e, ne)
         return (ni, ne)
 
-    def _traverse_Sequence(self, s):
-        vseq = [self.traverse(x) for x in s.sequence]
+    def walk_Sequence(self, s):
+        vseq = [self.walk(x) for x in s.sequence]
         vseq = [x for x in vseq if x is not None]
         i, _ = vseq[0]
         _, e = vseq[-1]
@@ -226,37 +226,37 @@ class GraphvizTraverser(NodeTraverser):
                 self.edge(n, n1)
         return (i, e)
 
-    def _traverse_Lookahead(self, l):
-        i, e = self.__traverse_decorator(l)
+    def walk_Lookahead(self, l):
+        i, e = self._walk_decorator(l)
         n = self.node('&')
         self.edge(n, e)
         return (n, e)
 
-    def _traverse_LookaheadNot(self, l):
-        i, e = self.__traverse_decorator(l)
+    def walk_LookaheadNot(self, l):
+        i, e = self._walk_decorator(l)
         n = self.node('!')
         self.edge(n, e)
         return (n, e)
 
-    def _traverse_Pattern(self, p):
+    def walk_Pattern(self, p):
         n = self.tnode(p.pattern)
         return (n, n)
 
-    def _traverse_Token(self, t):
+    def walk_Token(self, t):
         n = self.tnode(t.token)
         return (n, n)
 
-    def _traverse_Void(self, v):
+    def walk_Void(self, v):
         n = self.dot()
         return (n, n)
 
-    def _traverse_EOF(self, v):
+    def walk_EOF(self, v):
         # n = self.node('$')
         # return (n, n)
         return None
 
 
 def draw(filename, grammar):
-    traverser = GraphvizTraverser()
-    traverser.traverse(grammar)
+    traverser = GraphvizWalker()
+    traverser.walk(grammar)
     traverser.draw(filename)
