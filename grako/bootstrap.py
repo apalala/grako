@@ -16,7 +16,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '2014.5.27.14.30.11.1.147.0'
+__version__ = '2014.5.27.14.43.50.1.147.0'
 
 
 class GrakoBootstrapParser(Parser):
@@ -38,8 +38,7 @@ class GrakoBootstrapParser(Parser):
         self._word_()
         self.ast['name'] = self.last_node
         self._cut()
-
-        def block1():
+        with self._optional():
             with self._choice():
                 with self._option():
                     self._token('::')
@@ -67,7 +66,6 @@ class GrakoBootstrapParser(Parser):
                             self._error('expecting one of: <kwparams> <params>')
                     self._token(')')
                 self._error('expecting one of: ( ::')
-        self._closure(block1)
         self._token('=')
         self._cut()
         self._expre_()
@@ -148,42 +146,57 @@ class GrakoBootstrapParser(Parser):
     def _element_(self):
         with self._choice():
             with self._option():
+                self._named_list_()
+            with self._option():
                 self._named_()
+            with self._option():
+                self._override_list_()
             with self._option():
                 self._override_()
             with self._option():
                 self._term_()
-            self._error('expecting one of: <named> <override> <term>')
+            self._error('expecting one of: <named> <named_list> <override> <override_list> <term>')
+
+    @rule_def
+    def _named_list_(self):
+        self._name_()
+        self.ast['name'] = self.last_node
+        self._token('+:')
+        self._element_()
+        self.ast['value'] = self.last_node
+
+        self.ast._define(['name', 'value'])
 
     @rule_def
     def _named_(self):
         self._name_()
         self.ast['name'] = self.last_node
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('+:')
-                    self.ast['force_list'] = self.last_node
-                with self._option():
-                    self._token(':')
-                self._error('expecting one of: +: :')
+        self._token(':')
         self._element_()
         self.ast['value'] = self.last_node
 
-        self.ast._define(['force_list', 'name', 'value'])
+        self.ast._define(['name', 'value'])
 
     @rule_def
     def _name_(self):
-        with self._choice():
-            with self._option():
-                self._word_()
-            with self._option():
-                self._token('@')
-            self._error('expecting one of: <word> @')
+        self._word_()
+
+    @rule_def
+    def _override_list_(self):
+        self._token('@+:')
+        self._cut()
+        self._element_()
+        self.ast['@'] = self.last_node
 
     @rule_def
     def _override_(self):
-        self._token('@')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('@:')
+                with self._option():
+                    self._token('@')
+                self._error('expecting one of: @ @:')
         self._cut()
         self._element_()
         self.ast['@'] = self.last_node
@@ -396,10 +409,16 @@ class GrakoBootstrapSemantics(object):
     def element(self, ast):
         return ast
 
+    def named_list(self, ast):
+        return ast
+
     def named(self, ast):
         return ast
 
     def name(self, ast):
+        return ast
+
+    def override_list(self, ast):
         return ast
 
     def override(self, ast):

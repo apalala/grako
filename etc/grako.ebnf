@@ -68,24 +68,36 @@ sequence
 
 element
     =
-      named
+      named_list
+    | named
+    | override_list
     | override
     | term
     ;
 
+named_list
+    =
+    name:name '+:' value:element
+    ;
+
 named
     =
-    name:name (force_list:'+:'|':') value:element
+    name:name ':' value:element
     ;
 
 name
     =
-    word | '@'
+    word
+    ;
+
+override_list
+    =
+    '@+:' ^ @element
     ;
 
 override
     =
-    '@' ^ @element
+    ('@:'|'@') ^ @element
     ;
 
 term
