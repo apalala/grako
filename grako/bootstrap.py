@@ -16,7 +16,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '2014.5.27.14.43.50.1.147.0'
+__version__ = '2014.05.27.15.09.35.01'
 
 
 class GrakoBootstrapParser(Parser):
