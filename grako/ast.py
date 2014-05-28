@@ -42,7 +42,10 @@ class AST(dict):
             return self[name]
         return super(AST, self).__getattribute__(name)
 
-    def _define(self, keys):
+    def _define(self, keys, list_keys=None):
+        for key in list_keys or []:
+            if not self.__contains__(key):
+                super(AST, self).__setitem__(key, [])
         for key in keys:
             if not self.__contains__(key):
                 super(AST, self).__setitem__(key, None)

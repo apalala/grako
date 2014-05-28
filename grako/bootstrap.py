@@ -16,7 +16,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '2014.05.27.15.09.35.01'
+__version__ = '2014.05.28.14.52.36.02'
 
 
 class GrakoBootstrapParser(Parser):
@@ -63,9 +63,9 @@ class GrakoBootstrapParser(Parser):
                             with self._option():
                                 self._params_()
                                 self.ast['params'] = self.last_node
-                            self._error('expecting one of: <kwparams> <params>')
+                            self._error('no available options')
                     self._token(')')
-                self._error('expecting one of: ( ::')
+                self._error('no available options')
         self._token('=')
         self._cut()
         self._expre_()
@@ -79,7 +79,10 @@ class GrakoBootstrapParser(Parser):
                 self._error('expecting one of: . ;')
         self._cut()
 
-        self.ast._define(['kwparams', 'name', 'params', 'rhs'])
+        self.ast._define(
+            ['kwparams', 'name', 'params', 'rhs'],
+            []
+        )
 
     @rule_def
     def _params_(self):
@@ -121,7 +124,7 @@ class GrakoBootstrapParser(Parser):
                 self._choice_()
             with self._option():
                 self._sequence_()
-            self._error('expecting one of: <choice> <sequence>')
+            self._error('no available options')
 
     @rule_def
     def _choice_(self):
@@ -155,7 +158,7 @@ class GrakoBootstrapParser(Parser):
                 self._override_()
             with self._option():
                 self._term_()
-            self._error('expecting one of: <named> <named_list> <override> <override_list> <term>')
+            self._error('no available options')
 
     @rule_def
     def _named_list_(self):
@@ -165,7 +168,10 @@ class GrakoBootstrapParser(Parser):
         self._element_()
         self.ast['value'] = self.last_node
 
-        self.ast._define(['name', 'value'])
+        self.ast._define(
+            ['name', 'value'],
+            []
+        )
 
     @rule_def
     def _named_(self):
@@ -175,7 +181,10 @@ class GrakoBootstrapParser(Parser):
         self._element_()
         self.ast['value'] = self.last_node
 
-        self.ast._define(['name', 'value'])
+        self.ast._define(
+            ['name', 'value'],
+            []
+        )
 
     @rule_def
     def _name_(self):
@@ -222,7 +231,7 @@ class GrakoBootstrapParser(Parser):
                 self._knot_()
             with self._option():
                 self._atom_()
-            self._error('expecting one of: <atom> <closure> <group> <kif> <knot> <optional> <positive_closure> <special> <void>')
+            self._error('no available options')
 
     @rule_def
     def _group_(self):
@@ -304,7 +313,7 @@ class GrakoBootstrapParser(Parser):
                 self._pattern_()
             with self._option():
                 self._eof_()
-            self._error('expecting one of: <call> <cut> <eof> <pattern> <token>')
+            self._error('no available options')
 
     @rule_def
     def _call_(self):
@@ -335,7 +344,7 @@ class GrakoBootstrapParser(Parser):
                 self._number_()
             with self._option():
                 self._word_()
-            self._error('expecting one of: <number> <token> <word>')
+            self._error('no available options')
 
     @rule_def
     def _token_(self):

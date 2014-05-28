@@ -518,7 +518,7 @@ class Named(_Decorator):
         return value
 
     def defines(self):
-        return {self.name} | super(Named, self).defines()
+        return {(self.name, False)} | super(Named, self).defines()
 
     def __str__(self):
         return '%s:%s' % (self.name, str(self.exp))
@@ -539,6 +539,9 @@ class NamedList(Named):
         value = self.exp.parse(ctx)
         ctx._add_ast_node(self.name, value, True)
         return value
+
+    def defines(self):
+        return {(self.name, True)} | self.exp.defines()
 
     def __str__(self):
         return '%s+:%s' % (self.name, str(self.exp))
@@ -596,10 +599,14 @@ class RuleRef(_Model):
         return True
 
     def _first(self, k, F):
-        result = F.get(self.name, None)
-        if result is None:
-            result = {('<%s>' % self.name,)}
-        return result
+        self._first_set = F.get(self.name, set())
+        return self._first_set
+
+    @property
+    def firstset(self, k=1):
+        if self._first_set is None:
+            self._first_set = {('<%s>' % self.name,)}
+        return self._first_set
 
     def __str__(self):
         return self.name
@@ -617,7 +624,11 @@ class Rule(_Decorator):
     def parse(self, ctx):
         result = ctx._call(self.exp.parse, self.name)
         if isinstance(result, AST):
-            result._define(self.defines())
+            defines = list(sorted(self.defines()))
+            result._define(
+                [d for d, l in defines if not l],
+                [d for d, l in defines if l]
+            )
         return result
 
     def _call_semantics(self, ctx, name, node):
@@ -659,12 +670,25 @@ class Rule(_Decorator):
             fields.update(params=params)
 
         defines = list(sorted(self.defines()))
-        if not defines:
-            defines = ''
+        sdefs = [d for d, l in defines if not l]
+        ldefs = [d for d, l in defines if l]
+        if not (sdefs or ldefs):
+            sdefines = ''
         else:
-            defines = repr(defines).replace("u'", "'")
-            defines = '\n\n    self.ast._define(%s)' % defines
-        fields.update(defines=defines)
+            sdefs = '[%s]' % ', '.join(urepr(d) for d in sdefs)
+            ldefs = '[%s]' % ', '.join(urepr(d) for d in ldefs)
+            if not ldefs:
+                sdefines = '\n\n    self.ast._define(%s, %s)' % (sdefs, ldefs)
+            else:
+                sdefines = indent('\n\n' + trim('''\
+                                                self.ast._define(
+                                                    %s,
+                                                    %s
+                                                )''' % (sdefs, ldefs)
+                                                )
+                                  )
+
+        fields.update(defines=sdefines)
 
     template = '''
                 @rule_def
