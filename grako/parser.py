@@ -55,7 +55,12 @@ class GrakoParserBase(GrakoBootstrapParser):
 
     def parse(self, text, rule='grammar', filename=None, **kwargs):
         if not isinstance(text, Buffer):
-            text = GrakoBuffer(text, comments_re=COMMENTS_RE, **kwargs)
+            text = GrakoBuffer(
+                text,
+                filename=filename,
+                comments_re=COMMENTS_RE,
+                **kwargs
+            )
         return super(GrakoParserBase, self).parse(
             text,
             rule,

@@ -99,7 +99,7 @@ class Buffer(object):
             with open(include) as f:
                 return f.read()
         except IOError:
-            raise ParseError('include not found: %s' % filename)
+            raise ParseError('include not found: %s' % include)
 
     @property
     def pos(self):
