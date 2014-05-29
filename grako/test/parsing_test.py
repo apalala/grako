@@ -19,7 +19,7 @@ class ParsingTests(unittest.TestCase):
     def test_include(self):
         text = '''\
             first
-            ..include :: something
+                .include :: something
             last\
         '''
         buf = MockIncludeBuffer(trim(text))

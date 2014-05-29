@@ -14,7 +14,7 @@ in the .grammars module.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-
+import re
 from .exceptions import ParseError
 from .buffering import Buffer
 from .semantics import GrakoASTSemantics, GrakoSemantics
@@ -23,6 +23,7 @@ from .bootstrap import GrakoBootstrapParser
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
 COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
+PRAGMA_RE = r'^\s*\.'
 
 
 class GrakoBuffer(Buffer):
@@ -33,8 +34,8 @@ class GrakoBuffer(Buffer):
         i = 0
         while i < len(lines):
             line = lines[i]
-            if line.startswith('..'):  # it's a pragma
-                directive, arg = line.split('..')[1], ''
+            if re.match(PRAGMA_RE, line):
+                directive, arg = line.split('.', 1)[1], ''
                 if '::' in directive:
                     directive, arg = directive.split('::')
                 directive, arg = directive.strip(), arg.strip()
