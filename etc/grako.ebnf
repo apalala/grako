@@ -32,7 +32,8 @@ rule
         ')'
     ]
     '=' ^
-    rhs:expre ('.' | ';') ^
+    rhs:expre
+    ';' ^
     ;
 
 params

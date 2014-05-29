@@ -164,10 +164,6 @@ A grammar consists of a sequence of one or more rules of the form::
 
     name = expre ;
 
-or::
-
-    name = expre .
-
 Both the semicolon (``;``) and the period (``.``) are accepted as rule definition terminators.
 
 If a *name* collides with a Python_ keyword, an underscore (``_``) will be appended to it on the generated parser.
