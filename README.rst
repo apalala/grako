@@ -590,7 +590,7 @@ Changes
 
     * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
-    * Grammars may include other files using the `.include ::` directive.
+    * Grammars may include other files using the `#include ::` directive.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
