@@ -295,7 +295,7 @@ Include Directive
 
 **Grako** grammars support file inclusion through the include directive:
 
-    \.. include \:: filename
+    #include \:: "filename"
 
 The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the `grako.parser` module for a usage example.
 
@@ -586,7 +586,11 @@ Changes
 3.0.0-rc.1
 ----------
 
+    * Major version bump because backwards compatibility is not guaranteed or tested.
+
     * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
+
+    * Grammars may include other files using the `.include ::` directive.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 

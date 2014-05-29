@@ -23,7 +23,7 @@ from .bootstrap import GrakoBootstrapParser
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
 COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
-PRAGMA_RE = r'^\s*\.'
+PRAGMA_RE = r'^\s*#[a-z]+'
 
 
 class GrakoBuffer(Buffer):
@@ -35,7 +35,7 @@ class GrakoBuffer(Buffer):
         while i < len(lines):
             line = lines[i]
             if re.match(PRAGMA_RE, line):
-                directive, arg = line.split('.', 1)[1], ''
+                directive, arg = line.split('#', 1)[1], ''
                 if '::' in directive:
                     directive, arg = directive.split('::')
                 directive, arg = directive.strip(), arg.strip()
@@ -47,7 +47,8 @@ class GrakoBuffer(Buffer):
     def pragma(self, source, name, arg, lines, index, i):
         # we only recognize the 'include' pragama
         if name == 'include':
-            return self.include_file(source, arg, lines, index, i, i)
+            filename = arg.strip('\'"')
+            return self.include_file(source, filename, lines, index, i, i)
         else:
             raise ParseError('Unknown pragma: %s' % name)
 
