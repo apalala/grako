@@ -94,3 +94,14 @@ def notnone(value, default=None):
 
 def timestamp():
     return '.'.join('%2.2d' % t for t in datetime.datetime.utcnow().utctimetuple()[:-2])
+
+
+def asjson(obj):
+    if hasattr(obj, '__json__'):
+        return obj.__json__()
+    elif isinstance(obj, collections.Mapping):
+        return {asjson(k): asjson(v) for k, v in obj.items()}
+    elif isiter(obj):
+        return [asjson(e) for e in obj]
+    else:
+        return obj

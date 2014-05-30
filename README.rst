@@ -600,6 +600,8 @@ Changes
 
     * Changed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
 
+    * Models become JSON_-friendly with the help of ``grako.util.asjon``.
+
 2.4.2
 -----
     * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.

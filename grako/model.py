@@ -7,6 +7,7 @@ Base definitions for models of programs.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import collections
+from .util import asjson
 from .ast import AST
 
 EOLCOL = 50
@@ -32,9 +33,7 @@ class Node(object):
         self.__postinit__(ast)
 
     def __postinit__(self, ast):
-        if not isinstance(ast, AST):
-            self.value = ast
-        else:
+        if isinstance(ast, AST):
             for name, value in ast.items():
                 if hasattr(self, name):
                     name = '_' + name
@@ -99,11 +98,27 @@ class Node(object):
         else:
             adopt(ast)
 
+    def _pubdict(self):
+        return {
+            k: v
+            for k, v in vars(self).items()
+            if not k.startswith('_')
+        }
+
+    def __json__(self):
+        d = self._pubdict()
+        if not d:
+            return asjson(self.ast)
+        else:
+            d.update(__class__=self.__class__.__name__)
+            return asjson(d)
+
     def __str__(self):
-        return str({k: str(v) for k, v in vars(self).items()
-                        if not k.startswith('_')
-                    }
-                   )
+        d = self._pubdict()
+        if not d:
+            return str(self.ast)
+        else:
+            return str({str(k): str(v) for k, v in d})
 
 
 class NodeWalker(object):
