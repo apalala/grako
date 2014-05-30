@@ -89,15 +89,16 @@ class Buffer(object):
         return j + len(blines)
 
     def include_file(self, source, name, lines, index, i, j):
-        text = self.get_include(source, name)
-        return self.include(lines, index, i, i, name, text)
+        text, filename = self.get_include(source, name)
+        return self.include(lines, index, i, i, filename, text)
 
     def get_include(self, source, filename):
+        source = os.path.abspath(source)
         base = os.path.dirname(source)
         include = os.path.join(base, filename)
         try:
             with open(include) as f:
-                return f.read()
+                return f.read(), include
         except IOError:
             raise ParseError('include not found: %s' % include)
 
