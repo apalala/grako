@@ -367,7 +367,7 @@ If there's no method matching the rule's name, **Grako** will try to invoke a `_
 
     def _default(self, ast):
 
-Nothing will happen neither the per-rule method nor `_default()` are defined.
+Nothing will happen if neither the per-rule method nor `_default()` are defined.
 
 The per-rule methods in classes implementing the semantics provide enough opportunity to do rule post-processing operations, like verifications (for inadequate use of keywords as identifiers), or AST_ transformation.
 
@@ -542,9 +542,9 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Grako** is very fast. But dealing with millions of lines of legacy source code in a matter of minutes would be impossible without PyPy_, the work of **Armin Rigo** and the `PyPy team`_.
 
-* **Guido van Rossum** created and has lead the development of the Python_ programming environment for over a decade. A tool like **Grako**, at under three thousand lines of code, would not have been possible without Python_.
+* **Guido van Rossum** created and has lead the development of the Python_ programming environment for over a decade. A tool like **Grako**, at under four thousand lines of code, would not have been possible without Python_.
 
-* **Kota Mizushima** welcomed me to the `CSAIL at MIT`_ `PEG and Packrat parsing mailing list`_, and immediately offered ideas and pointed me to documentation about the implementation of **cut** in modern parsers. The optimization of memoization information is thanks to one of his papers.
+* **Kota Mizushima** welcomed me to the `CSAIL at MIT`_ `PEG and Packrat parsing mailing list`_, and immediately offered ideas and pointed me to documentation about the implementation of *cut* in modern parsers. The optimization of memoization information n **Grako** is thanks to one of his papers.
 
 * **My students** at UCAB_ inspired me to think about how grammar-based parser generation could be made more approachable.
 
