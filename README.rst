@@ -395,7 +395,7 @@ Rules with Arguments
 
 The arguments values are fixed at grammar-compilation time.
 
-An alternative syntax is available if no *kyeword parameters* are required::
+An alternative syntax is available if no *keyword parameters* are required::
 
     addition::Add, '+'
         =
