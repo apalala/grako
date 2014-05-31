@@ -12,8 +12,8 @@
 
 
 from __future__ import print_function, division, absolute_import, unicode_literals
-from grako.parsing import * # noqa
-from grako.exceptions import * # noqa
+from grako.parsing import *  # noqa
+from grako.exceptions import *  # noqa
 
 
 __version__ = '2014.05.28.14.52.36.02'

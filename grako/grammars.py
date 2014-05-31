@@ -758,13 +758,14 @@ class Grammar(_Model):
         for rule in self.rules:
             rule._follow_set = FL[rule.name]
 
-    def parse(self, text,
-                    start=None,
-                    filename=None,
-                    semantics=None,
-                    trace=False,
-                    context=None,
-                    **kwargs):
+    def parse(self,
+              text,
+              start=None,
+              filename=None,
+              semantics=None,
+              trace=False,
+              context=None,
+              **kwargs):
         ctx = context
         if ctx is None:
             ctx = ModelContext(self.rules, trace=trace, **kwargs)
@@ -813,8 +814,8 @@ class Grammar(_Model):
 
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
-                from grako.parsing import * # noqa
-                from grako.exceptions import * # noqa
+                from grako.parsing import *  # noqa
+                from grako.exceptions import *  # noqa
 
 
                 __version__ = '{version}'

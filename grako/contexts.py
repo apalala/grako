@@ -71,7 +71,8 @@ class ParseContext(object):
     def _clear_cache(self):
         self._memoization_cache = dict()
 
-    def _reset(self, text=None,
+    def _reset(self,
+               text=None,
                filename=None,
                semantics=None,
                trace=None,
@@ -80,7 +81,7 @@ class ParseContext(object):
                ignorecase=None,
                nameguard=None,
                memoize_lookaheads=None,
-              **kwargs):
+               **kwargs):
         if ignorecase is None:
             ignorecase = self.ignorecase
         if nameguard is None:

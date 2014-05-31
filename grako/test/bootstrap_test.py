@@ -112,11 +112,12 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(generated_grammar9, generated_grammar1)
 
         print('-' * 20, 'phase 10 - Parse with a model using a semantics')
-        g10 = g9.parse(text,
-                    start_rule='grammar',
-                    semantics=GrakoSemantics('GrakoBootstrap'),
-                    comments_re=COMMENTS_RE
-                    )
+        g10 = g9.parse(
+            text,
+            start_rule='grammar',
+            semantics=GrakoSemantics('GrakoBootstrap'),
+            comments_re=COMMENTS_RE
+        )
         generated_grammar10 = str(g10)
         with open('tmp/10.ebnf', 'w') as f:
             f.write(generated_grammar10)

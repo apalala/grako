@@ -97,7 +97,7 @@ class GrakoSemantics(object):
     def rule(self, ast):
         name = ast.name
         rhs = ast.rhs
-        if not name in self.rules:
+        if name not in self.rules:
             rule = grammars.Rule(name, rhs, ast.params, ast.kwparams)
             self.rules[name] = rule
         else:

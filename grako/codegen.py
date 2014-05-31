@@ -12,7 +12,7 @@ class DelegatingRenderingFormatter(RenderingFormatter):
         super(DelegatingRenderingFormatter, self).__init__()
         self.delegate = delegate
 
-    #override
+    # override
     def render(self, item, join='', **fields):
         result = self.delegate.render(item, join=join, **fields)
         if result is None:

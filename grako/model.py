@@ -132,7 +132,7 @@ class NodeWalker(object):
             if callable(walker):
                 return walker
             for b in cls.__bases__:
-                if not b in classes:
+                if b not in classes:
                     classes.append(b)
 
         return getattr(self, 'walk_default', None)
