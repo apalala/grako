@@ -596,40 +596,28 @@ Changes
 
     * The default *cut* operator is now `^`.
 
-    * Parse exceptions will now show the sequence of rule invocations that led to the failure.
+    * Parsing exceptions will now show the sequence of rule invocations that led to the failure.
 
-    * Changed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
+    * Renamed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
 
-    * Models become JSON_-friendly with the help of ``grako.util.asjon``.
+    * **Grako** models are now JSON_-friendly with the help of ``Node.__json__()`` and ``grako.util.asjon``.
 
-2.4.2
------
-    * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.
-
-    * *BUG* Incorrect invocation of overriden methods in `DelegatingRenderingFormatter`.
-
-    * *BUG* The `whitespace` parameter was not being passed consistently, and its
-      interaction with the `nameguard` parameter was not well thought-out (`whitespace==''` must imply `nameguard==False`).
-
-    * Added `--whitespace` parameter to generated `main()`.
-
-    * Tested on Python_ 3.4.
-
-2.4.0
+2.4.3
 -----
 
-    * The aim of this release is to make the minimum changes necessary to allow downstream translators to have different target languages with as little code replication as possible.
-
-    * There's new functionality pulled from downstream in ``grako.model`` and ``grako.rendering``. ``grako.model`` is now a module instead of a package.
+    * Changes to allow downstream translators to have different target languages with as little code replication as possible.  There's new functionality pulled from downstream in ``grako.model`` and ``grako.rendering``. ``grako.model`` is now a module instead of a package.
 
     * The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
 
-    * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows for producing meaningful errors when something in the semantics is missing.
+    * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
 
-    * Added compatiblity with tox_, and now tests are performed against the latest releases of Python_ 2.7.x and 3.3.x, and PyPy_ 2.2.x.
+    * Added compatiblity with tox_. Now tests are performed against the latest releases of Python_ 2.7.x and 3.x, and PyPy_ 2.x.
 
-    * There are **no bugs detected or fixed** in this release. All efforts have been made to maintain backwards compatibility, but only testing will tell.
+    * Added `--whitespace` parameter to generated `main()`.
 
+    * Applied Flake8_ to project and to generated parsers.
+
+.. _Flake8: https://pypi.python.org/pypi/flake8
 .. _tox: https://testrun.org/tox/latest/
 
 
