@@ -11,3 +11,6 @@ regex_test:
 
 antlr_test:
 	cd examples/antlr2grako; make -s clean; make -s test > /dev/null
+
+flake8:
+	flake8 --exclude .tox,docs,tmp,.ropeproject --max-line-length 200
