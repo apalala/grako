@@ -2,6 +2,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 import sys
 import grako
+import grako.exceptions
 import regex_parser
 
 PARSER_FILENAME = 'genparser.py'
@@ -14,7 +15,7 @@ def main():
     try:
         model.parse('aaaCbbaba', 'S0')
         raise Exception('Should not have parsed!')
-    except grako.FailedParse:
+    except grako.exceptions.FailedParse:
         pass
     print('Grammar:', file=sys.stderr)
     print(grammar)
