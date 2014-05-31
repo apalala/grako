@@ -113,7 +113,7 @@ class Renderer(object):
             # find the missing key
             keys = (p[1] for p in self.formatter.parse(template))
             for key in keys:
-                if key and not key in fields:
+                if key and key not in fields:
                     raise KeyError(key, type(self))
             raise
 

@@ -532,6 +532,12 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+2.4.3
+-----
+    * Applided Flake8_ to project and to generated parsers.
+
+.. _Flake8: https://pypi.python.org/pypi/flake8
+
 2.4.2
 -----
     * *BUG* Incorrect recursion made all model nodes wind up as children of the root node.

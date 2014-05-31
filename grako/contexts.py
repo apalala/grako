@@ -81,7 +81,7 @@ class ParseContext(object):
                ignorecase=None,
                nameguard=None,
                memoize_lookaheads=None,
-              **kwargs):
+               **kwargs):
         if ignorecase is None:
             ignorecase = self.ignorecase
         if nameguard is None:

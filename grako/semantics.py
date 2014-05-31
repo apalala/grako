@@ -112,7 +112,7 @@ class GrakoSemantics(object):
         ast_name = ast.ast_name
         name = ast.name
         rhs = ast.rhs
-        if not name in self.rules:
+        if name not in self.rules:
             rule = grammars.Rule(name, rhs, ast_name=ast_name)
             self.rules[name] = rule
         else:
