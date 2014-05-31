@@ -17,7 +17,7 @@ def main():
     try:
         model.parse('aaaCbbaba', 'S0')
         raise Exception('Should not have parsed!')
-    except grako.FailedParse:
+    except grako.exceptions.FailedParse:
         pass
     print('Grammar:', file=sys.stderr)
     print(grammar)
