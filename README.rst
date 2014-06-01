@@ -602,6 +602,10 @@ Changes
 
     * **Grako** models are now JSON_-friendly with the help of ``Node.__json__()`` and ``grako.util.asjon``.
 
+    * Added compatibility with Cython_.
+
+.. _Cython: http://cython.org/
+
 2.4.3
 -----
 

@@ -14,3 +14,6 @@ antlr_test:
 
 flake8:
 	flake8 --exclude .tox,docs,tmp,.ropeproject --max-line-length 200
+
+cython:
+	python setup.py build_ext --inplace
