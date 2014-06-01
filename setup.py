@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import os
+CYTHON = os.environ.get('CYTHON', False)
 from setuptools import setup
-from Cython.Build import cythonize
+if CYTHON:
+    from Cython.Build import cythonize
 
 setup(
     name='grako',
@@ -34,5 +37,5 @@ setup(
             'grako/__main__.py',
             'grako/test/__main__.py'
         ]
-    ),
+    ) if CYTHON else [],
 )
