@@ -1,5 +1,5 @@
 \.hgingore$
-\.(pyc|pyo|swp|orig)$
+\.(pyc|pyo|swp|orig|c|so)$
 ^\.
 ^tmp/
 ^MANIFEST$

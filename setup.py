@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
+from Cython.Build import cythonize
 
 setup(
     name='grako',
@@ -28,4 +29,11 @@ setup(
         'Topic :: Software Development :: Interpreters',
         'Topic :: Text Processing :: General'
     ],
+    ext_modules=cythonize(
+        "grako/**/*.py",
+        exclude=[
+            'grako/__main__.py',
+            'grako/test/__main__.py'
+        ]
+    ),
 )
