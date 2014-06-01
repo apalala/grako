@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
-CYTHON = os.environ.get('CYTHON', False)
 from setuptools import setup
-if CYTHON:
+CYTHON = True
+try:
     from Cython.Build import cythonize
+except ImportError:
+    CYTHON = False
 
 setup(
     name='grako',
@@ -35,7 +36,8 @@ setup(
         "grako/**/*.py",
         exclude=[
             'grako/__main__.py',
-            'grako/test/__main__.py'
+            'grako/test/__main__.py',
+            'grako/test/*.py'
         ]
     ) if CYTHON else [],
 )

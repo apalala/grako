@@ -11,14 +11,12 @@ regex_test:
 antlr_test:
 	cd examples/antlr2grako; make -s clean; make -s test > /dev/null
 
-tox:
-	CYTHON="" tox
-
 flake8:
 	flake8 --exclude .tox,docs,tmp,.ropeproject --max-line-length 200
 
 cython:
-	CYTHON=True python3 setup.py build_ext --inplace
+	python setup.py build_ext --inplace
+	python3 setup.py build_ext --inplace
 
 clean: clean_cython
 	find grako -name "__pycache__" | xargs rm -rf
