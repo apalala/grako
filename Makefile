@@ -1,4 +1,3 @@
-
 test: grako_test examples
 
 grako_test:
@@ -17,3 +16,17 @@ flake8:
 
 cython:
 	python setup.py build_ext --inplace
+
+clean: clean_cython
+	find grako -name "__pycache__" | xargs rm -rf
+	find grako -name "*.pyc" | xargs rm -f
+	find grako -name "*.pyo" | xargs rm -f
+	find grako -name "*.orig" | xargs rm -f
+	find examples -name "__pycache__" | xargs rm -rf
+	find examples -name "*.pyc" | xargs rm -f
+	find examples -name "*.pyo" | xargs rm -f
+	find examples -name "*.orig" | xargs rm -f
+
+clean_cython:
+	find grako -name "*.so" | xargs rm -f
+	find grako -name "*.c" | xargs rm -f
