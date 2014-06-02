@@ -306,11 +306,9 @@ Has the same effect as defining *extended* as:
 Include Directive
 -----------------
 
-**Grako** grammars support file inclusion through the include directive:
+**Grako** grammars support file inclusion through the include directive::
 
-.. sourcecode:: ebnf
-
-    #include \:: "filename"
+    #include :: "filename"
 
 The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the `grako.parser` module for a usage example.
 
