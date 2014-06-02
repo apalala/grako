@@ -314,6 +314,9 @@ Has the same effect as defining *extended* as:
 
     extended **=** *exp1* *exp2* **;**
 
+If no parameters are specified for the new rule, then the parameters defined for the base rule will
+be inherited.
+
 Include Directive
 -----------------
 

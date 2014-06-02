@@ -735,7 +735,12 @@ class Rule(_Decorator):
 
 class BasedRule(Rule):
     def __init__(self, name, exp, base, params, kwparams):
-        super(BasedRule, self).__init__(name, exp, params, kwparams)
+        super(BasedRule, self).__init__(
+            name,
+            exp,
+            params or base.params,
+            kwparams or base.kwparams
+        )
         self.base = base
         self.rhs = Sequence([self.base.exp, self.exp])
 
