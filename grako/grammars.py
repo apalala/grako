@@ -622,7 +622,10 @@ class Rule(_Decorator):
         self.kwparams = kwparams
 
     def parse(self, ctx):
-        result = ctx._call(self.exp.parse, self.name)
+        return self._parse_rhs(ctx, self.exp)
+
+    def _parse_rhs(self, ctx, exp):
+        result = ctx._call(exp.parse, self.name)
         if isinstance(result, AST):
             defines = list(sorted(self.defines()))
             result._define(
@@ -706,6 +709,34 @@ class Rule(_Decorator):
 
     str_template = '''\
                 %s
+                    =
+                %s
+                    ;
+                '''
+
+
+class BasedRule(Rule):
+    def __init__(self, name, exp, base, params, kwparams):
+        super(BasedRule, self).__init__(name, exp, params, kwparams)
+        self.base = base
+        self.rhs = Sequence([self.base.exp, self.exp])
+
+    def parse(self, ctx):
+        return self._parse_rhs(ctx, self.rhs)
+
+    def render_fields(self, fields):
+        super(BasedRule, self).render_fields(fields)
+        fields.update(exp=self.rhs)
+
+    def __str__(self):
+        return trim(self.str_template) % (
+            self.name,
+            self.base.name,
+            indent(str(self.exp))
+        )
+
+    str_template = '''\
+                %s < %s
                     =
                 %s
                     ;

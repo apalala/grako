@@ -16,7 +16,7 @@ from grako.parsing import *  # noqa
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.05.28.14.52.36.02'
+__version__ = '2014.06.02.17.38.12.00'
 
 
 class GrakoBootstrapParser(Parser):
@@ -66,21 +66,20 @@ class GrakoBootstrapParser(Parser):
                             self._error('no available options')
                     self._token(')')
                 self._error('no available options')
+        with self._optional():
+            self._token('<')
+            self._cut()
+            self._word_()
+            self.ast['base'] = self.last_node
         self._token('=')
         self._cut()
         self._expre_()
         self.ast['rhs'] = self.last_node
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('.')
-                with self._option():
-                    self._token(';')
-                self._error('expecting one of: . ;')
+        self._token(';')
         self._cut()
 
         self.ast._define(
-            ['kwparams', 'name', 'params', 'rhs'],
+            ['base', 'kwparams', 'name', 'params', 'rhs'],
             []
         )
 

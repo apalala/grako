@@ -31,6 +31,7 @@ rule
             )
         ')'
     ]
+    ['<' ^ base:word]
     '=' ^
     rhs:expre
     ';' ^

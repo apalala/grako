@@ -290,6 +290,29 @@ When a rule has named elements, the unnamed ones are excluded from the AST_ (the
 ..    That will make the default AST_ returned to be a dict with a single item ``name`` as key, and the AST_ from the right-hand side of the rule as value.
 
 
+Based Rules
+-----------
+
+Rules may now extend previously defined rules using the '<' operator. The following declarations:
+
+    base
+        ``=``
+        *base_exp*
+        ``;``
+
+    extended ``<`` base
+        ``=``
+        *ext_exp*
+        ``;``
+
+Have the same effect as defining ``extended`` as:
+
+    extended ``<`` base
+        ``=``
+        *base_exp*
+        *ext_exp*
+        ``;``
+
 Include Directive
 -----------------
 
@@ -591,6 +614,8 @@ Changes
     * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
     * Grammars may include other files using the `#include ::` directive.
+
+    * Grammar rules may now *'inherit'* the contents of other rules using the `<` operator.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 

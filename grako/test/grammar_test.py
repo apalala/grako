@@ -223,6 +223,17 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("a", nameguard=False)
         self.assertEquals('a', ast)
 
+    def test_based_rule(self):
+        grammar = '''
+            start = b $;
+
+            a = @:'a' ;
+            b < a = {@:'b'} ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("abb", nameguard=False)
+        self.assertEquals(['a', 'b', 'b'], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

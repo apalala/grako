@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 from collections import OrderedDict
 
 from . import grammars
+from .exceptions import SemanticError
 from .util import simplify_list
 
 
@@ -97,15 +98,24 @@ class GrakoSemantics(object):
     def rule(self, ast):
         name = ast.name
         rhs = ast.rhs
-        if name not in self.rules:
+        base = ast.base
+        if base:
+            if base not in self.rules:
+                raise SemanticError('base rule %s not found' % str(base))
+            base_rule = self.rules[base]
+            if name not in self.rules:
+                rule = grammars.BasedRule(name, rhs, base_rule, ast.params, ast.kwparams)
+                self.rules[name] = rule
+            else:
+                rule = self.rules[name]
+                rhs = grammars.Sequence(base_rule.exp, rhs)
+                rule.exp = grammars.Choice([rule.exp, rhs])
+        elif name not in self.rules:
             rule = grammars.Rule(name, rhs, ast.params, ast.kwparams)
             self.rules[name] = rule
         else:
             rule = self.rules[name]
-            if isinstance(rule.exp, grammars.Choice):
-                rule.exp.options.append(rhs)
-            else:
-                rule.exp = grammars.Choice([rule.exp, rhs])
+            rule.exp = grammars.Choice([rule.exp, rhs])
         return rule
 
     def grammar(self, ast):
