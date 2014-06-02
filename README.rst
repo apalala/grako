@@ -536,6 +536,9 @@ Changes
 -----
     * Applided Flake8_ to project and to generated parsers.
 
+    * *BUG* `Buffer` was not actually catching regexps. Discovered by Yogi_B_.
+
+.. _Yogi_B: https://bitbucket.org/Yogi_B
 .. _Flake8: https://pypi.python.org/pypi/flake8
 
 2.4.2
