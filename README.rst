@@ -296,13 +296,13 @@ Based Rules
 Rules may now extend previously defined rules using the '<' operator. The following declarations:
 
     base
-        ``=``
-        *base_exp*
+        `=`
+            *base_exp*
         ``;``
 
     extended ``<`` base
         ``=``
-        *ext_exp*
+            *ext_exp*
         ``;``
 
 Have the same effect as defining ``extended`` as:
