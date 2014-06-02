@@ -293,13 +293,13 @@ When a rule has named elements, the unnamed ones are excluded from the AST_ (the
 Based Rules
 -----------
 
-Rules may now extend previously defined rules using the ``<`` operator. The following declarations:
+Rules may now extend previously defined rules using the ``<`` operator. The following set of declarations:
 
     base **=** *exp1* **;**
 
     extended **<** base **=** *exp2* **;**
 
-Have the same effect as defining *extended* as:
+Has the same effect as defining *extended* as:
 
     extended **=** *exp1* *exp2* **;**
 
