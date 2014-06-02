@@ -301,7 +301,7 @@ Rules may now extend previously defined rules using the '<' operator. The follow
 
 Have the same effect as defining *extended* as:
 
-    extended **<** base **=** *base_exp* *ext_exp* **;**
+    extended **=** *base_exp* *ext_exp* **;**
 
 Include Directive
 -----------------
