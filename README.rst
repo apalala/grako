@@ -295,13 +295,13 @@ Based Rules
 
 Rules may now extend previously defined rules using the '<' operator. The following declarations:
 
-    base **=** *base_exp* **;**
+    base **=** *exp1* **;**
 
-    extended **<** base **=** *ext_exp* **;**
+    extended **<** base **=** *exp2* **;**
 
 Have the same effect as defining *extended* as:
 
-    extended **=** *base_exp* *ext_exp* **;**
+    extended **=** *exp1* *exp2* **;**
 
 Include Directive
 -----------------
