@@ -7,7 +7,7 @@ import sys
 import datetime
 
 if sys.version_info[0] >= 3:
-    strtype = str  # @ReservedAssignmet
+    strtype = str
 else:
     strtype = basestring
 
@@ -46,7 +46,10 @@ def simplify_list(x):
 
 
 def isiter(value):
-    return isinstance(value, collections.Iterable) and not isinstance(value, strtype)
+    return (
+        isinstance(value, collections.Iterable)
+        and not isinstance(value, strtype)
+    )
 
 
 def trim(text, tabwidth=4):
