@@ -8,7 +8,7 @@ except ImportError:
 
 setup(
     name='grako',
-    version='2.5.0-rc.0',
+    version='3.0.0-rc.0',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.test'],
