@@ -16,7 +16,7 @@ from grako.parsing import *  # noqa
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.02.17.38.12.00'
+__version__ = '2014.06.02.20.00.51.00'
 
 
 class GrakoBootstrapParser(Parser):
@@ -148,6 +148,8 @@ class GrakoBootstrapParser(Parser):
     def _element_(self):
         with self._choice():
             with self._option():
+                self._rule_include_()
+            with self._option():
                 self._named_list_()
             with self._option():
                 self._named_()
@@ -158,6 +160,13 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._term_()
             self._error('no available options')
+
+    @rule_def
+    def _rule_include_(self):
+        self._token('>')
+        self._cut()
+        self._word_()
+        self.ast['@'] = self.last_node
 
     @rule_def
     def _named_list_(self):
@@ -325,13 +334,7 @@ class GrakoBootstrapParser(Parser):
 
     @rule_def
     def _cut_(self):
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('^')
-                with self._option():
-                    self._token('>>')
-                self._error('expecting one of: >> ^')
+        self._token('^')
         self._cut()
 
     @rule_def
@@ -415,6 +418,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def element(self, ast):
+        return ast
+
+    def rule_include(self, ast):
         return ast
 
     def named_list(self, ast):

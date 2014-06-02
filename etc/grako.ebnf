@@ -70,11 +70,17 @@ sequence
 
 element
     =
-      named_list
+      rule_include
+    | named_list
     | named
     | override_list
     | override
     | term
+    ;
+
+rule_include
+    =
+    '>' ^ @:word
     ;
 
 named_list
@@ -171,7 +177,7 @@ void
 
 cut
     =
-    ('^' | '>>') ^
+    '^' ^
     ;
 
 literal

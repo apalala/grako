@@ -7,6 +7,7 @@ import unittest
 from grako.exceptions import FailedSemantics
 from grako.grammars import ModelContext
 from grako.tool import genmodel
+from grako.util import trim
 
 
 class GrammarTests(unittest.TestCase):
@@ -224,11 +225,36 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals('a', ast)
 
     def test_based_rule(self):
+        grammar = '''\
+            start
+                =
+                b $
+                ;
+
+
+            a
+                =
+                @:'a'
+                ;
+
+
+            b < a
+                =
+                {@:'b'}
+                ;
+
+            '''
+        model = genmodel("test", grammar)
+        ast = model.parse("abb", nameguard=False)
+        self.assertEquals(['a', 'b', 'b'], ast)
+        self.assertEqual(trim(grammar), str(model))
+
+    def test_rule_include(self):
         grammar = '''
             start = b $;
 
             a = @:'a' ;
-            b < a = {@:'b'} ;
+            b = >a {@:'b'} ;
         '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)

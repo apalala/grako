@@ -498,10 +498,10 @@ class Cut(_Model):
         return None
 
     def _first(self, k, F):
-        return {('>>',)}
+        return {('^',)}
 
     def __str__(self):
-        return '>>'
+        return '^'
 
     template = 'self._cut()'
 
@@ -612,6 +612,24 @@ class RuleRef(_Model):
         return self.name
 
     template = "self._{name}_()"
+
+
+class RuleInclude(_Decorator):
+    def __init__(self, rule):
+        assert isinstance(rule, Rule), str(rule.name)
+        super(RuleInclude, self).__init__(rule.exp)
+        self.rule = rule
+
+    def __str__(self):
+        return '>%s' % (self.rule.name)
+
+    def render_fields(self, fields):
+        super(RuleInclude, self).render_fields(fields)
+        fields.update(exp=self.rule.exp)
+
+    template = '''
+                {exp}
+                '''
 
 
 class Rule(_Decorator):
@@ -909,4 +927,5 @@ class Grammar(_Model):
                                         help="the start rule for parsing")
                     args = parser.parse_args()
 
-                    main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace) '''
+                    main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace)
+                    '''

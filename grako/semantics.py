@@ -118,5 +118,12 @@ class GrakoSemantics(object):
             rule.exp = grammars.Choice([rule.exp, rhs])
         return rule
 
+    def rule_include(self, ast):
+        name = str(ast)
+        if name not in self.rules:
+            raise SemanticError('included rule %s not found' % str(name))
+        rule = self.rules[name]
+        return grammars.RuleInclude(rule)
+
     def grammar(self, ast):
         return grammars.Grammar(self.grammar_name, list(self.rules.values()))

@@ -16,6 +16,8 @@ Grako
 
 **Grako** is *different* from other PEG_ parser generators in that the generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed; there are no complicated *if-then-else* sequences for decision making or backtracking. *Positive and negative lookaheads*, and the *cut* element with its cleaning of the memoization cache allow for additional, hand-crafted optimizations at the grammar level, and delegation to Python_'s re_ module for *lexemes* allows for (Perl_-like) powerful and efficient lexical analysis. The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for enhanced CPU-cache hits.
 
+Include files and rule inheritance and inclusion give **Grako** grammars considerable expresive power.
+
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4000 lines of Python_, it is possible to study all its source code in a single session. **Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ standard libraries.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
@@ -213,6 +215,18 @@ The expressions, in reverse order of operator precedence, can be:
     ``!e``
         Negative lookahead. Try parsing ``e`` and fail if there's a match. Do not consume any input whichever the outcome.
 
+    ``>rulename``
+
+        The include operator'. Include the *right hand side* of rule `rulename` at this point. The follwing set of declarations:
+
+            includable **=** *exp1* **;**
+
+            expanded **=** *exp0* **>** includable *exp2* **;**
+
+        Has the same effect as defining *expanded* as:
+
+            extended **=** *exp0* *exp1* *exp2* **;**
+
     ``'text'`` or ``"text"``
         Match the token text within the quotation marks.
 
@@ -234,9 +248,6 @@ The expressions, in reverse order of operator precedence, can be:
 
     ``^``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
-
-    ``>>``
-        Alternative syntax for the *cut* expression.
 
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If more than one item is added with the same ``name``, the entry is converted to a list.
@@ -605,21 +616,24 @@ Changes
 
     * Grammars may include other files using the `#include ::` directive.
 
-    * Grammar rules may now *'inherit'* the contents of other rules using the `<` operator.
+    * Grammar rules may now *'inherit'* the contents of other rules using the ``<`` operator.
+
+    * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
-    * The default *cut* operator is now `^`.
+    * The *cut* operator is now `^`.
 
     * Parsing exceptions will now show the sequence of rule invocations that led to the failure.
 
     * Renamed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
 
-    * **Grako** models are now JSON_-friendly with the help of ``Node.__json__()`` and ``grako.util.asjon``.
+    * **Grako** models are now JSON_-friendly with the help of ``Node.__json__()`` and ``grako.util.asjon()``.
 
     * Added compatibility with Cython_.
 
 .. _Cython: http://cython.org/
+.. _JSON: http://www.json.org/
 
 2.4.3
 -----
