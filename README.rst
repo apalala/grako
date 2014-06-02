@@ -306,7 +306,9 @@ Has the same effect as defining *extended* as:
 Include Directive
 -----------------
 
-**Grako** grammars support file inclusion through the include directive:
+**Grako** grammars support file inclusion through the include directive::
+
+.. code:: rst
 
     #include \:: "filename"
 
