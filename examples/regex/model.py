@@ -17,7 +17,7 @@ class Model(Renderer):
         return s + 1
 
     template = '''\
-        S{n} = {exp} .
+        S{n} = {exp} ;
 
         '''
 
@@ -35,7 +35,7 @@ class Regex(Model):
         fields.update(startn=self.exp.n)
 
     template = '''\
-        S{n} = S{startn} $ .
+        S{n} = S{startn} $ ;
 
         {exp}
         '''
@@ -56,7 +56,7 @@ class Choice(Model):
         fields.update(exp=[o.n for o in self.options])
 
     template = '''\
-        S{n} = {exp:: |  :S%s} .
+        S{n} = {exp:: |  :S%s} ;
 
         {options}
 
@@ -78,7 +78,7 @@ class Sequence(Model):
         fields.update(exp=[t.n for t in self.terms])
 
     template = '''\
-        S{n} = {exp:: :S%s} .
+        S{n} = {exp:: :S%s} ;
 
         {terms}
 
@@ -98,7 +98,7 @@ class Closure(Model):
         fields.update(atomn=self.atom.n)
 
     template = '''\
-            S{n} = {{ S{atomn} }} .
+            S{n} = {{ S{atomn} }} ;
 
             {atom}
 
@@ -111,7 +111,7 @@ class Literal(Model):
         self.exp = exp
 
     template = '''
-            S{n} = ?/{exp}/? .
+            S{n} = ?/{exp}/? ;
 
             '''
 
@@ -121,6 +121,6 @@ class Empty(Model):
         super(Empty, self).__init__()
 
     template = '''
-            S{n} = () .
+            S{n} = () ;
 
             '''
