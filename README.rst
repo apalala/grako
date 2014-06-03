@@ -301,18 +301,23 @@ When a rule has named elements, the unnamed ones are excluded from the AST_ (the
 Based Rules
 -----------
 
-Rules may now extend previously defined rules using the ``<`` operator. The following set of declarations:
+Rules may extend previously defined rules using the ``<`` operator.
 
-    base **=** *exp1* **;**
+The following set of declarations:
+
+    base::Param **=** *exp1* **;**
 
     extended **<** base **=** *exp2* **;**
 
 Has the same effect as defining *extended* as:
 
-    extended **=** *exp1* *exp2* **;**
+    extended::Param **=** *exp1* *exp2* **;**
 
-If no parameters are specified for the new rule, then the parameters defined for the base rule will
-be inherited.
+The *base rule* must be defined previously in the grammar.
+
+Parameters from the *base rule* are copied if the new rule doesn't define it's own.
+
+Deep inheritance is possible, **but untested**.
 
 Include Directive
 -----------------
