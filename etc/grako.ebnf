@@ -17,7 +17,7 @@ grammar
 
 rule
     =
-    name:word ^
+    name:new_name ^
     [
         '::' ^ params:params
     |
@@ -31,7 +31,7 @@ rule
             )
         ')'
     ]
-    ['<' ^ base:word]
+    ['<' ^ base:known_name]
     '=' ^
     rhs:expre
     ';' ^
@@ -80,7 +80,7 @@ element
 
 rule_include
     =
-    '>' ^ @:word
+    '>' ^ @:known_name
     ;
 
 named_list
@@ -91,6 +91,16 @@ named_list
 named
     =
     name:name ':' value:element
+    ;
+
+new_name
+    =
+    name ^
+    ;
+
+known_name
+    =
+    name ^
     ;
 
 name

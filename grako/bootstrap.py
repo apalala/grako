@@ -16,7 +16,7 @@ from grako.parsing import *  # noqa
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.02.20.00.51.00'
+__version__ = '2014.06.03.14.41.34.01'
 
 
 class GrakoBootstrapParser(Parser):
@@ -35,7 +35,7 @@ class GrakoBootstrapParser(Parser):
 
     @rule_def
     def _rule_(self):
-        self._word_()
+        self._new_name_()
         self.ast['name'] = self.last_node
         self._cut()
         with self._optional():
@@ -69,7 +69,7 @@ class GrakoBootstrapParser(Parser):
         with self._optional():
             self._token('<')
             self._cut()
-            self._word_()
+            self._known_name_()
             self.ast['base'] = self.last_node
         self._token('=')
         self._cut()
@@ -165,7 +165,7 @@ class GrakoBootstrapParser(Parser):
     def _rule_include_(self):
         self._token('>')
         self._cut()
-        self._word_()
+        self._known_name_()
         self.ast['@'] = self.last_node
 
     @rule_def
@@ -193,6 +193,16 @@ class GrakoBootstrapParser(Parser):
             ['name', 'value'],
             []
         )
+
+    @rule_def
+    def _new_name_(self):
+        self._name_()
+        self._cut()
+
+    @rule_def
+    def _known_name_(self):
+        self._name_()
+        self._cut()
 
     @rule_def
     def _name_(self):
@@ -427,6 +437,12 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def named(self, ast):
+        return ast
+
+    def new_name(self, ast):
+        return ast
+
+    def known_name(self, ast):
         return ast
 
     def name(self, ast):
