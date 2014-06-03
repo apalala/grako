@@ -22,15 +22,19 @@ Include files and rule inheritance and inclusion give **Grako** grammars conside
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 
-**Grako** is feature complete and currently being used over very large grammars to parse and translate hundreds of thousands of lines of legacy_ code.
+**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ (NATURAL_, COBOL_, Java_, VB6_, ...).
 
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
 .. _legacy: http://en.wikipedia.org/wiki/Legacy_code
+.. _`legacy code`: http://en.wikipedia.org/wiki/Legacy_code
 .. _PyPy: http://pypy.org/
 .. _`context managers`: http://docs.python.org/2/library/contextlib.html
 .. _re: http://docs.python.org/2/library/re.html
 .. _Perl: http://www.perl.org/
-
+.. _NATURAL: http://en.wikipedia.org/wiki/NATURAL
+.. _COBOL: http://en.wikipedia.org/wiki/Cobol
+.. _Java:  http://en.wikipedia.org/wiki/Java_(programming_language)
+.. _VB6: http://en.wikipedia.org/wiki/Visual_basic_6
 
 Table of Contents
 =================
