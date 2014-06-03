@@ -10,16 +10,16 @@ START = EXPRE $ ;
 
 EXPRE = CHOICE | SEQUENCE ;
 
-CHOICE = opts+:SEQUENCE {'|' >> opts+:SEQUENCE}+ ;
+CHOICE = opts+:SEQUENCE {'|' ^ opts+:SEQUENCE}+ ;
 
 SEQUENCE = terms:{TERM}+ ;
 
 TERM = CLOSURE | ATOM ;
 
-CLOSURE = @ATOM '*' >>  ;
+CLOSURE = @ATOM '*' ^  ;
 
 ATOM = SUBEXP | LITERAL ;
 
-SUBEXP = '(' >> @EXPRE ')' ;
+SUBEXP = '(' ^ @EXPRE ')' ;
 
 LITERAL = ?/(?:\\;|[^|*\\()])+/? ;
