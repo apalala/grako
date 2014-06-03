@@ -210,7 +210,6 @@ The expressions, in reverse order of operator precedence, can be:
         Negative lookahead. Try parsing ``e`` and fail if there's a match. Do not consume any input whichever the outcome.
 
     ``>rulename``
-
         The include operator'. Include the *right hand side* of rule ``rulename`` at this point.
 
         The follwing set of declarations:
