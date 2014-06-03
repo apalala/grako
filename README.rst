@@ -298,6 +298,36 @@ When a rule has named elements, the unnamed ones are excluded from the AST_ (the
 ..    That will make the default AST_ returned to be a dict with a single item ``name`` as key, and the AST_ from the right-hand side of the rule as value.
 
 
+Rules with Arguments
+--------------------
+
+**Grako** allows rules to specify Python_-style arguments::
+
+    addition(Add, op='+')
+        =
+        addend '+' addend
+        ;
+
+The arguments values are fixed at grammar-compilation time.
+
+An alternative syntax is available if no *keyword parameters* are required::
+
+    addition::Add, '+'
+        =
+        addend '+' addend
+        ;
+
+Semantic methods must be prepared to receive any arguments declared in the corresponding rule::
+
+    def addition(self, ast, name, op=None):
+        ...
+
+When working with rule arguments, it is good to define a `_default()` method that is ready to take any combination of standard and keyword arguments::
+
+    def _default(self, ast, *args, **kwargs):
+        ...
+
+
 Based Rules
 -----------
 
@@ -399,39 +429,8 @@ The abstract parser will honor as a semantic action a method declared as::
 
     def preproc(self, ast):
 
-Rules with Arguments
-====================
-
-**Grako** allows rules to specify Python_-style arguments::
-
-    addition(Add, op='+')
-        =
-        addend '+' addend
-        ;
-
-The arguments values are fixed at grammar-compilation time.
-
-An alternative syntax is available if no *keyword parameters* are required::
-
-    addition::Add, '+'
-        =
-        addend '+' addend
-        ;
-
-Semantic methods must be prepared to receive any arguments declared in the corresponding rule::
-
-    def addition(self, ast, name, op=None):
-        ...
-
-When working with rule arguments, it is good to define a `_default()` method that is ready to take any combination of standard and keyword arguments::
-
-    def _default(self, ast, *args, **kwargs):
-        ...
-
-Note than when multiple rules with the same name are combined with rule arguments the results are curently undefined.
-
 Include Directive
------------------
+=================
 
 **Grako** grammars support file inclusion through the include directive::
 
