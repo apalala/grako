@@ -316,18 +316,6 @@ Has the same effect as defining *extended* as:
 
 Parameters from the *base rule* are copied to the new rule if the new rule doesn't define its own.  Repeated inheritance should be possible, but it *hasn't been tested*.
 
-Include Directive
------------------
-
-**Grako** grammars support file inclusion through the include directive::
-
-    #include :: "filename"
-
-The resolution of the *filename* is relative to the directory/folder of the source. Absolute paths and ``../`` navigations are honored.
-
-The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for an example.
-
-
 Abstract Syntax Trees (ASTs)
 ============================
 
@@ -441,6 +429,18 @@ When working with rule arguments, it is good to define a `_default()` method tha
         ...
 
 Note than when multiple rules with the same name are combined with rule arguments the results are curently undefined.
+
+Include Directive
+-----------------
+
+**Grako** grammars support file inclusion through the include directive::
+
+    #include :: "filename"
+
+The resolution of the *filename* is relative to the directory/folder of the source. Absolute paths and ``../`` navigations are honored.
+
+The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for an example.
+
 
 Templates and Translation
 =========================
