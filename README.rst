@@ -170,16 +170,6 @@ Both the semicolon (``;``) and the period (``.``) are accepted as rule definitio
 
 If a *name* collides with a Python_ keyword, an underscore (``_``) will be appended to it on the generated parser.
 
-If you define more than one rule with the same name::
-
-    name = expre1 ;
-    name = expre2 ;
-
-The result will be equivalent to applying the choice operator to the
-right-hand-side expressions::
-
-    name = expre1 | expre2 ;
-
 Rule names that start with an uppercase character::
 
    FRAGMENT = ?/[a-z]+/?
@@ -613,7 +603,9 @@ Changes
 3.0.0-rc.1
 ----------
 
-    * Major version bump because backwards compatibility is not guaranteed or tested.
+    * Major version bump because several new features are not backwards-compatible.
+
+    * The *cut* operator is now `^`.
 
     * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
@@ -623,9 +615,14 @@ Changes
 
     * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
-    * Internals and examples were upgraded to use the latest **Grako** features.
+    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion.
 
-    * The *cut* operator is now `^`.
+        * Beautiful is better than ugly.
+        * Explicit is better than implicit.
+        * Simple is better than complex.
+        * There should be one-- and preferably only one --obvious way to do it.
+
+    * Internals and examples were upgraded to use the latest **Grako** features.
 
     * Parsing exceptions will now show the sequence of rule invocations that led to the failure.
 

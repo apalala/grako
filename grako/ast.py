@@ -5,7 +5,7 @@ to store the values of named elements of grammar rules.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from .util import strtype, asjson
+from .util import strtype, asjson, PY3
 
 
 class AST(dict):
@@ -21,8 +21,23 @@ class AST(dict):
         """
         return self._parseinfo
 
+    def keys(self):
+        return self._ordered_keys()
+
+    def values(self):
+        values = (self[k] for k in self)
+        return values if PY3 else list(values)
+
+    def items(self):
+        items = ((k, self[k]) for k in self)
+        return items if PY3 else list(items)
+
     def _ordered_keys(self):
-        return [k for k in self._order if k in self]
+        keys = iter(self)
+        return keys if PY3 else list(keys)
+
+    def __iter__(self):
+        return (k for k in self._order if k in self)
 
     def __setitem__(self, key, value):
         self._add(key, value)
