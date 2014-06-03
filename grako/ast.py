@@ -22,16 +22,25 @@ class AST(dict):
         """
         return self._parseinfo
 
+    def iterkeys(self):
+        return iter(self)
+
     def keys(self):
-        keys = self.__iter__()
+        keys = self.iterkeys()
         return keys if PY3 else list(keys)
 
+    def itervalues(self):
+        return (self[k] for k in self)
+
     def values(self):
-        values = (self[k] for k in self.keys())
+        values = self.itervalues()
         return values if PY3 else list(values)
 
+    def iteritems(self):
+        return ((k, self[k]) for k in self)
+
     def items(self):
-        items = ((k, self[k]) for k in self.keys())
+        items = self.iteritems()
         return items if PY3 else list(items)
 
     def update(self, *args, **kwargs):
