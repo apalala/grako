@@ -222,6 +222,8 @@ The expressions, in reverse order of operator precedence, can be:
 
             extended **=** *exp0* *exp1* *exp2* **;**
 
+        Note that the included rule must be defined before the rule that includes it.
+
     ``'text'`` or ``"text"``
         Match the token text within the quotation marks.
 
