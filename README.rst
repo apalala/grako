@@ -318,7 +318,7 @@ Include Directive
 
     #include :: "filename"
 
-The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the `grako.parser` module for a usage example.
+The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for a usage example.
 
 
 Abstract Syntax Trees (ASTs)
