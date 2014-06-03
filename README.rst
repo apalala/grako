@@ -22,7 +22,7 @@ Include files and rule inheritance and inclusion give **Grako** grammars conside
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 
-**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in the programming languages NATURAL_, COBOL_, VB6_, Java_, and others.
+**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, annd Java_.
 
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
 .. _legacy: http://en.wikipedia.org/wiki/Legacy_code
