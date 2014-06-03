@@ -11,7 +11,8 @@ from .util import strtype, asjson, PY3
 class AST(dict):
     def __init__(self, *args, **kwargs):
         super(AST, self).__setattr__('_order', [])
-        super(AST, self).__init__(*args, **kwargs)
+        super(AST, self).__init__()
+        self.update(*args, **kwargs)
 
     @property
     def parseinfo(self):
@@ -22,22 +23,38 @@ class AST(dict):
         return self._parseinfo
 
     def keys(self):
-        return self._ordered_keys()
+        keys = self.__iter__()
+        return keys if PY3 else list(keys)
 
     def values(self):
-        values = (self[k] for k in self)
+        values = (self[k] for k in self.keys())
         return values if PY3 else list(values)
 
     def items(self):
-        items = ((k, self[k]) for k in self)
+        items = ((k, self[k]) for k in self.keys())
         return items if PY3 else list(items)
 
-    def _ordered_keys(self):
-        keys = iter(self)
-        return keys if PY3 else list(keys)
+    def update(self, *args, **kwargs):
+        def upairs(d):
+            for k, v in d:
+                self[k] = v
+
+        for d in args:
+            if isinstance(d, dict):
+                upairs(d.items())
+            else:
+                upairs(d)
+        upairs(kwargs.items())
 
     def __iter__(self):
-        return (k for k in self._order)
+        assert set(self._order) == set(super(AST, self).__iter__())
+        order = set(self._order)
+        for k in self._order:
+            if k in self:
+                yield k
+        for k in super(AST, self).__iter__():
+            if not k in order:
+                yield k
 
     def __setitem__(self, key, value):
         self._add(key, value)
@@ -83,9 +100,6 @@ class AST(dict):
                 self._order.append(key)
 
     def _copy(self):
-        haslists = any(isinstance(v, list) for v in self.values())
-        if not haslists:
-            return AST(self)
         return AST(
             (k, v[:] if isinstance(v, list) else v)
             for k, v in self.items()
@@ -114,7 +128,7 @@ class AST(dict):
     def __json__(self):
         return {
             asjson(k): asjson(self[k])
-            for k in self._ordered_keys() if not k.startswith('_')
+            for k in self if not k.startswith('_')
         }
 
     def __repr__(self):
