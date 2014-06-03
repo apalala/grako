@@ -7,7 +7,7 @@ Base definitions for models of programs.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import collections
-from .util import asjson
+from .util import asjson, asjsons
 from .ast import AST
 
 EOLCOL = 50
@@ -115,11 +115,7 @@ class Node(object):
             return asjson(result)
 
     def __str__(self):
-        d = self._pubdict()
-        if not d:
-            return str(self.ast)
-        else:
-            return str({str(k): str(v) for k, v in d})
+        return asjsons(self)
 
 
 class NodeWalker(object):

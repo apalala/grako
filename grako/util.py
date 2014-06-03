@@ -2,8 +2,9 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import collections
 import sys
+import collections
+import json
 import datetime
 
 
@@ -111,3 +112,7 @@ def asjson(obj):
         return [asjson(e) for e in obj]
     else:
         return obj
+
+
+def asjsons(obj):
+    return json.dumps(asjson(obj), indent=2)
