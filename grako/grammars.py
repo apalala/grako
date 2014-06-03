@@ -747,6 +747,9 @@ class BasedRule(Rule):
     def parse(self, ctx):
         return self._parse_rhs(ctx, self.rhs)
 
+    def defines(self):
+        return self.rhs.defines()
+
     def render_fields(self, fields):
         super(BasedRule, self).render_fields(fields)
         fields.update(exp=self.rhs)

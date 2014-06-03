@@ -37,7 +37,7 @@ class AST(dict):
         return keys if PY3 else list(keys)
 
     def __iter__(self):
-        return (k for k in self._order if k in self)
+        return (k for k in self._order)
 
     def __setitem__(self, key, value):
         self._add(key, value)
@@ -73,11 +73,12 @@ class AST(dict):
 
     def _define(self, keys, list_keys=None):
         for key in list_keys or []:
-            if key not in self:
+            if not super(AST, self).__contains__(key):
                 super(AST, self).__setitem__(key, [])
                 self._order.append(key)
+
         for key in keys:
-            if key not in self:
+            if not super(AST, self).__contains__(key):
                 super(AST, self).__setitem__(key, None)
                 self._order.append(key)
 
