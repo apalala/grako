@@ -523,7 +523,7 @@ You may use the tool under the terms of the BSD_-style license described in the 
 `apalala@gmail.com`_.
 
 .. _BSD: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
-.. _`info@resqsoft.com`: mailto:info@resqsoft.com
+.. _`apalala@gmail.com`: mailto:info@resqsoft.com
 
 
 Contact and Updates
