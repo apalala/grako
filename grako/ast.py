@@ -22,16 +22,25 @@ class AST(dict):
         """
         return self._parseinfo
 
+    def iterkeys(self):
+        return iter(self)
+
     def keys(self):
-        keys = self.__iter__()
+        keys = self.iterkeys()
         return keys if PY3 else list(keys)
 
+    def itervalues(self):
+        return (self[k] for k in self)
+
     def values(self):
-        values = (self[k] for k in self.keys())
+        values = self.itervalues()
         return values if PY3 else list(values)
 
+    def iteritems(self):
+        return ((k, self[k]) for k in self)
+
     def items(self):
-        items = ((k, self[k]) for k in self.keys())
+        items = self.iteritems()
         return items if PY3 else list(items)
 
     def update(self, *args, **kwargs):
@@ -47,14 +56,7 @@ class AST(dict):
         upairs(kwargs.items())
 
     def __iter__(self):
-        assert set(self._order) == set(super(AST, self).__iter__())
-        order = set(self._order)
-        for k in self._order:
-            if k in self:
-                yield k
-        for k in super(AST, self).__iter__():
-            if not k in order:
-                yield k
+        return iter(self._order)
 
     def __setitem__(self, key, value):
         self._add(key, value)
@@ -104,7 +106,6 @@ class AST(dict):
             (k, v[:] if isinstance(v, list) else v)
             for k, v in self.items()
         )
-
 
     def _add(self, key, value, force_list=False):
         if self.__hasattribute__(key):
