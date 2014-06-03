@@ -22,7 +22,7 @@ Include files and rule inheritance and inclusion give **Grako** grammars conside
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 
-**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ (NATURAL_, COBOL_, Java_, VB6_, ...).
+**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in the programming languages NATURAL_, COBOL_, VB6_, Java_, and others.
 
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
 .. _legacy: http://en.wikipedia.org/wiki/Legacy_code
@@ -318,7 +318,7 @@ Include Directive
 
     #include :: "filename"
 
-The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for a usage example.
+The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for an example.
 
 
 Abstract Syntax Trees (ASTs)
