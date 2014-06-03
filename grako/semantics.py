@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 from collections import OrderedDict
 
 from . import grammars
-from .exceptions import SemanticError
+from .exceptions import FailedSemantics
 from .util import simplify_list
 
 
@@ -95,6 +95,16 @@ class GrakoSemantics(object):
             return ast[0]
         return grammars.Choice(ast)
 
+    def new_name(self, ast):
+        if ast in self.rules:
+            raise FailedSemantics('rule "%s" already defined' % str(ast))
+        return ast
+
+    def known_name(self, ast):
+        if ast not in self.rules:
+            raise FailedSemantics('rule "%s" not yet defined' % str(ast))
+        return ast
+
     def rule(self, ast):
         name = ast.name
         rhs = ast.rhs
@@ -102,19 +112,12 @@ class GrakoSemantics(object):
         params = ast.params
         kwparams = ast.kwparams
 
-        if not name:
-            print('AST', ast)
-
-        assert name, str(name)
-
-        if name in self.rules:
-            raise SemanticError('rule %s already defined' % str(name))
+        self.new_name(name)
 
         if not base:
             rule = grammars.Rule(name, rhs, params, kwparams)
-        elif base not in self.rules:
-            raise SemanticError('base rule %s not found' % str(base))
         else:
+            self.known_name(base)
             base_rule = self.rules[base]
             rule = grammars.BasedRule(name, rhs, base_rule, params, kwparams)
 
@@ -123,8 +126,8 @@ class GrakoSemantics(object):
 
     def rule_include(self, ast):
         name = str(ast)
-        if name not in self.rules:
-            raise SemanticError('included rule %s not found' % str(name))
+        self.known_name(name)
+
         rule = self.rules[name]
         return grammars.RuleInclude(rule)
 

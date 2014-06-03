@@ -69,17 +69,16 @@ class AST(dict):
         self.__setitem__(name, value)
 
     def __getattr_(self, key):
-        if self.__hasattribute__(key):
-            key += '_'
         return super.__getattr__(key)
 
     def __getattribute__(self, name):
+        if name in self:
+            return self[name]
         if isinstance(name, strtype):
             try:
                 return super(AST, self).__getattribute__(name)
             except AttributeError:
                 pass
-        return self.get(name)
 
     def __hasattribute__(self, name):
         if not isinstance(name, strtype):
@@ -108,9 +107,6 @@ class AST(dict):
         )
 
     def _add(self, key, value, force_list=False):
-        if self.__hasattribute__(key):
-            key += '_'
-
         previous = self.get(key, None)
         if previous is None:
             if force_list:
