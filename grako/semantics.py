@@ -99,23 +99,21 @@ class GrakoSemantics(object):
         name = ast.name
         rhs = ast.rhs
         base = ast.base
-        if base:
-            if base not in self.rules:
-                raise SemanticError('base rule %s not found' % str(base))
-            base_rule = self.rules[base]
-            if name not in self.rules:
-                rule = grammars.BasedRule(name, rhs, base_rule, ast.params, ast.kwparams)
-                self.rules[name] = rule
-            else:
-                rule = self.rules[name]
-                rhs = grammars.Sequence(base_rule.exp, rhs)
-                rule.exp = grammars.Choice([rule.exp, rhs])
-        elif name not in self.rules:
-            rule = grammars.Rule(name, rhs, ast.params, ast.kwparams)
-            self.rules[name] = rule
+        params = ast.params
+        kwparams = ast.kwparams
+
+        if name in self.rules:
+            raise SemanticError('rule %s already defined' % str(name))
+
+        if not base:
+            rule = grammars.Rule(name, rhs, params, kwparams)
+        elif base not in self.rules:
+            raise SemanticError('base rule %s not found' % str(base))
         else:
-            rule = self.rules[name]
-            rule.exp = grammars.Choice([rule.exp, rhs])
+            base_rule = self.rules[base]
+            rule = grammars.BasedRule(name, rhs, base_rule, params, kwparams)
+
+        self.rules[name] = rule
         return rule
 
     def rule_include(self, ast):
