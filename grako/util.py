@@ -6,7 +6,10 @@ import collections
 import sys
 import datetime
 
-if sys.version_info[0] >= 3:
+
+PY3 = sys.version_info[0] >= 3
+
+if PY3:
     strtype = str
 else:
     strtype = basestring
@@ -22,7 +25,7 @@ def to_list(o):
 
 
 def ustr(s):
-    if sys.version_info[0] >= 3:
+    if PY3:
         return str(s)
     elif isinstance(s, str):
         return s.decode('utf-8')
@@ -31,7 +34,7 @@ def ustr(s):
 
 
 def udecode(s):
-    if sys.version_info[0] >= 3:
+    if PY3:
         return str(s)
     else:
         if not isinstance(s, str):

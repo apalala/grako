@@ -102,6 +102,11 @@ class GrakoSemantics(object):
         params = ast.params
         kwparams = ast.kwparams
 
+        if not name:
+            print('AST', ast)
+
+        assert name, str(name)
+
         if name in self.rules:
             raise SemanticError('rule %s already defined' % str(name))
 

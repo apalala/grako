@@ -6,6 +6,7 @@ def main():
     import unittest
     from . import bootstrap_test
     from . import buffering_test
+    from . import ast_test
     from . import grammar_test
     from . import codegen_test
     from . import parsing_test
@@ -13,6 +14,7 @@ def main():
     suite = unittest.TestSuite(tests=[
         bootstrap_test.suite(),
         buffering_test.suite(),
+        ast_test.suite(),
         grammar_test.suite(),
         codegen_test.suite(),
         parsing_test.suite()
