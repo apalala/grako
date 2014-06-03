@@ -211,7 +211,9 @@ The expressions, in reverse order of operator precedence, can be:
 
     ``>rulename``
 
-        The include operator'. Include the *right hand side* of rule `rulename` at this point. The follwing set of declarations:
+        The include operator'. Include the *right hand side* of rule ``rulename`` at this point.
+
+        The follwing set of declarations:
 
             includable **=** *exp1* **;**
 
