@@ -124,9 +124,10 @@ class AST(dict):
         return self._add(key, value, force_list=True)
 
     def __json__(self):
+        # preserve order
         return {
-            asjson(k): asjson(self[k])
-            for k in self if not k.startswith('_')
+            asjson(k): asjson(v)
+            for k, v in self.items() if not k.startswith('_')
         }
 
     def __repr__(self):
