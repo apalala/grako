@@ -620,9 +620,7 @@ Changes
 
     * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
-    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion::
-
-        import this
+    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion (``import this``).
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
