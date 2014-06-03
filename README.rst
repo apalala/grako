@@ -322,7 +322,7 @@ Semantic methods must be prepared to receive any arguments declared in the corre
     def addition(self, ast, name, op=None):
         ...
 
-When working with rule arguments, it is good to define a `_default()` method that is ready to take any combination of standard and keyword arguments::
+When working with rule arguments, it is good to define a ``_default()`` method that is ready to take any combination of standard and keyword arguments::
 
     def _default(self, ast, *args, **kwargs):
         ...
@@ -400,7 +400,7 @@ Semantic Actions
 
 There are no constructs for semantic actions in **Grako** grammars. This is on purpose, as we believe that semantic actions obscure the declarative nature of grammars and provide for poor modularization from the parser execution perspective.
 
-Semantic actions are defined in a class, and applied by passing an object of the class to the `parse()` method of the parser as the `semantics=` paramenter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
+Semantic actions are defined in a class, and applied by passing an object of the class to the ``parse()`` method of the parser as the ``semantics=`` paramenter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
 
     class MySemantics(object):
         def some_rule_name(self, ast):
@@ -409,11 +409,11 @@ Semantic actions are defined in a class, and applied by passing an object of the
         def _default(self, ast):
             pass
 
-If there's no method matching the rule's name, **Grako** will try to invoke a `_default()` method if it's defined::
+If there's no method matching the rule's name, **Grako** will try to invoke a ``_default()`` method if it's defined::
 
     def _default(self, ast):
 
-Nothing will happen if neither the per-rule method nor `_default()` are defined.
+Nothing will happen if neither the per-rule method nor ``_default()`` are defined.
 
 The per-rule methods in classes implementing the semantics provide enough opportunity to do rule post-processing operations, like verifications (for inadequate use of keywords as identifiers), or AST_ transformation.
 
