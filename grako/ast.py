@@ -5,49 +5,66 @@ to store the values of named elements of grammar rules.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-__all__ = ['AST']
+from .util import strtype, asjson
 
 
 class AST(dict):
-    """
-    A dictionary with attribute-style access. It maps attribute access to
-    the real dictionary.
-    """
-    # ActiveState Recipe:
-    # http://code.activestate.com/recipes/473786-dictionary-with-attribute-style-access/
+    def __init__(self, *args, **kwargs):
+        super(AST, self).__setattr__('_order', [])
+        super(AST, self).__init__(*args, **kwargs)
 
-    def __getstate__(self):
-        return self.__dict__.items()
+    @property
+    def parseinfo(self):
+        """ Make the special attribute `_parseinfo` be available
+            as a property without an underscore in the name.
+            This patch helps with backwards compatibility.
+        """
+        return self._parseinfo
 
-    def __setstate__(self, items):
-        for key, val in items:
-            self.__dict__[key] = val
-
-    def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, super(AST, self).__repr__())
+    def _ordered_keys(self):
+        return [k for k in self._order if k in self]
 
     def __setitem__(self, key, value):
         self._add(key, value)
 
-    def __getitem__(self, key):
-        if self.__contains__(key):
-            return super(AST, self).__getitem__(key)
+    def __delitem__(self, key):
+        super(AST, self).__delitem__(key)
+        self._order.remove(key)
 
-    __getattr__ = __getitem__
-    __setattr__ = __setitem__
+    def __setattr__(self, name, value):
+        self.__setitem__(name, value)
+
+    def __getattr_(self, key):
+        if self.__hasattribute__(key):
+            key += '_'
+        return super.__getattr__(key)
 
     def __getattribute__(self, name):
-        if name in self:
-            return self[name]
-        return super(AST, self).__getattribute__(name)
+        if isinstance(name, strtype):
+            try:
+                return super(AST, self).__getattribute__(name)
+            except AttributeError:
+                pass
+            return self.get(name)
+
+    def __hasattribute__(self, name):
+        if not isinstance(name, strtype):
+            return False
+        try:
+            super(AST, self).__getattribute__(name)
+            return True
+        except AttributeError:
+            return False
 
     def _define(self, keys, list_keys=None):
         for key in list_keys or []:
-            if not self.__contains__(key):
+            if key not in self:
                 super(AST, self).__setitem__(key, [])
+                self._order.append(key)
         for key in keys:
-            if not self.__contains__(key):
+            if key not in self:
                 super(AST, self).__setitem__(key, None)
+                self._order.append(key)
 
     def _copy(self):
         haslists = any(isinstance(v, list) for v in self.values())
@@ -59,12 +76,16 @@ class AST(dict):
         )
 
     def _add(self, key, value, force_list=False):
+        if self.__hasattribute__(key):
+            key += '_'
+
         previous = self.get(key, None)
         if previous is None:
             if force_list:
                 super(AST, self).__setitem__(key, [value])
             else:
                 super(AST, self).__setitem__(key, value)
+            self._order.append(key)
         elif isinstance(previous, list):
             previous.append(value)
         else:
@@ -74,10 +95,11 @@ class AST(dict):
     def _append(self, key, value):
         return self._add(key, value, force_list=True)
 
-    @property
-    def parseinfo(self):
-        """ Make the special attribute `_parseinfo` be available
-            as a property without an underscore in the name.
-            This patch helps with backwards compatibility.
-        """
-        return self._parseinfo
+    def __json__(self):
+        return {
+            asjson(k): asjson(self[k])
+            for k in self._ordered_keys() if not k.startswith('_')
+        }
+
+    def __repr__(self):
+        return "%s(%s)" % (self.__class__.__name__, super(AST, self).__repr__())

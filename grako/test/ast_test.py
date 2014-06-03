@@ -13,6 +13,15 @@ class ASTTests(unittest.TestCase):
         self.assertEquals([], list(ast.items()))
         self.assertTrue(hasattr(ast, '__json__'))
 
+    def test_init(self):
+        ast = AST()
+        data = list(reversed(
+            [(0, 0), (1, 2), (2, 4), (3, 6), (4, 8), (5, 10)]
+        ))
+        for k, v in data:
+            ast[k] = v
+        self.assertEquals(data, list(ast.items()))
+
     def test_empty(self):
         ast = AST()
         self.assertIsNone(ast.name)
@@ -37,3 +46,13 @@ class ASTTests(unittest.TestCase):
         self.assertEqual(['name', 'value'], list(ast))
         self.assertEqual([['hello', 'world'], 1], list(ast.values()))
 
+
+def suite():
+    return unittest.TestLoader().loadTestsFromTestCase(ASTTests)
+
+
+def main():
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
+if __name__ == '__main__':
+    main()
