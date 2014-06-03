@@ -603,7 +603,7 @@ Changes
 3.0.0-rc.1
 ----------
 
-    * Major version bump because several new features are not backwards-compatible.
+    * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
 
     * The *cut* operator is now `^`.
 
