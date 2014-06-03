@@ -519,10 +519,8 @@ License
 .. _ResQSoft:  http://www.resqsoft.com/
 .. _`Juancarlo Añez`: mailto:apalala@gmail.com
 
-You may use the tool under the terms of the BSD_-style license described in the enclosed **LICENSE.txt** file.
-
-*If your project requires different licensing* please contact
-`info@resqsoft.com`_.
+You may use the tool under the terms of the BSD_-style license described in the enclosed **LICENSE.txt** file. *If your project requires different licensing* please contact
+`apalala@gmail.com`_.
 
 .. _BSD: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
 .. _`info@resqsoft.com`: mailto:info@resqsoft.com
@@ -623,12 +621,9 @@ Changes
 
     * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
-    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion.
+    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion::
 
-        * Beautiful is better than ugly.
-        * Explicit is better than implicit.
-        * Simple is better than complex.
-        * There should be one-- and preferably only one --obvious way to do it.
+        import this
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
