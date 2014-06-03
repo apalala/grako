@@ -323,6 +323,8 @@ Include Directive
 
     #include :: "filename"
 
+The resolution of the *filename* is relative to the directory/folder of the source. Absolute paths and `../` navigations are honored.
+
 The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for an example.
 
 
