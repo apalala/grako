@@ -77,7 +77,7 @@ class AST(dict):
                 return super(AST, self).__getattribute__(name)
             except AttributeError:
                 pass
-            return self.get(name)
+        return self.get(name)
 
     def __hasattribute__(self, name):
         if not isinstance(name, strtype):
@@ -89,13 +89,13 @@ class AST(dict):
             return False
 
     def _define(self, keys, list_keys=None):
+        # WARNING: This is the *only* implementation that does what's intended
         for key in list_keys or []:
-            if not super(AST, self).__contains__(key):
-                super(AST, self).__setitem__(key, [])
-                self._order.append(key)
+            if key not in self:
+                self[key] = []
 
         for key in keys:
-            if not super(AST, self).__contains__(key):
+            if key not in self:
                 super(AST, self).__setitem__(key, None)
                 self._order.append(key)
 
@@ -104,6 +104,7 @@ class AST(dict):
             (k, v[:] if isinstance(v, list) else v)
             for k, v in self.items()
         )
+
 
     def _add(self, key, value, force_list=False):
         if self.__hasattribute__(key):
