@@ -17,39 +17,39 @@ grammar
 
 rule
     =
-    name:new_name ^
+    name:new_name ~
     [
-        '::' ^ params:params
+        '::'  params:params
     |
-        '('  ^
+        '('  ~
             (
                 kwparams:kwparams
             |
-                params:params ',' ^ kwparams:kwparams
+                params:params ','  kwparams:kwparams
             |
                 params:params
             )
         ')'
     ]
-    ['<' ^ base:known_name]
-    '=' ^
+    ['<'  base:known_name]
+    '=' ~
     rhs:expre
-    ';' ^
+    ';' ~
     ;
 
 params
     =
-    @+:literal {',' ^ @+:literal}
+    @+:literal {','  @+:literal}
     ;
 
 kwparams
     =
-    @+:pair {',' ^ @+:pair}
+    @+:pair {','  @+:pair}
     ;
 
 pair
     =
-    @+:word '=' ^ @+:literal
+    @+:word '='  @+:literal
     ;
 
 expre
@@ -60,7 +60,7 @@ expre
 
 choice
     =
-    @+:sequence {'|' ^ @+:sequence}+
+    @+:sequence {'|'  @+:sequence}+
     ;
 
 sequence
@@ -80,7 +80,7 @@ element
 
 rule_include
     =
-    '>' ^ @:known_name
+    '>'  @:known_name
     ;
 
 named_list
@@ -95,12 +95,12 @@ named
 
 new_name
     =
-    name ^
+    name ~
     ;
 
 known_name
     =
-    name ^
+    name ~
     ;
 
 name
@@ -110,12 +110,12 @@ name
 
 override_list
     =
-    '@+:' ^ @element
+    '@+:'  @element
     ;
 
 override
     =
-    ('@:'|'@') ^ @element
+    ('@:'|'@')  @element
     ;
 
 term
@@ -133,37 +133,37 @@ term
 
 group
     =
-    '(' ^ @:expre ')' ^
+    '('  @:expre ')' ~
     ;
 
 positive_closure
     =
-    '{'  @:expre '}' ('-' | '+')  ^
+    '{'  @:expre '}' ('-' | '+')  ~
     ;
 
 closure
     =
-    '{' @:expre '}' ^ ['*'] ^
+    '{' @:expre '}'  ['*'] ~
     ;
 
 optional
     =
-    '[' ^ @:expre ']' ^
+    '['  @:expre ']' ~
     ;
 
 special
     =
-    '?(' ^ @:?/(.*)/? ')?' ^
+    '?('  @:?/(.*)/? ')?' ~
     ;
 
 kif
     =
-    '&' ^ @:term
+    '&'  @:term
     ;
 
 knot
     =
-    '!' ^ @term
+    '!'  @term
     ;
 
 atom
@@ -182,12 +182,12 @@ call
 
 void
     =
-    '()' ^
+    '()' ~
     ;
 
 cut
     =
-    '^' ^
+    '~' ~
     ;
 
 literal
@@ -199,8 +199,8 @@ literal
 
 token
     =
-      '"' ^ @:?/([^"\n]|\\"|\\\\)*/? '"'
-    | "'" ^ @:?/([^'\n]|\\'|\\\\)*/? "'"
+      '"'  @:?/([^"\n]|\\"|\\\\)*/? '"'
+    | "'"  @:?/([^'\n]|\\'|\\\\)*/? "'"
     ;
 
 number
@@ -215,10 +215,10 @@ word
 
 pattern
     =
-    '?/' ^ @:?/(.*?)(?=/\?)/? '/?' ^
+    '?/'  @:?/(.*?)(?=/\?)/? '/?' ~
     ;
 
 eof
     =
-    '$' ^
+    '$' ~
     ;

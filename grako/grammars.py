@@ -498,10 +498,10 @@ class Cut(_Model):
         return None
 
     def _first(self, k, F):
-        return {('^',)}
+        return {('~',)}
 
     def __str__(self):
-        return '^'
+        return '~'
 
     template = 'self._cut()'
 

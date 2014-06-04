@@ -251,7 +251,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``!()``
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
 
-    ``^``
+    ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
 
     ``name:e``
@@ -620,7 +620,7 @@ Changes
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
 
-    * The *cut* operator is now `^`.
+    * The *cut* operator is now `~`.
 
     * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
