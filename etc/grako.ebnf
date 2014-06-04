@@ -1,18 +1,13 @@
 (*
+ *
  * This grammar defines the Grako variation of EBNF.
- *
- * Grako uses its own hand-written bootstrap parser, and this
- * grammar is only used for testing.
- *
- * See the accompanying README for details.
  *
  *)
 
 
 grammar
     =
-    @{rule}+
-    $
+    @:{rule}+ $
     ;
 
 rule
@@ -110,12 +105,12 @@ name
 
 override_list
     =
-    '@+:'  @element
+    '@+:'  @:element
     ;
 
 override
     =
-    ('@:'|'@')  @element
+    '@:'  @:element
     ;
 
 term
@@ -163,7 +158,7 @@ kif
 
 knot
     =
-    '!'  @term
+    '!'  @:term
     ;
 
 atom

@@ -16,7 +16,7 @@ from grako.parsing import *  # noqa
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.04.07.16.31.02'
+__version__ = '2014.06.04.07.48.46.02'
 
 
 class GrakoBootstrapParser(Parser):
@@ -208,13 +208,7 @@ class GrakoBootstrapParser(Parser):
 
     @rule_def
     def _override_(self):
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('@:')
-                with self._option():
-                    self._token('@')
-                self._error('expecting one of: @ @:')
+        self._token('@:')
         self._element_()
         self.ast['@'] = self.last_node
 

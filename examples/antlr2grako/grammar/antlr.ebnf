@@ -107,7 +107,7 @@ alternatives
 
 alternative
     =
-    @elements ['->'  rewrite]
+    @:elements ['->'  rewrite]
     ;
 
 elements
@@ -161,27 +161,27 @@ semantic_action
 
 syntactic_predicate
     =
-    @subexp '=>' ~
+    @:subexp '=>' ~
     ;
 
 optional
     =
-    @(closure|positive_closure|atom) '?' ~
+    @:(closure|positive_closure|atom) '?' ~
     ;
 
 closure
     =
-    @atom '*' ~
+    @:atom '*' ~
     ;
 
 positive_closure
     =
-    @atom '+' ~
+    @:atom '+' ~
     ;
 
 atom
     =
-    @(
+    @:(
       eof
     | negative
     | syntactic_predicate
@@ -217,25 +217,25 @@ newrange
 
 NEWRANGE
     =
-    '[' @?/([^\]]|\\])+/? ']'
+    '[' @:?/([^\]]|\\])+/? ']'
     ;
 
 subexp
     =
     '('
-        [options ':' ^]
-        @alternatives
+        [options ':' ~ ]
+        @:alternatives
     ')'
     ;
 
 negative
     =
-    '~'  @atom
+    '~'  @:atom
     ;
 
 non_terminal
     =
-    @(
+    @:(
       rule_ref
     | token_ref
     )
@@ -319,11 +319,11 @@ string
 
 STRING
     =
-    '"'  @{?/[^"\n\\]/?|ESC} '"'
+    '"'  @:{?/[^"\n\\]/?|ESC} '"'
     |
-    "'"  @{?/[^'\n\\]/?|ESC} "'"
+    "'"  @:{?/[^'\n\\]/?|ESC} "'"
     |
-    '<<'  @?/(?:(?!'^').)*/? '>>'
+    '<<' @:?/(?:(?!'^').)*/? '>>'
     ;
 
 int

@@ -37,7 +37,7 @@ class GrammarTests(unittest.TestCase):
 
         grammar = '''
             start = items: { item } * $ ;
-            item = @{ subitem } * "0" ;
+            item = @:{ subitem } * "0" ;
             subitem = ?/1+/? ;
         '''
         m = genmodel('Update', grammar)
@@ -47,12 +47,12 @@ class GrammarTests(unittest.TestCase):
     def test_stateful(self):
         # Parser for mediawiki-style unordered lists.
         grammar = r'''
-        document = @ul [ nl ] $ ;
+        document = @:ul [ nl ] $ ;
         ul = "*" ul_start el+:li { nl el:li } * ul_end ;
         li = ul | li_text ;
         (* Quirk: If a text line is followed by a sublist, the sublist does not get its own li.  *)
         li_text = text:text [ ul:li_followed_by_ul ] ;
-        li_followed_by_ul = nl @ul ;
+        li_followed_by_ul = nl @:ul ;
         text = ?/.*/? ;
         nl = ?/\n/? ul_marker ;
         (* The following rules are placeholders for state transitions.  *)
@@ -205,7 +205,7 @@ class GrammarTests(unittest.TestCase):
         grammar = '''
             start
                 =
-                @+:'a' {@'b'}
+                @+:'a' {@:'b'}
                 $
                 ;
         '''
@@ -216,7 +216,7 @@ class GrammarTests(unittest.TestCase):
         grammar = '''
             start
                 =
-                @:'a' {@'b'}
+                @:'a' {@:'b'}
                 $
                 ;
         '''

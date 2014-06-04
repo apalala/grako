@@ -267,7 +267,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         This is a typical use of the override operator::
 
-            subexp = '(' @:expre ')' .
+            subexp = '(' @:expre ')' ;
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
 
@@ -276,12 +276,9 @@ The expressions, in reverse order of operator precedence, can be:
 
         This operator is convenient in cases such as::
 
-            arglist = '(' @+:arg {',' @+:arg}* ')' .
+            arglist = '(' @+:arg {',' @+:arg}* ')' ;
 
         in which the delimiting tokens are of no interest.
-
-    ``@e``
-        A convenient shortcut for ``@:e``.
 
     ``$``
         The *end of text* symbol. Verify that the end of the input text has been reached.
@@ -291,19 +288,13 @@ The expressions, in reverse order of operator precedence, can be:
 
 When there are no named items in a rule, the AST_ consists of the elements parsed by the rule, either a single item or a list. This default behavior makes it easier to write simple rules::
 
-    number = ?/[0-9]+/? .
+    number = ?/[0-9]+/? ;
 
 without having to write::
 
-    number = number:?/[0-9]+/?
+    number = number:?/[0-9]+/? ;
 
 When a rule has named elements, the unnamed ones are excluded from the AST_ (they are ignored).
-
-..    It is also possible to add an AST_ name to a rule::
-
-..      name:rule = expre;
-
-..    That will make the default AST_ returned to be a dict with a single item ``name`` as key, and the AST_ from the right-hand side of the rule as value.
 
 
 Rules with Arguments
@@ -622,15 +613,17 @@ Changes
 
     * The *cut* operator is now `~`.
 
-    * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
+    * Now ``@e`` must always be ``@:e`` instead.
 
-    * Grammars may include other files using the `#include ::` directive.
+    * Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
     * Grammar rules may now *'inherit'* the contents of other rules using the ``<`` operator.
 
     * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
     * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion (``import this``).
+
+    * Grammars may include other files using the `#include ::` directive.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
@@ -640,7 +633,7 @@ Changes
 
     * Now the keys in `grako.ast.AST` are ordered like in `collections.OrderedDict`.
 
-    * **Grako** models are now JSON_-friendly with the help of ``Node.__json__()`` and ``grako.util.asjon()``.
+    * **Grako** models are now JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
 
     * Added compatibility with Cython_.
 

@@ -16,10 +16,10 @@ SEQUENCE = terms:{TERM}+ ;
 
 TERM = CLOSURE | ATOM ;
 
-CLOSURE = @ATOM '*' ~  ;
+CLOSURE = @:ATOM '*' ~  ;
 
 ATOM = SUBEXP | LITERAL ;
 
-SUBEXP = '(' ~ @EXPRE ')' ;
+SUBEXP = '(' ~ @:EXPRE ')' ;
 
 LITERAL = ?/(?:\\;|[^|*\\()])+/? ;
