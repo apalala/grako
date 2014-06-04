@@ -16,7 +16,7 @@ from grako.parsing import *  # noqa
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.04.07.48.46.02'
+__version__ = '2014.06.04.14.46.16.02'
 
 
 class GrakoBootstrapParser(Parser):
@@ -76,7 +76,7 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
         self.ast._define(
-            ['base', 'kwparams', 'name', 'params', 'rhs'],
+            ['base', 'rhs', 'kwparams', 'name', 'params'],
             []
         )
 
@@ -169,7 +169,7 @@ class GrakoBootstrapParser(Parser):
         self.ast['value'] = self.last_node
 
         self.ast._define(
-            ['name', 'value'],
+            ['value', 'name'],
             []
         )
 
@@ -182,7 +182,7 @@ class GrakoBootstrapParser(Parser):
         self.ast['value'] = self.last_node
 
         self.ast._define(
-            ['name', 'value'],
+            ['value', 'name'],
             []
         )
 
@@ -364,7 +364,7 @@ class GrakoBootstrapParser(Parser):
         self._token('?/')
         self._pattern(r'(.*?)(?=/\?)')
         self.ast['@'] = self.last_node
-        self._token('/?')
+        self._pattern(r'/\?+')
         self._cut()
 
     @rule_def
