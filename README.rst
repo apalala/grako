@@ -611,19 +611,19 @@ Changes
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
 
-    * The *cut* operator is now `~`.
+    * The *cut* operator is now ``~``.
 
-    * Now ``@e`` must always be ``@:e`` instead.
+    * Now ``\@e`` is disallowed in favor of ``@:e``.
 
     * Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
-    * Grammar rules may now *'inherit'* the contents of other rules using the ``<`` operator.
+    * Grammar rules may now *inherit* the contents of other rules using the ``<`` operator.
 
     * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
-    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion (``import this``).
+    * Grammars may include other files using the ``#include ::`` directive.
 
-    * Grammars may include other files using the `#include ::` directive.
+    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion (*import this*).
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
@@ -631,9 +631,9 @@ Changes
 
     * Renamed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
 
-    * Now the keys in `grako.ast.AST` are ordered like in `collections.OrderedDict`.
+    * Now the keys in ``grako.ast.AST`` are ordered like in ``collections.OrderedDict``.
 
-    * **Grako** models are now JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
+    * **Grako** models are now more JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
 
     * Added compatibility with Cython_.
 
