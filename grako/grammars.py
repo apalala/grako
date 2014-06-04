@@ -645,7 +645,7 @@ class Rule(_Decorator):
     def _parse_rhs(self, ctx, exp):
         result = ctx._call(exp.parse, self.name)
         if isinstance(result, AST):
-            defines = list(sorted(self.defines()))
+            defines = list(self.defines())
             result._define(
                 [d for d, l in defines if not l],
                 [d for d, l in defines if l]
@@ -690,7 +690,7 @@ class Rule(_Decorator):
             self.template = self.params_template
             fields.update(params=params)
 
-        defines = list(sorted(self.defines()))
+        defines = list(self.defines())
         sdefs = [d for d, l in defines if not l]
         ldefs = [d for d, l in defines if l]
         if not (sdefs or ldefs):
