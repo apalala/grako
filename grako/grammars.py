@@ -40,6 +40,16 @@ def urepr(obj):
     return repr(obj).lstrip('u')
 
 
+def compress_seq(seq):
+    seen = set()
+    result = []
+    for x in seq:
+        if not x in seen:
+            result.append(x)
+            seen.add(x)
+    return result
+
+
 class ModelContext(ParseContext):
     def __init__(self, rules, semantics=None, trace=False, **kwargs):
         super(ModelContext, self).__init__(trace=trace,
@@ -70,7 +80,7 @@ class _Model(Renderer, Node):
         return None
 
     def defines(self):
-        return set()
+        return []
 
     @property
     def lookahead(self, k=1):
@@ -293,7 +303,7 @@ class Sequence(_Model):
         return ctx.last_node
 
     def defines(self):
-        return set().union(*(s.defines() for s in self.sequence))
+        return [d for s in self.sequence for d in s.defines()]
 
     def _validate(self, rules):
         return all(s._validate(rules) for s in self.sequence)
@@ -346,7 +356,7 @@ class Choice(_Model):
             ctx._error('no available options')
 
     def defines(self):
-        return set().union(*(o.defines() for o in self.options))
+        return [d for o in self.options for d in o.defines()]
 
     def _validate(self, rules):
         return all(o._validate(rules) for o in self.options)
@@ -518,7 +528,7 @@ class Named(_Decorator):
         return value
 
     def defines(self):
-        return {(self.name, False)} | super(Named, self).defines()
+        return [(self.name, False)] + super(Named, self).defines()
 
     def __str__(self):
         return '%s:%s' % (self.name, str(self.exp))
@@ -541,7 +551,7 @@ class NamedList(Named):
         return value
 
     def defines(self):
-        return {(self.name, True)} | self.exp.defines()
+        return [(self.name, True)] + super(Named, self).defines()
 
     def __str__(self):
         return '%s+:%s' % (self.name, str(self.exp))
@@ -557,7 +567,7 @@ class Override(Named):
         super(Override, self).__init__('@', exp)
 
     def defines(self):
-        return set()
+        return []
 
 
 class OverrideList(NamedList):
@@ -565,7 +575,7 @@ class OverrideList(NamedList):
         super(OverrideList, self).__init__('@', exp)
 
     def defines(self):
-        return set()
+        return []
 
 
 class Special(_Model):
@@ -645,7 +655,7 @@ class Rule(_Decorator):
     def _parse_rhs(self, ctx, exp):
         result = ctx._call(exp.parse, self.name)
         if isinstance(result, AST):
-            defines = list(self.defines())
+            defines = compress_seq(self.defines())
             result._define(
                 [d for d, l in defines if not l],
                 [d for d, l in defines if l]
@@ -690,7 +700,7 @@ class Rule(_Decorator):
             self.template = self.params_template
             fields.update(params=params)
 
-        defines = list(self.defines())
+        defines = compress_seq(self.defines())
         sdefs = [d for d, l in defines if not l]
         ldefs = [d for d, l in defines if l]
         if not (sdefs or ldefs):
