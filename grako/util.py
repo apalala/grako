@@ -45,7 +45,7 @@ def udecode(s):
     else:
         if not isinstance(s, str):
             s = ustr(s)
-        return s.encode('utf-8')
+        return s.decode('utf-8')
 
 
 def simplify_list(x):
