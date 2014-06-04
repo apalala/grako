@@ -16,6 +16,11 @@ else:
     strtype = basestring
 
 
+def debug(*args, **kwargs):
+    kwargs['file'] = sys.stderr
+    print(*args, **kwargs)
+
+
 def to_list(o):
     if o is None:
         return []
@@ -107,9 +112,14 @@ def asjson(obj):
     if hasattr(obj, '__json__'):
         return obj.__json__()
     elif isinstance(obj, collections.Mapping):
-        return collections.OrderedDict(
-            (asjson(k), asjson(v)) for k, v in obj.items()
-        )
+        result = collections.OrderedDict()
+        for k, v in obj.items():
+            try:
+                result[asjson(k)] = asjson(v)
+            except TypeError:
+                debug('Unhashable key?', type(k), str(k))
+                raise
+        return result
     elif isiter(obj):
         return [asjson(e) for e in obj]
     else:
