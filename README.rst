@@ -615,7 +615,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.0.0-rc.2
+3.0.0-rc.3
 ----------
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
