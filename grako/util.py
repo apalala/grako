@@ -107,7 +107,9 @@ def asjson(obj):
     if hasattr(obj, '__json__'):
         return obj.__json__()
     elif isinstance(obj, collections.Mapping):
-        return {asjson(k): asjson(v) for k, v in obj.items()}
+        return collections.OrderedDict(
+            (asjson(k), asjson(v)) for k, v in obj.items()
+        )
     elif isiter(obj):
         return [asjson(e) for e in obj]
     else:
