@@ -14,16 +14,25 @@ Grako
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
-**Grako** is *different* from other PEG_ parser generators in that the generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed; there are no complicated *if-then-else* sequences for decision making or backtracking. *Positive and negative lookaheads*, and the *cut* element with its cleaning of the memoization cache allow for additional, hand-crafted optimizations at the grammar level, and delegation to Python_'s re_ module for *lexemes* allows for (Perl_-like) powerful and efficient lexical analysis. The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for enhanced CPU-cache hits.
+**Grako** is *different* from other PEG_ parser generators:
 
-Include files and rule inheritance and inclusion give **Grako** grammars considerable expresive power.
+    * Generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed. There are no complicated *if-then-else* sequences for decision making or backtracking.
 
-**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4000 lines of Python_, it is possible to study all its source code in a single session. **Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ standard libraries.
+    * *Positive and negative lookaheads*, and the *cut* element (with its cleaning of the memoization cache) allow for additional, hand-crafted optimizations at the grammar level.
 
-.. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
+    * Delegation to Python_'s re_ module for *lexemes* allows for (Perl_-like) powerful and efficient lexical analysis.
+
+    * The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for enhanced CPU-cache hits.
+
+    * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expresive power.
+
+**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ s of Python_, it is possible to study all its source code in a single session.
+
+**Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ standard libraries.
 
 **Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, annd Java_.
 
+.. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
 .. _legacy: http://en.wikipedia.org/wiki/Legacy_code
 .. _`legacy code`: http://en.wikipedia.org/wiki/Legacy_code
@@ -46,19 +55,20 @@ Rationale
 
 **Grako** was created to address recurring problems encountered over decades of working with parser generation tools:
 
-* To deal with programming languages in which important statement words (can't call them keywords) may be used as identifiers in programs, the parser must be able to lead the lexer. The parser must also lead the lexer to parse languages in which the meaning of input symbols may change with context, like Ruby_.
+    * Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lxing to handle those languages.
 
-* When ambiguity is the norm in the parsed language (as is the case in several legacy_ ones), an LL or LR grammar becomes contaminated with myriads of lookaheads. PEG_ parsers address ambiguity from the onset. Memoization, and relying on the exception-handling system makes backtracking very efficient.
 
-* Semantic actions, like `Abstract Syntax Tree`_ (AST_)  transformation, *do not*  belong in the grammar. Semantic actions in the grammar create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
+    * LL and LR grammars becomes contaminated with myriads of lookaheads to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
 
-* Pre-processing (like dealing with includes, fixed column formats, or Python_'s structure through indentation) belongs in well-designed program code, and not in the grammar.
+    * Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
 
-* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case). It is not so for grammar description languages. As a grammar language becomes more complex it becomes increasingly difficult to find who can maintain a parser. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to an college student, it's probably too complicated, or not well understood).
+    * Pre-processing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
 
-* Generated parsers should be humanly-readable and debuggable. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+    * It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but that's difficult for grammar description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to an college student, it's probably too complicated, or not well understood).
 
-* Python_ is a great language for working in language parsing and translation.
+    * Generated parsers should be humanly-readable and debuggable. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+
+    * Python_ is a great language for working in language parsing and translation.
 
 .. _`Abstract Syntax Tree`: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _AST: http://en.wikipedia.org/wiki/Abstract_syntax_tree
@@ -174,7 +184,7 @@ If a *name* collides with a Python_ keyword, an underscore (``_``) will be appen
 
 Rule names that start with an uppercase character::
 
-   FRAGMENT = ?/[a-z]+/?
+   FRAGMENT = ?/[a-z]+/? ;
 
 *do not* advance over whitespace before beginning to parse. This feature becomes handy when defining complex lexical elements, as it allows breaking them into several rules.
 
@@ -241,7 +251,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``!()``
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
 
-    ``^``
+    ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
 
     ``name:e``
@@ -610,7 +620,7 @@ Changes
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
 
-    * The *cut* operator is now `^`.
+    * The *cut* operator is now `~`.
 
     * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
