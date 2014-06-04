@@ -611,9 +611,9 @@ Changes
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
 
-    * The *cut* operator is now ``~``.
+    * The *cut* operator is now ``~``, the tilde.
 
-    * Now ``\@e`` is disallowed in favor of ``@:e``.
+    * Now name overrides must always be specified with a colon,``@:e``.
 
     * Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
@@ -623,7 +623,7 @@ Changes
 
     * Grammars may include other files using the ``#include ::`` directive.
 
-    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion (*import this*).
+    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
