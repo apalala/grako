@@ -44,7 +44,7 @@ def compress_seq(seq):
     seen = set()
     result = []
     for x in seq:
-        if not x in seen:
+        if x not in seen:
             result.append(x)
             seen.add(x)
     return result
