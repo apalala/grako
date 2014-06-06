@@ -10,23 +10,24 @@ grammar
     @:{rule}+ $
     ;
 
-rule
+paramdef
     =
-    name:new_name ~
-    [
-        '::'  params:params
+        '::' ~ params:params
     |
         '('  ~
             (
-                kwparams:kwparams
-            |
-                params:params ','  kwparams:kwparams
-            |
-                params:params
+              kwparams:kwparams
+            | params:params ',' ~  kwparams:kwparams
+            | params:params
             )
         ')'
-    ]
-    ['<'  base:known_name]
+    ;
+
+rule
+    =
+    name:new_name ~
+    [>paramdef]
+    ['<' ~  base:known_name]
     '=' ~
     rhs:expre
     ';' ~

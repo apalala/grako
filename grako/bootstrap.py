@@ -16,7 +16,7 @@ from grako.parsing import *  # noqa
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.04.15.03.22.02'
+__version__ = '2014.06.06.17.12.05.04'
 
 
 class GrakoBootstrapParser(Parser):
@@ -34,6 +34,41 @@ class GrakoBootstrapParser(Parser):
         self._check_eof()
 
     @rule_def
+    def _paramdef_(self):
+        with self._choice():
+            with self._option():
+                self._token('::')
+                self._cut()
+                self._params_()
+                self.ast['params'] = self.last_node
+            with self._option():
+                self._token('(')
+                self._cut()
+                with self._group():
+                    with self._choice():
+                        with self._option():
+                            self._kwparams_()
+                            self.ast['kwparams'] = self.last_node
+                        with self._option():
+                            self._params_()
+                            self.ast['params'] = self.last_node
+                            self._token(',')
+                            self._cut()
+                            self._kwparams_()
+                            self.ast['kwparams'] = self.last_node
+                        with self._option():
+                            self._params_()
+                            self.ast['params'] = self.last_node
+                        self._error('no available options')
+                self._token(')')
+            self._error('no available options')
+
+        self.ast._define(
+            ['params', 'kwparams'],
+            []
+        )
+
+    @rule_def
     def _rule_(self):
         self._new_name_()
         self.ast['name'] = self.last_node
@@ -42,6 +77,7 @@ class GrakoBootstrapParser(Parser):
             with self._choice():
                 with self._option():
                     self._token('::')
+                    self._cut()
                     self._params_()
                     self.ast['params'] = self.last_node
                 with self._option():
@@ -56,6 +92,7 @@ class GrakoBootstrapParser(Parser):
                                 self._params_()
                                 self.ast['params'] = self.last_node
                                 self._token(',')
+                                self._cut()
                                 self._kwparams_()
                                 self.ast['kwparams'] = self.last_node
                             with self._option():
@@ -66,6 +103,7 @@ class GrakoBootstrapParser(Parser):
                 self._error('no available options')
         with self._optional():
             self._token('<')
+            self._cut()
             self._known_name_()
             self.ast['base'] = self.last_node
         self._token('=')
@@ -379,6 +417,9 @@ class GrakoBootstrapSemanticParser(CheckSemanticsMixin, GrakoBootstrapParser):
 
 class GrakoBootstrapSemantics(object):
     def grammar(self, ast):
+        return ast
+
+    def paramdef(self, ast):
         return ast
 
     def rule(self, ast):
