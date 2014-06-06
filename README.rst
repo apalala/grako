@@ -251,7 +251,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``!()``
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
 
-    ``^``
+    ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
 
     ``name:e``
@@ -267,7 +267,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         This is a typical use of the override operator::
 
-            subexp = '(' @:expre ')' .
+            subexp = '(' @:expre ')' ;
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
 
@@ -276,12 +276,9 @@ The expressions, in reverse order of operator precedence, can be:
 
         This operator is convenient in cases such as::
 
-            arglist = '(' @+:arg {',' @+:arg}* ')' .
+            arglist = '(' @+:arg {',' @+:arg}* ')' ;
 
         in which the delimiting tokens are of no interest.
-
-    ``@e``
-        A convenient shortcut for ``@:e``.
 
     ``$``
         The *end of text* symbol. Verify that the end of the input text has been reached.
@@ -291,19 +288,13 @@ The expressions, in reverse order of operator precedence, can be:
 
 When there are no named items in a rule, the AST_ consists of the elements parsed by the rule, either a single item or a list. This default behavior makes it easier to write simple rules::
 
-    number = ?/[0-9]+/? .
+    number = ?/[0-9]+/? ;
 
 without having to write::
 
-    number = number:?/[0-9]+/?
+    number = number:?/[0-9]+/? ;
 
 When a rule has named elements, the unnamed ones are excluded from the AST_ (they are ignored).
-
-..    It is also possible to add an AST_ name to a rule::
-
-..      name:rule = expre;
-
-..    That will make the default AST_ returned to be a dict with a single item ``name`` as key, and the AST_ from the right-hand side of the rule as value.
 
 
 Rules with Arguments
@@ -492,7 +483,7 @@ Examples
 Grako
 -----
 
-The file ``etc/grako.ebnf`` contains a grammar for the **Grako** EBNF_ language written in the same language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language.
+The file ``etc/grako.ebnf`` contains a grammar for the **Grako** EBNF_ language written in the same language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser). **Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
 
 Regex
 -----
@@ -615,22 +606,24 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.0.0-rc.2
+3.0.0-rc.3
 ----------
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
 
-    * The *cut* operator is now `^`.
+    * The *cut* operator is now ``~``, the tilde.
 
-    * Now grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
+    * Now name overrides must always be specified with a colon,``@:e``.
 
-    * Grammars may include other files using the `#include ::` directive.
+    * Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
-    * Grammar rules may now *'inherit'* the contents of other rules using the ``<`` operator.
+    * Grammar rules may now *inherit* the contents of other rules using the ``<`` operator.
 
     * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
-    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion (``import this``).
+    * Grammars may include other files using the ``#include ::`` directive.
+
+    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
@@ -638,9 +631,9 @@ Changes
 
     * Renamed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
 
-    * Now the keys in `grako.ast.AST` are ordered like in `collections.OrderedDict`.
+    * Now the keys in ``grako.ast.AST`` are ordered like in ``collections.OrderedDict``.
 
-    * **Grako** models are now JSON_-friendly with the help of ``Node.__json__()`` and ``grako.util.asjon()``.
+    * **Grako** models are now more JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
 
     * Added compatibility with Cython_.
 

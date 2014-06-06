@@ -119,11 +119,11 @@ class Node(object):
 
 
 class NodeWalker(object):
-    def _find_walker(self, node):
+    def _find_walker(self, node, prefix='walk_'):
         classes = [node.__class__]
         while classes:
             cls = classes.pop()
-            name = 'walk_' + cls.__name__
+            name = prefix + cls.__name__
             walker = getattr(self, name, None)
             if callable(walker):
                 return walker

@@ -16,6 +16,11 @@ else:
     strtype = basestring
 
 
+def debug(*args, **kwargs):
+    kwargs['file'] = sys.stderr
+    print(*args, **kwargs)
+
+
 def to_list(o):
     if o is None:
         return []
@@ -40,7 +45,7 @@ def udecode(s):
     else:
         if not isinstance(s, str):
             s = ustr(s)
-        return s.encode('utf-8')
+        return s.decode('utf-8')
 
 
 def simplify_list(x):
@@ -107,7 +112,14 @@ def asjson(obj):
     if hasattr(obj, '__json__'):
         return obj.__json__()
     elif isinstance(obj, collections.Mapping):
-        return {asjson(k): asjson(v) for k, v in obj.items()}
+        result = collections.OrderedDict()
+        for k, v in obj.items():
+            try:
+                result[asjson(k)] = asjson(v)
+            except TypeError:
+                debug('Unhashable key?', type(k), str(k))
+                raise
+        return result
     elif isiter(obj):
         return [asjson(e) for e in obj]
     else:

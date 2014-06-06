@@ -122,6 +122,10 @@ class GraphvizWalker(NodeWalker):
     def _walk_decorator(self, d):
         return self.walk(d.exp)
 
+    def _walk__Decorator(self, d):
+        print('WALKING', type(d))
+        return self._walk_decorator(d)
+
     def walk_Grammar(self, g):
         self.push_graph(g.name + '0')
         try:
@@ -151,6 +155,9 @@ class GraphvizWalker(NodeWalker):
             return (s, t)
         finally:
             self.pop_graph()
+
+    def walk_BasedRule(self, r):
+        return self.walk_Rule(r)
 
     def walk_RuleRef(self, rr):
         n = self.ref_node(rr.name)
@@ -235,6 +242,12 @@ class GraphvizWalker(NodeWalker):
     def walk_LookaheadNot(self, l):
         i, e = self._walk_decorator(l)
         n = self.node('!')
+        self.edge(n, e)
+        return (n, e)
+
+    def walk_RuleInclude(self, l):
+        i, e = self._walk_decorator(l)
+        n = self.node('>')
         self.edge(n, e)
         return (n, e)
 
