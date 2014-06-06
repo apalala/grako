@@ -144,16 +144,8 @@ class Parser(ParseContext):
             self._error('Expecting end of text.')
 
 
-# decorator
-def rule_def(rule):
-    @functools.wraps(rule)
-    def wrapper(self):
-        name = rule.__name__.strip('_')
-        return self._call(rule, name)
-    return wrapper
-
-
-def rule_def_params(*params, **kwparams):
+# decorator for rule implementation methods
+def graken(*params, **kwparams):
     def decorator(rule):
         @functools.wraps(rule)
         def wrapper(self, *args, **kwargs):
