@@ -696,9 +696,7 @@ class Rule(_Decorator):
         elif kwparams:
             params = kwparams
 
-        if params:
-            self.template = self.params_template
-            fields.update(params=params)
+        fields.update(params=params)
 
         defines = compress_seq(self.defines())
         sdefs = [d for d, l in defines if not l]
@@ -722,14 +720,7 @@ class Rule(_Decorator):
         fields.update(defines=sdefines)
 
     template = '''
-                @rule_def
-                def _{name}_(self):
-                {exp:1::}{defines}
-
-                '''
-
-    params_template = '''
-                @rule_def_params({params})
+                @graken({params})
                 def _{name}_(self):
                 {exp:1::}{defines}
 
@@ -881,11 +872,18 @@ class Grammar(_Model):
 
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
-                from grako.parsing import *  # noqa
+                from grako.parsing import graken, Parser, CheckSemanticsMixin
                 from grako.exceptions import *  # noqa
 
 
                 __version__ = '{version}'
+
+                __all__ = [
+                    '{name}Parser',
+                    '{name}SemanticParser',
+                    '{name}Semantics',
+                    'main'
+                ]
 
 
                 class {name}Parser(Parser):
@@ -894,7 +892,7 @@ class Grammar(_Model):
 
                 {rules}
 
-                class {name}SemanticParser(CheckSemanticsMixin, {name}Parser):
+                class {name}SemanticsCheck(CheckSemanticsMixin):
                     pass
 
 
