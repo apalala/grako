@@ -28,6 +28,9 @@ from .util import indent, trim, timestamp
 from .ast import AST
 
 
+PEP8_LLEN = 72
+
+
 def check(result):
     assert isinstance(result, _Model), str(result)
 
@@ -184,23 +187,15 @@ class Group(_Decorator):
 
     def __str__(self):
         exp = str(self.exp)
-        template = '(%s)'
-        if isinstance(self.exp, Group):
-            exp = str(exp.exp)
-        if isinstance(exp, Choice):
-            template = '\n' + trim(self.str_template)
-        return template % exp
+        if len(exp.splitlines()) > 1:
+            return '(\n%s\n)' % indent(exp)
+        else:
+            return '(%s)' % trim(exp)
 
     template = '''\
                 with self._group():
                 {exp:1::}\
                 '''
-
-    str_template = '''
-            (
-            %s
-            )
-            '''
 
 
 class Token(_Model):
@@ -252,7 +247,12 @@ class Pattern(_Model):
         return set([(self.pattern,)])
 
     def __str__(self):
-        return '?/%s/?' % self.pattern
+        pattern = str(self.pattern)
+        result = '?/%s/?' % pattern
+        if pattern.count('?') % 2:
+            return result + '?'
+        else:
+            return result
 
     def render_fields(self, fields):
         raw_repr = 'r' + urepr(self.pattern).replace("\\\\", '\\')
@@ -324,7 +324,12 @@ class Sequence(_Model):
         return A
 
     def __str__(self):
-        return ' '.join(str(s).strip() for s in self.sequence)
+        seq = [str(s) for s in self.sequence]
+        single = ' '.join(seq)
+        if len(single) <= PEP8_LLEN or len(single.splitlines()) <= 1:
+            return single
+        else:
+            return '\n'.join(seq)
 
     def render_fields(self, fields):
         fields.update(seq='\n'.join(render(s) for s in self.sequence))
@@ -373,7 +378,17 @@ class Choice(_Model):
         return A
 
     def __str__(self):
-        return '  ' + '\n| '.join(str(o).strip() for o in self.options)
+        options = [str(o) for o in self.options]
+
+        multi = any(len(o.splitlines()) > 1 for o in options)
+        single = ' | '.join(o for o in options)
+
+        if multi:
+            return '\n|\n'.join(indent(o) for o in options)
+        elif len(options) and len(single) > PEP8_LLEN:
+            return '  ' + '\n| '.join(o for o in options)
+        else:
+            return single
 
     def render_fields(self, fields):
         template = trim(self.option_template)
@@ -419,13 +434,11 @@ class Closure(_Decorator):
         return {()} | result
 
     def __str__(self):
-        exp = self.exp
-        template = '{{{exp}}}'
-        if isinstance(exp, Group):
-            exp = exp.exp
-        if isinstance(exp, Choice):
-            template = trim(self.str_template)
-        return template.format(exp=str(exp))
+        sexp = str(self.exp)
+        if len(sexp.splitlines()) <= 1:
+            return '{%s}' % sexp
+        else:
+            return '{\n%s\n}' % indent(sexp)
 
     def render_fields(self, fields):
         fields.update(n=self.counter())
@@ -440,12 +453,6 @@ class Closure(_Decorator):
                 {exp:1::}
                 self._closure(block{n})\
                 '''
-
-    str_template = '''
-            {{
-            {exp}
-            }}
-            '''
 
 
 class PositiveClosure(Closure):
