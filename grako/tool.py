@@ -14,9 +14,9 @@ import sys
 from .exceptions import GrakoException
 from .parser import GrakoGrammarGenerator
 
-DESCRIPTION = ('Grako (for grammar compiler) takes grammars'
+DESCRIPTION = ('GRAKO (for "grammar compiler") takes grammars'
                ' in a variation of EBNF as input, and outputs a memoizing'
-               ' PEG parser in Python.'
+               ' PEG/Packrat parser in Python.'
                )
 
 
@@ -24,29 +24,29 @@ argparser = argparse.ArgumentParser(prog='grako',
                                     description=DESCRIPTION
                                     )
 argparser.add_argument('-b', '--binary',
-                       help='generate a pickled grammar model instead of a parser',
+                       help='generate a pickled grammar model (requires --output)',
                        action='store_true'
                        )
 argparser.add_argument('-d', '--draw',
-                       help='generate a diagram of the grammar (requires --outfile)',
+                       help='generate a diagram of the grammar (requires --output)',
                        action='store_true'
                        )
 argparser.add_argument('filename',
-                       metavar='grammar',
-                       help='The filename of the grammar to gencode( a parser for'
+                       metavar='GRAMMAR',
+                       help='The filename of the Grako grammar'
                        )
 argparser.add_argument('-n', '--no-nameguard',
-                       help='do not protect alphanumeric tokens that are prefixes of others',
+                       help='allow tokens that are prefixes of others',
                        dest="nameguard", action='store_false', default=True
                        )
 argparser.add_argument('-m', '--name',
                        nargs=1,
-                       metavar='name',
-                       help="An optional name for the grammar. It defaults to the basename of the grammar file's name"
+                       metavar='NAME',
+                       help='Name for the grammar (defaults to GRAMMAR base name)'
                        )
-argparser.add_argument('-o', '--outfile',
-                       metavar='outfile',
-                       help='specify where the output should go (default is stdout)'
+argparser.add_argument('-o', '--output',
+                       metavar='FILE',
+                       help='output file (default is stdout)'
                        )
 argparser.add_argument('-p', '--pretty',
                        help='prettify the input grammar',
@@ -56,9 +56,9 @@ argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
                        )
-argparser.add_argument('-w', '--whitespace',
-                       metavar='characters',
-                       help='whitespace characters (use empty string to disable automatic whitespace)',
+argparser.add_argument('-w', '--ws',
+                       metavar='CHARACTERS',
+                       help='characters to skip during parsing (use "" to disable)'
                        )
 
 

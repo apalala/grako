@@ -122,27 +122,28 @@ if **Grako** was installed using *easy_install* or *pip*.
 The *-h* and *--help* parameters provide full usage information::
 
         $ python -m grako -h
-        usage: grako [-h] [-m name] [-o outfile] [-t] [--whitespace characters] [--no-nameguard] [-b] [-d] grammar
+        usage: grako [-h] [-b] [-d] [-n] [-m NAME] [-o FILE] [-p] [-t] [-w CHARACTERS]
+                    GRAMMAR
 
-        Grako (for grammar compiler) takes grammars in a variation of EBNF as input,
-        and outputs a memoizing PEG parser in Python.
+        GRAKO (for "grammar compiler") takes grammars in a variation of EBNF as input,
+        and outputs a memoizing PEG/Packrat parser in Python.
 
         positional arguments:
-        grammar               The filename of the grammar to generate a parser for
+        GRAMMAR               The filename of the Grako grammar
 
         optional arguments:
         -h, --help            show this help message and exit
-        -m name, --name name  An optional name for the grammar. It defaults to the basename of the grammar file's name
-        -o outfile, --outfile outfile specify where the output should go (default is stdout)
+        -b, --binary          generate a pickled grammar model (requires --output)
+        -d, --draw            generate a diagram of the grammar (requires --output)
+        -n, --no-nameguard    allow tokens that are prefixes of others
+        -m NAME, --name NAME  Name for the grammar (defaults to GRAMMAR base name)
+        -o FILE, --output FILE
+                                output file (default is stdout)
+        -p, --pretty          prettify the input grammar
         -t, --trace           produce verbose parsing output
-        -w, --whitespace characters
-                              whitespace characters (use empty string to disable automatic whitespace)
-        -n, --no-nameguard    do not protect alphanumeric tokens that are prefixes of others
-        -b, --binary          generate a pickled grammar model instead of a parser
-        -d, --draw            generate a diagram of the grammar
-
+        -w CHARACTERS, --ws CHARACTERS
+                                characters to skip during parsing (use "" to disable)
         $
-
 
 
 Using the Generated Parser
@@ -609,7 +610,7 @@ Changes
 3.0.0-rc.3
 ----------
 
-    * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically.
+    * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically. That said, most of the changes required in all of the sizable downstrem projects consisted basically in making the grammars comply with the new syntax.
 
     * The *cut* operator is now ``~``, the tilde.
 
@@ -624,6 +625,8 @@ Changes
     * Grammars may include other files using the ``#include ::`` directive.
 
     * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
+
+    * Added a ``--pretty`` option to the commandline tool, and refactored prettyfication (``__str__()``) in grammar models) enough to make it a norm.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
