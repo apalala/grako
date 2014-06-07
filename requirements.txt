@@ -1,4 +1,6 @@
-enum34==0.9.23
+Cython==0.20.1
 flake8==2.1.0
+ipython==2.1.0
 pygraphviz==1.2
 tox==1.6.1
+virtualenv==1.11.6

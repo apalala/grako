@@ -24,13 +24,13 @@ Grako
 
     * The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for enhanced CPU-cache hits.
 
-    * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expresive power.
+    * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ s of Python_, it is possible to study all its source code in a single session.
+**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
 **Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ standard libraries.
 
-**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, annd Java_.
+**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, and Java_.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
@@ -55,18 +55,18 @@ Rationale
 
 **Grako** was created to address recurring problems encountered over decades of working with parser generation tools:
 
-    * Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lxing to handle those languages.
+    * Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexing to handle those languages.
 
 
-    * LL and LR grammars becomes contaminated with myriads of lookaheads to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
+    * LL and LR grammars becomes contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
 
     * Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
 
-    * Pre-processing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
+    * Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
 
     * It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but that's difficult for grammar description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to an college student, it's probably too complicated, or not well understood).
 
-    * Generated parsers should be humanly-readable and debuggable. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+    * Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
 
     * Python_ is a great language for working in language parsing and translation.
 
@@ -109,15 +109,15 @@ Using the Tool
 
     $ python -m grako
 
-or::
+Or::
 
     $ scripts/grako
 
-or just::
+Or just::
 
     $ grako
 
-if **Grako** was installed using *easy_install* or *pip*.
+If **Grako** was installed using *easy_install* or *pip*.
 
 The *-h* and *--help* parameters provide full usage information::
 
@@ -221,7 +221,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``>rulename``
         The include operator'. Include the *right hand side* of rule ``rulename`` at this point.
 
-        The follwing set of declarations:
+        The following set of declarations:
 
             includable **=** *exp1* **;**
 
@@ -279,7 +279,7 @@ The expressions, in reverse order of operator precedence, can be:
 
             arglist = '(' @+:arg {',' @+:arg}* ')' ;
 
-        in which the delimiting tokens are of no interest.
+        In which the delimiting tokens are of no interest.
 
     ``$``
         The *end of text* symbol. Verify that the end of the input text has been reached.
@@ -291,7 +291,7 @@ When there are no named items in a rule, the AST_ consists of the elements parse
 
     number = ?/[0-9]+/? ;
 
-without having to write::
+Without having to write::
 
     number = number:?/[0-9]+/? ;
 
@@ -362,17 +362,17 @@ With the help of the ``Buffer.line_info()`` method, it is possible to recover th
 Whitespace
 ==========
 
-By default, **Grako** generated parsers skip the usual whitespace characters (whatever Python_ defines as ``string.whitespace``), but you can change that behaviour by passing a ``whitespace`` parameter to your parser. For example::
+By default, **Grako** generated parsers skip the usual whitespace characters (whatever Python_ defines as ``string.whitespace``), but you can change that behavior by passing a ``whitespace`` parameter to your parser. For example::
 
     parser = MyParser(text, whitespace='\t ')
 
-will consider the tab (``\t``) and space characters to be whitespace, but not so with other typical whitespace characters such as the end-of-line (``\n``).
+Will consider the tab (``\t``) and space characters to be whitespace, but not so with other typical whitespace characters such as the end-of-line (``\n``).
 
 If you don't define any whitespace characters::
 
     parser = MyParser(text, whitespace='')
 
-then you will have to handle whitespace in your grammar rules (as it's often done in PEG_ parsers).
+Then you will have to handle whitespace in your grammar rules (as it's often done in PEG_ parsers).
 
 
 Case Sensitivity
@@ -400,7 +400,7 @@ Semantic Actions
 
 There are no constructs for semantic actions in **Grako** grammars. This is on purpose, as we believe that semantic actions obscure the declarative nature of grammars and provide for poor modularization from the parser execution perspective.
 
-Semantic actions are defined in a class, and applied by passing an object of the class to the ``parse()`` method of the parser as the ``semantics=`` paramenter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
+Semantic actions are defined in a class, and applied by passing an object of the class to the ``parse()`` method of the parser as the ``semantics=`` parameter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
 
     class MySemantics(object):
         def some_rule_name(self, ast):
@@ -419,7 +419,7 @@ The per-rule methods in classes implementing the semantics provide enough opport
 
 For finer-grained control it is enough to declare more rules, as the impact on the parsing times will be minimal.
 
-If pre-processing is required at some point, it is enough to place invocations of empty rules where appropriate::
+If preprocessing is required at some point, it is enough to place invocations of empty rules where appropriate::
 
     myrule = first_part preproc {second_part} ;
 
@@ -494,7 +494,7 @@ The project ``examples/regexp`` contains a regexp-to-EBNF translator and parser 
 antlr2grako
 -----------
 
-The project ``examples/antlr2grako`` contains a ANTLR_ to **Grako** grammar tanslator.  The project is a good example of the use of models and templates in translation. The program, ``antlr2grako.py`` generates the **Grako** gramar on standard ouput, but because the model used is **Grako**'s own, the same code can be used to directly generate a parser from an ANTLR_ grammar. Please take a look at the examples *README* to know about limitations.
+The project ``examples/antlr2grako`` contains a ANTLR_ to **Grako** grammar translator.  The project is a good example of the use of models and templates in translation. The program, ``antlr2grako.py`` generates the **Grako** grammar on standard output, but because the model used is **Grako**'s own, the same code can be used to directly generate a parser from an ANTLR_ grammar. Please take a look at the examples *README* to know about limitations.
 
 Other Open-source Examples
 ==========================
@@ -560,7 +560,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Jeff Knupp** explains why **Grako**'s use of exceptions_ is sound, so I don't have to.
 
-* **Terence Parr** created ANTLR_, probably the most solid and professional parser generator out there. Ter, *ANTLR*, and the folks on the *ANLTR* forums helped me shape my ideas about **Grako**.
+* **Terence Parr** created ANTLR_, probably the most solid and professional parser generator out there. *Ter*, *ANTLR*, and the folks on the *ANLTR* forums helped me shape my ideas about **Grako**.
 
 * **JavaCC** (originally Jack_) looks like an abandoned project. It was the first parser generator I used while teaching.
 
@@ -568,7 +568,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Guido van Rossum** created and has lead the development of the Python_ programming environment for over a decade. A tool like **Grako**, at under four thousand lines of code, would not have been possible without Python_.
 
-* **Kota Mizushima** welcomed me to the `CSAIL at MIT`_ `PEG and Packrat parsing mailing list`_, and immediately offered ideas and pointed me to documentation about the implementation of *cut* in modern parsers. The optimization of memoization information n **Grako** is thanks to one of his papers.
+* **Kota Mizushima** welcomed me to the `CSAIL at MIT`_ `PEG and Packrat parsing mailing list`_, and immediately offered ideas and pointed me to documentation about the implementation of *cut* in modern parsers. The optimization of memoization information in **Grako** is thanks to one of his papers.
 
 * **My students** at UCAB_ inspired me to think about how grammar-based parser generation could be made more approachable.
 
@@ -610,7 +610,7 @@ Changes
 3.0.0-rc.3
 ----------
 
-    * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsitencies and implement important new features pythonically. That said, most of the changes required in all of the sizable downstrem projects consisted basically in making the grammars comply with the new syntax.
+    * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsistencies and implement important new features in a pythonic way. That said, most of the changes required in all of the sizable downstream projects consisted basically in making the grammars comply with the new syntax.
 
     * The *cut* operator is now ``~``, the tilde.
 
@@ -626,7 +626,7 @@ Changes
 
     * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
 
-    * Added a ``--pretty`` option to the commandline tool, and refactored prettyfication (``__str__()``) in grammar models) enough to make it a norm.
+    * Added a ``--pretty`` option to the command-line tool, and refactored prettyfication (``__str__()``) in grammar models) enough to make it a norm.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
@@ -652,7 +652,7 @@ Changes
 
     * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
 
-    * Added compatiblity with tox_. Now tests are performed against the latest releases of Python_ 2.7.x and 3.x, and PyPy_ 2.x.
+    * Added compatibility with tox_. Now tests are performed against the latest releases of Python_ 2.7.x and 3.x, and PyPy_ 2.x.
 
     * Added `--whitespace` parameter to generated `main()`.
 
@@ -670,7 +670,7 @@ Changes
 
     * *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.3.
 
-    * *BUG!* Compability betweein Python_ 2.7/3.x `print()` statements.
+    * *BUG!* Compatibility between Python_ 2.7/3.x `print()` statements.
 
 2.2.2
 -----
@@ -685,7 +685,7 @@ Changes
 
     * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
     * Grouping expressions no longer produce a list as CST_.
-    * *BUG*! Again, make sure tha closures always return a list.
+    * *BUG*! Again, make sure closures always return a list.
     * Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
     * Again, protect the names of methods for rules with a leading and trailing underscore.  It's the only way to avoid unexpected name clashes.
     * The bootstrap parser is now the one generated by **Grako** from the bootstrap grammar.
@@ -693,10 +693,10 @@ Changes
 
 2.0.4
 -----
-    * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less poluted namespaces and smaller classes.
+    * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less polluted namespaces and smaller classes.
     * A ``last_node`` protocol allowed the removal of all mentions of variable ``_e`` from generated parsers, which are thus more readable.
     * Refactored *closures* to be more pythonic (there are **no** anonymous blocks in Python_!).
-    * Fixes to the *antlr2grako* example to let it convert over 6000 lines of an ANTLR_ gramar to **Grako**.
+    * Fixes to the *antlr2grako* example to let it convert over 6000 lines of an ANTLR_ grammar to **Grako**.
     * Improved rendering of grammars by grammar models.
     * Now *tokens* accept Python_ escape sequences.
     * Added a simple `Visitor Pattern`_ for ``Renderer`` nodes. Used it to implement diagramming.
@@ -737,7 +737,7 @@ Changes
     * Added a cache of compiled regexps to ``Buffer``.
     * Align bootstrap parser with generated parser framework.
     * Add *cuts* to bootstrap parser so errors are reported closer to their origin.
-    * *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exeption so the reported line and column make sense.
+    * *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exception so the reported line and column make sense.
     * Prettify the sample **Grako** grammar.
     * Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
     * Spell-check this document with `Vim spell`_.
