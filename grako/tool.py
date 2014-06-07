@@ -48,6 +48,10 @@ argparser.add_argument('-o', '--outfile',
                        metavar='outfile',
                        help='specify where the output should go (default is stdout)'
                        )
+argparser.add_argument('-p', '--pretty',
+                       help='prettify the input grammar',
+                       action='store_true'
+                       )
 argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
@@ -77,22 +81,27 @@ def main():
     except Exception as e:
         print(e)
         sys.exit(1)
-    filename = args.filename
-    outfile = args.outfile
-    name = args.name
+
     binary = args.binary
-    draw = args.draw
-    whitespace = args.whitespace
+    filename = args.filename
+    name = args.name
     nameguard = args.nameguard
+    draw = args.draw
+    outfile = args.outfile
+    pretty = args.pretty
+    trace = args.trace
+    whitespace = args.whitespace
 
     if binary and not outfile:
         log.error('--binary requires --outfile')
         sys.exit(1)
+
     if draw and not outfile:
         log.error('--draw requires --outfile')
         sys.exit(1)
-    if binary and draw:
-        log.error('either --binary or --draw, not both')
+
+    if sum((binary, draw, pretty)) > 1:
+        log.error('either --binary or --draw or --pretty')
         sys.exit(1)
 
     if name is None:
@@ -109,23 +118,25 @@ def main():
             os.makedirs(dirname)
 
     try:
-        model = genmodel(name, grammar, trace=args.trace, filename=filename)
+        model = genmodel(name, grammar, trace=trace, filename=filename)
         model.whitespace = repr(whitespace)
         model.nameguard = repr(nameguard)
 
         if binary:
-            parser = pickle.dumps(model, protocol=2)
+            result = pickle.dumps(model, protocol=2)
+        elif pretty:
+            result = str(model)
         else:
-            parser = model.render()
+            result = model.render()
 
         if draw:
             from . import diagrams
             diagrams.draw(outfile, model)
         elif outfile:
             with codecs.open(outfile, 'w', encoding='utf-8') as f:
-                f.write(parser)
+                f.write(result)
         else:
-            print(parser)
+            print(result)
     except GrakoException as e:
         log.error(str(e))
 
