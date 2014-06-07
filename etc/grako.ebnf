@@ -1,118 +1,119 @@
-(*
- *
- * This grammar defines the Grako variation of EBNF.
- *
- *)
-
-
 grammar
     =
     @:{rule}+ $
     ;
 
+
 paramdef
     =
         '::' ~ params:params
     |
-        '('  ~
-            (
+        '('
+        ~
+        (
               kwparams:kwparams
-            | params:params ',' ~  kwparams:kwparams
+            | params:params ',' ~ kwparams:kwparams
             | params:params
-            )
+        )
         ')'
     ;
 
+
 rule
     =
-    name:new_name ~
-    [>paramdef]
-    ['<' ~  base:known_name]
-    '=' ~
-    rhs:expre
-    ';' ~
+    name:new_name ~ [>paramdef] ['<' ~ base:known_name] '=' ~ rhs:expre ';' ~
     ;
+
 
 params
     =
-    @+:literal {','  @+:literal}
+    @+:literal {',' @+:literal}
     ;
+
 
 kwparams
     =
-    @+:pair {','  @+:pair}
+    @+:pair {',' @+:pair}
     ;
+
 
 pair
     =
-    @+:word '='  @+:literal
+    @+:word '=' @+:literal
     ;
+
 
 expre
     =
-      choice
-    | sequence
+    choice | sequence
     ;
+
 
 choice
     =
-    @+:sequence {'|'  @+:sequence}+
+    @+:sequence {'|' @+:sequence}+
     ;
+
 
 sequence
     =
     {element}+
     ;
 
+
 element
     =
-      rule_include
-    | named_list
-    | named
-    | override_list
-    | override
-    | term
+    rule_include | named_list | named | override_list | override | term
     ;
+
 
 rule_include
     =
-    '>'  @:known_name
+    '>' @:known_name
     ;
+
 
 named_list
     =
     name:name '+:' value:element
     ;
 
+
 named
     =
     name:name ':' value:element
     ;
+
 
 new_name
     =
     name ~
     ;
 
+
 known_name
     =
     name ~
     ;
+
 
 name
     =
     word
     ;
 
+
 override_list
     =
-    '@+:'  @:element
+    '@+:' @:element
     ;
+
 
 override
     =
-    '@:'  @:element
+    '@:' @:element
     ;
+
 
 term
     =
@@ -127,94 +128,106 @@ term
     | atom
     ;
 
+
 group
     =
-    '('  @:expre ')' ~
+    '(' @:expre ')' ~
     ;
+
 
 positive_closure
     =
-    '{'  @:expre '}' ('-' | '+')  ~
+    '{' @:expre '}' ('-' | '+') ~
     ;
+
 
 closure
     =
-    '{' @:expre '}'  ['*'] ~
+    '{' @:expre '}' ['*'] ~
     ;
+
 
 optional
     =
-    '['  @:expre ']' ~
+    '[' @:expre ']' ~
     ;
+
 
 special
     =
-    '?('  @:?/(.*)/? ')?' ~
+    '?(' @:?/(.*)/? ')?' ~
     ;
+
 
 kif
     =
-    '&'  @:term
+    '&' @:term
     ;
+
 
 knot
     =
-    '!'  @:term
+    '!' @:term
     ;
+
 
 atom
     =
-      cut
-    | token
-    | call
-    | pattern
-    | eof
+    cut | token | call | pattern | eof
     ;
+
 
 call
     =
     word
     ;
 
+
 void
     =
     '()' ~
     ;
+
 
 cut
     =
     '~' ~
     ;
 
+
 literal
     =
-      token
-    | number
-    | word
+    token | number | word
     ;
+
 
 token
     =
-      '"'  @:?/([^"\n]|\\"|\\\\)*/? '"'
-    | "'"  @:?/([^'\n]|\\'|\\\\)*/? "'"
+    '"' @:?/([^"\n]|\\"|\\\\)*/? '"' | "'" @:?/([^'\n]|\\'|\\\\)*/? "'"
     ;
+
 
 number
     =
     ?/[0-9]+/?
     ;
 
+
 word
     =
     ?/[-_A-Za-z0-9]+/?
     ;
 
+
 pattern
     =
-    '?/'  @:?/(.*?)(?=/\?)/?? ?//\?+/?? ~
+    '?/' @:?/(.*?)(?=/\?)/?? ?//\?+/?? ~
     ;
+
 
 eof
     =
     '$' ~
     ;
+
+
