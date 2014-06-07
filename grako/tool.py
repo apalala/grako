@@ -18,13 +18,26 @@ DESCRIPTION = ('Grako (for grammar compiler) takes grammars'
                ' in a variation of EBNF as input, and outputs a memoizing'
                ' PEG parser in Python.'
                )
+
+
 argparser = argparse.ArgumentParser(prog='grako',
                                     description=DESCRIPTION
                                     )
-
+argparser.add_argument('-b', '--binary',
+                       help='generate a pickled grammar model instead of a parser',
+                       action='store_true'
+                       )
+argparser.add_argument('-d', '--draw',
+                       help='generate a diagram of the grammar (requires --outfile)',
+                       action='store_true'
+                       )
 argparser.add_argument('filename',
                        metavar='grammar',
                        help='The filename of the grammar to gencode( a parser for'
+                       )
+argparser.add_argument('-n', '--no-nameguard',
+                       help='do not protect alphanumeric tokens that are prefixes of others',
+                       dest="nameguard", action='store_false', default=True
                        )
 argparser.add_argument('-m', '--name',
                        nargs=1,
@@ -42,18 +55,6 @@ argparser.add_argument('-t', '--trace',
 argparser.add_argument('-w', '--whitespace',
                        metavar='characters',
                        help='whitespace characters (use empty string to disable automatic whitespace)',
-                       )
-argparser.add_argument('-n', '--no-nameguard',
-                       help='do not protect alphanumeric tokens that are prefixes of others',
-                       dest="nameguard", action='store_false', default=True
-                       )
-argparser.add_argument('-b', '--binary',
-                       help='generate a pickled grammar model instead of a parser',
-                       action='store_true'
-                       )
-argparser.add_argument('-d', '--draw',
-                       help='generate a diagram of the grammar (requires --outfile)',
-                       action='store_true'
                        )
 
 
