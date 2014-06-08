@@ -4,13 +4,14 @@ The Grako test suite.
 """
 from __future__ import print_function, division, absolute_import, unicode_literals
 
-if __name__ == '__main__':
-    import unittest
-    from . import bootstrap_test
-    from . import buffering_test
-    from . import grammar_test
-    from . import codegen_test
+import unittest
+from . import bootstrap_test
+from . import buffering_test
+from . import grammar_test
+from . import codegen_test
 
+
+def main():
     suite = unittest.TestSuite(tests=[
         bootstrap_test.suite(),
         buffering_test.suite(),
@@ -19,3 +20,7 @@ if __name__ == '__main__':
     ])
 
     unittest.TextTestRunner(verbosity=2).run(suite)
+
+
+if __name__ == '__main__':
+    main()
