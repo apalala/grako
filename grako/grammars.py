@@ -71,10 +71,9 @@ class ModelContext(ParseContext):
         return self.rules[name]
 
 
-class _Model(Renderer, Node):
+class _Model(Node, Renderer):
     def __init__(self):
         super(_Model, self).__init__()
-        Node.__init__(self)
         self._lookahead = None
         self._first_set = None
         self._follow_set = set()
