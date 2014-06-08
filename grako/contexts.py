@@ -353,13 +353,13 @@ class ParseContext(object):
             elif self.parseinfo:
                 node._add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
             semantic_rule, postproc = self._find_semantic_rule(name)
-            if semantic_rule:
-                try:
+            try:
+                if semantic_rule:
                     node = semantic_rule(node, *params, **kwparams)
-                    if postproc is not None:
-                        postproc(self, node)
-                except FailedSemantics as e:
-                    self._error(str(e), FailedParse)
+                if postproc is not None:
+                    postproc(self, node)
+            except FailedSemantics as e:
+                self._error(str(e), FailedParse)
             result = (node, self._pos, self._state)
             if self._memoize_lookahead():
                 cache[key] = result
