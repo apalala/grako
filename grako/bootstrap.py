@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser, CheckSemanticsMixin
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.08.17.44.12.06'
+__version__ = '2014.06.08.17.47.07.06'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -190,8 +190,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._named_()
             with self._option():
-                self._override_list_()
-            with self._option():
                 self._override_()
             with self._option():
                 self._term_()
@@ -239,13 +237,22 @@ class GrakoBootstrapParser(Parser):
         )
 
     @graken()
+    def _override_(self):
+        with self._choice():
+            with self._option():
+                self._override_list_()
+            with self._option():
+                self._override_single_()
+            self._error('no available options')
+
+    @graken()
     def _override_list_(self):
         self._token('@+:')
         self._element_()
         self.ast['@'] = self.last_node
 
     @graken()
-    def _override_(self):
+    def _override_single_(self):
         self._token('@:')
         self._element_()
         self.ast['@'] = self.last_node
@@ -472,10 +479,13 @@ class GrakoBootstrapSemantics(object):
     def named_single(self, ast):
         return ast
 
+    def override(self, ast):
+        return ast
+
     def override_list(self, ast):
         return ast
 
-    def override(self, ast):
+    def override_single(self, ast):
         return ast
 
     def term(self, ast):

@@ -63,7 +63,7 @@ sequence
 
 element
     =
-    rule_include |  named | override_list | override | term
+    rule_include |  named |  override | term
     ;
 
 
@@ -92,13 +92,20 @@ named_single
     ;
 
 
+override
+    =
+      override_list
+    | override_single
+    ;
+
+
 override_list
     =
     '@+:' @:element
     ;
 
 
-override
+override_single
     =
     '@:' @:element
     ;

@@ -83,11 +83,6 @@ class GrakoSemantics(object):
     def override_single(self, ast):
         return grammars.Override(ast)
 
-    def override(self, ast):
-        if isinstance(ast, grammars.Override):
-            return ast
-        return grammars.Override(ast)
-
     def sequence(self, ast):
         seq = ast
         assert isinstance(seq, list), str(seq)
