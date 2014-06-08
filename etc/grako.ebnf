@@ -63,7 +63,7 @@ sequence
 
 element
     =
-    rule_include |  named |  override | term
+    rule_include | named | override | term
     ;
 
 
@@ -75,8 +75,7 @@ rule_include
 
 named
     =
-      named_list
-    | named_single
+    named_list | named_single
     ;
 
 
@@ -94,8 +93,7 @@ named_single
 
 override
     =
-      override_list
-    | override_single
+    override_list | override_single
     ;
 
 
