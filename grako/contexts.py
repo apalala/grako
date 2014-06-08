@@ -119,6 +119,33 @@ class ParseContext(object):
         if semantics is not None:
             self.semantics = semantics
 
+    def parse(self,
+              text,
+              rule_name,
+              filename=None,
+              semantics=None,
+              trace=False,
+              whitespace=None,
+              **kwargs):
+        try:
+            self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
+            self._reset(
+                text=text,
+                filename=filename,
+                semantics=semantics,
+                trace=trace or self.trace,
+                whitespace=whitespace if whitespace is not None else self.whitespace,
+                **kwargs
+            )
+            rule = self._find_rule(rule_name)
+            result = rule()
+            self.ast[rule_name] = result
+            return result
+        except FailedCut as e:
+            raise e.nested
+        finally:
+            self._clear_cache()
+
     def goto(self, pos):
         self._buffer.goto(pos)
 
