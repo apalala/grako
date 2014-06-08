@@ -20,8 +20,11 @@ from collections import defaultdict
 from copy import copy
 
 from .contexts import ParseContext, safe_name
-from .exceptions import (FailedCut, FailedParse, FailedPattern, FailedRef,
-                         FailedSemantics, FailedToken, GrammarError)
+from .exceptions import (
+    FailedCut,
+    FailedRef,
+    GrammarError
+)
 from .model import Node
 from .rendering import render, Renderer
 from .util import indent, trim, timestamp
@@ -807,6 +810,8 @@ class Grammar(_Model):
               trace=False,
               context=None,
               **kwargs):
+
+        # FIXME: This repeats the code in parsing.Parser
         ctx = context
         if ctx is None:
             ctx = ModelContext(self.rules, trace=trace, **kwargs)
