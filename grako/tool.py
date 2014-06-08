@@ -56,7 +56,7 @@ argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
                        )
-argparser.add_argument('-w', '--ws',
+argparser.add_argument('-w', '--whitespace',
                        metavar='CHARACTERS',
                        help='characters to skip during parsing (use "" to disable)'
                        )
@@ -87,7 +87,7 @@ def main():
     name = args.name
     nameguard = args.nameguard
     draw = args.draw
-    outfile = args.outfile
+    outfile = args.output
     pretty = args.pretty
     trace = args.trace
     whitespace = args.whitespace
