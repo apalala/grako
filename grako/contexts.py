@@ -263,15 +263,21 @@ class ParseContext(object):
 
     def _find_semantic_rule(self, name):
         if self.semantics is None:
-            return None
+            return None, None
 
-        result = getattr(self.semantics, name, None)
-        if callable(result):
-            return result
+        postproc = getattr(self.semantics, '_postproc', None)
+        if not callable(postproc):
+            postproc = None
 
-        result = getattr(self.semantics, '_default', None)
-        if callable(result):
-            return result
+        rule = getattr(self.semantics, name, None)
+        if callable(rule):
+            return rule, postproc
+
+        rule = getattr(self.semantics, '_default', None)
+        if callable(rule):
+            return rule, postproc
+
+        return None, postproc
 
     def _trace(self, msg, *params):
         if self.trace:
@@ -346,10 +352,12 @@ class ParseContext(object):
                 node = node['@']  # override the AST
             elif self.parseinfo:
                 node._add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
-            semantic_rule = self._find_semantic_rule(name)
+            semantic_rule, postproc = self._find_semantic_rule(name)
             if semantic_rule:
                 try:
                     node = semantic_rule(node, *params, **kwparams)
+                    if postproc is not None:
+                        postproc(self, node)
                 except FailedSemantics as e:
                     self._error(str(e), FailedParse)
             result = (node, self._pos, self._state)

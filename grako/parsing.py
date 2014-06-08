@@ -24,10 +24,10 @@ from .exceptions import FailedCut, FailedRef, MissingSemanticFor
 
 class CheckSemanticsMixin(object):
     def _find_semantic_rule(self, name):
-        result = super(CheckSemanticsMixin, self)._find_semantic_rule(name)
+        result, postproc = super(CheckSemanticsMixin, self)._find_semantic_rule(name)
         if result is None:
             raise MissingSemanticFor(name)
-        return result
+        return result, postproc
 
 
 class Parser(ParseContext):
