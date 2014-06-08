@@ -536,6 +536,8 @@ Changes
 -----
     * *BUG* `Buffer` was not actually catching regexps. Discovered by Yogi_B_.
 
+    * Replaced ``__main__.py`` symlinks with actual modules.
+
     * Applided Flake8_ to project and to generated parsers.
 
 .. _Yogi_B: https://bitbucket.org/Yogi_B
