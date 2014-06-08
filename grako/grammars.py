@@ -855,7 +855,7 @@ class Grammar(_Model):
 
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
-                from grako.parsing import graken, Parser, CheckSemanticsMixin
+                from grako.parsing import graken, Parser
                 from grako.exceptions import *  # noqa
 
 
@@ -874,10 +874,6 @@ class Grammar(_Model):
                         super({name}Parser, self).__init__(whitespace=whitespace, **kwargs)
 
                 {rules}
-
-                class {name}SemanticsCheck(CheckSemanticsMixin):
-                    pass
-
 
                 class {name}Semantics(object):
                 {abstract_rules}

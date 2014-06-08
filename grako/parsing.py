@@ -19,15 +19,7 @@ from __future__ import (absolute_import, division, print_function,
 import functools
 
 from .contexts import ParseContext
-from .exceptions import FailedCut, FailedRef, MissingSemanticFor
-
-
-class CheckSemanticsMixin(object):
-    def _find_semantic_rule(self, name):
-        result, postproc = super(CheckSemanticsMixin, self)._find_semantic_rule(name)
-        if result is None:
-            raise MissingSemanticFor(name)
-        return result, postproc
+from .exceptions import FailedCut, FailedRef
 
 
 class Parser(ParseContext):
