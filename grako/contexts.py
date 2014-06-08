@@ -10,8 +10,15 @@ from keyword import iskeyword
 from .util import notnone, udecode
 from . import buffering
 from .ast import AST
-from .exceptions import (FailedCut, FailedLookahead, FailedParse,
-                         FailedSemantics, OptionSucceeded)
+from .exceptions import (
+    FailedCut,
+    FailedLookahead,
+    FailedParse,
+    FailedPattern,
+    FailedSemantics,
+    FailedToken,
+    OptionSucceeded
+)
 
 __all__ = ['ParseInfo', 'ParseContext']
 
@@ -355,6 +362,52 @@ class ParseContext(object):
             raise
         finally:
             self._pop_ast()
+
+    def _token(self, token, node_name=None, force_list=False):
+        self._next_token()
+        if self._buffer.match(token) is None:
+            self._error(token, etype=FailedToken)
+        self._trace_match(token, node_name)
+        self._add_ast_node(node_name, token, force_list)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
+
+    def _try_token(self, token, node_name=None, force_list=False):
+        p = self._pos
+        self._next_token()
+        self._last_node = None
+        if self._buffer.match(token) is None:
+            self._goto(p)
+            return None
+        self._trace_match(token, node_name)
+        self._add_ast_node(node_name, token, force_list)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
+
+    def _pattern(self, pattern, node_name=None, force_list=False):
+        token = self._buffer.matchre(pattern)
+        if token is None:
+            self._error(pattern, etype=FailedPattern)
+        self._trace_match(token, pattern)
+        self._add_ast_node(node_name, token, force_list)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
+
+    def _try_pattern(self, pattern, node_name=None, force_list=False):
+        p = self._pos
+        token = self._buffer.matchre(pattern)
+        self._last_node = None
+        if token is None:
+            self._goto(p)
+            return None
+        self._trace_match(token)
+        self._add_ast_node(node_name, token, force_list)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
 
     @contextmanager
     def _try(self):
