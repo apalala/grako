@@ -12,11 +12,11 @@
 
 
 from __future__ import print_function, division, absolute_import, unicode_literals
-from grako.parsing import graken, Parser, CheckSemanticsMixin
+from grako.parsing import graken, Parser
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.08.17.47.07.06'
+__version__ = '2014.06.08.21.35.43.06'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -430,10 +430,6 @@ class GrakoBootstrapParser(Parser):
     def _eof_(self):
         self._token('$')
         self._cut()
-
-
-class GrakoBootstrapSemanticsCheck(CheckSemanticsMixin):
-    pass
 
 
 class GrakoBootstrapSemantics(object):

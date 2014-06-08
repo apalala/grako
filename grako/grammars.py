@@ -205,15 +205,7 @@ class Token(_Model):
             raise GrammarError('invalid token %s' % self.token)
 
     def parse(self, ctx):
-        ctx._next_token()
-        token = ctx.buf.match(self.token)
-        if token is None:
-            ctx._error(self.token, etype=FailedToken)
-
-        ctx._trace_match(self.token, None)
-        ctx._add_cst_node(token)
-        ctx.last_node = token
-        return token
+        return ctx._token(self.token)
 
     def _first(self, k, F):
         return set([(self.token,)])
@@ -231,16 +223,10 @@ class Pattern(_Model):
     def __init__(self, pattern):
         super(Pattern, self).__init__()
         self.pattern = pattern
-        self._re = re.compile(pattern)
+        re.compile(pattern)
 
     def parse(self, ctx):
-        token = ctx.buf.matchre(self._re)
-        if token is None:
-            ctx._error(self.pattern, etype=FailedPattern)
-        ctx._trace_match(token, self.pattern)
-        ctx._add_cst_node(token)
-        ctx.last_node = token
-        return token
+        return ctx._pattern(self.pattern)
 
     def _first(self, k, F):
         return set([(self.pattern,)])
@@ -668,15 +654,6 @@ class Rule(_Decorator):
             )
         return result
 
-    def _call_semantics(self, ctx, name, node):
-        semantic_rule = ctx._find_semantic_rule(name)
-        if semantic_rule:
-            try:
-                node = semantic_rule(node)
-            except FailedSemantics as e:
-                ctx._error(str(e), FailedParse)
-        return node
-
     def _first(self, k, F):
         if self._first_set:
             return self._first_set
@@ -878,7 +855,7 @@ class Grammar(_Model):
 
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
-                from grako.parsing import graken, Parser, CheckSemanticsMixin
+                from grako.parsing import graken, Parser
                 from grako.exceptions import *  # noqa
 
 
@@ -897,10 +874,6 @@ class Grammar(_Model):
                         super({name}Parser, self).__init__(whitespace=whitespace, **kwargs)
 
                 {rules}
-
-                class {name}SemanticsCheck(CheckSemanticsMixin):
-                    pass
-
 
                 class {name}Semantics(object):
                 {abstract_rules}

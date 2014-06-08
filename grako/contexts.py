@@ -10,8 +10,15 @@ from keyword import iskeyword
 from .util import notnone, udecode
 from . import buffering
 from .ast import AST
-from .exceptions import (FailedCut, FailedLookahead, FailedParse,
-                         FailedSemantics, OptionSucceeded)
+from .exceptions import (
+    FailedCut,
+    FailedLookahead,
+    FailedParse,
+    FailedPattern,
+    FailedSemantics,
+    FailedToken,
+    OptionSucceeded
+)
 
 __all__ = ['ParseInfo', 'ParseContext']
 
@@ -256,15 +263,21 @@ class ParseContext(object):
 
     def _find_semantic_rule(self, name):
         if self.semantics is None:
-            return None
+            return None, None
 
-        result = getattr(self.semantics, name, None)
-        if callable(result):
-            return result
+        postproc = getattr(self.semantics, '_postproc', None)
+        if not callable(postproc):
+            postproc = None
 
-        result = getattr(self.semantics, '_default', None)
-        if callable(result):
-            return result
+        rule = getattr(self.semantics, name, None)
+        if callable(rule):
+            return rule, postproc
+
+        rule = getattr(self.semantics, '_default', None)
+        if callable(rule):
+            return rule, postproc
+
+        return None, postproc
 
     def _trace(self, msg, *params):
         if self.trace:
@@ -339,12 +352,14 @@ class ParseContext(object):
                 node = node['@']  # override the AST
             elif self.parseinfo:
                 node._add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
-            semantic_rule = self._find_semantic_rule(name)
-            if semantic_rule:
-                try:
+            semantic_rule, postproc = self._find_semantic_rule(name)
+            try:
+                if semantic_rule:
                     node = semantic_rule(node, *params, **kwparams)
-                except FailedSemantics as e:
-                    self._error(str(e), FailedParse)
+                if postproc is not None:
+                    postproc(self, node)
+            except FailedSemantics as e:
+                self._error(str(e), FailedParse)
             result = (node, self._pos, self._state)
             if self._memoize_lookahead():
                 cache[key] = result
@@ -355,6 +370,48 @@ class ParseContext(object):
             raise
         finally:
             self._pop_ast()
+
+    def _token(self, token):
+        self._next_token()
+        if self._buffer.match(token) is None:
+            self._error(token, etype=FailedToken)
+        self._trace_match(token)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
+
+    def _try_token(self, token):
+        p = self._pos
+        self._next_token()
+        self._last_node = None
+        if self._buffer.match(token) is None:
+            self._goto(p)
+            return None
+        self._trace_match(token)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
+
+    def _pattern(self, pattern):
+        token = self._buffer.matchre(pattern)
+        if token is None:
+            self._error(pattern, etype=FailedPattern)
+        self._trace_match(token, pattern)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
+
+    def _try_pattern(self, pattern):
+        p = self._pos
+        token = self._buffer.matchre(pattern)
+        self._last_node = None
+        if token is None:
+            self._goto(p)
+            return None
+        self._trace_match(token, pattern)
+        self._add_cst_node(token)
+        self._last_node = token
+        return token
 
     @contextmanager
     def _try(self):
