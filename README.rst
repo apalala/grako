@@ -399,7 +399,7 @@ Parsers will skip over comments specified as a regular expression using the ``co
 
     parser = MyParser(text, comments_re="\(\*.*?\*\)")
 
-For more complex comment handling, you can override the ``Parser._eatcomments()``  or the ``Buffer.eatcomments()`` methods.
+For more complex comment handling, you can override the ``Buffer.eatcomments()`` method.
 
 
 Semantic Actions
