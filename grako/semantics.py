@@ -74,7 +74,7 @@ class GrakoSemantics(object):
     def named_list(self, ast):
         return grammars.NamedList(ast.name, ast.value)
 
-    def named(self, ast):
+    def named_single(self, ast):
         return grammars.Named(ast.name, ast.value)
 
     def override_list(self, ast):

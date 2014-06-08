@@ -63,7 +63,7 @@ sequence
 
 element
     =
-    rule_include | named_list | named | override_list | override | term
+    rule_include |  named | override_list | override | term
     ;
 
 
@@ -73,13 +73,20 @@ rule_include
     ;
 
 
+named
+    =
+      named_list
+    | named_single
+    ;
+
+
 named_list
     =
     name:name '+:' value:element
     ;
 
 
-named
+named_single
     =
     name:name ':' value:element
     ;
