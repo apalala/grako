@@ -92,24 +92,6 @@ named_single
     ;
 
 
-new_name
-    =
-    name ~
-    ;
-
-
-known_name
-    =
-    name ~
-    ;
-
-
-name
-    =
-    word
-    ;
-
-
 override_list
     =
     '@+:' @:element
@@ -199,6 +181,24 @@ void
 cut
     =
     '~' ~
+    ;
+
+
+new_name
+    =
+    name ~
+    ;
+
+
+known_name
+    =
+    name ~
+    ;
+
+
+name
+    =
+    word
     ;
 
 

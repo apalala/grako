@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser, CheckSemanticsMixin
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.08.17.39.50.06'
+__version__ = '2014.06.08.17.44.12.06'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -239,20 +239,6 @@ class GrakoBootstrapParser(Parser):
         )
 
     @graken()
-    def _new_name_(self):
-        self._name_()
-        self._cut()
-
-    @graken()
-    def _known_name_(self):
-        self._name_()
-        self._cut()
-
-    @graken()
-    def _name_(self):
-        self._word_()
-
-    @graken()
     def _override_list_(self):
         self._token('@+:')
         self._element_()
@@ -378,6 +364,20 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
     @graken()
+    def _new_name_(self):
+        self._name_()
+        self._cut()
+
+    @graken()
+    def _known_name_(self):
+        self._name_()
+        self._cut()
+
+    @graken()
+    def _name_(self):
+        self._word_()
+
+    @graken()
     def _literal_(self):
         with self._choice():
             with self._option():
@@ -472,15 +472,6 @@ class GrakoBootstrapSemantics(object):
     def named_single(self, ast):
         return ast
 
-    def new_name(self, ast):
-        return ast
-
-    def known_name(self, ast):
-        return ast
-
-    def name(self, ast):
-        return ast
-
     def override_list(self, ast):
         return ast
 
@@ -521,6 +512,15 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def cut(self, ast):
+        return ast
+
+    def new_name(self, ast):
+        return ast
+
+    def known_name(self, ast):
+        return ast
+
+    def name(self, ast):
         return ast
 
     def literal(self, ast):
