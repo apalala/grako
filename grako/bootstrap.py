@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser, CheckSemanticsMixin
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.06.18.36.15.04'
+__version__ = '2014.06.08.17.47.07.06'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -188,11 +188,7 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._rule_include_()
             with self._option():
-                self._named_list_()
-            with self._option():
                 self._named_()
-            with self._option():
-                self._override_list_()
             with self._option():
                 self._override_()
             with self._option():
@@ -204,6 +200,15 @@ class GrakoBootstrapParser(Parser):
         self._token('>')
         self._known_name_()
         self.ast['@'] = self.last_node
+
+    @graken()
+    def _named_(self):
+        with self._choice():
+            with self._option():
+                self._named_list_()
+            with self._option():
+                self._named_single_()
+            self._error('no available options')
 
     @graken()
     def _named_list_(self):
@@ -219,7 +224,7 @@ class GrakoBootstrapParser(Parser):
         )
 
     @graken()
-    def _named_(self):
+    def _named_single_(self):
         self._name_()
         self.ast['name'] = self.last_node
         self._token(':')
@@ -232,18 +237,13 @@ class GrakoBootstrapParser(Parser):
         )
 
     @graken()
-    def _new_name_(self):
-        self._name_()
-        self._cut()
-
-    @graken()
-    def _known_name_(self):
-        self._name_()
-        self._cut()
-
-    @graken()
-    def _name_(self):
-        self._word_()
+    def _override_(self):
+        with self._choice():
+            with self._option():
+                self._override_list_()
+            with self._option():
+                self._override_single_()
+            self._error('no available options')
 
     @graken()
     def _override_list_(self):
@@ -252,7 +252,7 @@ class GrakoBootstrapParser(Parser):
         self.ast['@'] = self.last_node
 
     @graken()
-    def _override_(self):
+    def _override_single_(self):
         self._token('@:')
         self._element_()
         self.ast['@'] = self.last_node
@@ -371,6 +371,20 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
     @graken()
+    def _new_name_(self):
+        self._name_()
+        self._cut()
+
+    @graken()
+    def _known_name_(self):
+        self._name_()
+        self._cut()
+
+    @graken()
+    def _name_(self):
+        self._word_()
+
+    @graken()
     def _literal_(self):
         with self._choice():
             with self._option():
@@ -456,25 +470,22 @@ class GrakoBootstrapSemantics(object):
     def rule_include(self, ast):
         return ast
 
-    def named_list(self, ast):
-        return ast
-
     def named(self, ast):
         return ast
 
-    def new_name(self, ast):
+    def named_list(self, ast):
         return ast
 
-    def known_name(self, ast):
+    def named_single(self, ast):
         return ast
 
-    def name(self, ast):
+    def override(self, ast):
         return ast
 
     def override_list(self, ast):
         return ast
 
-    def override(self, ast):
+    def override_single(self, ast):
         return ast
 
     def term(self, ast):
@@ -511,6 +522,15 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def cut(self, ast):
+        return ast
+
+    def new_name(self, ast):
+        return ast
+
+    def known_name(self, ast):
+        return ast
+
+    def name(self, ast):
         return ast
 
     def literal(self, ast):
