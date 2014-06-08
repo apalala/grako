@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='grako',
-    version='2.4.2',
+    version='2.4.3',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.test'],
@@ -21,7 +21,6 @@ setup(
         'Environment :: Console',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Topic :: Software Development :: Code Generators',
         'Topic :: Software Development :: Compilers',
