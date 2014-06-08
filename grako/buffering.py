@@ -219,6 +219,11 @@ class Buffer(object):
         self.goto(p)
 
     def matchre(self, pattern, ignorecase=None):
+        matched = self._do_matchre(pattern, ignorecase=ignorecase)
+        if matched:
+            return matched.group()
+
+    def _do_matchre(self, pattern, ignorecase=None):
         ignorecase = ignorecase if ignorecase is not None else self.ignorecase
 
         if isinstance(pattern, RETYPE):
@@ -226,16 +231,16 @@ class Buffer(object):
         elif pattern in self._re_cache:
             re = self._re_cache[pattern]
         else:
-            re = regexp.compile(pattern,
-                                regexp.MULTILINE |
-                                (regexp.IGNORECASE if ignorecase else 0))
+            re = regexp.compile(
+                pattern,
+                regexp.MULTILINE | (regexp.IGNORECASE if ignorecase else 0)
+            )
             self._re_cache[pattern] = re
-
         matched = re.match(self.text, self.pos)
         if matched:
             token = matched.group()
             self.move(len(token))
-            return token
+        return matched
 
     def _build_line_cache(self):
         # The line cache holds the position of the last character
