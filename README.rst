@@ -100,6 +100,16 @@ A **Grako** generated parser consists of the following classes:
 
 The methods in the delegate class return the same AST_ received as parameter, but custom semantic classes can override the methods to have them return anything (for example, a `Semantic Graph`_). The semantics class can be used as a template for the final semantics implementation, which can omit methods for the rules it is not interested in.
 
+If prensent, a ``_default()`` method will be callend in the semantics class when no method matched the rule name::
+
+    def _default(self, ast):
+        ...
+        return ast
+
+If present, a ``_postproc()`` method will be called in the semantics class after each rule (including the semantics) is processed. This method will receive the current parsing context as parameter::
+
+    def _postproc(self, context, ast):
+        ...
 
 .. _`Semantic Graph`: http://en.wikipedia.org/wiki/Abstract_semantic_graph
 
