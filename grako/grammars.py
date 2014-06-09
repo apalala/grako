@@ -16,12 +16,12 @@ from __future__ import (absolute_import, division, print_function,
 
 import re
 import sys
+import functools
 from collections import defaultdict
 from copy import copy
 
 from .contexts import ParseContext, safe_name
 from .exceptions import (
-    FailedCut,
     FailedRef,
     GrammarError
 )
@@ -58,8 +58,11 @@ def compress_seq(seq):
 
 class ModelContext(ParseContext):
     def __init__(self, rules, semantics=None, trace=False, **kwargs):
-        super(ModelContext, self).__init__(trace=trace,
-                                           **kwargs)
+        super(ModelContext, self).__init__(
+            semantics=semantics,
+            trace=trace,
+            **kwargs
+        )
         self.rules = {rule.name: rule for rule in rules}
 
     @property
@@ -71,7 +74,7 @@ class ModelContext(ParseContext):
         return self._buffer
 
     def _find_rule(self, name):
-        return self.rules[name]
+        return functools.partial(self.rules[name].parse, self)
 
 
 class _Model(Node, Renderer):
@@ -593,7 +596,7 @@ class RuleRef(_Model):
     def parse(self, ctx):
         try:
             rule = ctx._find_rule(self.name)
-            return rule.parse(ctx)
+            return rule()
         except KeyError:
             ctx.error(self.name, etype=FailedRef)
 
@@ -809,21 +812,18 @@ class Grammar(_Model):
               semantics=None,
               trace=False,
               context=None,
+              whitespace=None,
               **kwargs):
-
-        # FIXME: This repeats the code in parsing.Parser
-        ctx = context
-        if ctx is None:
-            ctx = ModelContext(self.rules, trace=trace, **kwargs)
-        ctx._reset(text=text, semantics=semantics, **kwargs)
-        start_rule = ctx._find_rule(start) if start else self.rules[0]
-        try:
-            with ctx._choice():
-                return start_rule.parse(ctx)
-        except FailedCut as e:
-            raise e.nested
-        finally:
-            ctx._clear_cache()
+        ctx = context or ModelContext(self.rules, trace=trace, **kwargs)
+        return ctx.parse(
+            text,
+            start or self.rules[0].name,
+            filename=filename,
+            semantics=semantics,
+            trace=trace,
+            whitespace=whitespace,
+            **kwargs
+        )
 
     def codegen(self):
         return self.render()
