@@ -10,6 +10,7 @@ from .util import strtype, asjson, PY3
 
 class AST(dict):
     def __init__(self, *args, **kwargs):
+        super(AST, self).__setattr__('_parseinfo', None)
         super(AST, self).__setattr__('_order', [])
         super(AST, self).__init__()
         self.update(*args, **kwargs)
@@ -59,7 +60,10 @@ class AST(dict):
         return iter(self._order)
 
     def __setitem__(self, key, value):
-        self._add(key, value)
+        if key in self.__dict__:
+            super(AST, self).__setattr__(key, value)
+        else:
+            self._add(key, value)
 
     def __delitem__(self, key):
         super(AST, self).__delitem__(key)
