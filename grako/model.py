@@ -7,8 +7,9 @@ Base definitions for models of programs.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import collections
-from .util import asjson, asjsons
-from .ast import AST
+
+from grako.util import asjson, asjsons
+from grako.ast import AST
 
 EOLCOL = 50
 

@@ -7,10 +7,10 @@ from collections import namedtuple
 from contextlib import contextmanager
 from keyword import iskeyword
 
-from .util import notnone, udecode
-from . import buffering
-from .ast import AST
-from .exceptions import (
+from grako.util import notnone, udecode
+from grako.ast import AST
+from grako import buffering
+from grako.exceptions import (
     FailedCut,
     FailedLookahead,
     FailedParse,

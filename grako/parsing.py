@@ -18,8 +18,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import functools
 
-from .contexts import ParseContext
-from .exceptions import FailedRef
+from grako.exceptions import FailedRef
+from grako.contexts import ParseContext
 
 
 class Parser(ParseContext):

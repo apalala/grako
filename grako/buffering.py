@@ -14,9 +14,9 @@ import re as regexp
 import string
 from bisect import bisect_left
 from collections import namedtuple
-from .exceptions import ParseError
 
-from .util import ustr
+from grako.util import ustr
+from grako.exceptions import ParseError
 
 # TODO: There could be a file buffer using random access
 

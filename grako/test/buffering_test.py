@@ -10,7 +10,7 @@ import os
 import random
 import unittest
 
-from ..buffering import Buffer
+from grako.buffering import Buffer
 
 
 class BufferingTests(unittest.TestCase):

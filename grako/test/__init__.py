@@ -4,12 +4,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 def main():
     import unittest
-    from . import bootstrap_test
-    from . import buffering_test
-    from . import ast_test
-    from . import grammar_test
-    from . import codegen_test
-    from . import parsing_test
+    from grako.test import bootstrap_test
+    from grako.test import buffering_test
+    from grako.test import ast_test
+    from grako.test import grammar_test
+    from grako.test import codegen_test
+    from grako.test import parsing_test
 
     suite = unittest.TestSuite(tests=[
         bootstrap_test.suite(),
