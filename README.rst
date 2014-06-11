@@ -631,7 +631,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.0.0-rc.5
+3.0.0-rc.6
 ----------
 
     * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsistencies and implement important new features in a pythonic way. That said, most of the changes required in all of the sizable downstream projects consisted basically in making the grammars comply with the new syntax.
