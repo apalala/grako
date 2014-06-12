@@ -15,10 +15,11 @@ in the .grammars module.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import re
-from .exceptions import ParseError
-from .buffering import Buffer
-from .semantics import GrakoASTSemantics, GrakoSemantics
-from .bootstrap import GrakoBootstrapParser
+
+from grako.exceptions import ParseError
+from grako.buffering import Buffer
+from grako.bootstrap import GrakoBootstrapParser
+from grako.semantics import GrakoASTSemantics, GrakoSemantics
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 

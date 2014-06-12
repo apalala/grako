@@ -12,6 +12,8 @@
 Grako
 =====
 
+    **warning:** *The grammar syntax changed in this release.*
+
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
 **Grako** is *different* from other PEG_ parser generators:
@@ -631,10 +633,10 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.0.0-rc.5
+3.0.0-rc.7
 ----------
 
-    * A major version bump because backwards-compatibility had to be broken to solve long-standing inconsistencies and implement important new features in a pythonic way. That said, most of the changes required in all of the sizable downstream projects consisted basically in making the grammars comply with the new syntax.
+    * The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
 
     * The *cut* operator is now ``~``, the tilde.
 
@@ -650,7 +652,7 @@ Changes
 
     * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
 
-    * Added a ``--pretty`` option to the command-line tool, and refactored pretty-printing (``__str__()`` in grammar models) enough to make it a norm.
+    * Added a ``--pretty`` option to the command-line tool, and refactored pretty-printing (``__str__()`` in grammar models) enough to make its output a norm for grammar format.
 
     * Internals and examples were upgraded to use the latest **Grako** features.
 
@@ -663,6 +665,8 @@ Changes
     * **Grako** models are now more JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
 
     * Added compatibility with Cython_.
+
+    * Removed checking for compatibility with Python_ 3.3 (use 3.4 instead).
 
 .. _Cython: http://cython.org/
 .. _JSON: http://www.json.org/
@@ -692,7 +696,7 @@ Changes
 
     * *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
 
-    * *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.3.
+    * *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.x.
 
     * *BUG!* Compatibility between Python_ 2.7/3.x `print()` statements.
 

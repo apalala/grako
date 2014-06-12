@@ -4,9 +4,9 @@ from __future__ import (absolute_import, division, print_function,
 
 from collections import OrderedDict
 
-from . import grammars
-from .exceptions import FailedSemantics
-from .util import simplify_list
+from grako.util import simplify_list
+from grako import grammars
+from grako.exceptions import FailedSemantics
 
 
 class GrakoASTSemantics(object):

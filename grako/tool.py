@@ -11,8 +11,8 @@ import os
 import pickle
 import sys
 
-from .exceptions import GrakoException
-from .parser import GrakoGrammarGenerator
+from grako.exceptions import GrakoException
+from grako.parser import GrakoGrammarGenerator
 
 DESCRIPTION = ('GRAKO (for "grammar compiler") takes grammars'
                ' in a variation of EBNF as input, and outputs a memoizing'
@@ -130,7 +130,7 @@ def main():
             result = model.render()
 
         if draw:
-            from . import diagrams
+            from grako import diagrams
             diagrams.draw(outfile, model)
         elif outfile:
             with codecs.open(outfile, 'w', encoding='utf-8') as f:

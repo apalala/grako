@@ -6,8 +6,9 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import unittest
-from ..util import trim
-from ..parser import GrakoBuffer
+
+from grako.util import trim
+from grako.parser import GrakoBuffer
 
 
 class MockIncludeBuffer(GrakoBuffer):
