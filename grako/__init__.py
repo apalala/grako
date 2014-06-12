@@ -5,7 +5,7 @@ the described language.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from . import tool
+from grako import tool
 
 genmodel = tool.genmodel
 gencode = tool.gencode

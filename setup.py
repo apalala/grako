@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
-CYTHON = True
+
 try:
     from Cython.Build import cythonize
 except ImportError:
     CYTHON = False
+else:
+    CYTHON = True
 
 setup(
     name='grako',
-    version='3.0.0-rc.6',
+    version='3.0.0-rc.7',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.test'],

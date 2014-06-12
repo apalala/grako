@@ -5,7 +5,7 @@ to store the values of named elements of grammar rules.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from .util import strtype, asjson, PY3
+from grako.util import strtype, asjson, PY3
 
 
 class AST(dict):
