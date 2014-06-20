@@ -71,7 +71,7 @@ def gencode(name, grammar, trace=False, filename=None):
     model = genmodel(name, grammar, trace=trace, filename=filename)
     return model.render()
 
-def error(*args, **kwargs):
+def _error(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
@@ -79,7 +79,7 @@ def main():
     try:
         args = argparser.parse_args()
     except Exception as e:
-        error(str(e))
+        _error(str(e))
         sys.exit(2)
 
     binary = args.binary
@@ -93,15 +93,15 @@ def main():
     whitespace = args.whitespace
 
     if binary and not outfile:
-        error('--binary requires --outfile')
+        _error('--binary requires --outfile')
         sys.exit(2)
 
     if draw and not outfile:
-        error('--draw requires --outfile')
+        _error('--draw requires --outfile')
         sys.exit(2)
 
     if sum((binary, draw, pretty)) > 1:
-        error('either --binary or --draw or --pretty')
+        _error('either --binary or --draw or --pretty')
         sys.exit(2)
 
     if name is None:
@@ -138,7 +138,7 @@ def main():
         else:
             print(result)
     except GrakoException as e:
-        error(e)
+        _error(e)
         sys.exit(1)
 
 if __name__ == '__main__':
