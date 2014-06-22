@@ -203,7 +203,7 @@ class Group(_Decorator):
 class Token(_Model):
     def __init__(self, token):
         super(Token, self).__init__()
-        self.token = token
+        self.token = token.encode('utf-8').decode('unicode_escape')
         if not self.token:
             raise GrammarError('invalid token %s' % self.token)
 
@@ -225,7 +225,7 @@ class Token(_Model):
 class Pattern(_Model):
     def __init__(self, pattern):
         super(Pattern, self).__init__()
-        self.pattern = pattern
+        self.pattern = pattern  # don't encode. asume as raw
         re.compile(pattern)
 
     def parse(self, ctx):
