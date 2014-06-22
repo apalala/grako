@@ -636,11 +636,11 @@ Changes
 3.0.1
 -----
 
-    * * BUG 22_ * Always exit with non-zero exit code on failure.
+    * *BUG* 22_ Always exit with non-zero exit code on failure.
 
-    * * BUG 23_ * Incorrect encoding of Python_ escape sequences in grammar tokens.
+    * *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
 
-    * * BUG 24_ *  Incorrect template for *--pretty* of multi-line optionals.
+    * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
 
 .. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
 .. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
