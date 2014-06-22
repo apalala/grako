@@ -18,15 +18,15 @@ Grako
 
 **Grako** is *different* from other PEG_ parser generators:
 
-    * Generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed. There are no complicated *if-then-else* sequences for decision making or backtracking. Memoization allows going over the same input sequence several times in linear time.
+* Generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed. There are no complicated *if-then-else* sequences for decision making or backtracking. Memoization allows going over the same input sequence several times in linear time.
 
-    * *Positive and negative lookaheads*, and the *cut* element (with its cleaning of the memoization cache) allow for additional, hand-crafted optimizations at the grammar level.
+* *Positive and negative lookaheads*, and the *cut* element (with its cleaning of the memoization cache) allow for additional, hand-crafted optimizations at the grammar level.
 
-    * Delegation to Python_'s re_ module for *lexemes* allows for (Perl_-like) powerful and efficient lexical analysis.
+* Delegation to Python_'s re_ module for *lexemes* allows for (Perl_-like) powerful and efficient lexical analysis.
 
-    * The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for code clarity, and enhanced CPU-cache hits.
+* The use of Python_'s `context managers`_ considerably reduces the size of the generated parsers for code clarity, and enhanced CPU-cache hits.
 
-    * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
+* Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
@@ -243,20 +243,20 @@ The expressions, in reverse order of operator precedence, can be:
     ``>rulename``
         The include operator'. Include the *right hand side* of rule ``rulename`` at this point.
 
-        The following set of declarations:
+        The following set of declarations::
 
-            includable **=** *exp1* **;**
+            includable = exp1 ;
 
-            expanded **=** *exp0* **>** includable *exp2* **;**
+            expanded = exp0 >includable exp2 ;
 
-        Has the same effect as defining *expanded* as:
+        Has the same effect as defining *expanded* as::
 
-            extended **=** *exp0* *exp1* *exp2* **;**
+            extended = exp0 exp1 exp2 ;
 
         Note that the included rule must be defined before the rule that includes it.
 
     ``'text'`` or ``"text"``
-        Match the token text within the quotation marks.
+        Match the token *text* within the quotation marks.
 
         **Note that** if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
 
@@ -355,15 +355,15 @@ Based Rules
 
 Rules may extend previously defined rules using the ``<`` operator.  The *base rule* must be defined previously in the grammar.
 
-The following set of declarations:
+The following set of declarations::
 
-    base::Param **=** *exp1* **;**
+    base::Param = exp1 ;
 
-    extended **<** base **=** *exp2* **;**
+    extended < base = exp2 ;
 
-Has the same effect as defining *extended* as:
+Has the same effect as defining *extended* as::
 
-    extended::Param **=** *exp1* *exp2* **;**
+    extended::Param = exp1 exp2 ;
 
 
 Parameters from the *base rule* are copied to the new rule if the new rule doesn't define its own.  Repeated inheritance should be possible, but it *hasn't been tested*.
@@ -633,14 +633,27 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.0.0-rc.8
-----------
+3.0.1
+-----
+
+    * * BUG 22_ * Always exit with non-zero exit code on failure.
+
+    * * BUG 23_ * Incorrect encoding of Python_ escape sequences in grammar tokens.
+
+    * * BUG 24_ *  Incorrect template for *--pretty* of multi-line optionals.
+
+.. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
+.. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
+.. _24: https://bitbucket.org/apalala/grako/issue/24/pretty-output-changes-optional-match-into
+
+3.0.0
+-----
 
     * The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
 
     * The *cut* operator is now ``~``, the tilde.
 
-    * Now name overrides must always be specified with a colon,``@:e``.
+    * Now name overrides must always be specified with a colon, ``@:e``.
 
     * Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
