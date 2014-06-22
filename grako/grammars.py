@@ -491,9 +491,9 @@ class Optional(_Decorator):
                 '''
 
     str_template = '''
-            {
+            [
             %s
-            }
+            ]
             '''
 
 
