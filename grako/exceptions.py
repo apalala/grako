@@ -128,3 +128,9 @@ class FailedLookahead(FailedParse):
     @property
     def message(self):
         return 'failed lookahead'
+
+
+class FailedLeftRecursion(FailedParse):
+    @property
+    def message(self):
+        return 'infinite left recursion'

@@ -260,6 +260,31 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("abb", nameguard=False)
         self.assertEquals(['a', 'b', 'b'], ast)
 
+    def test_left_recursion(self):
+        grammar = '''
+            start
+                =
+                expre $
+                ;
+
+            expre
+                =
+                expre '+' number
+                |
+                expre '*' number
+                |
+                number
+                ;
+
+            number
+                =
+                ?/[0-9]+/?
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("1*2+3*5", trace=True)
+        self.assertEquals([], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

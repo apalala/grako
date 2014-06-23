@@ -12,6 +12,7 @@ from grako.ast import AST
 from grako import buffering
 from grako.exceptions import (
     FailedCut,
+    FailedLeftRecursion,
     FailedLookahead,
     FailedParse,
     FailedPattern,
@@ -367,6 +368,20 @@ class ParseContext(object):
                 raise result
             return result
 
+        # https://bitbucket.org/PaulS pointed out that:
+        #
+        # Alessandro Warth et al say that we can deal with
+        # direct and indirect left-recursion by seeding the
+        # memoization cache with a parse failure.
+        #
+        #   http://www.vpri.org/pdf/tr2007002_packrat.pdf
+        #
+        cache[key] = FailedLeftRecursion(
+            self._buffer,
+            list(reversed(self._rule_stack[:])),
+            name
+        )
+
         self._push_ast()
         try:
             if name[0].islower():
@@ -379,6 +394,7 @@ class ParseContext(object):
                 node = node['@']  # override the AST
             elif self.parseinfo:
                 node._add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
+
             semantic_rule, postproc = self._find_semantic_rule(name)
             try:
                 if semantic_rule:
@@ -387,6 +403,7 @@ class ParseContext(object):
                     postproc(self, node)
             except FailedSemantics as e:
                 self._error(str(e), FailedParse)
+
             result = (node, self._pos, self._state)
             if self._memoize_lookahead():
                 cache[key] = result
