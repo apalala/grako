@@ -633,6 +633,13 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.0.2
+-----
+
+    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
+
+    * *BUG* Honoring escape sequences in tokens through ``decode('unicode_escape')`` was corrupting non-ASCII characters. **Grako** now uses a safe form of ``eval()`` for that purpose.
+
 3.0.1
 -----
 
