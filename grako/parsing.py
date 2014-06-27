@@ -31,11 +31,12 @@ class Parser(ParseContext):
         result = []
         for m in methods:
             name = m[0]
-            if name[0] != '_' or name[-1] != '_':
+            if len(name) < 3:
                 continue
-            if not name[1:-1].isalnum():
+            if name.startswith('__') or name.endswith('__'):
                 continue
-            result.append(name[1:-1])
+            if name.startswith('_') and name.endswith('_'):
+                result.append(name[1:-1])
         return result
 
     def result(self):
