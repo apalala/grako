@@ -27,7 +27,7 @@ class Parser(ParseContext):
     @classmethod
     def rule_list(cls):
         import inspect
-        methods = inspect.getmembers(cls, predicate=inspect.ismethod)
+        methods = inspect.getmembers(cls, predicate=inspect.isroutine)
         result = []
         for m in methods:
             name = m[0]
