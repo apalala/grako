@@ -633,12 +633,13 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.0.2
+3.0.3
 -----
+    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
+      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
+      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
 
     * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
-
-    * *BUG* Honoring escape sequences in tokens through ``decode('unicode_escape')`` was corrupting non-ASCII characters. **Grako** now uses a safe form of ``eval()`` for that purpose.
 
 3.0.1
 -----

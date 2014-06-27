@@ -48,6 +48,26 @@ def udecode(s):
         return s.decode('utf-8')
 
 
+def unescape(s):
+    s = ustr(s)
+    s = s.replace('\\"', '"')
+    s = s.replace("\\'", "'")
+    s = s.replace('\\a', '\a')
+    s = s.replace('\\b', '\b')
+    s = s.replace('\\f', '\f')
+    s = s.replace('\\n', '\n')
+    s = s.replace('\\r', '\r')
+    s = s.replace('\\t', '\t')
+    s = s.replace('\\v', '\v')
+    if '\\' not in s:
+        # leave alone
+        return s
+    elif PY3:
+        return s.encode('utf-8').decode('unicode_escape')
+    else:
+        return unicode(s.encode('utf-8'), 'unicode_escape')
+
+
 def simplify_list(x):
     if isinstance(x, list) and len(x) == 1:
         return simplify_list(x[0])

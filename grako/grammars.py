@@ -20,7 +20,7 @@ import functools
 from collections import defaultdict
 from copy import copy
 
-from grako.util import indent, trim, timestamp, ustr
+from grako.util import indent, trim, timestamp, unescape
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
@@ -203,9 +203,7 @@ class Group(_Decorator):
 class Token(_Model):
     def __init__(self, token):
         super(Token, self).__init__()
-        # asume the token is in raw format
-        # honr escape sequences using eval()
-        self.token = eval(repr(ustr(token)))
+        self.token = unescape(token)
         if not self.token:
             raise GrammarError('invalid token %s' % self.token)
 
