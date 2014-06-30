@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import unittest
 
-from grako.util import trim, unescape
+from grako.util import trim, eval_escapes
 from grako.parser import GrakoBuffer
 
 
@@ -27,11 +27,11 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual('first\n\nINCLUDED "something"\nlast', buf.text)
 
     def test_escape_sequences(self):
-        self.assertEqual(u'\n', unescape(r'\n'))
-        self.assertEqual(u'this \xeds a test', unescape(r'this \xeds a test'))
-        self.assertEqual(u'this ís a test', unescape(r'this \xeds a test'))
-        self.assertEqual(u'\nañez', unescape(r'\na\xf1ez'))
-        self.assertEqual(u'\nañez', unescape(r'\nañez'))
+        self.assertEqual(u'\n', eval_escapes(r'\n'))
+        self.assertEqual(u'this \xeds a test', eval_escapes(r'this \xeds a test'))
+        self.assertEqual(u'this ís a test', eval_escapes(r'this \xeds a test'))
+        self.assertEqual(u'\nañez', eval_escapes(r'\na\xf1ez'))
+        self.assertEqual(u'\nañez', eval_escapes(r'\nañez'))
 
 
 def suite():
