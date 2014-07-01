@@ -604,7 +604,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Marcus Brinkmann`_ has kindly submitted patches that have resolved obscure bugs in **Grako**'s implementation, and that have made the tool more user-friendly, specially for newcomers to parsing and translation.
 
-* `Robert Speer`_ cleaned up the nonsense in trying to have Unicode handling be compatible with 2.7.x and 3.x.
+* `Robert Speer`_ cleaned up the nonsense in trying to have Unicode handling be compatible with 2.7.x and 3.x, and figured out the canonical way of honoring escape sequences in grammar tokens without throwing off the encoding.
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
@@ -632,6 +632,11 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 Changes
 =======
+
+3.0.4
+-----
+
+    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
 
 3.0.3
 -----

@@ -6,6 +6,8 @@ import sys
 import collections
 import json
 import datetime
+import re
+import codecs
 
 
 PY3 = sys.version_info[0] >= 3
@@ -48,7 +50,10 @@ def udecode(s):
         return s.decode('utf-8')
 
 
-def unescape(s):
+def __old__unescape(s):
+    """
+    Try to honor non-unicode escape sequences.
+    """
     s = ustr(s)
     s = s.replace('\\"', '"')
     s = s.replace("\\'", "'")
@@ -66,6 +71,37 @@ def unescape(s):
         return s.encode('utf-8').decode('unicode_escape')
     else:
         return unicode(s.encode('utf-8'), 'unicode_escape')
+
+
+ESCAPE_SEQUENCE_RE = re.compile(
+    r'''
+    ( \\U........      # 8-digit Unicode escapes
+    | \\u....          # 4-digit Unicode escapes
+    | \\x..            # 2-digit Unicode escapes
+    | \\[0-7]{1,3}     # Octal character escapes
+    | \\N\{[^}]+\}     # Unicode characters by name
+    | \\[\\'"abfnrtv]  # Single-character escapes
+    )''',
+    re.UNICODE | re.VERBOSE
+)
+
+
+def eval_escapes(s):
+    """
+    Given a string, evaluate escape sequences starting with backslashes as
+    they would be evaluated in Python source code. For a list of these
+    sequences, see: https://docs.python.org/3/reference/lexical_analysis.html
+
+    This is not the same as decoding the whole string with the 'unicode-escape'
+    codec, because that provides no way to handle non-ASCII characters that are
+    literally present in the string.
+    """
+    # by Rob Speer
+
+    def decode_match(match):
+        return codecs.decode(match.group(0), 'unicode-escape')
+
+    return ESCAPE_SEQUENCE_RE.sub(decode_match, s)
 
 
 def simplify_list(x):
