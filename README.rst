@@ -606,6 +606,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Robert Speer`_ cleaned up the nonsense in trying to have Unicode handling be compatible with 2.7.x and 3.x, and figured out the canonical way of honoring escape sequences in grammar tokens without throwing off the encoding.
 
+* `Basel Shishani`_ has been an incredibly throrough peer-reviewer of **Grako**.
+
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
 .. _`LL(1)`: http://en.wikipedia.org/wiki/LL(1)
@@ -629,6 +631,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _Marcus: http://blog.marcus-brinkmann.de/
 .. _lambdafu: http://blog.marcus-brinkmann.de/
 .. _`Robert Speer`: https://bitbucket.org/r_speer
+.. _`Basel Shishani`: https://bitbucket.org/basel-shishani
 
 Changes
 =======
