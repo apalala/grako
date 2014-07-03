@@ -636,6 +636,15 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.0.5-rc.1
+----------
+
+    * *BUG* 30_  Make sure that escapes in --whitespace are evaluated before being passed to the model.
+
+    * *BUG* 30_ Make sure that --whitespace and --no-nameguard indeed affect the behavior of the generated parser as expected.
+
+.. _30: https://bitbucket.org/apalala/grako/issue/30/
+
 3.0.4
 -----
 
