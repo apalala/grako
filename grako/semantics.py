@@ -2,6 +2,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import re
 from collections import OrderedDict
 
 from grako.util import simplify_list, eval_escapes
@@ -40,6 +41,11 @@ class GrakoSemantics(object):
         return grammars.RuleRef(ast)
 
     def pattern(self, ast):
+        pattern = ast
+        try:
+            re.compile(pattern)
+        except re.error as e:
+            raise FailedSemantics('regexp error: ' + str(e))
         return grammars.Pattern(ast)
 
     def cut(self, ast):
