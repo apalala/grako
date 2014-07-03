@@ -89,7 +89,6 @@ def main():
     filename = args.filename
     name = args.name
     nameguard = args.nameguard
-    print('NG', args.nameguard)
     draw = args.draw
     outfile = args.output
     pretty = args.pretty
