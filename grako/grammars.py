@@ -761,7 +761,7 @@ class Grammar(_Model):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
-        self.whitespace = urepr(whitespace)
+        self.whitespace = whitespace
         self.nameguard = nameguard
         self.rules = rules
         self._adopt_children(rules)
@@ -832,9 +832,22 @@ class Grammar(_Model):
         abstract_template = trim(self.abstract_rule_template)
         abstract_rules = [abstract_template.format(name=safe_name(rule.name)) for rule in self.rules]
         abstract_rules = indent('\n'.join(abstract_rules))
+
+        if self.whitespace is None:
+            whitespace = 'None'
+        else:
+            whitespace = urepr(self.whitespace)
+
+        if self.nameguard is None:
+            nameguard = 'None'
+        else:
+            nameguard = urepr(self.nameguard)
+
         fields.update(rules=indent(render(self.rules)),
                       abstract_rules=abstract_rules,
-                      version=timestamp()
+                      version=timestamp(),
+                      whitespace=whitespace,
+                      nameguard=nameguard
                       )
 
     abstract_rule_template = '''
@@ -872,8 +885,16 @@ class Grammar(_Model):
 
 
                 class {name}Parser(Parser):
-                    def __init__(self, whitespace={whitespace}, **kwargs):
-                        super({name}Parser, self).__init__(whitespace=whitespace, **kwargs)
+                    def __init__(
+                        self,
+                        whitespace={whitespace},
+                        nameguard={nameguard},
+                        **kwargs):
+                        super({name}Parser, self).__init__(
+                            whitespace=whitespace,
+                            nameguard=nameguard,
+                            **kwargs
+                        )
 
                 {rules}
 
