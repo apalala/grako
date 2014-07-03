@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from collections import OrderedDict
 
-from grako.util import simplify_list
+from grako.util import simplify_list, eval_escapes
 from grako import grammars
 from grako.exceptions import FailedSemantics
 
@@ -33,7 +33,8 @@ class GrakoSemantics(object):
         self.rules = OrderedDict()
 
     def token(self, ast):
-        return grammars.Token(ast)
+        token = eval_escapes(ast)
+        return grammars.Token(token)
 
     def call(self, ast):
         return grammars.RuleRef(ast)
