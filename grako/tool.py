@@ -11,6 +11,7 @@ import os
 import pickle
 import sys
 
+from grako.util import eval_escapes
 from grako.exceptions import GrakoException
 from grako.parser import GrakoGrammarGenerator
 
@@ -58,7 +59,8 @@ argparser.add_argument('-t', '--trace',
                        )
 argparser.add_argument('-w', '--whitespace',
                        metavar='CHARACTERS',
-                       help='characters to skip during parsing (use "" to disable)'
+                       help='characters to skip during parsing (use "" to disable)',
+                       default=None
                        )
 
 
@@ -70,6 +72,7 @@ def genmodel(name, grammar, trace=False, filename=None):
 def gencode(name, grammar, trace=False, filename=None):
     model = genmodel(name, grammar, trace=trace, filename=filename)
     return model.render()
+
 
 def _error(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -91,6 +94,9 @@ def main():
     pretty = args.pretty
     trace = args.trace
     whitespace = args.whitespace
+
+    if whitespace:
+        whitespace = eval_escapes(args.whitespace)
 
     if binary and not outfile:
         _error('--binary requires --outfile')
@@ -119,8 +125,8 @@ def main():
 
     try:
         model = genmodel(name, grammar, trace=trace, filename=filename)
-        model.whitespace = repr(whitespace)
-        model.nameguard = repr(nameguard)
+        model.whitespace = whitespace
+        model.nameguard = nameguard
 
         if binary:
             result = pickle.dumps(model, protocol=2)

@@ -604,7 +604,9 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Marcus Brinkmann`_ has kindly submitted patches that have resolved obscure bugs in **Grako**'s implementation, and that have made the tool more user-friendly, specially for newcomers to parsing and translation.
 
-* `Robert Speer`_ cleaned up the nonsense in trying to have Unicode handling be compatible with 2.7.x and 3.x.
+* `Robert Speer`_ cleaned up the nonsense in trying to have Unicode handling be compatible with 2.7.x and 3.x, and figured out the canonical way of honoring escape sequences in grammar tokens without throwing off the encoding.
+
+* `Basel Shishani`_ has been an incredibly throrough peer-reviewer of **Grako**.
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
@@ -629,9 +631,32 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _Marcus: http://blog.marcus-brinkmann.de/
 .. _lambdafu: http://blog.marcus-brinkmann.de/
 .. _`Robert Speer`: https://bitbucket.org/r_speer
+.. _`Basel Shishani`: https://bitbucket.org/basel-shishani
 
 Changes
 =======
+
+3.0.5-rc.1
+----------
+
+    * *BUG* 30_  Make sure that escapes in --whitespace are evaluated before being passed to the model.
+
+    * *BUG* 30_ Make sure that --whitespace and --no-nameguard indeed affect the behavior of the generated parser as expected.
+
+.. _30: https://bitbucket.org/apalala/grako/issue/30/
+
+3.0.4
+-----
+
+    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
+
+3.0.3
+-----
+    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
+      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
+      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
+
+    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
 
 3.0.1
 -----
