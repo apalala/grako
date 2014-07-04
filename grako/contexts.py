@@ -7,7 +7,7 @@ from collections import namedtuple
 from contextlib import contextmanager
 from keyword import iskeyword
 
-from grako.util import notnone, udecode
+from grako.util import notnone, udecode, filter_dict
 from grako.ast import AST
 from grako import buffering
 from grako.exceptions import (
@@ -71,13 +71,17 @@ class ParseContext(object):
         self._rule_stack = []
         self._cut_stack = [False]
         self._memoization_cache = dict()
+        self._potential_results = dict()
         self._last_node = None
         self._state = None
         self._lookahead = 0
         self._memoize_lookaheads = memoize_lookaheads
+        self._left_recursive_eval = False
+        self._left_recursive_head = None
 
     def _clear_cache(self):
         self._memoization_cache = dict()
+        self._potential_results = dict()
 
     def _reset(self,
                text=None,
@@ -357,13 +361,24 @@ class ParseContext(object):
             self._rule_stack.pop()
 
     def _invoke_rule(self, rule, name, *params, **kwparams):
-        pos = self._pos
+        last_pos = pos = self._pos
         state = self._state
         key = (pos, rule, state)
         cache = self._memoization_cache
 
         if key in cache:
             result = cache[key]
+            if isinstance(result, FailedLeftRecursion):
+                # At this point we know we've already seen this rule
+                # at this position. Either we've got a potential
+                # result from a previous pass that we can return, or
+                # we make a note of the rule so that we can take
+                # action as we unwind the rule stack.
+                if key in self._potential_results:
+                    result = self._potential_results[key]
+                else:
+                    self._left_recursive_head = name
+
             if isinstance(result, Exception):
                 raise result
             return result
@@ -406,6 +421,38 @@ class ParseContext(object):
 
             result = (node, self._pos, self._state)
             if self._memoize_lookahead():
+                self._potential_results[key] = result
+
+            # If the current name is in the head, then we've just
+            # unwound to the highest rule in the recursion
+            if (name == self._left_recursive_head and
+                not self._left_recursive_eval):
+
+                # Repeatedly apply the rule until it can't consume any
+                # more. We store the last good result each time. Prior
+                # to doing so we reset the position and remove any
+                # failures from the cache.
+
+                self._left_recursive_eval = True
+                while self._pos > last_pos:
+                    last_result = result
+                    last_pos = self._pos
+                    self._goto(pos)
+                    filter_dict(lambda x: not isinstance(x, FailedParse), cache)
+                    try:
+                        result = self._invoke_rule(rule, name, *params, **kwparams)
+                    except FailedParse:
+                        pass
+
+                result = last_result
+                self._potential_results = dict()
+                self._left_recursive_head = None
+                self._left_recursive_eval = False
+
+            # Only populate the cache if we're not in a left recursive
+            # loop.
+            if (self._memoize_lookahead() and 
+                self._left_recursive_head not in self._rule_stack) :
                 cache[key] = result
             return result
         except Exception as e:
