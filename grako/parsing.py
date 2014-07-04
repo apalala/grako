@@ -27,15 +27,16 @@ class Parser(ParseContext):
     @classmethod
     def rule_list(cls):
         import inspect
-        methods = inspect.getmembers(cls, predicate=inspect.ismethod)
+        methods = inspect.getmembers(cls, predicate=inspect.isroutine)
         result = []
         for m in methods:
             name = m[0]
-            if name[0] != '_' or name[-1] != '_':
+            if len(name) < 3:
                 continue
-            if not name[1:-1].isalnum():
+            if name.startswith('__') or name.endswith('__'):
                 continue
-            result.append(name[1:-1])
+            if name.startswith('_') and name.endswith('_'):
+                result.append(name[1:-1])
         return result
 
     def result(self):
@@ -67,7 +68,10 @@ def graken(*params, **kwparams):
     def decorator(rule):
         @functools.wraps(rule)
         def wrapper(self, *args, **kwargs):
-            name = rule.__name__.strip('_')
+            name = rule.__name__
+            # remove the single leading and trailing underscore
+            # that the parser generator added
+            name = name[1:-1]
             return self._call(rule, name, *params, **kwparams)
         return wrapper
     return decorator
