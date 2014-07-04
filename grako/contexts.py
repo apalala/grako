@@ -451,8 +451,8 @@ class ParseContext(object):
 
             # Only populate the cache if we're not in a left recursive
             # loop.
-            if (self._memoize_lookahead() and 
-                self._left_recursive_head not in self._rule_stack) :
+            if (self._memoize_lookahead() and
+                self._left_recursive_head not in self._rule_stack):
                 cache[key] = result
             return result
         except Exception as e:

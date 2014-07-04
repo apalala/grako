@@ -318,9 +318,9 @@ class GrammarTests(unittest.TestCase):
 
         FieldAccess =
           Primary '.' Identifier
-	| 'super.' Identifier ;
+        | 'super.' Identifier ;
 
-	ArrayAccess =
+        ArrayAccess =
           Primary '[' Expression ']'
         | ExpressionName '[' Expression ']' ;
 
@@ -328,7 +328,7 @@ class GrammarTests(unittest.TestCase):
           ClassName
         | InterfaceTypeName ;
 
-	ClassName = 'C' | 'D' ;
+        ClassName = 'C' | 'D' ;
         InterfaceTypeName = 'I' | 'J' ;
         Identifier = 'x' | 'y' | ClassOrInterfaceType ;
         MethodName = 'm' | 'n' ;
