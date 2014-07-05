@@ -73,7 +73,6 @@ class ParseContext(object):
         self._memoization_cache = dict()
         self._potential_results = dict()
         self._last_node = None
-        self._state = None
         self._lookahead = 0
         self._memoize_lookaheads = memoize_lookaheads
         self._left_recursive_eval = False
@@ -266,7 +265,7 @@ class ParseContext(object):
         cutpos = self._pos
 
         def prune_cache(cache):
-            cutkeys = [(p, n, s) for p, n, s in cache if p < cutpos]
+            cutkeys = [(p, n) for p, n in cache if p < cutpos]
             for key in cutkeys:
                 del cache[key]
 
@@ -352,9 +351,8 @@ class ParseContext(object):
         try:
             self._trace_event('ENTER ')
             self._last_node = None
-            node, newpos, newstate = self._invoke_rule(rule, name, *params, **kwparams)
+            node, newpos = self._invoke_rule(rule, name, *params, **kwparams)
             self._goto(newpos)
-            self._state = newstate
             self._trace_event('SUCCESS')
             self._add_cst_node(node)
             self._last_node = node
@@ -368,8 +366,7 @@ class ParseContext(object):
 
     def _invoke_rule(self, rule, name, *params, **kwparams):
         last_pos = pos = self._pos
-        state = self._state
-        key = (pos, rule, state)
+        key = (pos, rule)
         cache = self._memoization_cache
 
         if key in cache:
@@ -425,7 +422,7 @@ class ParseContext(object):
             except FailedSemantics as e:
                 self._error(str(e), FailedParse)
 
-            result = (node, self._pos, self._state)
+            result = (node, self._pos)
             if self._memoize_lookahead():
                 self._potential_results[key] = result
 
@@ -512,7 +509,6 @@ class ParseContext(object):
     @contextmanager
     def _try(self):
         p = self._pos
-        s = self._state
         ast_copy = self.ast._copy()
         self._push_ast()
         self.last_node = None
@@ -523,7 +519,6 @@ class ParseContext(object):
             cst = self.cst
         except:
             self._goto(p)
-            self._state = s
             raise
         finally:
             self._pop_ast()
@@ -577,7 +572,6 @@ class ParseContext(object):
     @contextmanager
     def _if(self):
         p = self._pos
-        s = self._state
         self._push_ast()
         self._enter_lookahead()
         try:
@@ -585,7 +579,6 @@ class ParseContext(object):
         finally:
             self._leave_lookahead()
             self._goto(p)
-            self._state = s
             self._pop_ast()  # simply discard
             self.last_node = None
 
