@@ -642,10 +642,15 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.1.0-rc.1
+3.1.0
+-----
+
+    * **Grako** now supports direct and indirect left-recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`. Performance for non-recursive grammars is unaffected.
+
+3.0.5-rc.1
 ----------
 
-    * **Grako** now supports direct and indirect left-recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`.
+    * Removed the concept of *rule state*. The requirement is better implemented using attributes of the semantics class, not the parsing context.
 
     * *BUG* 30_  Make sure that escapes in --whitespace are evaluated before being passed to the model.
 
@@ -654,32 +659,6 @@ Changes
 .. _30: https://bitbucket.org/apalala/grako/issue/30/
 
 3.0.4
------
-
-    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
-
-3.0.3
------
-    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
-      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
-      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
-
-    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
-
-3.0.1
------
-
-    * *BUG* 22_ Always exit with non-zero exit code on failure.
-
-    * *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
-
-    * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
-
-.. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
-.. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
-.. _24: https://bitbucket.org/apalala/grako/issue/24/pretty-output-changes-optional-match-into
-
-3.0.0
 -----
 
     * The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
@@ -713,6 +692,24 @@ Changes
     * Added compatibility with Cython_.
 
     * Removed checking for compatibility with Python_ 3.3 (use 3.4 instead).
+    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
+
+    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
+      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
+      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
+
+    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
+
+    * *BUG* 22_ Always exit with non-zero exit code on failure.
+
+    * *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
+
+    * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
+
+.. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
+.. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
+.. _24: https://bitbucket.org/apalala/grako/issue/24/pretty-output-changes-optional-match-into
+
 
 .. _Cython: http://cython.org/
 .. _JSON: http://www.json.org/
