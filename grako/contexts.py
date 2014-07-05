@@ -7,7 +7,7 @@ from collections import namedtuple
 from contextlib import contextmanager
 from keyword import iskeyword
 
-from grako.util import notnone, udecode, filter_dict
+from grako.util import notnone, udecode, prune_dict
 from grako.ast import AST
 from grako import buffering
 from grako.exceptions import (
@@ -265,13 +265,9 @@ class ParseContext(object):
         cutpos = self._pos
 
         def prune_cache(cache):
-            cutkeys = [(p, n) for p, n in cache if p < cutpos]
-            for key in cutkeys:
-                del cache[key]
+            prune_dict(cache, lambda k, _: k[0] < cutpos)
 
         prune_cache(self._memoization_cache)
-
-        # also clear the left-recursion cache
         prune_cache(self._potential_results)
 
     def _push_cut(self):
@@ -440,7 +436,7 @@ class ParseContext(object):
                     last_result = result
                     last_pos = self._pos
                     self._goto(pos)
-                    filter_dict(lambda x: not isinstance(x, FailedParse), cache)
+                    prune_dict(cache, lambda _, v: isinstance(v, FailedParse))
                     try:
                         result = self._invoke_rule(rule, name, *params, **kwparams)
                     except FailedParse:
