@@ -28,7 +28,7 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Efficient support for direct and indirect left-recursion allows for more intuitive grammars.
+* Efficient support for direct and indirect left recursion allows for more intuitive grammars.
 
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
@@ -610,7 +610,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Basel Shishani`_ has been an incredibly throrough peer-reviewer of **Grako**.
 
-* `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left-recursion in PEG_ parsers.
+* `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left recursion in PEG_ parsers.
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
@@ -645,7 +645,7 @@ Changes
 3.1.0
 -----
 
-    * **Grako** now supports direct and indirect left-recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`. Performance for non-recursive grammars is unaffected.
+    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`. Performance for non-recursive grammars is unaffected.
 
 3.0.5-rc.1
 ----------
