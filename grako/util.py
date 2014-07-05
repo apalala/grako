@@ -184,3 +184,11 @@ def asjson(obj):
 
 def asjsons(obj):
     return json.dumps(asjson(obj), indent=2)
+
+
+def filter_dict(function, a_dict):
+    """ Remove all items where function(x) is false from a_dict """
+
+    keys = [k for k, v in a_dict.items() if not function(v)]
+    for k in keys:
+        del a_dict[k]
