@@ -652,9 +652,9 @@ Changes
 
     * Removed the concept of *rule state*. The requirement is better implemented using attributes of the semantics class, not the parsing context.
 
-    * *BUG* 30_  Make sure that escapes in --whitespace are evaluated before being passed to the model.
+    * *BUG* 30_  Make sure that escapes in `--whitespace` are evaluated before being passed to the model.
 
-    * *BUG* 30_ Make sure that --whitespace and --no-nameguard indeed affect the behavior of the generated parser as expected.
+    * *BUG* 30_ Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
 
 .. _30: https://bitbucket.org/apalala/grako/issue/30/
 
