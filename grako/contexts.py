@@ -264,10 +264,16 @@ class ParseContext(object):
         # be proven if doing it this way affects linearity. Empirically,
         # it hasn't.
         cutpos = self._pos
-        cache = self._memoization_cache
-        cutkeys = [(p, n, s) for p, n, s in cache if p < cutpos]
-        for key in cutkeys:
-            del cache[key]
+
+        def prune_cache(cache):
+            cutkeys = [(p, n, s) for p, n, s in cache if p < cutpos]
+            for key in cutkeys:
+                del cache[key]
+
+        prune_cache(self._memoization_cache)
+
+        # also clear the left-recursion cache
+        prune_cache(self._potential_results)
 
     def _push_cut(self):
         self._cut_stack.append(False)

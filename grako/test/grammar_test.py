@@ -296,6 +296,17 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("5-87-32")
         self.assertEquals(['5', '-', '87', '-', '32'], ast)
 
+    def test_indirect_left_recursion_with_cut(self):
+        grammar = '''
+        start = x $ ;
+        x = expr ;
+        expr = x '-' ~ num | num;
+        num = ?/[0-9]+/? ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("5-87-32")
+        self.assertEquals(['5', '-', '87', '-', '32'], ast)
+
     def test_indirect_left_recursion_complex(self):
         grammar = '''
         start = Primary $ ;
