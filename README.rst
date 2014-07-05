@@ -645,7 +645,7 @@ Changes
 3.1.0
 -----
 
-    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`. Performance for non-recursive grammars is unaffected.
+    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-recursive grammars is unaffected.
 
 3.0.5-rc.1
 ----------
