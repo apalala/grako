@@ -425,9 +425,8 @@ class ParseContext(object):
 
             # If the current name is in the head, then we've just
             # unwound to the highest rule in the recursion
-            if (name == self._left_recursive_head and
-                not self._left_recursive_eval):
-
+            if (name == self._left_recursive_head
+            and not self._left_recursive_eval):
                 # Repeatedly apply the rule until it can't consume any
                 # more. We store the last good result each time. Prior
                 # to doing so we reset the position and remove any
@@ -451,8 +450,8 @@ class ParseContext(object):
 
             # Only populate the cache if we're not in a left recursive
             # loop.
-            if (self._memoize_lookahead() and
-                self._left_recursive_head not in self._rule_stack):
+            if (self._memoize_lookahead()
+            and self._left_recursive_head not in self._rule_stack):
                 cache[key] = result
             return result
         except Exception as e:
