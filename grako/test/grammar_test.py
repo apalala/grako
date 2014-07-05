@@ -260,6 +260,104 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("abb", nameguard=False)
         self.assertEquals(['a', 'b', 'b'], ast)
 
+    def test_direct_left_recursion(self):
+        grammar = '''
+            start
+                =
+                expre $
+                ;
+
+            expre
+                =
+                expre '+' number
+                |
+                expre '*' number
+                |
+                number
+                ;
+
+            number
+                =
+                ?/[0-9]+/?
+                ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("1*2+3*5")
+        self.assertEquals(['1', '*', '2', '+', '3', '*', '5'], ast)
+
+    def test_indirect_left_recursion(self):
+        grammar = '''
+        start = x $ ;
+        x = expr ;
+        expr = x '-' num | num;
+        num = ?/[0-9]+/? ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("5-87-32")
+        self.assertEquals(['5', '-', '87', '-', '32'], ast)
+
+    def test_indirect_left_recursion_with_cut(self):
+        grammar = '''
+        start = x $ ;
+        x = expr ;
+        expr = x '-' ~ num | num;
+        num = ?/[0-9]+/? ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("5-87-32")
+        self.assertEquals(['5', '-', '87', '-', '32'], ast)
+
+    def test_indirect_left_recursion_complex(self):
+        grammar = '''
+        start = Primary $ ;
+        Primary = PrimaryNoNewArray ;
+
+        PrimaryNoNewArray =
+          ClassInstanceCreationExpression
+        | MethodInvocation
+        | FieldAccess
+        | ArrayAccess
+        | 'this' ;
+
+        ClassInstanceCreationExpression =
+          'new' ClassOrInterfaceType '(' ')'
+        | Primary '.new' Identifier '()' ;
+
+        MethodInvocation =
+          Primary '.' MethodName '()'
+        | MethodName '()' ;
+
+        FieldAccess =
+          Primary '.' Identifier
+        | 'super.' Identifier ;
+
+        ArrayAccess =
+          Primary '[' Expression ']'
+        | ExpressionName '[' Expression ']' ;
+
+        ClassOrInterfaceType =
+          ClassName
+        | InterfaceTypeName ;
+
+        ClassName = 'C' | 'D' ;
+        InterfaceTypeName = 'I' | 'J' ;
+        Identifier = 'x' | 'y' | ClassOrInterfaceType ;
+        MethodName = 'm' | 'n' ;
+        ExpressionName = Identifier ;
+        Expression = 'i' | 'j' ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("this")
+        self.assertEquals('this', ast)
+        ast = model.parse("this.x")
+        self.assertEquals(['this', '.', 'x'], ast)
+        ast = model.parse("this.x.y")
+        self.assertEquals(['this', '.', 'x', '.', 'y'], ast)
+        ast = model.parse("this.x.m()")
+        self.assertEquals(['this', '.', 'x', '.', 'm', '()'], ast)
+        ast = model.parse("x[i][j].y")
+        self.assertEquals(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
