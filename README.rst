@@ -28,6 +28,8 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
+* Efficient support for direct and indirect left-recursion allows for more intuitive grammars.
+
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
 **Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries.
@@ -608,6 +610,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Basel Shishani`_ has been an incredibly throrough peer-reviewer of **Grako**.
 
+* `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left-recursion in PEG_ parsers.
+
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
 .. _`LL(1)`: http://en.wikipedia.org/wiki/LL(1)
@@ -632,12 +636,16 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _lambdafu: http://blog.marcus-brinkmann.de/
 .. _`Robert Speer`: https://bitbucket.org/r_speer
 .. _`Basel Shishani`: https://bitbucket.org/basel-shishani
+.. _`Paul Sargent`: https://bitbucket.org/PaulS/
+.. _`Warth et al`: http://www.vpri.org/pdf/tr2007002_packrat.pdf
 
 Changes
 =======
 
-3.0.5-rc.1
+3.1.0-rc.1
 ----------
+
+    * **Grako** now supports direct and indirect left-recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`.
 
     * *BUG* 30_  Make sure that escapes in --whitespace are evaluated before being passed to the model.
 
