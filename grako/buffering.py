@@ -210,12 +210,16 @@ class Buffer(object):
 
         if result:
             self.move(len(token))
-            check_nameguard = not (self.nameguard
-                                   and token.isalnum()
-                                   and self.is_name_char()
-                                   )
-            if check_nameguard:
+            if not self.nameguard:
                 return token
+            else:
+                partial_match = (
+                    token[0].isalpha()
+                    and token.isalnum()
+                    and self.is_name_char()
+                )
+                if not partial_match:
+                    return token
         self.goto(p)
 
     def matchre(self, pattern, ignorecase=None):
