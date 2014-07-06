@@ -157,7 +157,7 @@ The *-h* and *--help* parameters provide full usage information::
                                 output file (default is stdout)
         -p, --pretty          prettify the input grammar
         -t, --trace           produce verbose parsing output
-        -w CHARACTERS, --ws CHARACTERS
+        -w CHARACTERS, --whitespace CHARACTERS
                                 characters to skip during parsing (use "" to disable)
         $
 
