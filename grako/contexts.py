@@ -418,7 +418,7 @@ class ParseContext(object):
             except FailedSemantics as e:
                 self._error(str(e), FailedParse)
 
-            result = (node, self._pos)
+            last_result = result = (node, self._pos)
             if self._memoize_lookahead():
                 self._potential_results[key] = result
 

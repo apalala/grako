@@ -558,7 +558,11 @@ You may use the tool under the terms of the BSD_-style license described in the 
 Contact and Updates
 ===================
 
+For general Q&A, please use the ``grako`` tag on StackOverflow_.
+
 To discuss **Grako** and to receive notifications about new releases, please join the low-volume `Grako Forum`_ at *Google Groups*.
+
+.. _StackOverflow: http://stackoverflow.com/
 
 .. _`Grako Forum`:  https://groups.google.com/forum/?fromgroups#!forum/grako
 
@@ -645,7 +649,7 @@ Changes
 3.1.0
 -----
 
-    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`. Performance for non-recursive grammars is unaffected.
+    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
 
 3.0.5-rc.1
 ----------
