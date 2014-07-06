@@ -253,7 +253,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         Has the same effect as defining *expanded* as::
 
-            extended = exp0 exp1 exp2 ;
+            expanded = exp0 exp1 exp2 ;
 
         Note that the included rule must be defined before the rule that includes it.
 
