@@ -192,8 +192,7 @@ class Buffer(object):
     def is_space(self):
         return self.current() in self.whitespace
 
-    def is_name_char(self):
-        c = self.current()
+    def is_name_char(self, c):
         return c is not None and c.isalnum()
 
     def match(self, token, ignorecase=None):
@@ -216,7 +215,7 @@ class Buffer(object):
                 partial_match = (
                     token[0].isalpha()
                     and token.isalnum()
-                    and self.is_name_char()
+                    and self.is_name_char(self.current())
                 )
                 if not partial_match:
                     return token
