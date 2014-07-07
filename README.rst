@@ -646,6 +646,11 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.1.1-rc.1
+----------
+
+    * Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
+
 3.1.0
 -----
 
