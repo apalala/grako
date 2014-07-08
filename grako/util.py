@@ -44,6 +44,8 @@ def ustr(s):
         return s
     elif isinstance(s, str):
         return unicode(s, 'utf-8')
+    else:
+        return unicode(str(s), 'utf-8')
 
 
 ESCAPE_SEQUENCE_RE = re.compile(
