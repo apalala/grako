@@ -28,7 +28,7 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Efficient support for direct and indirect left recursion allows for more intuitive grammars.
+* Experimental support for direct and indirect left recursion allows for more intuitive grammars.
 
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
