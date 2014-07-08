@@ -35,42 +35,10 @@ def to_list(o):
 def ustr(s):
     if PY3:
         return str(s)
-    elif isinstance(s, str):
-        return s.decode('utf-8')
-    else:
-        return unicode(s)
-
-
-def udecode(s):
-    if PY3:
-        return str(s)
-    else:
-        if not isinstance(s, str):
-            s = ustr(s)
-        return s.decode('utf-8')
-
-
-def __old__unescape(s):
-    """
-    Try to honor non-unicode escape sequences.
-    """
-    s = ustr(s)
-    s = s.replace('\\"', '"')
-    s = s.replace("\\'", "'")
-    s = s.replace('\\a', '\a')
-    s = s.replace('\\b', '\b')
-    s = s.replace('\\f', '\f')
-    s = s.replace('\\n', '\n')
-    s = s.replace('\\r', '\r')
-    s = s.replace('\\t', '\t')
-    s = s.replace('\\v', '\v')
-    if '\\' not in s:
-        # leave alone
+    elif isinstance(s, unicode):
         return s
-    elif PY3:
-        return s.encode('utf-8').decode('unicode_escape')
-    else:
-        return unicode(s.encode('utf-8'), 'unicode_escape')
+    elif isinstance(s, str):
+        return unicode(s, 'utf-8')
 
 
 ESCAPE_SEQUENCE_RE = re.compile(
