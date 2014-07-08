@@ -393,11 +393,12 @@ class ParseContext(object):
         #
         #   http://www.vpri.org/pdf/tr2007002_packrat.pdf
         #
-        cache[key] = FailedLeftRecursion(
-            self._buffer,
-            list(reversed(self._rule_stack[:])),
-            name
-        )
+        if self._memoize_lookahead():
+            cache[key] = FailedLeftRecursion(
+                self._buffer,
+                list(reversed(self._rule_stack[:])),
+                name
+            )
 
         self._push_ast()
         try:
@@ -450,10 +451,13 @@ class ParseContext(object):
                 self._left_recursive_head = None
                 self._left_recursive_eval = False
 
-            # Only populate the cache if we're not in a left recursive
-            # loop.
+            # Only populate the cache if we're not in a left recursive loop.
             if (self._memoize_lookahead()
-            and self._left_recursive_head not in self._rule_stack):
+            and (
+                self._left_recursive_head is None
+                or self._left_recursive_head not in self._rule_stack
+                )
+            ):
                 cache[key] = result
             return result
         except Exception as e:
