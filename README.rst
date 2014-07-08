@@ -279,6 +279,9 @@ The expressions, in reverse order of operator precedence, can be:
     ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
 
+    ``>>``
+        Another form of the cut operator. *Deprecated*.
+
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If more than one item is added with the same ``name``, the entry is converted to a list.
 
@@ -295,6 +298,9 @@ The expressions, in reverse order of operator precedence, can be:
             subexp = '(' @:expre ')' ;
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
+
+    ``@e``
+        Another form of the override operator. *Deprecated*.
 
     ``@+:e``
         Like ``@:e``, but make the AST_ always be a list.
@@ -650,6 +656,9 @@ Changes
 ----------
 
     * Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
+
+    * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
+
 
 3.1.0
 -----

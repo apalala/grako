@@ -23,6 +23,11 @@ def debug(*args, **kwargs):
     print(*args, **kwargs)
 
 
+def warning(*args, **kwargs):
+    kwargs['file'] = sys.stderr
+    print('WARNING:', *args, **kwargs)
+
+
 def to_list(o):
     if o is None:
         return []
