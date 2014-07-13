@@ -657,7 +657,7 @@ Changes
 
     * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
 
-    * `Paul Sargent`_ generalized left-recursion to support complex case.
+    * `Paul Sargent`_ generalized left-recursion to support complex cases.
 
     * *BUGs* Minor bnd not-so-minor ug fixes.See the Bitbucket_ logs for details.
 
