@@ -358,6 +358,32 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("x[i][j].y")
         self.assertEquals(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
 
+    def test_nested_left_recursion(self):
+        grammar_a = '''
+        s = e $ ;
+        e = [e '+'] t ;
+        t = [t '*'] a ;
+        a = ?/[0-9]/? ;
+        '''
+        grammar_b = '''
+        s = e $ ;
+        e = [e '+'] a ;
+        a = n | p ;
+        n = ?/[0-9]/? ;
+        p = '(' @:e ')' ;
+        '''
+        model_a = genmodel("test", grammar_a)
+        model_b = genmodel("test", grammar_b)
+        ast = model_a.parse("1*2+3*4")
+        self.assertEquals(['1', '*', '2', '+', ['3', '*', '4']], ast)
+        ast = model_b.parse("(1+2)+(3+4)")
+        self.assertEquals(['1', '+', '2', '+', ['3', '+', '4']], ast)
+        ast = model_a.parse("1*2*3")
+        self.assertEquals(['1', '*', '2', '*', '3'], ast)
+        ast = model_b.parse("(((1+2)))")
+        self.assertEquals(['1', '+', '2'], ast)
+
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
