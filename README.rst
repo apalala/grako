@@ -12,8 +12,6 @@
 Grako
 =====
 
-    **warning:** *The grammar syntax changed in this release.*
-
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
 **Grako** is *different* from other PEG_ parser generators:
@@ -28,7 +26,7 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Experimental support for direct and indirect left recursion allows for more intuitive grammars.
+* Efficient support for direct and indirect left recursion allows for more intuitive grammars.
 
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
@@ -652,12 +650,16 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.1.1-rc.1
-----------
+3.1.1
+-----
 
     * Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
 
     * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
+
+    * `Paul Sargent`_ generalized left-recursion to support complex case.
+
+    * *BUGs* Minor bnd not-so-minor ug fixes.See the Bitbucket_ logs for details.
 
 
 3.1.0
