@@ -885,11 +885,7 @@ class Grammar(_Model):
 
 
                 class {name}Parser(Parser):
-                    def __init__(
-                        self,
-                        whitespace={whitespace},
-                        nameguard={nameguard},
-                        **kwargs):
+                    def __init__(self, whitespace={whitespace}, nameguard={nameguard}, **kwargs):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,
                             nameguard=nameguard,

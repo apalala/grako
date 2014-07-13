@@ -28,7 +28,7 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Efficient support for direct and indirect left-recursion allows for more intuitive grammars.
+* Experimental support for direct and indirect left recursion allows for more intuitive grammars.
 
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
@@ -59,22 +59,22 @@ Rationale
 
 **Grako** was created to address recurring problems encountered over decades of working with parser generation tools:
 
-    * Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexical analysis to handle those languages.
+* Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexical analysis to handle those languages.
 
 
-    * LL and LR grammars become contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
+* LL and LR grammars become contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
 
-    * Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_ in this case), allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
+* Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_ in this case), allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
 
-    * Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
+* Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
 
-    * Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
+* Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
 
-    * It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but it's hard for grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
+* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but it's hard for grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
 
-    * Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+* Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
 
-    * Python_ is a great language for working with language parsing and translation.
+* Python_ is a great language for working with language parsing and translation.
 
 .. _`Abstract Syntax Tree`: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _AST: http://en.wikipedia.org/wiki/Abstract_syntax_tree
@@ -157,7 +157,7 @@ The *-h* and *--help* parameters provide full usage information::
                                 output file (default is stdout)
         -p, --pretty          prettify the input grammar
         -t, --trace           produce verbose parsing output
-        -w CHARACTERS, --ws CHARACTERS
+        -w CHARACTERS, --whitespace CHARACTERS
                                 characters to skip during parsing (use "" to disable)
         $
 
@@ -253,7 +253,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         Has the same effect as defining *expanded* as::
 
-            extended = exp0 exp1 exp2 ;
+            expanded = exp0 exp1 exp2 ;
 
         Note that the included rule must be defined before the rule that includes it.
 
@@ -279,6 +279,9 @@ The expressions, in reverse order of operator precedence, can be:
     ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
 
+    ``>>``
+        Another form of the cut operator. *Deprecated*.
+
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If more than one item is added with the same ``name``, the entry is converted to a list.
 
@@ -295,6 +298,9 @@ The expressions, in reverse order of operator precedence, can be:
             subexp = '(' @:expre ')' ;
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
+
+    ``@e``
+        Another form of the override operator. *Deprecated*.
 
     ``@+:e``
         Like ``@:e``, but make the AST_ always be a list.
@@ -558,7 +564,11 @@ You may use the tool under the terms of the BSD_-style license described in the 
 Contact and Updates
 ===================
 
+For general Q&A, please use the ``grako`` tag on StackOverflow_.
+
 To discuss **Grako** and to receive notifications about new releases, please join the low-volume `Grako Forum`_ at *Google Groups*.
+
+.. _StackOverflow: http://stackoverflow.com/tags/grako/info
 
 .. _`Grako Forum`:  https://groups.google.com/forum/?fromgroups#!forum/grako
 
@@ -610,7 +620,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Basel Shishani`_ has been an incredibly throrough peer-reviewer of **Grako**.
 
-* `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left-recursion in PEG_ parsers.
+* `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left recursion in PEG_ parsers.
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
@@ -642,44 +652,31 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.1.0-rc.1
+3.1.1-rc.1
 ----------
 
-    * **Grako** now supports direct and indirect left-recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`.
+    * Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
 
-    * *BUG* 30_  Make sure that escapes in --whitespace are evaluated before being passed to the model.
+    * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
 
-    * *BUG* 30_ Make sure that --whitespace and --no-nameguard indeed affect the behavior of the generated parser as expected.
+
+3.1.0
+-----
+
+    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
+
+3.0.5-rc.1
+----------
+
+    * Removed the concept of *rule state*. The requirement is better implemented using attributes of the semantics class, not the parsing context.
+
+    * *BUG* 30_  Make sure that escapes in `--whitespace` are evaluated before being passed to the model.
+
+    * *BUG* 30_ Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
 
 .. _30: https://bitbucket.org/apalala/grako/issue/30/
 
 3.0.4
------
-
-    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
-
-3.0.3
------
-    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
-      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
-      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
-
-    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
-
-3.0.1
------
-
-    * *BUG* 22_ Always exit with non-zero exit code on failure.
-
-    * *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
-
-    * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
-
-.. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
-.. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
-.. _24: https://bitbucket.org/apalala/grako/issue/24/pretty-output-changes-optional-match-into
-
-3.0.0
 -----
 
     * The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
@@ -713,6 +710,24 @@ Changes
     * Added compatibility with Cython_.
 
     * Removed checking for compatibility with Python_ 3.3 (use 3.4 instead).
+    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
+
+    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
+      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
+      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
+
+    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
+
+    * *BUG* 22_ Always exit with non-zero exit code on failure.
+
+    * *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
+
+    * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
+
+.. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
+.. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
+.. _24: https://bitbucket.org/apalala/grako/issue/24/pretty-output-changes-optional-match-into
+
 
 .. _Cython: http://cython.org/
 .. _JSON: http://www.json.org/
