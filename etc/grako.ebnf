@@ -93,7 +93,7 @@ named_single
 
 override
     =
-    override_list | override_single
+    override_list | override_single | override_single_deprecated
     ;
 
 
@@ -106,6 +106,12 @@ override_list
 override_single
     =
     '@:' @:element
+    ;
+
+
+override_single_deprecated
+    =
+    '@' @:element
     ;
 
 
@@ -167,7 +173,7 @@ knot
 
 atom
     =
-    cut | token | call | pattern | eof
+    cut | cut_deprecated | token | call | pattern | eof
     ;
 
 
@@ -186,6 +192,12 @@ void
 cut
     =
     '~' ~
+    ;
+
+
+cut_deprecated
+    =
+    '>>' ~
     ;
 
 

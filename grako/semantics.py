@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import re
 from collections import OrderedDict
 
-from grako.util import simplify_list, eval_escapes
+from grako.util import simplify_list, eval_escapes, warning
 from grako import grammars
 from grako.exceptions import FailedSemantics
 
@@ -51,6 +51,10 @@ class GrakoSemantics(object):
     def cut(self, ast):
         return grammars.Cut()
 
+    def cut_deprecated(self, ast):
+        warning('The use of >> for cut is deprecated. Use the ~ symbol instead.')
+        return grammars.Cut()
+
     def eof(self, ast):
         return grammars.EOF()
 
@@ -88,6 +92,10 @@ class GrakoSemantics(object):
         return grammars.OverrideList(ast)
 
     def override_single(self, ast):
+        return grammars.Override(ast)
+
+    def override_single_deprecated(self, ast):
+        warning('The use of @ for override is deprecated. Use @: instead')
         return grammars.Override(ast)
 
     def sequence(self, ast):
