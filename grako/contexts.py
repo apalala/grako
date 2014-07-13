@@ -76,8 +76,8 @@ class ParseContext(object):
         self._state = None
         self._lookahead = 0
         self._memoize_lookaheads = memoize_lookaheads
-        self._left_recursive_eval = False
-        self._left_recursive_head = None
+        self._left_recursive_eval = []
+        self._left_recursive_head = []
 
     def _clear_cache(self):
         self._memoization_cache = dict()
@@ -379,7 +379,7 @@ class ParseContext(object):
                 if key in self._potential_results:
                     result = self._potential_results[key]
                 else:
-                    self._left_recursive_head = name
+                    self._left_recursive_head.append(name)
 
             if isinstance(result, Exception):
                 raise result
@@ -428,14 +428,14 @@ class ParseContext(object):
 
             # If the current name is in the head, then we've just
             # unwound to the highest rule in the recursion
-            if (name == self._left_recursive_head
-            and not self._left_recursive_eval):
+            if ([name] == self._left_recursive_head[-1:]
+            and self._left_recursive_head[-1:] != self._left_recursive_eval[-1:]):
                 # Repeatedly apply the rule until it can't consume any
                 # more. We store the last good result each time. Prior
                 # to doing so we reset the position and remove any
                 # failures from the cache.
 
-                self._left_recursive_eval = True
+                self._left_recursive_eval.append(name)
                 while self._pos > last_pos:
                     last_result = result
                     last_pos = self._pos
@@ -448,14 +448,14 @@ class ParseContext(object):
 
                 result = last_result
                 self._potential_results = dict()
-                self._left_recursive_head = None
-                self._left_recursive_eval = False
+                self._left_recursive_head.pop()
+                self._left_recursive_eval.pop()
 
             # Only populate the cache if we're not in a left recursive loop.
             if (self._memoize_lookahead()
             and (
-                self._left_recursive_head is None
-                or self._left_recursive_head not in self._rule_stack
+                not self._left_recursive_head
+                or self._left_recursive_head[-1] not in self._rule_stack
                 )
             ):
                 cache[key] = result
