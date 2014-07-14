@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from grako.util import indent, trim, timestamp, safe_name, urepr, compress_seq
 from grako.exceptions import CodegenError
 from grako.model import Node
-from grako.codegen import ModelRenderer, CodeGenerator
+from grako.codegen.cgbase import ModelRenderer, CodeGenerator
 
 
 class PythonCodeGenerator(CodeGenerator):
@@ -24,7 +24,7 @@ class PythonCodeGenerator(CodeGenerator):
 
 class Base(ModelRenderer):
     def defines(self):
-        return  []
+        return []
 
 
 class Void(Base):
@@ -444,4 +444,3 @@ class Grammar(Base):
 
                     main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace)
                     '''
-

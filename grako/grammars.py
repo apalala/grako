@@ -23,7 +23,7 @@ from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
 from grako.contexts import ParseContext
-from grako.pycodegen import PythonCodeGenerator
+from grako.codegen.python import PythonCodeGenerator
 
 
 PEP8_LLEN = 72
