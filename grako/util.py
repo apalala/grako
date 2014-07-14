@@ -8,6 +8,7 @@ import json
 import datetime
 import re
 import codecs
+import keyword
 
 
 PY3 = sys.version_info[0] >= 3
@@ -26,6 +27,10 @@ def debug(*args, **kwargs):
 def warning(*args, **kwargs):
     kwargs['file'] = sys.stderr
     print('WARNING:', *args, **kwargs)
+
+
+def is_list(o):
+    return type(o) == list
 
 
 def to_list(o):
@@ -167,3 +172,9 @@ def prune_dict(d, predicate):
     keys = [k for k, v in d.items() if predicate(k, v)]
     for k in keys:
         del d[k]
+
+
+def safe_name(s):
+    if keyword.iskeyword(s):
+        return s + '_'
+    return s

@@ -20,12 +20,12 @@ import functools
 from collections import defaultdict
 from copy import copy
 
-from grako.util import indent, trim, timestamp
+from grako.util import indent, trim, timestamp, safe_name
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
 from grako.rendering import render, Renderer
-from grako.contexts import ParseContext, safe_name
+from grako.contexts import ParseContext
 
 
 PEP8_LLEN = 72

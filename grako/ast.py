@@ -5,7 +5,7 @@ to store the values of named elements of grammar rules.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from grako.util import strtype, asjson, PY3
+from grako.util import strtype, asjson, is_list, PY3
 
 
 class AST(dict):
@@ -106,7 +106,7 @@ class AST(dict):
 
     def _copy(self):
         return AST(
-            (k, type(v)(v) if isinstance(v, list) else v)
+            (k, v[:] if is_list(v) else v)
             for k, v in self.items()
         )
 
@@ -118,7 +118,7 @@ class AST(dict):
             else:
                 super(AST, self).__setitem__(key, value)
             self._order.append(key)
-        elif type(previous) == list:
+        elif is_list(previous):
             previous.append(value)
         else:
             super(AST, self).__setitem__(key, [previous, value])

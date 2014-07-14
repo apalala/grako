@@ -5,9 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 import sys
 from collections import namedtuple
 from contextlib import contextmanager
-from keyword import iskeyword
 
-from grako.util import notnone, ustr, prune_dict
+from grako.util import notnone, ustr, prune_dict, is_list
 from grako.ast import AST
 from grako import buffering
 from grako.exceptions import (
@@ -25,16 +24,6 @@ __all__ = ['ParseInfo', 'ParseContext']
 
 
 ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
-
-
-def safe_name(s):
-    if iskeyword(s):
-        return s + '_'
-    return s
-
-
-def is_list(o):
-    return type(o) == list
 
 
 class Closure(list):
@@ -232,8 +221,8 @@ class ParseContext(object):
     def _copy_node(self, node):
         if node is None:
             return None
-        elif isinstance(node, list):
-            return type(node)(node)
+        elif is_list(node):
+            return node[:]
         else:
             return node
 
