@@ -435,8 +435,7 @@ class ParseContext(object):
             and (
                 not self._left_recursive_head
                 or self._left_recursive_head[-1] not in self._rule_stack
-                )
-            ):
+            )):
                 cache[key] = result
             return result
         except Exception as e:

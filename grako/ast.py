@@ -135,4 +135,7 @@ class AST(dict):
         }
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, super(AST, self).__repr__())
+        return "%s(%s)" % (
+            self.__class__.__name__,
+            super(AST, self).__repr__()
+        )
