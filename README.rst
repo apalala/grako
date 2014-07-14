@@ -260,10 +260,14 @@ The expressions, in reverse order of operator precedence, can be:
 
         **Note that** if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
 
-    ``?/regexp/?``
+    ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
 
         The ``regexp`` is passed *as-is* to the Python_ ``re`` module, using ``re.match()`` at the current position in the text. The matched text is the AST_ for the expression.
+
+    ``?/regexp/?``
+        Another form of the pattern expression that can be used when there are slashes (``/``) in
+        the pattern.
 
     ``rulename``
         Invoke the rule named ``rulename``. To help with lexical aspects of grammars, rules with names that begin with an uppercase letter will not advance the input over whitespace or comments.
@@ -649,6 +653,17 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 Changes
 =======
+
+3.1.2
+-----
+
+    * If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
+
+    * *BUG* 33_ Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements (Markus_).
+
+    * *BUG* The bootstrap parser contained errors due to the previous bug in ``util.ustr()``.
+
+.. _33: https://bitbucket.org/apalala/grako/issue/33/
 
 3.1.1
 -----

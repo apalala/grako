@@ -236,7 +236,8 @@ class Pattern(_Model):
 
     def __str__(self):
         pattern = str(self.pattern)
-        result = '?/%s/?' % pattern
+        template = '/%s/' if '/' not in pattern else '?/%s/?'
+        result = template % pattern
         if pattern.count('?') % 2:
             return result + '?'
         else:

@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.07.14.03.32.40.00'
+__version__ = '2014.07.14.03.39.12.00'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -442,9 +442,9 @@ class GrakoBootstrapParser(Parser):
         with self._choice():
             with self._option():
                 self._token('/')
-                self._pattern(r'(.*?)(?=/\?)')
+                self._pattern(r'(.*?)(?=/)')
                 self.ast['@'] = self.last_node
-                self._pattern(r'/')
+                self._token('/')
                 self._cut()
             with self._option():
                 self._token('?/')
