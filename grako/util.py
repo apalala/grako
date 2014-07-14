@@ -42,6 +42,16 @@ def to_list(o):
         return [o]
 
 
+def compress_seq(seq):
+    seen = set()
+    result = []
+    for x in seq:
+        if x not in seen:
+            result.append(x)
+            seen.add(x)
+    return result
+
+
 def ustr(s):
     if PY3:
         return str(s)
@@ -51,6 +61,10 @@ def ustr(s):
         return unicode(s, 'utf-8')
     else:
         return unicode(str(s), 'utf-8')
+
+
+def urepr(obj):
+    return repr(obj).lstrip('u')
 
 
 ESCAPE_SEQUENCE_RE = re.compile(

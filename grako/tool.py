@@ -71,7 +71,7 @@ def genmodel(name, grammar, trace=False, filename=None):
 
 def gencode(name, grammar, trace=False, filename=None):
     model = genmodel(name, grammar, trace=trace, filename=filename)
-    return model.render()
+    return model.codegen()
 
 
 def _error(*args, **kwargs):
@@ -133,7 +133,7 @@ def main():
         elif pretty:
             result = str(model)
         else:
-            result = model.render()
+            result = model.codegen()
 
         if draw:
             from grako import diagrams
