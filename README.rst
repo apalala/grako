@@ -659,7 +659,7 @@ Changes
 
     * If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
 
-    * *BUG* 33_ Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements (Markus_).
+    * *BUG* 33_ Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements (Marcus_).
 
     * *BUG* The bootstrap parser contained errors due to the previous bug in ``util.ustr()``.
 
