@@ -519,7 +519,7 @@ class Named(_Decorator):
 
     def parse(self, ctx):
         value = self.exp.parse(ctx)
-        ctx._add_ast_node(self.name, value)
+        ctx.ast._add(self.name, value)
         return value
 
     def defines(self):
@@ -542,7 +542,7 @@ class Named(_Decorator):
 class NamedList(Named):
     def parse(self, ctx):
         value = self.exp.parse(ctx)
-        ctx._add_ast_node(self.name, value, True)
+        ctx.ast._append(self.name, value)
         return value
 
     def defines(self):

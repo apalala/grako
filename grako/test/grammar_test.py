@@ -383,6 +383,38 @@ class GrammarTests(unittest.TestCase):
         ast = model_b.parse("(((1+2)))")
         self.assertEquals(['1', '+', '2'], ast)
 
+    def test_ast_assignment(self):
+        grammar = '''
+            n  = @: {"a"}* $ ;
+            f  = @+: {"a"}* $ ;
+            nn = @: {"a"}*  @: {"b"}* $ ;
+            nf = @: {"a"}*  @+: {"b"}* $ ;
+            fn = @+: {"a"}* @: {"b"}* $ ;
+            ff = @+: {"a"}* @+: {"b"}* $ ;
+        '''
+
+        model = genmodel("test", grammar)
+
+        def p(input, rule):
+            return model.parse(input, start=rule, whitespace='')
+
+        e = self.assertEqual
+
+        e([], p('', 'n'))
+        e(['a'], p('a', 'n'))
+        e(['a', 'a'], p('aa', 'n'))
+
+        e([[]], p('', 'f'))
+        e([['a']], p('a', 'f'))
+        e([['a', 'a']], p('aa', 'f'))
+
+        for r in ('nn', 'nf', 'fn', 'ff'):
+            e([[], []], p('', r))
+            e([['a'], []], p('a', r))
+            e([[], ['b']], p('b', r))
+            e([['a', 'a'], []], p('aa', r))
+            e([[], ['b', 'b']], p('bb', r))
+            e([['a', 'a'], ['b']], p('aab', r))
 
 
 def suite():

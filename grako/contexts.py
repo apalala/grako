@@ -188,11 +188,6 @@ class ParseContext(object):
         self._pop_cst()
         return self._ast_stack.pop()
 
-    def _add_ast_node(self, name, node, force_list=False):
-        if name is not None:  # and node:
-            self.ast._add(name, node, force_list)
-        return node
-
     @property
     def cst(self):
         return self._concrete_stack[-1]
@@ -212,9 +207,7 @@ class ParseContext(object):
             return
         previous = self.cst
         if previous is None:
-            if is_list(node):
-                node = node[:]  # copy it
-            self.cst = node
+            self.cst = self._copy_node(node)
         elif is_list(previous):
             previous.append(node)
         else:
@@ -225,9 +218,7 @@ class ParseContext(object):
             return
         previous = self.cst
         if previous is None:
-            if isinstance(node, list):
-                node = node[:]  # copy it
-            self.cst = node
+            self.cst = self._copy_node(node)
         elif is_list(node):
             if is_list(previous):
                 previous.extend(node)
@@ -238,14 +229,13 @@ class ParseContext(object):
         else:
             self.cst = [previous, node]
 
-    def _copy_cst(self):
-        cst = self.cst
-        if cst is None:
+    def _copy_node(self, node):
+        if node is None:
             return None
-        elif isinstance(cst, list):
-            return cst[:]
+        elif isinstance(node, list):
+            return type(node)(node)
         else:
-            return cst
+            return node
 
     def _is_cut_set(self):
         return self._cut_stack[-1]
