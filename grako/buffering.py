@@ -25,7 +25,12 @@ __all__ = ['Buffer']
 RETYPE = type(regexp.compile('.'))
 
 PosLine = namedtuple('PosLine', ['pos', 'line'])
-LineInfo = namedtuple('LineInfo', ['filename', 'line', 'col', 'start', 'text'])
+
+
+LineInfo = namedtuple(
+    'LineInfo',
+    ['filename', 'line', 'col', 'start', 'end', 'text']
+)
 
 
 class Buffer(object):
@@ -270,18 +275,22 @@ class Buffer(object):
     def line_info(self, pos=None):
         if pos is None:
             pos = self._pos
+
         nmax = len(self._linecache) - 1
         if pos >= self._len:
-            return LineInfo(self.filename, nmax, 0, self._len, "")
+            return LineInfo(self.filename, nmax, 0, self._len, self._len, '')
+
         n = bisect_left(self._linecache, PosLine(pos, 0))
         start, line = self._linecache[n - 1]
         start = start + 1
         end = self._linecache[n].pos + 1
-        text = self.text[start:end]
         col = pos - start
+
+        text = self.text[start:end]
         n = min(len(self._line_index) - 1, line)
         filename, line = self._line_index[n]
-        return LineInfo(filename, line, col, start, text)
+
+        return LineInfo(filename, line, col, start, end, text)
 
     def lookahead(self):
         if self.atend():
