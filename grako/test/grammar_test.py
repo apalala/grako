@@ -4,6 +4,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import unittest
 
+from grako.exceptions import FailedSemantics
+from grako.grammars import ModelContext
 from grako.tool import genmodel
 from grako.util import trim
 
@@ -41,6 +43,67 @@ class GrammarTests(unittest.TestCase):
         m = genmodel('Update', grammar)
         ast = m.parse("1101110100", nameguard=False)
         self.assertEquals([['11'], ['111'], ['1'], []], ast.items)
+
+    def test_stateful(self):
+        # Parser for mediawiki-style unordered lists.
+        grammar = r'''
+        document = @:ul [ nl ] $ ;
+        ul = "*" ul_start el+:li { nl el:li } * ul_end ;
+        li = ul | li_text ;
+        (* Quirk: If a text line is followed by a sublist, the sublist does not get its own li.  *)
+        li_text = text:text [ ul:li_followed_by_ul ] ;
+        li_followed_by_ul = nl @:ul ;
+        text = ?/.*/? ;
+        nl = ?/\n/? ul_marker ;
+        (* The following rules are placeholders for state transitions.  *)
+        ul_start = () ;
+        ul_end = () ;
+        (* The following rules are placeholders for state validations and grammar rules.  *)
+        ul_marker = () ;
+        '''
+
+        class StatefulSemantics(object):
+            def __init__(self, parser):
+                self._context = parser
+
+            def ul_start(self, ast):
+                ctx = self._context
+                ctx._state = 1 if ctx._state is None else ctx._state + 1
+                return ast
+
+            def ul_end(self, ast):
+                ctx = self._context
+                ctx._state = None if ctx._state is None or ctx._state <= 1 else ctx._state - 1
+                return ast
+
+            def ul_marker(self, ast):
+                ctx = self._context
+                if ctx._state is not None:
+                    if not ctx.buf.match("*" * ctx._state):
+                        raise FailedSemantics("not at correct level")
+                return ast
+
+            def ul(self, ast):
+                return "<ul>" + "".join(ast.el) + "</ul>"
+
+            def li(self, ast):
+                return "<li>" + ast + "</li>"
+
+            def li_text(self, ast):
+                return ast.text if ast.ul is None else ast.text + ast.ul
+
+        model = genmodel("test", grammar)
+        context = ModelContext(model.rules, whitespace='', nameguard=False)
+        ast = model.parse('*abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
+        self.assertEqual(ast, "<ul><li>abc</li></ul>")
+        ast = model.parse('*abc\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
+        self.assertEqual(ast, "<ul><li>abc</li></ul>")
+        ast = model.parse('*abc\n*def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
+        self.assertEqual(ast, "<ul><li>abc</li><li>def</li></ul>")
+        ast = model.parse('**abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
+        self.assertEqual(ast, "<ul><li><ul><li>abc</li></ul></li></ul>")
+        ast = model.parse('*abc\n**def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
+        self.assertEqual(ast, "<ul><li>abc<ul><li>def</li></ul></li></ul>")
 
     def test_optional_closure(self):
         grammar = 'start = foo+:"x" foo:{"y"}* {foo:"z"}* ;'
@@ -294,6 +357,64 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals(['this', '.', 'x', '.', 'm', '()'], ast)
         ast = model.parse("x[i][j].y")
         self.assertEquals(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
+
+    def test_nested_left_recursion(self):
+        grammar_a = '''
+        s = e $ ;
+        e = [e '+'] t ;
+        t = [t '*'] a ;
+        a = ?/[0-9]/? ;
+        '''
+        grammar_b = '''
+        s = e $ ;
+        e = [e '+'] a ;
+        a = n | p ;
+        n = ?/[0-9]/? ;
+        p = '(' @:e ')' ;
+        '''
+        model_a = genmodel("test", grammar_a)
+        model_b = genmodel("test", grammar_b)
+        ast = model_a.parse("1*2+3*4")
+        self.assertEquals(['1', '*', '2', '+', ['3', '*', '4']], ast)
+        ast = model_b.parse("(1+2)+(3+4)")
+        self.assertEquals(['1', '+', '2', '+', ['3', '+', '4']], ast)
+        ast = model_a.parse("1*2*3")
+        self.assertEquals(['1', '*', '2', '*', '3'], ast)
+        ast = model_b.parse("(((1+2)))")
+        self.assertEquals(['1', '+', '2'], ast)
+
+    def test_ast_assignment(self):
+        grammar = '''
+            n  = @: {"a"}* $ ;
+            f  = @+: {"a"}* $ ;
+            nn = @: {"a"}*  @: {"b"}* $ ;
+            nf = @: {"a"}*  @+: {"b"}* $ ;
+            fn = @+: {"a"}* @: {"b"}* $ ;
+            ff = @+: {"a"}* @+: {"b"}* $ ;
+        '''
+
+        model = genmodel("test", grammar)
+
+        def p(input, rule):
+            return model.parse(input, start=rule, whitespace='')
+
+        e = self.assertEqual
+
+        e([], p('', 'n'))
+        e(['a'], p('a', 'n'))
+        e(['a', 'a'], p('aa', 'n'))
+
+        e([[]], p('', 'f'))
+        e([['a']], p('a', 'f'))
+        e([['a', 'a']], p('aa', 'f'))
+
+        for r in ('nn', 'nf', 'fn', 'ff'):
+            e([[], []], p('', r))
+            e([['a'], []], p('a', r))
+            e([[], ['b']], p('b', r))
+            e([['a', 'a'], []], p('aa', r))
+            e([[], ['b', 'b']], p('bb', r))
+            e([['a', 'a'], ['b']], p('aab', r))
 
 
 def suite():

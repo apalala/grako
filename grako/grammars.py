@@ -20,12 +20,12 @@ import functools
 from collections import defaultdict
 from copy import copy
 
-from grako.util import indent, trim, timestamp
+from grako.util import indent, trim, timestamp, safe_name
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
 from grako.rendering import render, Renderer
-from grako.contexts import ParseContext, safe_name
+from grako.contexts import ParseContext
 
 
 PEP8_LLEN = 72
@@ -225,7 +225,7 @@ class Token(_Model):
 class Pattern(_Model):
     def __init__(self, pattern):
         super(Pattern, self).__init__()
-        self.pattern = pattern  # don't encode. asume as raw
+        self.pattern = pattern
         re.compile(pattern)
 
     def parse(self, ctx):
@@ -236,7 +236,8 @@ class Pattern(_Model):
 
     def __str__(self):
         pattern = str(self.pattern)
-        result = '?/%s/?' % pattern
+        template = '/%s/' if '/' not in pattern else '?/%s/?'
+        result = template % pattern
         if pattern.count('?') % 2:
             return result + '?'
         else:
@@ -519,7 +520,7 @@ class Named(_Decorator):
 
     def parse(self, ctx):
         value = self.exp.parse(ctx)
-        ctx._add_ast_node(self.name, value)
+        ctx.ast._add(self.name, value)
         return value
 
     def defines(self):
@@ -542,7 +543,7 @@ class Named(_Decorator):
 class NamedList(Named):
     def parse(self, ctx):
         value = self.exp.parse(ctx)
-        ctx._add_ast_node(self.name, value, True)
+        ctx.ast._append(self.name, value)
         return value
 
     def defines(self):

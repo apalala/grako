@@ -12,8 +12,6 @@
 Grako
 =====
 
-    **warning:** *The grammar syntax changed in this release.*
-
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
 **Grako** is *different* from other PEG_ parser generators:
@@ -59,22 +57,22 @@ Rationale
 
 **Grako** was created to address recurring problems encountered over decades of working with parser generation tools:
 
-    * Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexical analysis to handle those languages.
+* Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexical analysis to handle those languages.
 
 
-    * LL and LR grammars become contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
+* LL and LR grammars become contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
 
-    * Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_ in this case), allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
+* Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_ in this case), allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
 
-    * Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
+* Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
 
-    * Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
+* Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
 
-    * It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but it's hard for grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
+* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but it's hard for grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
 
-    * Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+* Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
 
-    * Python_ is a great language for working with language parsing and translation.
+* Python_ is a great language for working with language parsing and translation.
 
 .. _`Abstract Syntax Tree`: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _AST: http://en.wikipedia.org/wiki/Abstract_syntax_tree
@@ -157,7 +155,7 @@ The *-h* and *--help* parameters provide full usage information::
                                 output file (default is stdout)
         -p, --pretty          prettify the input grammar
         -t, --trace           produce verbose parsing output
-        -w CHARACTERS, --ws CHARACTERS
+        -w CHARACTERS, --whitespace CHARACTERS
                                 characters to skip during parsing (use "" to disable)
         $
 
@@ -253,7 +251,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         Has the same effect as defining *expanded* as::
 
-            extended = exp0 exp1 exp2 ;
+            expanded = exp0 exp1 exp2 ;
 
         Note that the included rule must be defined before the rule that includes it.
 
@@ -262,10 +260,14 @@ The expressions, in reverse order of operator precedence, can be:
 
         **Note that** if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
 
-    ``?/regexp/?``
+    ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
 
         The ``regexp`` is passed *as-is* to the Python_ ``re`` module, using ``re.match()`` at the current position in the text. The matched text is the AST_ for the expression.
+
+    ``?/regexp/?``
+        Another form of the pattern expression that can be used when there are slashes (``/``) in
+        the pattern.
 
     ``rulename``
         Invoke the rule named ``rulename``. To help with lexical aspects of grammars, rules with names that begin with an uppercase letter will not advance the input over whitespace or comments.
@@ -279,14 +281,17 @@ The expressions, in reverse order of operator precedence, can be:
     ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
 
+    ``>>``
+        Another form of the cut operator. *Deprecated*.
+
     ``name:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key. If more than one item is added with the same ``name``, the entry is converted to a list.
+        Add the result of ``e`` to the AST_ using ``name`` as key.
 
     ``name+:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added.
 
     ``@:e``
-        The override operator. Make the AST_ for the complete rule be the AST_ for ``e``. If more than one item is added, the entry is converted to a list.
+        The override operator. Make the AST_ for the complete rule be the AST_ for ``e``.
 
         The override operator is useful to recover only part of the right hand side of a rule without the need to name it, and then add a semantic action to recover the interesting part.
 
@@ -295,6 +300,9 @@ The expressions, in reverse order of operator precedence, can be:
             subexp = '(' @:expre ')' ;
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
+
+    ``@e``
+        Another form of the override operator. *Deprecated*.
 
     ``@+:e``
         Like ``@:e``, but make the AST_ always be a list.
@@ -562,7 +570,7 @@ For general Q&A, please use the ``grako`` tag on StackOverflow_.
 
 To discuss **Grako** and to receive notifications about new releases, please join the low-volume `Grako Forum`_ at *Google Groups*.
 
-.. _StackOverflow: http://stackoverflow.com/
+.. _StackOverflow: http://stackoverflow.com/tags/grako/info
 
 .. _`Grako Forum`:  https://groups.google.com/forum/?fromgroups#!forum/grako
 
@@ -645,6 +653,31 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 Changes
 =======
+
+3.1.2
+-----
+
+    * Improvements to handling of let recursion now support more complex cases.
+
+    * If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
+
+    * *BUG* 33_ Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements (Marcus_).
+
+    * *BUG* The bootstrap parser contained errors due to the previous bug in ``util.ustr()``.
+
+.. _33: https://bitbucket.org/apalala/grako/issue/33/
+
+3.1.1
+-----
+
+    * Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
+
+    * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
+
+    * `Paul Sargent`_ generalized left-recursion to support complex cases.
+
+    * *BUGs* Minor bnd not-so-minor ug fixes.See the Bitbucket_ logs for details.
+
 
 3.1.0
 -----

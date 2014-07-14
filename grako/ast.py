@@ -5,7 +5,7 @@ to store the values of named elements of grammar rules.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from grako.util import strtype, asjson, PY3
+from grako.util import strtype, asjson, is_list, PY3
 
 
 class AST(dict):
@@ -93,6 +93,9 @@ class AST(dict):
         except AttributeError:
             return False
 
+    def __reduce__(self):
+        return (AST, (), None, None, iter(self.items()))
+
     def _define(self, keys, list_keys=None):
         # WARNING: This is the *only* implementation that does what's intended
         for key in list_keys or []:
@@ -106,7 +109,7 @@ class AST(dict):
 
     def _copy(self):
         return AST(
-            (k, v[:] if isinstance(v, list) else v)
+            (k, v[:] if is_list(v) else v)
             for k, v in self.items()
         )
 
@@ -118,7 +121,7 @@ class AST(dict):
             else:
                 super(AST, self).__setitem__(key, value)
             self._order.append(key)
-        elif isinstance(previous, list):
+        elif is_list(previous):
             previous.append(value)
         else:
             super(AST, self).__setitem__(key, [previous, value])
@@ -135,4 +138,7 @@ class AST(dict):
         }
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, super(AST, self).__repr__())
+        return "%s(%s)" % (
+            self.__class__.__name__,
+            super(AST, self).__repr__()
+        )

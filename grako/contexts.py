@@ -5,9 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 import sys
 from collections import namedtuple
 from contextlib import contextmanager
-from keyword import iskeyword
 
-from grako.util import notnone, udecode, prune_dict
+from grako.util import notnone, ustr, prune_dict, is_list
 from grako.ast import AST
 from grako import buffering
 from grako.exceptions import (
@@ -25,16 +24,6 @@ __all__ = ['ParseInfo', 'ParseContext']
 
 
 ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
-
-
-def safe_name(s):
-    if iskeyword(s):
-        return s + '_'
-    return s
-
-
-def is_list(o):
-    return type(o) == list
 
 
 class Closure(list):
@@ -73,10 +62,11 @@ class ParseContext(object):
         self._memoization_cache = dict()
         self._potential_results = dict()
         self._last_node = None
+        self._state = None
         self._lookahead = 0
         self._memoize_lookaheads = memoize_lookaheads
-        self._left_recursive_eval = False
-        self._left_recursive_head = None
+        self._left_recursive_eval = []
+        self._left_recursive_head = []
 
     def _clear_cache(self):
         self._memoization_cache = dict()
@@ -187,11 +177,6 @@ class ParseContext(object):
         self._pop_cst()
         return self._ast_stack.pop()
 
-    def _add_ast_node(self, name, node, force_list=False):
-        if name is not None:  # and node:
-            self.ast._add(name, node, force_list)
-        return node
-
     @property
     def cst(self):
         return self._concrete_stack[-1]
@@ -211,9 +196,7 @@ class ParseContext(object):
             return
         previous = self.cst
         if previous is None:
-            if is_list(node):
-                node = node[:]  # copy it
-            self.cst = node
+            self.cst = self._copy_node(node)
         elif is_list(previous):
             previous.append(node)
         else:
@@ -224,9 +207,7 @@ class ParseContext(object):
             return
         previous = self.cst
         if previous is None:
-            if isinstance(node, list):
-                node = node[:]  # copy it
-            self.cst = node
+            self.cst = self._copy_node(node)
         elif is_list(node):
             if is_list(previous):
                 previous.extend(node)
@@ -237,14 +218,13 @@ class ParseContext(object):
         else:
             self.cst = [previous, node]
 
-    def _copy_cst(self):
-        cst = self.cst
-        if cst is None:
+    def _copy_node(self, node):
+        if node is None:
             return None
-        elif isinstance(cst, list):
-            return cst[:]
+        elif is_list(node):
+            return node[:]
         else:
-            return cst
+            return node
 
     def _is_cut_set(self):
         return self._cut_stack[-1]
@@ -315,7 +295,7 @@ class ParseContext(object):
     def _trace(self, msg, *params):
         if self.trace:
             msg = msg % params
-            print(udecode(msg), file=sys.stderr)
+            print(ustr(msg), file=sys.stderr)
 
     def _trace_event(self, event):
         if self.trace:
@@ -347,8 +327,9 @@ class ParseContext(object):
         try:
             self._trace_event('ENTER ')
             self._last_node = None
-            node, newpos = self._invoke_rule(rule, name, *params, **kwparams)
+            node, newpos, newstate = self._invoke_rule(rule, name, *params, **kwparams)
             self._goto(newpos)
+            self._state = newstate
             self._trace_event('SUCCESS')
             self._add_cst_node(node)
             self._last_node = node
@@ -362,7 +343,8 @@ class ParseContext(object):
 
     def _invoke_rule(self, rule, name, *params, **kwparams):
         last_pos = pos = self._pos
-        key = (pos, rule)
+        state = self._state
+        key = (pos, rule, state)
         cache = self._memoization_cache
 
         if key in cache:
@@ -376,7 +358,7 @@ class ParseContext(object):
                 if key in self._potential_results:
                     result = self._potential_results[key]
                 else:
-                    self._left_recursive_head = name
+                    self._left_recursive_head.append(name)
 
             if isinstance(result, Exception):
                 raise result
@@ -390,11 +372,12 @@ class ParseContext(object):
         #
         #   http://www.vpri.org/pdf/tr2007002_packrat.pdf
         #
-        cache[key] = FailedLeftRecursion(
-            self._buffer,
-            list(reversed(self._rule_stack[:])),
-            name
-        )
+        if self._memoize_lookahead():
+            cache[key] = FailedLeftRecursion(
+                self._buffer,
+                list(reversed(self._rule_stack[:])),
+                name
+            )
 
         self._push_ast()
         try:
@@ -418,20 +401,20 @@ class ParseContext(object):
             except FailedSemantics as e:
                 self._error(str(e), FailedParse)
 
-            last_result = result = (node, self._pos)
+            result = (node, self._pos, self._state)
             if self._memoize_lookahead():
                 self._potential_results[key] = result
 
             # If the current name is in the head, then we've just
             # unwound to the highest rule in the recursion
-            if (name == self._left_recursive_head
-            and not self._left_recursive_eval):
+            if ([name] == self._left_recursive_head[-1:]
+            and self._left_recursive_head[-1:] != self._left_recursive_eval[-1:]):
                 # Repeatedly apply the rule until it can't consume any
                 # more. We store the last good result each time. Prior
                 # to doing so we reset the position and remove any
                 # failures from the cache.
 
-                self._left_recursive_eval = True
+                self._left_recursive_eval.append(name)
                 while self._pos > last_pos:
                     last_result = result
                     last_pos = self._pos
@@ -444,13 +427,15 @@ class ParseContext(object):
 
                 result = last_result
                 self._potential_results = dict()
-                self._left_recursive_head = None
-                self._left_recursive_eval = False
+                self._left_recursive_head.pop()
+                self._left_recursive_eval.pop()
 
-            # Only populate the cache if we're not in a left recursive
-            # loop.
+            # Only populate the cache if we're not in a left recursive loop.
             if (self._memoize_lookahead()
-            and self._left_recursive_head not in self._rule_stack):
+            and (
+                not self._left_recursive_head
+                or self._left_recursive_head[-1] not in self._rule_stack
+            )):
                 cache[key] = result
             return result
         except Exception as e:
@@ -505,6 +490,7 @@ class ParseContext(object):
     @contextmanager
     def _try(self):
         p = self._pos
+        s = self._state
         ast_copy = self.ast._copy()
         self._push_ast()
         self.last_node = None
@@ -515,6 +501,7 @@ class ParseContext(object):
             cst = self.cst
         except:
             self._goto(p)
+            self._state = s
             raise
         finally:
             self._pop_ast()
@@ -568,6 +555,7 @@ class ParseContext(object):
     @contextmanager
     def _if(self):
         p = self._pos
+        s = self._state
         self._push_ast()
         self._enter_lookahead()
         try:
@@ -575,6 +563,7 @@ class ParseContext(object):
         finally:
             self._leave_lookahead()
             self._goto(p)
+            self._state = s
             self._pop_ast()  # simply discard
             self.last_node = None
 

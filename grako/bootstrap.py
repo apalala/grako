@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.06.08.21.35.43.06'
+__version__ = '2014.07.14.03.39.12.00'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -27,8 +27,12 @@ __all__ = [
 
 
 class GrakoBootstrapParser(Parser):
-    def __init__(self, whitespace=None, **kwargs):
-        super(GrakoBootstrapParser, self).__init__(whitespace=whitespace, **kwargs)
+    def __init__(self, whitespace=None, nameguard=None, **kwargs):
+        super(GrakoBootstrapParser, self).__init__(
+            whitespace=whitespace,
+            nameguard=nameguard,
+            **kwargs
+        )
 
     @graken()
     def _grammar_(self):
@@ -243,6 +247,8 @@ class GrakoBootstrapParser(Parser):
                 self._override_list_()
             with self._option():
                 self._override_single_()
+            with self._option():
+                self._override_single_deprecated_()
             self._error('no available options')
 
     @graken()
@@ -254,6 +260,12 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _override_single_(self):
         self._token('@:')
+        self._element_()
+        self.ast['@'] = self.last_node
+
+    @graken()
+    def _override_single_deprecated_(self):
+        self._token('@')
         self._element_()
         self.ast['@'] = self.last_node
 
@@ -347,6 +359,8 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._cut_()
             with self._option():
+                self._cut_deprecated_()
+            with self._option():
                 self._token_()
             with self._option():
                 self._call_()
@@ -368,6 +382,11 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _cut_(self):
         self._token('~')
+        self._cut()
+
+    @graken()
+    def _cut_deprecated_(self):
+        self._token('>>')
         self._cut()
 
     @graken()
@@ -420,11 +439,20 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _pattern_(self):
-        self._token('?/')
-        self._pattern(r'(.*?)(?=/\?)')
-        self.ast['@'] = self.last_node
-        self._pattern(r'/\?+')
-        self._cut()
+        with self._choice():
+            with self._option():
+                self._token('/')
+                self._pattern(r'(.*?)(?=/)')
+                self.ast['@'] = self.last_node
+                self._token('/')
+                self._cut()
+            with self._option():
+                self._token('?/')
+                self._pattern(r'(.*?)(?=/\?)')
+                self.ast['@'] = self.last_node
+                self._pattern(r'/\?+')
+                self._cut()
+            self._error('expecting one of: / ?/')
 
     @graken()
     def _eof_(self):
@@ -484,6 +512,9 @@ class GrakoBootstrapSemantics(object):
     def override_single(self, ast):
         return ast
 
+    def override_single_deprecated(self, ast):
+        return ast
+
     def term(self, ast):
         return ast
 
@@ -518,6 +549,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def cut(self, ast):
+        return ast
+
+    def cut_deprecated(self, ast):
         return ast
 
     def new_name(self, ast):
