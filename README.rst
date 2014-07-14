@@ -281,13 +281,13 @@ The expressions, in reverse order of operator precedence, can be:
         Another form of the cut operator. *Deprecated*.
 
     ``name:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key. If more than one item is added with the same ``name``, the entry is converted to a list.
+        Add the result of ``e`` to the AST_ using ``name`` as key.
 
     ``name+:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added.
 
     ``@:e``
-        The override operator. Make the AST_ for the complete rule be the AST_ for ``e``. If more than one item is added, the entry is converted to a list.
+        The override operator. Make the AST_ for the complete rule be the AST_ for ``e``.
 
         The override operator is useful to recover only part of the right hand side of a rule without the need to name it, and then add a semantic action to recover the interesting part.
 
