@@ -291,7 +291,6 @@ class Rule(_Decorator):
                 @graken({params})
                 def _{name}_(self):
                 {exp:1::}{defines}
-
                 '''
 
     str_template = '''\
@@ -398,6 +397,7 @@ class Grammar(Base):
                         )
 
                 {rules}
+
 
                 class {name}Semantics(object):
                 {abstract_rules}
