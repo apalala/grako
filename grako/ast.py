@@ -93,6 +93,9 @@ class AST(dict):
         except AttributeError:
             return False
 
+    def __reduce__(self):
+        return (AST, (), None, None, iter(self.items()))
+
     def _define(self, keys, list_keys=None):
         # WARNING: This is the *only* implementation that does what's intended
         for key in list_keys or []:
