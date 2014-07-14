@@ -33,7 +33,7 @@ class ASTTests(unittest.TestCase):
         self.assertEqual('hello', ast.name)
 
         ast.name = 'world'
-        self.assertEqual(['hello', 'world'], ast.name)
+        self.assertEqual('world', ast.name)
 
         ast.value = 1
         self.assertEqual(1, ast.value)
@@ -44,7 +44,7 @@ class ASTTests(unittest.TestCase):
         ast.name = 'world'
         ast.value = 1
         self.assertEqual(['name', 'value'], list(ast))
-        self.assertEqual([['hello', 'world'], 1], list(ast.values()))
+        self.assertEqual(['world', 1], list(ast.values()))
 
 
 def suite():
