@@ -93,6 +93,9 @@ class AST(dict):
         except AttributeError:
             return False
 
+    def __reduce__(self):
+        return (AST, (), None, None, iter(self.items()))
+
     def _define(self, keys, list_keys=None):
         # WARNING: This is the *only* implementation that does what's intended
         for key in list_keys or []:
@@ -110,22 +113,23 @@ class AST(dict):
             for k, v in self.items()
         )
 
-    def _add(self, key, value, force_list=False):
+    def _add(self, key, value):
+        previous = self.get(key, None)
+        super(AST, self).__setitem__(key, value)
+        if previous is None:
+            self._order.append(key)
+        return self
+
+    def _append(self, key, value):
         previous = self.get(key, None)
         if previous is None:
-            if force_list:
-                super(AST, self).__setitem__(key, [value])
-            else:
-                super(AST, self).__setitem__(key, value)
+            super(AST, self).__setitem__(key, [value])
             self._order.append(key)
         elif is_list(previous):
             previous.append(value)
         else:
             super(AST, self).__setitem__(key, [previous, value])
         return self
-
-    def _append(self, key, value):
-        return self._add(key, value, force_list=True)
 
     def __json__(self):
         # preserve order

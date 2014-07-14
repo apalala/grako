@@ -75,8 +75,8 @@ class ModelContext(ParseContext):
 
 
 class _Model(Node, Renderer):
-    def __init__(self):
-        super(_Model, self).__init__()
+    def __init__(self, ast=None):
+        super(_Model, self).__init__(ast=ast)
         self._lookahead = None
         self._first_set = None
         self._follow_set = set()
@@ -128,9 +128,9 @@ class Fail(_Model):
 
 
 class Comment(_Model):
-    def __init__(self, comment):
-        super(Comment, self).__init__()
-        self.comment = comment.strip()
+    def __postinit__(self, ast):
+        super(Comment, self).__postinit__(ast)
+        self.comment = self.ast
 
     def __str__(self):
         return self.render()
@@ -154,11 +154,11 @@ class EOF(_Model):
 
 
 class _Decorator(_Model):
-    def __init__(self, exp):
-        assert isinstance(exp, _Model), str(exp)
-        super(_Decorator, self).__init__()
-        self.exp = exp
-        self._adopt_children(exp)
+    def __postinit__(self, ast):
+        super(_Decorator, self).__postinit__(ast)
+        if not hasattr(self, 'exp'):
+            self.exp = self.ast
+        assert isinstance(self.exp, _Model)
 
     def parse(self, ctx):
         return self.exp.parse(ctx)
@@ -201,11 +201,9 @@ class Group(_Decorator):
 
 
 class Token(_Model):
-    def __init__(self, token):
-        super(Token, self).__init__()
-        self.token = token
-        if not self.token:
-            raise GrammarError('invalid token %s' % self.token)
+    def __postinit__(self, ast):
+        super(Token, self).__postinit__(ast)
+        self.token = self.ast
 
     def parse(self, ctx):
         return ctx._token(self.token)
@@ -223,10 +221,10 @@ class Token(_Model):
 
 
 class Pattern(_Model):
-    def __init__(self, pattern):
-        super(Pattern, self).__init__()
-        self.pattern = pattern
-        re.compile(pattern)
+    def __postinit__(self, ast):
+        re.compile(ast)
+        super(Pattern, self).__postinit__(ast)
+        self.pattern = self.ast
 
     def parse(self, ctx):
         return ctx._pattern(self.pattern)
@@ -279,13 +277,9 @@ class LookaheadNot(_Decorator):
 
 
 class Sequence(_Model):
-    def __init__(self, sequence):
-        super(Sequence, self).__init__()
-        assert isinstance(sequence, list), str(sequence)
-        self.sequence = sequence
-        self._adopt_children(sequence)
-        for s in self.sequence:
-            assert isinstance(s, _Model), str(s)
+    def __postinit__(self, ast):
+        super(Sequence, self).__postinit__(ast)
+        self.sequence = self.ast
 
     def parse(self, ctx):
         ctx.last_node = [s.parse(ctx) for s in self.sequence]
@@ -329,13 +323,10 @@ class Sequence(_Model):
 
 
 class Choice(_Model):
-    def __init__(self, options):
-        super(Choice, self).__init__()
-        assert isinstance(options, list), urepr(options)
-        self.options = options
-        self._adopt_children(options)
-        for o in self.options:
-            assert isinstance(o, _Model), str(o)
+    def __postinit__(self, ast):
+        super(Choice, self).__postinit__(ast)
+        self.options = self.ast
+        assert isinstance(self.options, list), urepr(self.options)
 
     def parse(self, ctx):
         with ctx._choice():
@@ -513,11 +504,6 @@ class Cut(_Model):
 
 
 class Named(_Decorator):
-    def __init__(self, name, exp):
-        super(Named, self).__init__(exp)
-        assert isinstance(exp, _Model), str(exp)
-        self.name = name
-
     def parse(self, ctx):
         value = self.exp.parse(ctx)
         ctx.ast._add(self.name, value)
@@ -559,37 +545,35 @@ class NamedList(Named):
 
 
 class Override(Named):
-    def __init__(self, exp):
-        super(Override, self).__init__('@', exp)
+    def __postinit__(self, ast):
+        super(Override, self).__postinit__(ast)
+        self.name = '@'
 
     def defines(self):
         return []
 
 
 class OverrideList(NamedList):
-    def __init__(self, exp):
-        super(OverrideList, self).__init__('@', exp)
+    def __postinit__(self, ast):
+        super(OverrideList, self).__postinit__(ast)
+        self.name = '@'
 
     def defines(self):
         return []
 
 
 class Special(_Model):
-    def __init__(self, special):
-        super(Special, self).__init__()
-        self.special = special
-
     def _first(self, k, F):
-        return set([(self.special,)])
+        return set([(self.value,)])
 
     def __str__(self):
-        return '?%s?' % self.special
+        return '?%s?' % self.value
 
 
 class RuleRef(_Model):
-    def __init__(self, name):
-        super(RuleRef, self).__init__()
-        self.name = name
+    def __postinit__(self, ast):
+        super(RuleRef, self).__postinit__(ast)
+        self.name = self.ast
 
     def parse(self, ctx):
         try:
@@ -644,6 +628,7 @@ class Rule(_Decorator):
         self.name = name
         self.params = params
         self.kwparams = kwparams
+        self._adopt_children([params, kwparams])
 
     def parse(self, ctx):
         return self._parse_rhs(ctx, self.exp)

@@ -46,9 +46,9 @@ class ANTLRSemantics(object):
 
     def named(self, ast):
         if ast.force_list:
-            return model.NamedList(ast.name, ast.exp)
+            return model.NamedList(ast)
         else:
-            return model.Named(ast.name, ast.exp)
+            return model.Named(ast)
 
     def syntactic_predicate(self, ast):
         return model.Lookahead(ast)

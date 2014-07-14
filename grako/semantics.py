@@ -83,10 +83,10 @@ class GrakoSemantics(object):
         return grammars.LookaheadNot(ast)
 
     def named_list(self, ast):
-        return grammars.NamedList(ast.name, ast.value)
+        return grammars.NamedList(ast)
 
     def named_single(self, ast):
-        return grammars.Named(ast.name, ast.value)
+        return grammars.Named(ast)
 
     def override_list(self, ast):
         return grammars.OverrideList(ast)

@@ -136,7 +136,7 @@ class BootstrapTests(unittest.TestCase):
                         comments_re=COMMENTS_RE
                         )
         with open('tmp/11.ebnf', 'w') as f:
-            f.write(str(110))
+            f.write(str(g11))
         gencode11 = r11.codegen()
         with open('tmp/g11.py', 'w') as f:
             f.write(gencode11)

@@ -220,10 +220,10 @@ class GrakoBootstrapParser(Parser):
         self.ast['name'] = self.last_node
         self._token('+:')
         self._element_()
-        self.ast['value'] = self.last_node
+        self.ast['exp'] = self.last_node
 
         self.ast._define(
-            ['name', 'value'],
+            ['name', 'exp'],
             []
         )
 
@@ -233,10 +233,10 @@ class GrakoBootstrapParser(Parser):
         self.ast['name'] = self.last_node
         self._token(':')
         self._element_()
-        self.ast['value'] = self.last_node
+        self.ast['exp'] = self.last_node
 
         self.ast._define(
-            ['name', 'value'],
+            ['name', 'exp'],
             []
         )
 

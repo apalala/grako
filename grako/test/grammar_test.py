@@ -33,6 +33,14 @@ class GrammarTests(unittest.TestCase):
         '''
         m = genmodel('Keywords', grammar)
         ast = m.parse('1 2')
+        self.assertEqual(['2'], ast.name)
+
+        grammar = '''
+            foo = name:"1" [ name+: bar ] ;
+            bar = { "2" } * ;
+        '''
+        m = genmodel('Keywords', grammar)
+        ast = m.parse('1 2')
         self.assertEqual(['1', ['2']], ast.name)
 
         grammar = '''
@@ -48,7 +56,7 @@ class GrammarTests(unittest.TestCase):
         # Parser for mediawiki-style unordered lists.
         grammar = r'''
         document = @:ul [ nl ] $ ;
-        ul = "*" ul_start el+:li { nl el:li } * ul_end ;
+        ul = "*" ul_start el+:li { nl el+:li } * ul_end ;
         li = ul | li_text ;
         (* Quirk: If a text line is followed by a sublist, the sublist does not get its own li.  *)
         li_text = text:text [ ul:li_followed_by_ul ] ;
@@ -94,34 +102,39 @@ class GrammarTests(unittest.TestCase):
 
         model = genmodel("test", grammar)
         context = ModelContext(model.rules, whitespace='', nameguard=False)
+
         ast = model.parse('*abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc</li></ul>")
+        self.assertEqual("<ul><li>abc</li></ul>", ast)
+
         ast = model.parse('*abc\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc</li></ul>")
+        self.assertEqual("<ul><li>abc</li></ul>", ast)
+
         ast = model.parse('*abc\n*def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc</li><li>def</li></ul>")
+        self.assertEqual("<ul><li>abc</li><li>def</li></ul>", ast)
+
         ast = model.parse('**abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li><ul><li>abc</li></ul></li></ul>")
+        self.assertEqual("<ul><li><ul><li>abc</li></ul></li></ul>", ast)
+
         ast = model.parse('*abc\n**def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc<ul><li>def</li></ul></li></ul>")
+        self.assertEqual("<ul><li>abc<ul><li>def</li></ul></li></ul>", ast)
 
     def test_optional_closure(self):
         grammar = 'start = foo+:"x" foo:{"y"}* {foo:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
-        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+        self.assertEquals('z', ast.foo)
 
-        grammar = 'start = foo+:"x" [foo+:{"y"}*] {foo:"z"}* ;'
+        grammar = 'start = foo+:"x" [foo+:{"y"}*] {foo+:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
         self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
-        grammar = 'start = foo+:"x" foo:[{"y"}*] {foo:"z"}* ;'
+        grammar = 'start = foo+:"x" foo:[{"y"}*] {foo+:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
-        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+        self.assertEquals([['y', 'y'], 'z', 'z'], ast.foo)
 
-        grammar = 'start = foo+:"x" [foo:{"y"}*] {foo:"z"}* ;'
+        grammar = 'start = foo+:"x" [foo+:{"y"}*] {foo+:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
         self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
@@ -193,7 +206,7 @@ class GrammarTests(unittest.TestCase):
         grammar = '''
             start
                 =
-                @:'a' {@:'b'}
+                @:'a' {@+:'b'}
                 $
                 ;
         '''
@@ -246,7 +259,7 @@ class GrammarTests(unittest.TestCase):
             '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
-        self.assertEquals(['a', 'b', 'b'], ast)
+        self.assertEquals('b', ast)
         self.assertEqual(trim(grammar), str(model))
 
     def test_rule_include(self):
@@ -254,7 +267,7 @@ class GrammarTests(unittest.TestCase):
             start = b $;
 
             a = @:'a' ;
-            b = >a {@:'b'} ;
+            b = >a {@+:'b'} ;
         '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
@@ -408,13 +421,33 @@ class GrammarTests(unittest.TestCase):
         e([['a']], p('a', 'f'))
         e([['a', 'a']], p('aa', 'f'))
 
-        for r in ('nn', 'nf', 'fn', 'ff'):
-            e([[], []], p('', r))
-            e([['a'], []], p('a', r))
-            e([[], ['b']], p('b', r))
-            e([['a', 'a'], []], p('aa', r))
-            e([[], ['b', 'b']], p('bb', r))
-            e([['a', 'a'], ['b']], p('aab', r))
+        e([], p('', 'nn'))
+        e([], p('a', 'nn'))
+        e(['b'], p('b', 'nn'))
+        e([], p('aa', 'nn'))
+        e(['b', 'b'], p('bb', 'nn'))
+        e(['b'], p('aab', 'nn'))
+
+        e([[], []], p('', 'nf'))
+        e([['a'], []], p('a', 'nf'))
+        e([[], ['b']], p('b', 'nf'))
+        e([['a', 'a'], []], p('aa', 'nf'))
+        e([[], ['b', 'b']], p('bb', 'nf'))
+        e([['a', 'a'], ['b']], p('aab', 'nf'))
+
+        e([], p('', 'fn'))
+        e([], p('a', 'fn'))
+        e(['b'], p('b', 'fn'))
+        e([], p('aa', 'fn'))
+        e(['b', 'b'], p('bb', 'fn'))
+        e(['b'], p('aab', 'fn'))
+
+        e([[], []], p('', 'ff'))
+        e([['a'], []], p('a', 'ff'))
+        e([[], ['b']], p('b', 'ff'))
+        e([['a', 'a'], []], p('aa', 'ff'))
+        e([[], ['b', 'b']], p('bb', 'ff'))
+        e([['a', 'a'], ['b']], p('aab', 'ff'))
 
 
 def suite():
@@ -422,7 +455,7 @@ def suite():
 
 
 def main():
-    unittest.TextTestRunner(verbosity=2).run(suite())
+    unittest.TextTestRunfer(verbosity=2).run(suite())
 
 if __name__ == '__main__':
     main()
