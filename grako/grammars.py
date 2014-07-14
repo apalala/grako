@@ -225,7 +225,7 @@ class Token(_Model):
 class Pattern(_Model):
     def __init__(self, pattern):
         super(Pattern, self).__init__()
-        self.pattern = pattern  # don't encode. asume as raw
+        self.pattern = pattern
         re.compile(pattern)
 
     def parse(self, ctx):
