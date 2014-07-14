@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.07.08.15.58.27.01'
+__version__ = '2014.07.14.03.32.40.00'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -37,9 +37,9 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _grammar_(self):
 
-        def blockNone():
+        def block1():
             self._rule_()
-        self._positive_closure(blockNone)
+        self._positive_closure(block1)
 
         self.ast['@'] = self.last_node
         self._check_eof()
@@ -134,22 +134,22 @@ class GrakoBootstrapParser(Parser):
         self._literal_()
         self.ast._append('@', self.last_node)
 
-        def blockNone():
+        def block1():
             self._token(',')
             self._literal_()
             self.ast._append('@', self.last_node)
-        self._closure(blockNone)
+        self._closure(block1)
 
     @graken()
     def _kwparams_(self):
         self._pair_()
         self.ast._append('@', self.last_node)
 
-        def blockNone():
+        def block1():
             self._token(',')
             self._pair_()
             self.ast._append('@', self.last_node)
-        self._closure(blockNone)
+        self._closure(block1)
 
     @graken()
     def _pair_(self):
@@ -173,18 +173,18 @@ class GrakoBootstrapParser(Parser):
         self._sequence_()
         self.ast._append('@', self.last_node)
 
-        def blockNone():
+        def block1():
             self._token('|')
             self._sequence_()
             self.ast._append('@', self.last_node)
-        self._positive_closure(blockNone)
+        self._positive_closure(block1)
 
     @graken()
     def _sequence_(self):
 
-        def blockNone():
+        def block0():
             self._element_()
-        self._positive_closure(blockNone)
+        self._positive_closure(block0)
 
     @graken()
     def _element_(self):
@@ -439,11 +439,20 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _pattern_(self):
-        self._token('?/')
-        self._pattern(r'(.*?)(?=/\?)')
-        self.ast['@'] = self.last_node
-        self._pattern(r'/\?+')
-        self._cut()
+        with self._choice():
+            with self._option():
+                self._token('/')
+                self._pattern(r'(.*?)(?=/\?)')
+                self.ast['@'] = self.last_node
+                self._pattern(r'/')
+                self._cut()
+            with self._option():
+                self._token('?/')
+                self._pattern(r'(.*?)(?=/\?)')
+                self.ast['@'] = self.last_node
+                self._pattern(r'/\?+')
+                self._cut()
+            self._error('expecting one of: / ?/')
 
     @graken()
     def _eof_(self):
