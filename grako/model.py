@@ -23,7 +23,6 @@ class Node(object):
     def __init__(self, ctx=None, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
-        self._ast = ast
         if parseinfo is None and isinstance(ast, AST):
             parseinfo = ast._parseinfo
         self._parseinfo = parseinfo
@@ -39,10 +38,6 @@ class Node(object):
                 if hasattr(self, name):
                     name = '_' + name
                 setattr(self, name, value)
-
-    @property
-    def ast(self):
-        return self._ast
 
     @property
     def parent(self):

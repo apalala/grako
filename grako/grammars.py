@@ -130,7 +130,7 @@ class Fail(_Model):
 class Comment(_Model):
     def __postinit__(self, ast):
         super(Comment, self).__postinit__(ast)
-        self.comment = self.ast
+        self.comment = ast
 
     def __str__(self):
         return self.render()
@@ -157,7 +157,7 @@ class _Decorator(_Model):
     def __postinit__(self, ast):
         super(_Decorator, self).__postinit__(ast)
         if not hasattr(self, 'exp'):
-            self.exp = self.ast
+            self.exp = ast
         assert isinstance(self.exp, _Model)
 
     def parse(self, ctx):
@@ -203,7 +203,7 @@ class Group(_Decorator):
 class Token(_Model):
     def __postinit__(self, ast):
         super(Token, self).__postinit__(ast)
-        self.token = self.ast
+        self.token = ast
 
     def parse(self, ctx):
         return ctx._token(self.token)
@@ -224,7 +224,7 @@ class Pattern(_Model):
     def __postinit__(self, ast):
         re.compile(ast)
         super(Pattern, self).__postinit__(ast)
-        self.pattern = self.ast
+        self.pattern = ast
 
     def parse(self, ctx):
         return ctx._pattern(self.pattern)
@@ -279,7 +279,7 @@ class LookaheadNot(_Decorator):
 class Sequence(_Model):
     def __postinit__(self, ast):
         super(Sequence, self).__postinit__(ast)
-        self.sequence = self.ast
+        self.sequence = ast
 
     def parse(self, ctx):
         ctx.last_node = [s.parse(ctx) for s in self.sequence]
@@ -325,7 +325,7 @@ class Sequence(_Model):
 class Choice(_Model):
     def __postinit__(self, ast):
         super(Choice, self).__postinit__(ast)
-        self.options = self.ast
+        self.options = ast
         assert isinstance(self.options, list), urepr(self.options)
 
     def parse(self, ctx):
@@ -573,7 +573,7 @@ class Special(_Model):
 class RuleRef(_Model):
     def __postinit__(self, ast):
         super(RuleRef, self).__postinit__(ast)
-        self.name = self.ast
+        self.name = ast
 
     def parse(self, ctx):
         try:
