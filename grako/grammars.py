@@ -23,7 +23,6 @@ from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
 from grako.contexts import ParseContext
-from grako.codegen.python import PythonCodeGenerator
 
 
 PEP8_LLEN = 72
@@ -112,7 +111,7 @@ class Comment(_Model):
         super(Comment, self).__init__(AST(comment=ast))
 
     def __str__(self):
-        return self.render()
+        return '(* %s *)' % self.comment
 
 
 class EOF(_Model):
@@ -608,9 +607,6 @@ class Grammar(_Model):
             whitespace=whitespace,
             **kwargs
         )
-
-    def codegen(self):
-        return PythonCodeGenerator().render(self)
 
     def __str__(self):
         return '\n\n'.join(str(rule) for rule in self.rules) + '\n'

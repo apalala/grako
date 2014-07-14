@@ -22,6 +22,10 @@ class PythonCodeGenerator(CodeGenerator):
         return renderer
 
 
+def codegen(model):
+    return PythonCodeGenerator().render(model)
+
+
 class Base(ModelRenderer):
     def defines(self):
         return []
