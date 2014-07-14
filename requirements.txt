@@ -1,13 +1,10 @@
 Cython==0.20.1
-argparse==1.2.1
 flake8==2.1.0
 ipython==2.1.0
 mccabe==0.2.1
 pep8==1.5.7
 py==1.4.20
 pyflakes==0.8.1
-pygraphviz==1.2
 pytest==2.5.2
 tox==1.6.1
 virtualenv==1.11.6
-wsgiref==0.1.2

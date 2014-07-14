@@ -28,6 +28,10 @@ class SemanticError(GrakoException):
     pass
 
 
+class CodegenError(GrakoException):
+    pass
+
+
 class MissingSemanticFor(SemanticError):
     pass
 

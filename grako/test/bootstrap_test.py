@@ -15,6 +15,7 @@ import unittest
 from grako.model import DepthFirstWalker
 from grako.parser import COMMENTS_RE, GrakoGrammarGenerator, GrakoParser
 from grako.semantics import GrakoSemantics
+from grako.codegen import codegen
 
 sys.path.append('tmp')
 
@@ -85,7 +86,7 @@ class BootstrapTests(unittest.TestCase):
             f.write(json.dumps(ast5, indent=2))
 
         print('-' * 20, 'phase 06 - generate parser code')
-        gencode6 = parser.codegen()
+        gencode6 = codegen(parser)
         with open('tmp/g06.py', 'w') as f:
             f.write(gencode6)
 
@@ -121,7 +122,7 @@ class BootstrapTests(unittest.TestCase):
         generated_grammar10 = str(g10)
         with open('tmp/10.ebnf', 'w') as f:
             f.write(generated_grammar10)
-        gencode10 = g10.codegen()
+        gencode10 = codegen(g10)
         with open('tmp/g10.py', 'w') as f:
             f.write(gencode10)
 
@@ -136,8 +137,8 @@ class BootstrapTests(unittest.TestCase):
                         comments_re=COMMENTS_RE
                         )
         with open('tmp/11.ebnf', 'w') as f:
-            f.write(str(110))
-        gencode11 = r11.codegen()
+            f.write(str(g11))
+        gencode11 = codegen(r11)
         with open('tmp/g11.py', 'w') as f:
             f.write(gencode11)
 
