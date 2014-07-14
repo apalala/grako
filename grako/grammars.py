@@ -225,7 +225,7 @@ class Token(_Model):
 class Pattern(_Model):
     def __init__(self, pattern):
         super(Pattern, self).__init__()
-        self.pattern = pattern  # don't encode. asume as raw
+        self.pattern = pattern
         re.compile(pattern)
 
     def parse(self, ctx):
@@ -236,7 +236,8 @@ class Pattern(_Model):
 
     def __str__(self):
         pattern = str(self.pattern)
-        result = '?/%s/?' % pattern
+        template = '/%s/' if '/' not in pattern else '?/%s/?'
+        result = template % pattern
         if pattern.count('?') % 2:
             return result + '?'
         else:
