@@ -86,23 +86,17 @@ class Node(object):
         if self.parseinfo:
             return self.parseinfo.eol_comments
 
-    def _adopt_children(self, ast):
-        def adopt(node):
-            if isinstance(node, Node):
-                node._parent = self
-                self._children.append(node)
-
-        if isinstance(ast, AST):
+    def _adopt_children(self, ast, parent=None):
+        if isinstance(ast, Node):
+            if isinstance(parent, Node):
+                ast._parent = parent
+                parent._children.append(ast)
+        elif isinstance(ast, dict):
             for c in ast.values():
-                if isinstance(c, list):
-                    self._adopt_children(c)
-                else:
-                    adopt(c)
+                self._adopt_children(c, parent=ast)
         elif isinstance(ast, list):
             for c in ast:
-                adopt(c)
-        else:
-            adopt(ast)
+                self._adopt_children(c, parent=ast)
 
     def _pubdict(self):
         return {
