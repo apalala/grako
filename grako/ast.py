@@ -9,11 +9,14 @@ from grako.util import strtype, asjson, is_list, PY3
 
 
 class AST(dict):
+    _closed = False
+
     def __init__(self, *args, **kwargs):
-        super(AST, self).__setattr__('_parseinfo', None)
-        super(AST, self).__setattr__('_order', [])
         super(AST, self).__init__()
+        self._order = []
+        self._parseinfo = None
         self.update(*args, **kwargs)
+        self._closed = True
 
     @property
     def parseinfo(self):
@@ -63,30 +66,28 @@ class AST(dict):
     def __iter__(self):
         return iter(self._order)
 
+    def __getitem__(self, key):
+        if key in self:
+            return super(AST, self).__getitem__(key)
+
     def __setitem__(self, key, value):
-        if key in self.__dict__:
-            super(AST, self).__setattr__(key, value)
-        else:
-            self._add(key, value)
+        self.set(key, value)
 
     def __delitem__(self, key):
         super(AST, self).__delitem__(key)
         self._order.remove(key)
 
     def __setattr__(self, name, value):
-        if name in ('parseinfo', '_parseinfo'):
-            super(AST, self).__setattr__('_parseinfo', value)
-        else:
-            self.__setitem__(name, value)
+        if self._closed and name not in vars(self):
+            raise AttributeError(
+                '%s attributes are fixed. Cannot set attribute %s.'
+                %
+                (self.__class__.__name__, name)
+            )
+        super(AST, self).__setattr__(name, value)
 
-    def __getattribute__(self, name):
-        if name in self:
-            return self[name]
-        if isinstance(name, strtype):
-            try:
-                return super(AST, self).__getattribute__(name)
-            except AttributeError:
-                pass
+    def __getattr__(self, name):
+        return self[name]
 
     def __hasattribute__(self, name):
         if not isinstance(name, strtype):
@@ -117,7 +118,10 @@ class AST(dict):
             for k, v in self.items()
         )
 
-    def _add(self, key, value, force_list=False):
+    def set(self, key, value, force_list=False):
+        while self.__hasattribute__(key):
+            key += '_'
+
         previous = self.get(key, None)
         if previous is None:
             if force_list:
@@ -131,8 +135,8 @@ class AST(dict):
             super(AST, self).__setitem__(key, [previous, value])
         return self
 
-    def _append(self, key, value):
-        return self._add(key, value, force_list=True)
+    def setlist(self, key, value):
+        return self.set(key, value, force_list=True)
 
     def __json__(self):
         # preserve order

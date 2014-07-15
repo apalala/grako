@@ -42,7 +42,7 @@ class GrammarTests(unittest.TestCase):
         '''
         m = genmodel('Update', grammar)
         ast = m.parse("1101110100", nameguard=False)
-        self.assertEquals([['11'], ['111'], ['1'], []], ast.items)
+        self.assertEquals([['11'], ['111'], ['1'], []], ast.items_)
 
     def test_stateful(self):
         # Parser for mediawiki-style unordered lists.

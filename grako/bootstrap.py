@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser
 from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.07.14.14.51.10.00'
+__version__ = '2014.07.15.17.23.21.01'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -132,32 +132,32 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _params_(self):
         self._literal_()
-        self.ast._append('@', self.last_node)
+        self.ast.setlist('@', self.last_node)
 
         def block1():
             self._token(',')
             self._literal_()
-            self.ast._append('@', self.last_node)
+            self.ast.setlist('@', self.last_node)
         self._closure(block1)
 
     @graken()
     def _kwparams_(self):
         self._pair_()
-        self.ast._append('@', self.last_node)
+        self.ast.setlist('@', self.last_node)
 
         def block1():
             self._token(',')
             self._pair_()
-            self.ast._append('@', self.last_node)
+            self.ast.setlist('@', self.last_node)
         self._closure(block1)
 
     @graken()
     def _pair_(self):
         self._word_()
-        self.ast._append('@', self.last_node)
+        self.ast.setlist('@', self.last_node)
         self._token('=')
         self._literal_()
-        self.ast._append('@', self.last_node)
+        self.ast.setlist('@', self.last_node)
 
     @graken()
     def _expre_(self):
@@ -171,12 +171,12 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _choice_(self):
         self._sequence_()
-        self.ast._append('@', self.last_node)
+        self.ast.setlist('@', self.last_node)
 
         def block1():
             self._token('|')
             self._sequence_()
-            self.ast._append('@', self.last_node)
+            self.ast.setlist('@', self.last_node)
         self._positive_closure(block1)
 
     @graken()

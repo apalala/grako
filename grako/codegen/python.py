@@ -189,11 +189,6 @@ class Cut(Base):
 
 
 class Named(_Decorator):
-    def parse(self, ctx):
-        value = self.exp.parse(ctx)
-        ctx.ast._add(self.name, value)
-        return value
-
     def defines(self):
         return [(self.node.name, False)] + super(Named, self).defines()
 
@@ -217,7 +212,7 @@ class NamedList(Named):
 
     template = '''
                 {exp}
-                self.ast._append('{name}', self.last_node)\
+                self.ast.setlist('{name}', self.last_node)\
                 '''
 
 
