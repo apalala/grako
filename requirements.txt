@@ -1,10 +1,10 @@
-Cython==0.20.1
-flake8==2.1.0
+Cython==0.20.2
+flake8==2.2.2
 ipython==2.1.0
 mccabe==0.2.1
 pep8==1.5.7
-py==1.4.20
+py==1.4.21
 pyflakes==0.8.1
 pytest==2.5.2
-tox==1.6.1
+tox==1.7.1
 virtualenv==1.11.6
