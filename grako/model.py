@@ -36,7 +36,7 @@ class Node(object):
         if isinstance(ast, AST):
             for name, value in ast.items():
                 if hasattr(self, name):
-                    name = '_' + name
+                    name = name + '_'
                 setattr(self, name, value)
 
     @property

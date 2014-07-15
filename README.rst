@@ -285,10 +285,10 @@ The expressions, in reverse order of operator precedence, can be:
         Another form of the cut operator. *Deprecated*.
 
     ``name:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key.
+        Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, an underscore (``_``) will be appended to it in the AST_.
 
     ``name+:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added.
+        Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added. Collisions with ``dict`` attributes are resolved by appending an underscore to ``name``.
 
     ``@:e``
         The override operator. Make the AST_ for the complete rule be the AST_ for ``e``.
