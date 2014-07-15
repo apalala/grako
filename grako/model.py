@@ -112,13 +112,11 @@ class Node(object):
         }
 
     def __json__(self):
-        d = self._pubdict()
-        if not d:
-            return asjson(self.ast)
-        else:
-            result = collections.OrderedDict(__class__=self.__class__.__name__)
-            result.update(d)
-            return asjson(result)
+        result = collections.OrderedDict(
+            __class__=self.__class__.__name__,
+        )
+        result.update(self._pubdict())
+        return asjson(result)
 
     def __str__(self):
         return asjsons(self)
