@@ -509,7 +509,7 @@ class ParseContext(object):
     def _try(self):
         p = self._pos
         s = self._state
-        ast_copy = self.ast._copy()
+        ast_copy = self.ast.copy()
         self._push_ast()
         self.last_node = None
         try:
