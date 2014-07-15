@@ -28,7 +28,6 @@ class Node(object):
         self._parseinfo = parseinfo
 
         self._parent = None
-        self._children = []
         self._adopt_children(ast)
         self.__postinit__(ast)
 
@@ -42,10 +41,6 @@ class Node(object):
     @property
     def parent(self):
         return self._parent
-
-    @property
-    def children(self):
-        return self._children
 
     @property
     def line(self):
@@ -86,11 +81,27 @@ class Node(object):
         if self.parseinfo:
             return self.parseinfo.eol_comments
 
+    def children(self):
+        childl = []
+
+        def cn(child):
+            if isinstance(child, Node):
+                childl.append(child)
+            elif isinstance(child, dict):
+                for c in child.values():
+                    cn(c)
+            elif isinstance(child, list):
+                for c in child:
+                    cn(c)
+
+        for c in vars(self).values():
+            cn(c)
+        return childl
+
     def _adopt_children(self, ast, parent=None):
         if isinstance(ast, Node):
             if isinstance(parent, Node):
                 ast._parent = parent
-                parent._children.append(ast)
         elif isinstance(ast, dict):
             for c in ast.values():
                 self._adopt_children(c, parent=ast)
@@ -141,7 +152,7 @@ class DepthFirstWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
         tv = super(DepthFirstWalker, self).walk
         if isinstance(node, Node):
-            children = [self.walk(c, *args, **kwargs) for c in node.children]
+            children = [self.walk(c, *args, **kwargs) for c in node.children()]
             return tv(node, children, *args, **kwargs)
         elif isinstance(node, collections.Iterable):
             return [tv(e, [], *args, **kwargs) for e in node]
