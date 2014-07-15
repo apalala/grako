@@ -482,7 +482,7 @@ class Rule(_Decorator):
         return self._parse_rhs(ctx, self.exp)
 
     def _parse_rhs(self, ctx, exp):
-        result = ctx._call(exp.parse, self.name)
+        result = ctx._call(exp.parse, self.name, self.params, self.kwparams)
         if isinstance(result, AST):
             defines = compress_seq(self.defines())
             result._define(
