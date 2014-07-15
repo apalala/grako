@@ -196,12 +196,10 @@ class Buffer(object):
         self._comments = []
         self._eol_comments = []
 
-        self.eat_whitespace()
-        self.eat_eol_comments()
-
         p = None
         while self._pos != p:
             p = self._pos
+            self.eat_eol_comments()
             self.eat_comments()
             self.eat_whitespace()
 
