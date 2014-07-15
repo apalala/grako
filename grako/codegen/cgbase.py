@@ -38,6 +38,14 @@ class ModelRenderer(Renderer):
     def __postinit__(self):
         pass
 
+    def __getattr__(self, name):
+        try:
+            super(ModelRenderer, self).__getattr__(name)
+        except AttributeError:
+            if name.startswith('_'):
+                raise
+            return getattr(self.node, name)
+
     @property
     def node(self):
         return self._node
