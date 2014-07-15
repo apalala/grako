@@ -76,6 +76,16 @@ class Node(object):
             text = self.parseinfo.buffer.text
             return text[self.parseinfo.pos:self.parseinfo.endpos]
 
+    @property
+    def comments(self):
+        if self.parseinfo:
+            return self.parseinfo.comments
+
+    @property
+    def eol_comments(self):
+        if self.parseinfo:
+            return self.parseinfo.eol_comments
+
     def _adopt_children(self, ast):
         def adopt(node):
             if isinstance(node, Node):

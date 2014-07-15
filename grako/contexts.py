@@ -23,7 +23,17 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
-ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
+ParseInfo = namedtuple(
+    'ParseInfo',
+    [
+        'buffer',
+        'rule',
+        'pos',
+        'endpos',
+        'comments',
+        'eol_comments',
+    ]
+)
 
 
 class Closure(list):
@@ -383,6 +393,7 @@ class ParseContext(object):
         try:
             if name[0].islower():
                 self._next_token()
+            comments = self._buffer.comments()
             rule(self)
             node = self.ast
             if not node:
@@ -390,7 +401,14 @@ class ParseContext(object):
             elif '@' in node:
                 node = node['@']  # override the AST
             elif self.parseinfo:
-                node._add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
+                node._parseinfo = ParseInfo(
+                    self._buffer,
+                    name,
+                    pos,
+                    self._pos,
+                    comments,
+                    self._buffer.eol_comments()
+                )
 
             semantic_rule, postproc = self._find_semantic_rule(name)
             try:
