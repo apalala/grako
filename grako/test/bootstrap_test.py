@@ -32,7 +32,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
         with open('etc/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoParser('GrakoBootstrap', parseinfo=False)
+        g = GrakoParser('GrakoBootstrap', parseinfo=True)
         grammar0 = g.parse(text)
         ast0 = json.dumps(grammar0, indent=2)
         with open('tmp/00.ast', 'w') as f:
@@ -41,7 +41,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 01 - parse with parser generator')
         with open('etc/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoGrammarGenerator('GrakoBootstrap', parseinfo=False)
+        g = GrakoGrammarGenerator('GrakoBootstrap', parseinfo=True)
         g.parse(text, trace=False)
 
         generated_grammar1 = str(g.ast['grammar'])
@@ -61,7 +61,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 03 - repeat')
         with open('tmp/02.ebnf') as f:
             text = f.read()
-        g = GrakoParser('GrakoBootstrap', parseinfo=False)
+        g = GrakoParser('GrakoBootstrap', parseinfo=True)
         ast3 = g.parse(text)
         with open('tmp/03.ast', 'w') as f:
             f.write(json.dumps(ast3, indent=2))

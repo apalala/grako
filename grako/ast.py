@@ -23,6 +23,10 @@ class AST(dict):
         """
         return self._parseinfo
 
+    @parseinfo.setter
+    def parseinfo(self, value):
+        self._parseinfo = value
+
     def iterkeys(self):
         return iter(self)
 
@@ -70,7 +74,10 @@ class AST(dict):
         self._order.remove(key)
 
     def __setattr__(self, name, value):
-        self.__setitem__(name, value)
+        if name in ('parseinfo', '_parseinfo'):
+            super(AST, self).__setattr__('_parseinfo', value)
+        else:
+            self.__setitem__(name, value)
 
     def __getattr_(self, key):
         return super.__getattr__(key)
