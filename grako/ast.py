@@ -79,9 +79,6 @@ class AST(dict):
         else:
             self.__setitem__(name, value)
 
-    def __getattr_(self, key):
-        return super.__getattr__(key)
-
     def __getattribute__(self, name):
         if name in self:
             return self[name]
