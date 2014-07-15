@@ -15,6 +15,7 @@ class AST(dict):
         super(AST, self).__init__()
         self._order = []
         self._parseinfo = None
+
         self.update(*args, **kwargs)
         self._closed = True
 
@@ -62,6 +63,32 @@ class AST(dict):
             else:
                 upairs(d)
         upairs(kwargs.items())
+
+    def set(self, key, value, force_list=False):
+        while self.__hasattribute__(key):
+            key += '_'
+
+        previous = self.get(key, None)
+        if previous is None:
+            if force_list:
+                super(AST, self).__setitem__(key, [value])
+            else:
+                super(AST, self).__setitem__(key, value)
+            self._order.append(key)
+        elif is_list(previous):
+            previous.append(value)
+        else:
+            super(AST, self).__setitem__(key, [previous, value])
+        return self
+
+    def setlist(self, key, value):
+        return self.set(key, value, force_list=True)
+
+    def copy(self):
+        return AST(
+            (k, v[:] if is_list(v) else v)
+            for k, v in self.items()
+        )
 
     def __iter__(self):
         return iter(self._order)
@@ -111,32 +138,6 @@ class AST(dict):
             if key not in self:
                 super(AST, self).__setitem__(key, None)
                 self._order.append(key)
-
-    def _copy(self):
-        return AST(
-            (k, v[:] if is_list(v) else v)
-            for k, v in self.items()
-        )
-
-    def set(self, key, value, force_list=False):
-        while self.__hasattribute__(key):
-            key += '_'
-
-        previous = self.get(key, None)
-        if previous is None:
-            if force_list:
-                super(AST, self).__setitem__(key, [value])
-            else:
-                super(AST, self).__setitem__(key, value)
-            self._order.append(key)
-        elif is_list(previous):
-            previous.append(value)
-        else:
-            super(AST, self).__setitem__(key, [previous, value])
-        return self
-
-    def setlist(self, key, value):
-        return self.set(key, value, force_list=True)
 
     def __json__(self):
         # preserve order
