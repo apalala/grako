@@ -24,10 +24,20 @@ from grako.semantics import GrakoASTSemantics, GrakoSemantics
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
 COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
+EOL_COMMENTS_RE = r'#.*?$'
 PRAGMA_RE = r'^\s*#[a-z]+'
 
 
 class GrakoBuffer(Buffer):
+    def __init__(self, text, filename=None, **kwargs):
+        super(GrakoBuffer, self).__init__(
+            text,
+            filename=filename,
+            comments_re=COMMENTS_RE,
+            eol_comments_re=EOL_COMMENTS_RE,
+            **kwargs
+        )
+
     def process_block(self, name, lines, index, **kwargs):
         # search for pragmas of the form
         # .. pragma_name :: params
@@ -61,7 +71,6 @@ class GrakoParserBase(GrakoBootstrapParser):
             text = GrakoBuffer(
                 text,
                 filename=filename,
-                comments_re=COMMENTS_RE,
                 **kwargs
             )
         return super(GrakoParserBase, self).parse(
