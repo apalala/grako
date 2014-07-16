@@ -566,13 +566,16 @@ You may use the tool under the terms of the BSD_-style license described in the 
 Contact and Updates
 ===================
 
-For general Q&A, please use the ``grako`` tag on StackOverflow_.
+For general Q&A, please use the ``[grako]`` tag on StackOverflow_.
 
 To discuss **Grako** and to receive notifications about new releases, please join the low-volume `Grako Forum`_ at *Google Groups*.
 
-.. _StackOverflow: http://stackoverflow.com/tags/grako/info
+You can also follow the latest **Grako** developments with `@GrakoPEG`_ on Twitter_.
 
+.. _StackOverflow: http://stackoverflow.com/tags/grako/info
 .. _`Grako Forum`:  https://groups.google.com/forum/?fromgroups#!forum/grako
+.. _`@GrakoPEG`: https://twitter.com/GrakoPEG
+.. _Twitter: https://twitter.com/GrakoPEG
 
 
 Credits
