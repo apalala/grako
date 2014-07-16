@@ -588,7 +588,6 @@ class ParseContext(object):
             self._goto(p)
             self._state = s
             self._pop_ast()  # simply discard
-            self.last_node = None
 
     @contextmanager
     def _ifnot(self):
