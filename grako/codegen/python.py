@@ -370,14 +370,12 @@ class Grammar(Base):
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
                 from grako.parsing import graken, Parser
-                from grako.exceptions import *  # noqa
 
 
                 __version__ = '{version}'
 
                 __all__ = [
                     '{name}Parser',
-                    '{name}SemanticParser',
                     '{name}Semantics',
                     'main'
                 ]

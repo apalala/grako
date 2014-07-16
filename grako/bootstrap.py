@@ -13,14 +13,12 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 from grako.parsing import graken, Parser
-from grako.exceptions import *  # noqa
 
 
-__version__ = '2014.07.15.17.23.21.01'
+__version__ = '2014.07.16.02.25.26.02'
 
 __all__ = [
     'GrakoBootstrapParser',
-    'GrakoBootstrapSemanticParser',
     'GrakoBootstrapSemantics',
     'main'
 ]
