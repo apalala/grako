@@ -4,6 +4,7 @@ include Makefile
 include tox.ini
 
 recursive-include etc *
+recursive-exclude etc *.pdf
 
 recursive-include examples/antlr2grako *
 exclude examples/antlr2grako/antlr_parser.py
@@ -19,3 +20,4 @@ global-exclude *.orig
 global-exclude *.c
 global-exclude *.so
 global-exclude *~
+global-exclude __pycache__
