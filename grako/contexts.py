@@ -57,30 +57,28 @@ class ParseContext(object):
         self._buffer = None
         self.semantics = semantics
         self.encoding = encoding
-        self.parseinfo = parseinfo
+        self.enable_parseinfo = parseinfo
         self.trace = trace
 
         self.comments_re = comments_re
         self.whitespace = whitespace
         self.ignorecase = ignorecase
         self.nameguard = nameguard
+        self.memoize_lookaheads = memoize_lookaheads
 
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
         self._memoization_cache = dict()
-        self._potential_results = dict()
+
         self._last_node = None
         self._state = None
         self._lookahead = 0
-        self._memoize_lookaheads = memoize_lookaheads
-        self._left_recursive_eval = []
-        self._left_recursive_head = []
 
-    def _clear_cache(self):
-        self._memoization_cache = dict()
-        self._potential_results = dict()
+        self._recursive_results = dict()
+        self._recursive_eval = []
+        self._recursive_head = []
 
     def _reset(self,
                text=None,
@@ -98,7 +96,12 @@ class ParseContext(object):
         if nameguard is None:
             nameguard = self.nameguard
         if memoize_lookaheads is not None:
-            self._memoize_lookaheads = memoize_lookaheads
+            self.memoize_lookaheads = memoize_lookaheads
+        if trace is not None:
+            self.trace = trace
+        if semantics is not None:
+            self.semantics = semantics
+
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
@@ -111,17 +114,19 @@ class ParseContext(object):
                 nameguard=nameguard,
                 **kwargs)
         self._buffer = buffer
-        if trace is not None:
-            self.trace = trace
-        if semantics is not None:
-            self.semantics = semantics
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
         self._memoization_cache = dict()
-        if semantics is not None:
-            self.semantics = semantics
+
+        self._last_node = None
+        self._state = None
+        self._lookahead = 0
+
+        self._recursive_results = dict()
+        self._recursive_eval = []
+        self._recursive_head = []
 
     def parse(self,
               text,
@@ -132,7 +137,7 @@ class ParseContext(object):
               whitespace=None,
               **kwargs):
         try:
-            self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
+            self.enable_parseinfo = kwargs.pop('parseinfo', self.enable_parseinfo)
             self._reset(
                 text=text,
                 filename=filename,
@@ -164,6 +169,10 @@ class ParseContext(object):
     @property
     def _pos(self):
         return self._buffer.pos
+
+    def _clear_cache(self):
+        self._memoization_cache = dict()
+        self._recursive_results = dict()
 
     def _goto(self, pos):
         self._buffer.goto(pos)
@@ -258,7 +267,7 @@ class ParseContext(object):
             prune_dict(cache, lambda k, _: k[0] < cutpos)
 
         prune_cache(self._memoization_cache)
-        prune_cache(self._potential_results)
+        prune_cache(self._recursive_results)
 
     def _push_cut(self):
         self._cut_stack.append(False)
@@ -272,8 +281,8 @@ class ParseContext(object):
     def _leave_lookahead(self):
         self._lookahead -= 1
 
-    def _memoize_lookahead(self):
-        return self._memoize_lookaheads or self._lookahead == 0
+    def _memoization(self):
+        return self.memoize_lookaheads or self._lookahead == 0
 
     def _rulestack(self):
         stack = '.'.join(self._rule_stack)
@@ -368,12 +377,11 @@ class ParseContext(object):
 
     def _invoke_rule(self, rule, name, params, kwparams):
         cache = self._memoization_cache
-        pos = last_pos = self._pos
+        pos = self._pos
 
         key = (pos, rule, self._state)
         if key in cache:
-            memo = cache[key]
-            memo = self._left_recursion_check(name, key, memo)
+            memo = self._left_recursion_check(name, key, cache[key])
             if isinstance(memo, Exception):
                 raise memo
             return memo
@@ -392,19 +400,19 @@ class ParseContext(object):
                 node = self.cst
             elif '@' in node:
                 node = node['@']  # override the AST
-            elif self.parseinfo:
+            elif self.enable_parseinfo:
                 node._parseinfo = self._parseinfo(name, pos, comments)
 
             node = self._invoke_semantic_rule(name, node, params, kwparams)
             result = (node, self._pos, self._state)
 
-            result = self._left_recurse(rule, name, last_pos, key, result, params, kwparams)
+            result = self._left_recurse(rule, name, pos, key, result, params, kwparams)
 
-            if self._memoize_lookahead() and not self._in_left_recursive_loop():
+            if self._memoization() and not self._in_recursive_loop():
                 cache[key] = result
             return result
         except Exception as e:
-            if self._memoize_lookahead():
+            if self._memoization():
                 cache[key] = e
             raise
         finally:
@@ -417,7 +425,7 @@ class ParseContext(object):
         #
         #   http://www.vpri.org/pdf/tr2007002_packrat.pdf
         #
-        if self._memoize_lookahead():
+        if self._memoization():
             self._memoization_cache[key] = FailedLeftRecursion(
                 self._buffer,
                 list(reversed(self._rule_stack[:])),
@@ -431,32 +439,32 @@ class ParseContext(object):
             # result from a previous pass that we can return, or
             # we make a note of the rule so that we can take
             # action as we unwind the rule stack.
-            if key in self._potential_results:
-                memo = self._potential_results[key]
+            if key in self._recursive_results:
+                memo = self._recursive_results[key]
             else:
-                self._left_recursive_head.append(name)
+                self._recursive_head.append(name)
         return memo
 
-    def _in_left_recursive_loop(self):
-        head = self._left_recursive_head
+    def _in_recursive_loop(self):
+        head = self._recursive_head
         return head and head[-1] in self._rule_stack
 
-    def _left_recurse(self, rule, name, last_pos, key, result, params, kwparams):
-        if self._memoize_lookahead():
-            self._potential_results[key] = result
-
-        pos = last_pos
-        cache = self._memoization_cache
+    def _left_recurse(self, rule, name, pos, key, result, params, kwparams):
+        if self._memoization():
+            self._recursive_results[key] = result
 
         # If the current name is in the head, then we've just
         # unwound to the highest rule in the recursion
-        if ([name] == self._left_recursive_head[-1:] and self._left_recursive_head[-1:] != self._left_recursive_eval[-1:]):
+        cache = self._memoization_cache
+        last_pos = pos
+        if ([name] == self._recursive_head[-1:]
+        and self._recursive_head[-1:] != self._recursive_eval[-1:]):
             # Repeatedly apply the rule until it can't consume any
             # more. We store the last good result each time. Prior
             # to doing so we reset the position and remove any
             # failures from the cache.
             last_result = result
-            self._left_recursive_eval.append(name)
+            self._recursive_eval.append(name)
             while self._pos > last_pos:
                 last_result = result
                 last_pos = self._pos
@@ -468,9 +476,9 @@ class ParseContext(object):
                     pass
 
             result = last_result
-            self._potential_results = dict()
-            self._left_recursive_head.pop()
-            self._left_recursive_eval.pop()
+            self._recursive_results = dict()
+            self._recursive_head.pop()
+            self._recursive_eval.pop()
         return result
 
     def _invoke_semantic_rule(self, name, node, params, kwparams):
@@ -480,9 +488,9 @@ class ParseContext(object):
                 node = semantic_rule(node, *(params or []), **(kwparams or {}))
             if postproc is not None:
                 postproc(self, node)
+            return node
         except FailedSemantics as e:
             self._error(str(e), FailedParse)
-        return node
 
     def _token(self, token):
         self._next_token()
@@ -493,34 +501,10 @@ class ParseContext(object):
         self._last_node = token
         return token
 
-    def _try_token(self, token):
-        p = self._pos
-        self._next_token()
-        self._last_node = None
-        if self._buffer.match(token) is None:
-            self._goto(p)
-            return None
-        self._trace_match(token)
-        self._add_cst_node(token)
-        self._last_node = token
-        return token
-
     def _pattern(self, pattern):
         token = self._buffer.matchre(pattern)
         if token is None:
             self._error(pattern, etype=FailedPattern)
-        self._trace_match(token, pattern)
-        self._add_cst_node(token)
-        self._last_node = token
-        return token
-
-    def _try_pattern(self, pattern):
-        p = self._pos
-        token = self._buffer.matchre(pattern)
-        self._last_node = None
-        if token is None:
-            self._goto(p)
-            return None
         self._trace_match(token, pattern)
         self._add_cst_node(token)
         self._last_node = token
