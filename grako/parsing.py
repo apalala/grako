@@ -72,6 +72,6 @@ def graken(*params, **kwparams):
             # remove the single leading and trailing underscore
             # that the parser generator added
             name = name[1:-1]
-            return self._call(rule, name, *params, **kwparams)
+            return self._call(rule, name, args, kwargs)
         return wrapper
     return decorator

@@ -23,7 +23,17 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
-ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
+ParseInfo = namedtuple(
+    'ParseInfo',
+    [
+        'buffer',
+        'rule',
+        'pos',
+        'endpos',
+        'comments',
+        'eol_comments',
+    ]
+)
 
 
 class Closure(list):
@@ -47,30 +57,28 @@ class ParseContext(object):
         self._buffer = None
         self.semantics = semantics
         self.encoding = encoding
-        self.parseinfo = parseinfo
+        self.enable_parseinfo = parseinfo
         self.trace = trace
 
         self.comments_re = comments_re
         self.whitespace = whitespace
         self.ignorecase = ignorecase
         self.nameguard = nameguard
+        self.memoize_lookaheads = memoize_lookaheads
 
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
         self._memoization_cache = dict()
-        self._potential_results = dict()
+
         self._last_node = None
         self._state = None
         self._lookahead = 0
-        self._memoize_lookaheads = memoize_lookaheads
-        self._left_recursive_eval = []
-        self._left_recursive_head = []
 
-    def _clear_cache(self):
-        self._memoization_cache = dict()
-        self._potential_results = dict()
+        self._recursive_results = dict()
+        self._recursive_eval = []
+        self._recursive_head = []
 
     def _reset(self,
                text=None,
@@ -88,7 +96,12 @@ class ParseContext(object):
         if nameguard is None:
             nameguard = self.nameguard
         if memoize_lookaheads is not None:
-            self._memoize_lookaheads = memoize_lookaheads
+            self.memoize_lookaheads = memoize_lookaheads
+        if trace is not None:
+            self.trace = trace
+        if semantics is not None:
+            self.semantics = semantics
+
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
@@ -101,17 +114,19 @@ class ParseContext(object):
                 nameguard=nameguard,
                 **kwargs)
         self._buffer = buffer
-        if trace is not None:
-            self.trace = trace
-        if semantics is not None:
-            self.semantics = semantics
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
         self._memoization_cache = dict()
-        if semantics is not None:
-            self.semantics = semantics
+
+        self._last_node = None
+        self._state = None
+        self._lookahead = 0
+
+        self._recursive_results = dict()
+        self._recursive_eval = []
+        self._recursive_head = []
 
     def parse(self,
               text,
@@ -122,7 +137,7 @@ class ParseContext(object):
               whitespace=None,
               **kwargs):
         try:
-            self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
+            self.enable_parseinfo = kwargs.pop('parseinfo', self.enable_parseinfo)
             self._reset(
                 text=text,
                 filename=filename,
@@ -154,6 +169,10 @@ class ParseContext(object):
     @property
     def _pos(self):
         return self._buffer.pos
+
+    def _clear_cache(self):
+        self._memoization_cache = dict()
+        self._recursive_results = dict()
 
     def _goto(self, pos):
         self._buffer.goto(pos)
@@ -248,7 +267,7 @@ class ParseContext(object):
             prune_dict(cache, lambda k, _: k[0] < cutpos)
 
         prune_cache(self._memoization_cache)
-        prune_cache(self._potential_results)
+        prune_cache(self._recursive_results)
 
     def _push_cut(self):
         self._cut_stack.append(False)
@@ -262,8 +281,8 @@ class ParseContext(object):
     def _leave_lookahead(self):
         self._lookahead -= 1
 
-    def _memoize_lookahead(self):
-        return self._memoize_lookaheads or self._lookahead == 0
+    def _memoization(self):
+        return self.memoize_lookaheads or self._lookahead == 0
 
     def _rulestack(self):
         stack = '.'.join(self._rule_stack)
@@ -309,7 +328,12 @@ class ParseContext(object):
     def _trace_match(self, token, name=None):
         if self.trace:
             name = name if name else ''
-            self._trace('MATCHED <%s> /%s/\n\t%s', token, name, self._buffer.lookahead())
+            self._trace(
+                'MATCHED <%s> /%s/\n\t%s',
+                token,
+                name,
+                self._buffer.lookahead()
+            )
 
     def _error(self, item, etype=FailedParse):
         raise etype(
@@ -321,13 +345,23 @@ class ParseContext(object):
     def _fail(self):
         self._error('fail')
 
-    def _call(self, rule, name, *params, **kwparams):
+    def _parseinfo(self, name, start, comments):
+        return ParseInfo(
+            self._buffer,
+            name,
+            start,
+            self._pos,
+            comments,
+            self._buffer.eol_comments()
+        )
+
+    def _call(self, rule, name, params, kwparams):
         self._rule_stack.append(name)
         pos = self._pos
         try:
             self._trace_event('ENTER ')
             self._last_node = None
-            node, newpos, newstate = self._invoke_rule(rule, name, *params, **kwparams)
+            node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
             self._goto(newpos)
             self._state = newstate
             self._trace_event('SUCCESS')
@@ -341,126 +375,127 @@ class ParseContext(object):
         finally:
             self._rule_stack.pop()
 
-    def _invoke_rule(self, rule, name, *params, **kwparams):
-        last_pos = pos = self._pos
-        state = self._state
-        key = (pos, rule, state)
+    def _invoke_rule(self, rule, name, params, kwparams):
         cache = self._memoization_cache
+        pos = self._pos
 
+        key = (pos, rule, self._state)
         if key in cache:
-            result = cache[key]
-            if isinstance(result, FailedLeftRecursion):
-                # At this point we know we've already seen this rule
-                # at this position. Either we've got a potential
-                # result from a previous pass that we can return, or
-                # we make a note of the rule so that we can take
-                # action as we unwind the rule stack.
-                if key in self._potential_results:
-                    result = self._potential_results[key]
-                else:
-                    self._left_recursive_head.append(name)
+            memo = self._left_recursion_check(name, key, cache[key])
+            if isinstance(memo, Exception):
+                raise memo
+            return memo
 
-            if isinstance(result, Exception):
-                raise result
+        self._set_left_recursion_guard(name, key)
+        self._push_ast()
+        try:
+            if name[0].islower():
+                self._next_token()
+            comments = self._buffer.comments()
+
+            rule(self)
+
+            node = self.ast
+            if not node:
+                node = self.cst
+            elif '@' in node:
+                node = node['@']  # override the AST
+            elif self.enable_parseinfo:
+                node._parseinfo = self._parseinfo(name, pos, comments)
+
+            node = self._invoke_semantic_rule(name, node, params, kwparams)
+            result = (node, self._pos, self._state)
+
+            result = self._left_recurse(rule, name, pos, key, result, params, kwparams)
+
+            if self._memoization() and not self._in_recursive_loop():
+                cache[key] = result
             return result
+        except Exception as e:
+            if self._memoization():
+                cache[key] = e
+            raise
+        finally:
+            self._pop_ast()
 
-        # https://bitbucket.org/PaulS pointed out that:
-        #
+    def _set_left_recursion_guard(self, name, key):
         # Alessandro Warth et al say that we can deal with
         # direct and indirect left-recursion by seeding the
         # memoization cache with a parse failure.
         #
         #   http://www.vpri.org/pdf/tr2007002_packrat.pdf
         #
-        if self._memoize_lookahead():
-            cache[key] = FailedLeftRecursion(
+        if self._memoization():
+            self._memoization_cache[key] = FailedLeftRecursion(
                 self._buffer,
                 list(reversed(self._rule_stack[:])),
                 name
             )
 
-        self._push_ast()
+    def _left_recursion_check(self, name, key, memo):
+        if isinstance(memo, FailedLeftRecursion):
+            # At this point we know we've already seen this rule
+            # at this position. Either we've got a potential
+            # result from a previous pass that we can return, or
+            # we make a note of the rule so that we can take
+            # action as we unwind the rule stack.
+            if key in self._recursive_results:
+                memo = self._recursive_results[key]
+            else:
+                self._recursive_head.append(name)
+        return memo
+
+    def _in_recursive_loop(self):
+        head = self._recursive_head
+        return head and head[-1] in self._rule_stack
+
+    def _left_recurse(self, rule, name, pos, key, result, params, kwparams):
+        if self._memoization():
+            self._recursive_results[key] = result
+
+        # If the current name is in the head, then we've just
+        # unwound to the highest rule in the recursion
+        cache = self._memoization_cache
+        last_pos = pos
+        if ([name] == self._recursive_head[-1:]
+        and self._recursive_head[-1:] != self._recursive_eval[-1:]):
+            # Repeatedly apply the rule until it can't consume any
+            # more. We store the last good result each time. Prior
+            # to doing so we reset the position and remove any
+            # failures from the cache.
+            last_result = result
+            self._recursive_eval.append(name)
+            while self._pos > last_pos:
+                last_result = result
+                last_pos = self._pos
+                self._goto(pos)
+                prune_dict(cache, lambda _, v: isinstance(v, FailedParse))
+                try:
+                    result = self._invoke_rule(rule, name, params, kwparams)
+                except FailedParse:
+                    pass
+
+            result = last_result
+            self._recursive_results = dict()
+            self._recursive_head.pop()
+            self._recursive_eval.pop()
+        return result
+
+    def _invoke_semantic_rule(self, name, node, params, kwparams):
+        semantic_rule, postproc = self._find_semantic_rule(name)
         try:
-            if name[0].islower():
-                self._next_token()
-            rule(self)
-            node = self.ast
-            if not node:
-                node = self.cst
-            elif '@' in node:
-                node = node['@']  # override the AST
-            elif self.parseinfo:
-                node._add('_parseinfo', ParseInfo(self._buffer, name, pos, self._pos))
-
-            semantic_rule, postproc = self._find_semantic_rule(name)
-            try:
-                if semantic_rule:
-                    node = semantic_rule(node, *params, **kwparams)
-                if postproc is not None:
-                    postproc(self, node)
-            except FailedSemantics as e:
-                self._error(str(e), FailedParse)
-
-            result = (node, self._pos, self._state)
-            if self._memoize_lookahead():
-                self._potential_results[key] = result
-
-            # If the current name is in the head, then we've just
-            # unwound to the highest rule in the recursion
-            if ([name] == self._left_recursive_head[-1:]
-            and self._left_recursive_head[-1:] != self._left_recursive_eval[-1:]):
-                # Repeatedly apply the rule until it can't consume any
-                # more. We store the last good result each time. Prior
-                # to doing so we reset the position and remove any
-                # failures from the cache.
-
-                self._left_recursive_eval.append(name)
-                while self._pos > last_pos:
-                    last_result = result
-                    last_pos = self._pos
-                    self._goto(pos)
-                    prune_dict(cache, lambda _, v: isinstance(v, FailedParse))
-                    try:
-                        result = self._invoke_rule(rule, name, *params, **kwparams)
-                    except FailedParse:
-                        pass
-
-                result = last_result
-                self._potential_results = dict()
-                self._left_recursive_head.pop()
-                self._left_recursive_eval.pop()
-
-            # Only populate the cache if we're not in a left recursive loop.
-            if (self._memoize_lookahead()
-            and (
-                not self._left_recursive_head
-                or self._left_recursive_head[-1] not in self._rule_stack
-            )):
-                cache[key] = result
-            return result
-        except Exception as e:
-            if self._memoize_lookahead():
-                cache[key] = e
-            raise
-        finally:
-            self._pop_ast()
+            if semantic_rule:
+                node = semantic_rule(node, *(params or []), **(kwparams or {}))
+            if postproc is not None:
+                postproc(self, node)
+            return node
+        except FailedSemantics as e:
+            self._error(str(e), FailedParse)
 
     def _token(self, token):
         self._next_token()
         if self._buffer.match(token) is None:
             self._error(token, etype=FailedToken)
-        self._trace_match(token)
-        self._add_cst_node(token)
-        self._last_node = token
-        return token
-
-    def _try_token(self, token):
-        p = self._pos
-        self._next_token()
-        self._last_node = None
-        if self._buffer.match(token) is None:
-            self._goto(p)
-            return None
         self._trace_match(token)
         self._add_cst_node(token)
         self._last_node = token
@@ -475,23 +510,11 @@ class ParseContext(object):
         self._last_node = token
         return token
 
-    def _try_pattern(self, pattern):
-        p = self._pos
-        token = self._buffer.matchre(pattern)
-        self._last_node = None
-        if token is None:
-            self._goto(p)
-            return None
-        self._trace_match(token, pattern)
-        self._add_cst_node(token)
-        self._last_node = token
-        return token
-
     @contextmanager
     def _try(self):
         p = self._pos
         s = self._state
-        ast_copy = self.ast._copy()
+        ast_copy = self.ast.copy()
         self._push_ast()
         self.last_node = None
         try:
@@ -565,7 +588,6 @@ class ParseContext(object):
             self._goto(p)
             self._state = s
             self._pop_ast()  # simply discard
-            self.last_node = None
 
     @contextmanager
     def _ifnot(self):

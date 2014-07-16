@@ -9,11 +9,15 @@ from grako.util import strtype, asjson, is_list, PY3
 
 
 class AST(dict):
+    _closed = False
+
     def __init__(self, *args, **kwargs):
-        super(AST, self).__setattr__('_parseinfo', None)
-        super(AST, self).__setattr__('_order', [])
         super(AST, self).__init__()
+        self._order = []
+        self._parseinfo = None
+
         self.update(*args, **kwargs)
+        self._closed = True
 
     @property
     def parseinfo(self):
@@ -22,6 +26,10 @@ class AST(dict):
             This patch helps with backwards compatibility.
         """
         return self._parseinfo
+
+    @parseinfo.setter
+    def parseinfo(self, value):
+        self._parseinfo = value
 
     def iterkeys(self):
         return iter(self)
@@ -56,33 +64,57 @@ class AST(dict):
                 upairs(d)
         upairs(kwargs.items())
 
+    def set(self, key, value, force_list=False):
+        while self.__hasattribute__(key):
+            key += '_'
+
+        previous = self.get(key, None)
+        if previous is None:
+            if force_list:
+                super(AST, self).__setitem__(key, [value])
+            else:
+                super(AST, self).__setitem__(key, value)
+            self._order.append(key)
+        elif is_list(previous):
+            previous.append(value)
+        else:
+            super(AST, self).__setitem__(key, [previous, value])
+        return self
+
+    def setlist(self, key, value):
+        return self.set(key, value, force_list=True)
+
+    def copy(self):
+        return AST(
+            (k, v[:] if is_list(v) else v)
+            for k, v in self.items()
+        )
+
     def __iter__(self):
         return iter(self._order)
 
+    def __getitem__(self, key):
+        if key in self:
+            return super(AST, self).__getitem__(key)
+
     def __setitem__(self, key, value):
-        if key in self.__dict__:
-            super(AST, self).__setattr__(key, value)
-        else:
-            self._add(key, value)
+        self.set(key, value)
 
     def __delitem__(self, key):
         super(AST, self).__delitem__(key)
         self._order.remove(key)
 
     def __setattr__(self, name, value):
-        self.__setitem__(name, value)
+        if self._closed and name not in vars(self):
+            raise AttributeError(
+                '%s attributes are fixed. Cannot set attribute %s.'
+                %
+                (self.__class__.__name__, name)
+            )
+        super(AST, self).__setattr__(name, value)
 
-    def __getattr_(self, key):
-        return super.__getattr__(key)
-
-    def __getattribute__(self, name):
-        if name in self:
-            return self[name]
-        if isinstance(name, strtype):
-            try:
-                return super(AST, self).__getattribute__(name)
-            except AttributeError:
-                pass
+    def __getattr__(self, name):
+        return self[name]
 
     def __hasattribute__(self, name):
         if not isinstance(name, strtype):
@@ -106,29 +138,6 @@ class AST(dict):
             if key not in self:
                 super(AST, self).__setitem__(key, None)
                 self._order.append(key)
-
-    def _copy(self):
-        return AST(
-            (k, v[:] if is_list(v) else v)
-            for k, v in self.items()
-        )
-
-    def _add(self, key, value, force_list=False):
-        previous = self.get(key, None)
-        if previous is None:
-            if force_list:
-                super(AST, self).__setitem__(key, [value])
-            else:
-                super(AST, self).__setitem__(key, value)
-            self._order.append(key)
-        elif is_list(previous):
-            previous.append(value)
-        else:
-            super(AST, self).__setitem__(key, [previous, value])
-        return self
-
-    def _append(self, key, value):
-        return self._add(key, value, force_list=True)
 
     def __json__(self):
         # preserve order

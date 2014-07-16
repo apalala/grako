@@ -28,21 +28,21 @@ class ASTTests(unittest.TestCase):
 
     def test_add(self):
         ast = AST()
-        ast.name = 'hello'
+        ast['name'] = 'hello'
         self.assertIsNotNone(ast.name)
         self.assertEqual('hello', ast.name)
 
-        ast.name = 'world'
+        ast['name'] = 'world'
         self.assertEqual(['hello', 'world'], ast.name)
 
-        ast.value = 1
+        ast['value'] = 1
         self.assertEqual(1, ast.value)
 
     def test_iter(self):
         ast = AST()
-        ast.name = 'hello'
-        ast.name = 'world'
-        ast.value = 1
+        ast['name'] = 'hello'
+        ast['name'] = 'world'
+        ast['value'] = 1
         self.assertEqual(['name', 'value'], list(ast))
         self.assertEqual([['hello', 'world'], 1], list(ast.values()))
 

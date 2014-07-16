@@ -25,7 +25,12 @@ __all__ = ['Buffer']
 RETYPE = type(regexp.compile('.'))
 
 PosLine = namedtuple('PosLine', ['pos', 'line'])
-LineInfo = namedtuple('LineInfo', ['filename', 'line', 'col', 'start', 'text'])
+
+
+LineInfo = namedtuple(
+    'LineInfo',
+    ['filename', 'line', 'col', 'start', 'end', 'text']
+)
 
 
 class Buffer(object):
@@ -35,6 +40,7 @@ class Buffer(object):
                  whitespace=None,
                  tabwidth=None,
                  comments_re=None,
+                 eol_comments_re=None,
                  ignorecase=False,
                  trace=False,
                  nameguard=None,
@@ -47,6 +53,7 @@ class Buffer(object):
                               else string.whitespace)
         self.tabwidth = tabwidth
         self.comments_re = comments_re
+        self.eol_comments_re = eol_comments_re
         self.ignorecase = ignorecase
         self.trace = True
         self.nameguard = (nameguard
@@ -61,6 +68,8 @@ class Buffer(object):
         self._build_line_cache()
         self._len = len(self.text)
         self._re_cache = {}
+        self._comments = []
+        self._eol_comments = []
 
     def _preprocess(self, *args, **kwargs):
         lines, index = self._preprocess_block(self.filename, self.text)
@@ -153,7 +162,13 @@ class Buffer(object):
     def move(self, n):
         self.goto(self.pos + n)
 
-    def eatwhitespace(self):
+    def comments(self):
+        return self._comments
+
+    def eol_comments(self):
+        return self._eol_comments
+
+    def eat_whitespace(self):
         p = self._pos
         le = self._len
         ws = self.whitespace
@@ -161,17 +176,32 @@ class Buffer(object):
             p += 1
         self.goto(p)
 
-    def eatcomments(self):
+    def eat_comments(self):
         if self.comments_re is not None:
-            while self.matchre(self.comments_re, regexp.MULTILINE):
-                pass
+            while True:
+                comment = self.matchre(self.comments_re, regexp.MULTILINE)
+                if not comment:
+                    break
+                self._comments.extend(comment.splitlines())
+
+    def eat_eol_comments(self):
+        if self.eol_comments_re is not None:
+            while True:
+                comment = self.matchre(self.eol_comments_re, regexp.MULTILINE)
+                if not comment:
+                    break
+                self._eol_comments.extend(comment.splitlines())
 
     def next_token(self):
+        self._comments = []
+        self._eol_comments = []
+
         p = None
         while self._pos != p:
             p = self._pos
-            self.eatcomments()
-            self.eatwhitespace()
+            self.eat_eol_comments()
+            self.eat_comments()
+            self.eat_whitespace()
 
     def skip_to(self, c):
         p = self._pos
@@ -270,18 +300,22 @@ class Buffer(object):
     def line_info(self, pos=None):
         if pos is None:
             pos = self._pos
+
         nmax = len(self._linecache) - 1
         if pos >= self._len:
-            return LineInfo(self.filename, nmax, 0, self._len, "")
+            return LineInfo(self.filename, nmax, 0, self._len, self._len, '')
+
         n = bisect_left(self._linecache, PosLine(pos, 0))
         start, line = self._linecache[n - 1]
         start = start + 1
         end = self._linecache[n].pos + 1
-        text = self.text[start:end]
         col = pos - start
+
+        text = self.text[start:end]
         n = min(len(self._line_index) - 1, line)
         filename, line = self._line_index[n]
-        return LineInfo(filename, line, col, start, text)
+
+        return LineInfo(filename, line, col, start, end, text)
 
     def lookahead(self):
         if self.atend():

@@ -23,13 +23,11 @@ class Node(object):
     def __init__(self, ctx=None, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
-        self._ast = ast
-        if parseinfo is None and isinstance(ast, AST):
-            parseinfo = ast._parseinfo
+        if isinstance(ast, AST):
+            parseinfo = parseinfo or ast._parseinfo
         self._parseinfo = parseinfo
 
         self._parent = None
-        self._children = []
         self._adopt_children(ast)
         self.__postinit__(ast)
 
@@ -37,20 +35,12 @@ class Node(object):
         if isinstance(ast, AST):
             for name, value in ast.items():
                 if hasattr(self, name):
-                    name = '_' + name
+                    name = name + '_'
                 setattr(self, name, value)
-
-    @property
-    def ast(self):
-        return self._ast
 
     @property
     def parent(self):
         return self._parent
-
-    @property
-    def children(self):
-        return self._children
 
     @property
     def line(self):
@@ -81,23 +71,43 @@ class Node(object):
             text = self.parseinfo.buffer.text
             return text[self.parseinfo.pos:self.parseinfo.endpos]
 
-    def _adopt_children(self, ast):
-        def adopt(node):
-            if isinstance(node, Node):
-                node._parent = self
-                self._children.append(node)
+    @property
+    def comments(self):
+        if self.parseinfo:
+            return self.parseinfo.comments
 
-        if isinstance(ast, AST):
+    @property
+    def eol_comments(self):
+        if self.parseinfo:
+            return self.parseinfo.eol_comments
+
+    def children(self):
+        childl = []
+
+        def cn(child):
+            if isinstance(child, Node):
+                childl.append(child)
+            elif isinstance(child, dict):
+                for c in child.values():
+                    cn(c)
+            elif isinstance(child, list):
+                for c in child:
+                    cn(c)
+
+        for c in vars(self).values():
+            cn(c)
+        return childl
+
+    def _adopt_children(self, ast, parent=None):
+        if isinstance(ast, Node):
+            if isinstance(parent, Node):
+                ast._parent = parent
+        elif isinstance(ast, dict):
             for c in ast.values():
-                if isinstance(c, list):
-                    self._adopt_children(c)
-                else:
-                    adopt(c)
+                self._adopt_children(c, parent=ast)
         elif isinstance(ast, list):
             for c in ast:
-                adopt(c)
-        else:
-            adopt(ast)
+                self._adopt_children(c, parent=ast)
 
     def _pubdict(self):
         return {
@@ -107,13 +117,11 @@ class Node(object):
         }
 
     def __json__(self):
-        d = self._pubdict()
-        if not d:
-            return asjson(self.ast)
-        else:
-            result = collections.OrderedDict(__class__=self.__class__.__name__)
-            result.update(d)
-            return asjson(result)
+        result = collections.OrderedDict(
+            __class__=self.__class__.__name__,
+        )
+        result.update(self._pubdict())
+        return asjson(result)
 
     def __str__(self):
         return asjsons(self)
@@ -144,7 +152,7 @@ class DepthFirstWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
         tv = super(DepthFirstWalker, self).walk
         if isinstance(node, Node):
-            children = [self.walk(c, *args, **kwargs) for c in node.children]
+            children = [self.walk(c, *args, **kwargs) for c in node.children()]
             return tv(node, children, *args, **kwargs)
         elif isinstance(node, collections.Iterable):
             return [tv(e, [], *args, **kwargs) for e in node]

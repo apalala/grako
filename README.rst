@@ -285,10 +285,10 @@ The expressions, in reverse order of operator precedence, can be:
         Another form of the cut operator. *Deprecated*.
 
     ``name:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key.
+        Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, an underscore (``_``) will be appended to it in the AST_.
 
     ``name+:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added.
+        Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added. Collisions with ``dict`` attributes are resolved by appending an underscore to ``name``.
 
     ``@:e``
         The override operator. Make the AST_ for the complete rule be the AST_ for ``e``.
@@ -566,13 +566,16 @@ You may use the tool under the terms of the BSD_-style license described in the 
 Contact and Updates
 ===================
 
-For general Q&A, please use the ``grako`` tag on StackOverflow_.
+For general Q&A, please use the ``[grako]`` tag on StackOverflow_.
 
 To discuss **Grako** and to receive notifications about new releases, please join the low-volume `Grako Forum`_ at *Google Groups*.
 
-.. _StackOverflow: http://stackoverflow.com/tags/grako/info
+You can also follow the latest **Grako** developments with `@GrakoPEG`_ on Twitter_.
 
+.. _StackOverflow: http://stackoverflow.com/tags/grako/info
 .. _`Grako Forum`:  https://groups.google.com/forum/?fromgroups#!forum/grako
+.. _`@GrakoPEG`: https://twitter.com/GrakoPEG
+.. _Twitter: https://twitter.com/GrakoPEG
 
 
 Credits
@@ -654,94 +657,101 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.1.3-rc.1
+----------
+
+* **Grako** code generation is now separtate from the grammar model. An invitation to develop other runtime targets.
+
+* Removed attribute assignment to underlying ``dict`` in ``AST``.
+
 3.1.2
 -----
 
-    * Improvements to handling of let recursion now support more complex cases.
+* Improvements to handling of let recursion now support more complex cases.
 
-    * If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
+* If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
 
-    * *BUG* 33_ Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements (Marcus_).
+* *BUG* 33_ Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements (Marcus_).
 
-    * *BUG* The bootstrap parser contained errors due to the previous bug in ``util.ustr()``.
+* *BUG* The bootstrap parser contained errors due to the previous bug in ``util.ustr()``.
 
 .. _33: https://bitbucket.org/apalala/grako/issue/33/
 
 3.1.1
 -----
 
-    * Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
+* Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
 
-    * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
+* The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
 
-    * `Paul Sargent`_ generalized left-recursion to support complex cases.
+* `Paul Sargent`_ generalized left-recursion to support complex cases.
 
-    * *BUGs* Minor bnd not-so-minor ug fixes.See the Bitbucket_ logs for details.
+* *BUGs* Minor bnd not-so-minor ug fixes.See the Bitbucket_ logs for details.
 
 
 3.1.0
 -----
 
-    * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
+* **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
 
 3.0.5-rc.1
 ----------
 
-    * Removed the concept of *rule state*. The requirement is better implemented using attributes of the semantics class, not the parsing context.
+* Removed the concept of *rule state*. The requirement is better implemented using attributes of the semantics class, not the parsing context.
 
-    * *BUG* 30_  Make sure that escapes in `--whitespace` are evaluated before being passed to the model.
+* *BUG* 30_  Make sure that escapes in `--whitespace` are evaluated before being passed to the model.
 
-    * *BUG* 30_ Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
+* *BUG* 30_ Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
 
 .. _30: https://bitbucket.org/apalala/grako/issue/30/
 
 3.0.4
 -----
 
-    * The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
+* The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
 
-    * The *cut* operator is now ``~``, the tilde.
+* The *cut* operator is now ``~``, the tilde.
 
-    * Now name overrides must always be specified with a colon, ``@:e``.
+* Now name overrides must always be specified with a colon, ``@:e``.
 
-    * Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
+* Grammar rules may declare Python_-style arguments that get passed to their corresponding semantic methods.
 
-    * Grammar rules may now *inherit* the contents of other rules using the ``<`` operator.
+* Grammar rules may now *inherit* the contents of other rules using the ``<`` operator.
 
-    * The *right hand side* of a rule may be included in another rule using the ``>`` operator.
+* The *right hand side* of a rule may be included in another rule using the ``>`` operator.
 
-    * Grammars may include other files using the ``#include ::`` directive.
+* Grammars may include other files using the ``#include ::`` directive.
 
-    * Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
+* Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
 
-    * Added a ``--pretty`` option to the command-line tool, and refactored pretty-printing (``__str__()`` in grammar models) enough to make its output a norm for grammar format.
+* Added a ``--pretty`` option to the command-line tool, and refactored pretty-printing (``__str__()`` in grammar models) enough to make its output a norm for grammar format.
 
-    * Internals and examples were upgraded to use the latest **Grako** features.
+* Internals and examples were upgraded to use the latest **Grako** features.
 
-    * Parsing exceptions will now show the sequence of rule invocations that led to the failure.
+* Parsing exceptions will now show the sequence of rule invocations that led to the failure.
 
-    * Renamed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
+* Renamed ``Traverser`` and ``traverse`` to ``Walker`` and ``walk``.
 
-    * Now the keys in ``grako.ast.AST`` are ordered like in ``collections.OrderedDict``.
+* Now the keys in ``grako.ast.AST`` are ordered like in ``collections.OrderedDict``.
 
-    * **Grako** models are now more JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
+* **Grako** models are now more JSON_-friendly with the help of ``grako.ast.AST.__json__()``, ``grako.model.Node.__json__()`` and ``grako.util.asjon()``.
 
-    * Added compatibility with Cython_.
+* Added compatibility with Cython_.
 
-    * Removed checking for compatibility with Python_ 3.3 (use 3.4 instead).
-    * Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
+* Removed checking for compatibility with Python_ 3.3 (use 3.4 instead).
+* Incorporated Robert Speer's solution to honoring escape sequences without messing up the encoding.
 
-    * *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
-      Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
-      There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
+* *BUG* Honor simple escape sequences in tokens while trying not to corrupt unicode input.
+    Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of Python_ ``\x`` or ``\o`` escape sequences.
+    There is no standard/stable way to unscape a Python_ string with escaped escape sequences. Unicode is broken in Python_ 2.x.
 
-    * *BUG* The ``--list`` option was not working in Python_ 3.4.1.
+* *BUG* The ``--list`` option was not working in Python_ 3.4.1.
 
-    * *BUG* 22_ Always exit with non-zero exit code on failure.
+* *BUG* 22_ Always exit with non-zero exit code on failure.
 
-    * *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
+* *BUG* 23_ Incorrect encoding of Python_ escape sequences in grammar tokens.
 
-    * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
+* *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
 
 .. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
 .. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
@@ -754,17 +764,17 @@ Changes
 2.4.3
 -----
 
-    * Changes to allow downstream translators to have different target languages with as little code replication as possible.  There's new functionality pulled from downstream in ``grako.model`` and ``grako.rendering``. ``grako.model`` is now a module instead of a package.
+* Changes to allow downstream translators to have different target languages with as little code replication as possible.  There's new functionality pulled from downstream in ``grako.model`` and ``grako.rendering``. ``grako.model`` is now a module instead of a package.
 
-    * The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
+* The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
 
-    * Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
+* Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
 
-    * Added compatibility with tox_. Now tests are performed against the latest releases of Python_ 2.7.x and 3.x, and PyPy_ 2.x.
+* Added compatibility with tox_. Now tests are performed against the latest releases of Python_ 2.7.x and 3.x, and PyPy_ 2.x.
 
-    * Added `--whitespace` parameter to generated `main()`.
+* Added `--whitespace` parameter to generated `main()`.
 
-    * Applied Flake8_ to project and to generated parsers.
+* Applied Flake8_ to project and to generated parsers.
 
 .. _Flake8: https://pypi.python.org/pypi/flake8
 .. _tox: https://testrun.org/tox/latest/
@@ -772,98 +782,108 @@ Changes
 
 2.3.0
 -----
-    * Now the ``@`` operator behaves as a special case of the ``name:`` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as `@+:e`, with the expected semantics.
 
-    * *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
+* Now the ``@`` operator behaves as a special case of the ``name:`` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as `@+:e`, with the expected semantics.
 
-    * *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.x.
+* *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
 
-    * *BUG!* Compatibility between Python_ 2.7/3.x `print()` statements.
+* *BUG!* Improve consistency of use Unicode between Python_ 2.7 and 3.x.
+
+* *BUG!* Compatibility between Python_ 2.7/3.x `print()` statements.
 
 2.2.2
 -----
 
-    * *BUG!* The choice operator must restore context even when some of the choices match partially and then fail.
-    * *BUG!* ``Grammar.parse()`` needs to initialize the AST_ stack.
+* Optionally, do not memoize during positive or negative lookaheads. This allows lookaheads to fail semantically without committing to the fail.
 
-    * *BUG!* ``AST.copy()`` was too shallow, so an AST_ could be modified by a closure iteration that matched partially and eventually failed. Now ``AST.copy()`` clones AST_ values of type ``list`` to avoid that situation.
+* Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
 
-    * *BUG!* A failed ``cut`` must trickle up the rule-call hierarchy so parsing errors are reported as close to their source as possible.
-    * Optionally, do not memoize during positive or negative lookaheads. This allows lookaheads to fail semantically without committing to the fail.
+* Grouping expressions no longer produce a list as CST_.
 
-    * Fixed the implementation of the *optional* operator so the AST_/CST_ generated when the *optional* succeeds is exactly the same as if the expression had been mandatory.
-    * Grouping expressions no longer produce a list as CST_.
-    * *BUG*! Again, make sure closures always return a list.
-    * Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
-    * Again, protect the names of methods for rules with a leading and trailing underscore.  It's the only way to avoid unexpected name clashes.
-    * The bootstrap parser is now the one generated by **Grako** from the bootstrap grammar.
-    * Several minor bug fixes (lambdafu_).
+* *BUG*! Again, make sure closures always return a list.
+
+* Added infrastructure for stateful rules (lambdafu_, see the `pull request <https://bitbucket.org/apalala/grako/pull-request/13/stateful-parsing-for-grako/diff>`_ ).
+
+* Again, protect the names of methods for rules with a leading and trailing underscore.  It's the only way to avoid unexpected name clashes.
+
+* The bootstrap parser is now the one generated by **Grako** from the bootstrap grammar.
+
+* Several minor bug fixes (lambdafu_).
+
+* *BUG!* The choice operator must restore context even when some of the choices match partially and then fail.
+
+* *BUG!* ``Grammar.parse()`` needs to initialize the AST_ stack.
+
+* *BUG!* ``AST.copy()`` was too shallow, so an AST_ could be modified by a closure iteration that matched partially and eventually failed. Now ``AST.copy()`` clones AST_ values of type ``list`` to avoid that situation.
+
+* *BUG!* A failed ``cut`` must trickle up the rule-call hierarchy so parsing errors are reported as close to their source as possible.
+
 
 2.0.4
 -----
-    * **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less polluted namespaces and smaller classes.
-    * A ``last_node`` protocol allowed the removal of all mentions of variable ``_e`` from generated parsers, which are thus more readable.
-    * Refactored *closures* to be more pythonic (there are **no** anonymous blocks in Python_!).
-    * Fixes to the *antlr2grako* example to let it convert over 6000 lines of an ANTLR_ grammar to **Grako**.
-    * Improved rendering of grammars by grammar models.
-    * Now *tokens* accept Python_ escape sequences.
-    * Added a simple `Visitor Pattern`_ for ``Renderer`` nodes. Used it to implement diagramming.
-    * Create a basic diagram of a grammar if pygraphviz_ is available.  Added the ``--draw`` option to the command-line tool.
-    * *BUG!* Trace information off by one character (thanks to lambdafu_).
-    * *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
-    * *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
-    * Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
-    * Several improvements and bug fixes (mostly by lambdafu_).
+* **Grako** no longer assumes that parsers implement the semantics. A separate semantics implementation must be provided. This allows for less polluted namespaces and smaller classes.
+* A ``last_node`` protocol allowed the removal of all mentions of variable ``_e`` from generated parsers, which are thus more readable.
+* Refactored *closures* to be more pythonic (there are **no** anonymous blocks in Python_!).
+* Fixes to the *antlr2grako* example to let it convert over 6000 lines of an ANTLR_ grammar to **Grako**.
+* Improved rendering of grammars by grammar models.
+* Now *tokens* accept Python_ escape sequences.
+* Added a simple `Visitor Pattern`_ for ``Renderer`` nodes. Used it to implement diagramming.
+* Create a basic diagram of a grammar if pygraphviz_ is available.  Added the ``--draw`` option to the command-line tool.
+* *BUG!* Trace information off by one character (thanks to lambdafu_).
+* *BUG!* The AST_ for a closure might fold repeated symbols (thanks to lambdafu_).
+* *BUG!* It was not possible to pass buffering parameters such as ``whitespace`` to the parser's constructor (thanks to lambdafu_).
+* Added command-line and parser options to specify the buffering treatment of ``whitespace`` and ``nameguard`` (lambdafu_).
+* Several improvements and bug fixes (mostly by lambdafu_).
 
 1.4.0
 -----
-    * *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
-    * Semantic actions can now be implemented by a delegate.
-    * Reset synthetic method count and use decorators to increase readability of generated parsers.
-    * The **Grako** EBNF_ grammar and the bootstrap parser now align, so the grammar can be used to bootstrap **Grako**.
-    * The bootstrap parser was refactored to use semantic delegates.
-    * Proved that grammar models can be pickled, unpickled, and reused.
-    * Added the *antlr* example with an ANTLR_-to-**Grako** grammar translator.
-    * Changed the licensing to simplified BSD_.
+* *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
+* Semantic actions can now be implemented by a delegate.
+* Reset synthetic method count and use decorators to increase readability of generated parsers.
+* The **Grako** EBNF_ grammar and the bootstrap parser now align, so the grammar can be used to bootstrap **Grako**.
+* The bootstrap parser was refactored to use semantic delegates.
+* Proved that grammar models can be pickled, unpickled, and reused.
+* Added the *antlr* example with an ANTLR_-to-**Grako** grammar translator.
+* Changed the licensing to simplified BSD_.
 
 1.3.0
 -----
-    * *Important memory optimization!* Remove the memoization information that a *cut* makes obsolete (thanks to Kota Mizushima).
-    * Make sure that *cut* actually applies to the nearest fork.
-    * Finish aligning model parsing with generated code parsing.
-    * Report all the rules missing in a grammar before aborting.
-    * Align the sample *etc/grako.ebnf* grammar to the language parsed by the bootstrap parser.
-    * Ensure compatibility with Python_ 2.7.4 and 3.3.1.
-    * Update credits.
+* *Important memory optimization!* Remove the memoization information that a *cut* makes obsolete (thanks to Kota Mizushima).
+* Make sure that *cut* actually applies to the nearest fork.
+* Finish aligning model parsing with generated code parsing.
+* Report all the rules missing in a grammar before aborting.
+* Align the sample *etc/grako.ebnf* grammar to the language parsed by the bootstrap parser.
+* Ensure compatibility with Python_ 2.7.4 and 3.3.1.
+* Update credits.
 
 1.2.1
 -----
-    * Lazy rendering of template fields.
-    * Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
-    * Rendering of iterables using a specified separator, indent, and format.
-    * Basic documentation of the *rendering engine*.
-    * Added a cache of compiled regexps to ``Buffer``.
-    * Align bootstrap parser with generated parser framework.
-    * Add *cuts* to bootstrap parser so errors are reported closer to their origin.
-    * *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exception so the reported line and column make sense.
-    * Prettify the sample **Grako** grammar.
-    * Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
-    * Spell-check this document with `Vim spell`_.
-    * Lint using flake8_.
+* Lazy rendering of template fields.
+* Optimization of *rendering engine*'s ``indent()`` and ``trim()``.
+* Rendering of iterables using a specified separator, indent, and format.
+* Basic documentation of the *rendering engine*.
+* Added a cache of compiled regexps to ``Buffer``.
+* Align bootstrap parser with generated parser framework.
+* Add *cuts* to bootstrap parser so errors are reported closer to their origin.
+* *(minor) BUG!* ``FailedCut`` exceptions must translate to their nested exception so the reported line and column make sense.
+* Prettify the sample **Grako** grammar.
+* Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
+* Spell-check this document with `Vim spell`_.
+* Lint using flake8_.
 
 1.1.0
 -----
-    * *BUG!* Need to preserve state when closure iterations match partially.
-    * Improved performance by also memoizing exception results and advancement over whitespace and comments.
-    * Work with Unicode while rendering.
-    * Improved consistency between the way generated parsers and models parse.
-    * Added a table of contents to this *README*.
-    * Document ``parseinfo`` and default it to *False*.
-    * Mention the use of *context managers*.
+* *BUG!* Need to preserve state when closure iterations match partially.
+* Improved performance by also memoizing exception results and advancement over whitespace and comments.
+* Work with Unicode while rendering.
+* Improved consistency between the way generated parsers and models parse.
+* Added a table of contents to this *README*.
+* Document ``parseinfo`` and default it to *False*.
+* Mention the use of *context managers*.
 
 1.0.0
 -----
-    * First public release.
+* First public release.
 
 .. _`Visitor Pattern`: http://en.wikipedia.org/wiki/Visitor_pattern
 .. _pygraphviz: https://pypi.python.org/pypi/pygraphviz/

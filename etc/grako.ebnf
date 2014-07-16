@@ -81,13 +81,13 @@ named
 
 named_list
     =
-    name:name '+:' value:element
+    name:name '+:' exp:element
     ;
 
 
 named_single
     =
-    name:name ':' value:element
+    name:name ':' exp:element
     ;
 
 
