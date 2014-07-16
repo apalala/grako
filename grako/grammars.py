@@ -229,7 +229,7 @@ class Sequence(_Model):
         return [d for s in self.sequence for d in s.defines()]
 
     def _validate(self, rules):
-        return all(s._validate(rules) for s in self.sequence)
+        return {True} == {s._validate(rules) for s in self.sequence}
 
     def _first(self, k, F):
         result = {()}
@@ -276,7 +276,7 @@ class Choice(_Model):
         return [d for o in self.options for d in o.defines()]
 
     def _validate(self, rules):
-        return all(o._validate(rules) for o in self.options)
+        return {True} == {o._validate(rules) for o in self.options}
 
     def _first(self, k, F):
         result = set()
@@ -556,7 +556,7 @@ class Grammar(_Model):
         self._calc_lookahead_sets()
 
     def _validate(self, ruleset):
-        return all(rule._validate(ruleset) for rule in self.rules)
+        return {True} == {rule._validate(ruleset) for rule in self.rules}
 
     @property
     def first_sets(self):
