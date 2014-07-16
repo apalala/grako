@@ -654,6 +654,13 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.1.3-rc.1
+----------
+
+    * **Grako** code generation is now separtate from the grammar model. An invitation to develop other runtime targets.
+
+    * Removed attribute assignment to underlying ``dict`` in ``AST``.
+
 3.1.2
 -----
 
