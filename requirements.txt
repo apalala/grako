@@ -6,5 +6,5 @@ pep8==1.5.7
 py==1.4.21
 pyflakes==0.8.1
 pytest==2.5.2
-tox==1.7.1
+tox==1.7.2
 virtualenv==1.11.6
