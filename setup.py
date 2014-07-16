@@ -13,7 +13,7 @@ setup(
     version='3.1.3-rc.1',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
-    packages=['grako', 'grako.test'],
+    packages=['grako', 'grako.codegen', 'grako.test'],
     scripts=['scripts/grako'],
     url='http://bitbucket.org/apalala/grako',
     license='BSD License',
