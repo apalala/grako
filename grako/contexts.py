@@ -29,9 +29,7 @@ ParseInfo = namedtuple(
         'buffer',
         'rule',
         'pos',
-        'endpos',
-        'comments',
-        'eol_comments',
+        'endpos'
     ]
 )
 
@@ -345,14 +343,12 @@ class ParseContext(object):
     def _fail(self):
         self._error('fail')
 
-    def _parseinfo(self, name, start, comments):
+    def _parseinfo(self, name, start):
         return ParseInfo(
             self._buffer,
             name,
             start,
             self._pos,
-            comments,
-            self._buffer.eol_comments()
         )
 
     def _call(self, rule, name, params, kwparams):
@@ -391,7 +387,6 @@ class ParseContext(object):
         try:
             if name[0].islower():
                 self._next_token()
-            comments = self._buffer.comments()
 
             rule(self)
 
@@ -401,7 +396,7 @@ class ParseContext(object):
             elif '@' in node:
                 node = node['@']  # override the AST
             elif self.enable_parseinfo:
-                node._parseinfo = self._parseinfo(name, pos, comments)
+                node._parseinfo = self._parseinfo(name, pos)
 
             node = self._invoke_semantic_rule(name, node, params, kwparams)
             result = (node, self._pos, self._state)

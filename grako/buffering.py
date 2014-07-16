@@ -68,8 +68,6 @@ class Buffer(object):
         self._build_line_cache()
         self._len = len(self.text)
         self._re_cache = {}
-        self._comments = []
-        self._eol_comments = []
 
     def _preprocess(self, *args, **kwargs):
         lines, index = self._preprocess_block(self.filename, self.text)
@@ -162,12 +160,6 @@ class Buffer(object):
     def move(self, n):
         self.goto(self.pos + n)
 
-    def comments(self):
-        return self._comments
-
-    def eol_comments(self):
-        return self._eol_comments
-
     def eat_whitespace(self):
         p = self._pos
         le = self._len
@@ -178,24 +170,15 @@ class Buffer(object):
 
     def eat_comments(self):
         if self.comments_re is not None:
-            while True:
-                comment = self.matchre(self.comments_re, regexp.MULTILINE)
-                if not comment:
-                    break
-                self._comments.extend(comment.splitlines())
+            while self.matchre(self.comments_re, regexp.MULTILINE):
+                pass
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
-            while True:
-                comment = self.matchre(self.eol_comments_re, regexp.MULTILINE)
-                if not comment:
-                    break
-                self._eol_comments.extend(comment.splitlines())
+            while self.matchre(self.eol_comments_re, regexp.MULTILINE):
+                pass
 
     def next_token(self):
-        self._comments = []
-        self._eol_comments = []
-
         p = None
         while self._pos != p:
             p = self._pos

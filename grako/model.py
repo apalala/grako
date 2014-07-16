@@ -24,7 +24,7 @@ class Node(object):
         super(Node, self).__init__()
         self._ctx = ctx
         if isinstance(ast, AST):
-            parseinfo = parseinfo or ast._parseinfo
+            parseinfo = parseinfo or ast.parseinfo
         self._parseinfo = parseinfo
 
         self._parent = None
@@ -70,16 +70,6 @@ class Node(object):
         if self.parseinfo:
             text = self.parseinfo.buffer.text
             return text[self.parseinfo.pos:self.parseinfo.endpos]
-
-    @property
-    def comments(self):
-        if self.parseinfo:
-            return self.parseinfo.comments
-
-    @property
-    def eol_comments(self):
-        if self.parseinfo:
-            return self.parseinfo.eol_comments
 
     def children(self):
         childl = []
