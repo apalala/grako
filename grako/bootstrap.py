@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = '2014.07.16.02.25.26.02'
+__version__ = '2014.07.16.18.37.28.02'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -173,6 +173,7 @@ class GrakoBootstrapParser(Parser):
 
         def block1():
             self._token('|')
+            self._cut()
             self._sequence_()
             self.ast.setlist('@', self.last_node)
         self._positive_closure(block1)
@@ -293,6 +294,7 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _group_(self):
         self._token('(')
+        self._cut()
         self._expre_()
         self.ast['@'] = self.last_node
         self._token(')')
@@ -326,6 +328,7 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _optional_(self):
         self._token('[')
+        self._cut()
         self._expre_()
         self.ast['@'] = self.last_node
         self._token(']')
@@ -334,6 +337,7 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _special_(self):
         self._token('?(')
+        self._cut()
         self._pattern(r'(.*)')
         self.ast['@'] = self.last_node
         self._token(')?')
@@ -342,12 +346,14 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _kif_(self):
         self._token('&')
+        self._cut()
         self._term_()
         self.ast['@'] = self.last_node
 
     @graken()
     def _knot_(self):
         self._token('!')
+        self._cut()
         self._term_()
         self.ast['@'] = self.last_node
 
@@ -417,11 +423,13 @@ class GrakoBootstrapParser(Parser):
         with self._choice():
             with self._option():
                 self._token('"')
+                self._cut()
                 self._pattern(r'([^"\n]|\\"|\\\\)*')
                 self.ast['@'] = self.last_node
                 self._token('"')
             with self._option():
                 self._token("'")
+                self._cut()
                 self._pattern(r"([^'\n]|\\'|\\\\)*")
                 self.ast['@'] = self.last_node
                 self._token("'")
