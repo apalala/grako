@@ -14,6 +14,7 @@ PY3 = sys.version_info[0] >= 3
 
 if PY3:
     strtype = str
+    basestring = str
 else:
     strtype = basestring  # noqa
 
