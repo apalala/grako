@@ -671,11 +671,11 @@ Changes
 3.2.0
 -----
 
-* **Grako** now uses rule parameters and ``model.ModelBuilderSemantics`` to produce grammar models with very few semantic actions.
+* Now rule parameters and ``model.ModelBuilderSemantics`` are used to produce grammar models with a minimal set of semantic methods.
 
-* **Grako** code generation is now separtate from the grammar model: it is an invitation for developing other runtime targets.
+* Code generation is now separtate from the grammar model, so translation targets differen from Python_ are easier to implement.
 
-* Removed attribute assignment to underlying ``dict`` in ``AST``. It was the source of obscure bugs for **Grako** users.
+* Removed attribute assignment to the underlying ``dict`` in ``AST``. It was the source of obscure bugs for **Grako** users.
 
 * Now an ``eol_comments_re=`` parameter can be passed to ``Parser`` and ``Buffer``.
 
