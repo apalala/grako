@@ -242,7 +242,6 @@ class GrammarTests(unittest.TestCase):
                 =
                 {@:'b'}
                 ;
-
             '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)

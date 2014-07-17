@@ -86,7 +86,7 @@ class Lookahead(_Decorator):
                 '''
 
 
-class LookaheadNot(_Decorator):
+class NegativeLookahead(_Decorator):
     template = '''\
                 with self._ifnot():
                 {exp:1::}\

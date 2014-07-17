@@ -114,7 +114,7 @@ class Fail(Model):
 
 
 class Comment(Model):
-    def __init__(self, ast):
+    def __init__(self, ast=None, **kwargs):
         super(Comment, self).__init__(AST(comment=ast))
 
     def __str__(self):
@@ -132,8 +132,8 @@ class EOF(Model):
 
 
 class _Decorator(Model):
-    def __init__(self, ast):
-        super(_Decorator, self).__init__(AST(exp=ast))
+    def __init__(self, ast=None, **kwargs):
+        super(_Decorator, self).__init__(ast=AST(exp=ast))
         assert isinstance(self.exp, Model)
 
     def parse(self, ctx):
@@ -215,17 +215,17 @@ class Lookahead(_Decorator):
         return '&' + str(self.exp)
 
 
-class LookaheadNot(_Decorator):
+class NegativeLookahead(_Decorator):
     def __str__(self):
         return '!' + str(self.exp)
 
     def parse(self, ctx):
         with ctx._ifnot():
-            super(LookaheadNot, self).parse(ctx)
+            super(NegativeLookahead, self).parse(ctx)
 
 
 class Sequence(Model):
-    def __init__(self, ast):
+    def __init__(self, ast=None, **kwargs):
         super(Sequence, self).__init__(AST(sequence=ast))
 
     def parse(self, ctx):
@@ -263,7 +263,7 @@ class Sequence(Model):
 
 
 class Choice(Model):
-    def __init__(self, ast):
+    def __init__(self, ast=None, **kwargs):
         super(Choice, self).__init__(AST(options=ast))
         assert isinstance(self.options, list), urepr(self.options)
 
@@ -382,7 +382,7 @@ class Cut(Model):
 
 
 class Named(_Decorator):
-    def __init__(self, ast):
+    def __init__(self, ast=None, **kwargs):
         super(Named, self).__init__(ast.exp)
         self.name = ast.name
 
@@ -412,7 +412,7 @@ class NamedList(Named):
 
 
 class Override(Named):
-    def __init__(self, ast):
+    def __init__(self, ast=None, **kwargs):
         super(Override, self).__init__(AST(name='@', exp=ast))
 
     def defines(self):
@@ -420,7 +420,7 @@ class Override(Named):
 
 
 class OverrideList(NamedList):
-    def __init__(self, ast):
+    def __init__(self, ast=None, **kwargs):
         super(OverrideList, self).__init__(AST(name='@', exp=ast))
 
     def defines(self):
@@ -622,4 +622,7 @@ class Grammar(Model):
         )
 
     def __str__(self):
-        return '\n\n'.join(str(rule) for rule in self.rules) + '\n'
+        return (
+            '\n\n'.join(str(rule)
+                        for rule in self.rules)
+        ).rstrip() + '\n'

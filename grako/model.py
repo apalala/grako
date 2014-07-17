@@ -9,6 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import collections
 
 from grako.util import asjson, asjsons
+from grako.exceptions import SemanticError
 from grako.ast import AST
 
 EOLCOL = 50
@@ -169,8 +170,8 @@ class ModelBuilder(object):
         typename = str(typename)
         if typename in self.nodetypes:
             return self.nodetypes[typename]
-        # create a new type
-        raise('NOT FOUND', typename)
+
+        # synthethize a new type
         nodetype = type(typename, (self.baseType,), {})
         self._register_nodetype(nodetype)
         return nodetype
@@ -178,7 +179,15 @@ class ModelBuilder(object):
     def _default(self, ast, *args, **kwargs):
         if not args:
             return ast
-        print('NAME', args[0])
-        nodetype = self._get_nodetype(args[0])
-        node = nodetype(ast=ast, ctx=self.ctx)
-        return node
+        name = args[0]
+        nodetype = self._get_nodetype(name)
+        try:
+            return nodetype(ast=ast, ctx=self.ctx)
+        except Exception as e:
+            raise SemanticError(
+                'Could not call constructor for %s: %s'
+                % (
+                    name,
+                    str(e)
+                )
+            )
