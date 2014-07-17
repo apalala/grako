@@ -65,8 +65,7 @@ class AST(dict):
         upairs(kwargs.items())
 
     def set(self, key, value, force_list=False):
-        while self.__hasattribute__(key):
-            key += '_'
+        key = self._safekey(key)
 
         previous = self.get(key, None)
         if previous is None:
@@ -128,13 +127,20 @@ class AST(dict):
     def __reduce__(self):
         return (AST, (), None, None, iter(self.items()))
 
+    def _safekey(self, key):
+        while self.__hasattribute__(key):
+            key += '_'
+        return key
+
     def _define(self, keys, list_keys=None):
         # WARNING: This is the *only* implementation that does what's intended
         for key in list_keys or []:
+            key = self._safekey(key)
             if key not in self:
                 self[key] = []
 
         for key in keys:
+            key = self._safekey(key)
             if key not in self:
                 super(AST, self).__setitem__(key, None)
                 self._order.append(key)
