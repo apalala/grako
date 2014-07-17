@@ -115,7 +115,7 @@ class Fail(Model):
 
 class Comment(Model):
     def __init__(self, ast=None, **kwargs):
-        super(Comment, self).__init__(AST(comment=ast))
+        super(Comment, self).__init__(ast=AST(comment=ast))
 
     def __str__(self):
         return '(* %s *)' % self.comment
@@ -226,7 +226,7 @@ class NegativeLookahead(_Decorator):
 
 class Sequence(Model):
     def __init__(self, ast=None, **kwargs):
-        super(Sequence, self).__init__(AST(sequence=ast))
+        super(Sequence, self).__init__(ast=AST(sequence=ast))
 
     def parse(self, ctx):
         ctx.last_node = [s.parse(ctx) for s in self.sequence]
@@ -264,7 +264,7 @@ class Sequence(Model):
 
 class Choice(Model):
     def __init__(self, ast=None, **kwargs):
-        super(Choice, self).__init__(AST(options=ast))
+        super(Choice, self).__init__(ast=AST(options=ast))
         assert isinstance(self.options, list), urepr(self.options)
 
     def parse(self, ctx):
@@ -413,7 +413,7 @@ class NamedList(Named):
 
 class Override(Named):
     def __init__(self, ast=None, **kwargs):
-        super(Override, self).__init__(AST(name='@', exp=ast))
+        super(Override, self).__init__(ast=AST(name='@', exp=ast))
 
     def defines(self):
         return []
@@ -421,7 +421,7 @@ class Override(Named):
 
 class OverrideList(NamedList):
     def __init__(self, ast=None, **kwargs):
-        super(OverrideList, self).__init__(AST(name='@', exp=ast))
+        super(OverrideList, self).__init__(ast=AST(name='@', exp=ast))
 
     def defines(self):
         return []
