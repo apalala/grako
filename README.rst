@@ -670,7 +670,7 @@ Changes
 
 * Several *BUGs* in the advanced features (like `rule arguments`_) were fixed. See the `Bitbucket commits`_ for details.
 
-.. _`rule arguments`: http:#rules_with_arguments
+.. _`rule arguments`: http:#rst-header-rules-with-arguments
 
 
 3.1.2
