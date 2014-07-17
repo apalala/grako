@@ -406,7 +406,7 @@ class ParseContext(object):
             if self._memoization() and not self._in_recursive_loop():
                 cache[key] = result
             return result
-        except Exception as e:
+        except FailedParse as e:
             if self._memoization():
                 cache[key] = e
             raise
@@ -480,7 +480,7 @@ class ParseContext(object):
         semantic_rule, postproc = self._find_semantic_rule(name)
         try:
             if semantic_rule:
-                node = semantic_rule(node, *(params or []), **(kwparams or {}))
+                node = semantic_rule(node, *(params or ()), **(kwparams or {}))
             if postproc is not None:
                 postproc(self, node)
             return node
