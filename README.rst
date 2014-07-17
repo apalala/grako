@@ -668,9 +668,7 @@ Changes
 
 * *BUG* Need to allow newline (``\n``) characters within grammar patterns.
 
-* Several *BUGs* in the advanced features (like `rule arguments`_) were fixed. See the `Bitbucket commits`_ for details.
-
-.. _`rule arguments`: http:#rst-header-rules-with-arguments
+* Several *BUGs* in the advanced features (like *rules with arguments*) were fixed. See the `Bitbucket commits`_ for details.
 
 
 3.1.2
