@@ -674,6 +674,8 @@ Changes
 
 * Removed attribute assignment to underlying ``dict`` in ``AST``. It was the source of obscure bugs for **Grako** users.
 
+* Now an ``eol_comments_re=`` parameter can be passed to ``Parser`` and ``Buffer``.
+
 * *BUG* Need to allow newline (``\n``) characters within grammar patterns.
 
 * Several *BUGs* in the advanced features (like *rules with arguments*) were fixed. See the `Bitbucket commits`_ for details.
