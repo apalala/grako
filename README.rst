@@ -487,6 +487,9 @@ The functionality required for implementing includes is available to all **Grako
 Templates and Translation
 =========================
 
+.. note::
+    As of **Grako** 3.2.0, code generation is separated from grammar models through ``grako.codegen.CodeGenerator`` as to allow for code generation targets different from Python_. Still, the use of inline templates and ``rendering.Renderer`` hasn't changed. See the *regex* example for merged modeling and code generation.
+
 **Grako** doesn't impose a way to create translators with it, but it exposes the facilities it uses to generate the Python_ source code for parsers.
 
 Translation in **Grako** is *template-based*, but instead of defining or using a complex templating engine (yet another language), it relies on the simple but powerful ``string.Formatter`` of the Python_ standard library. The templates are simple strings that, in **Grako**'s style, are inlined with the code.
@@ -550,7 +553,7 @@ Other Open-source Examples
 .. _WTK: http://en.wikipedia.org/wiki/Well-known_text
 
 
-* **Marcus Brinkmann** wrote smc.mw_ a parser for a MediaWiki_-style language.
+* **Marcus Brinkmann** wrote smc.mw_, a parser for a MediaWiki_-style language.
 
 .. _smc.mw: https://github.com/lambdafu/smc.mw
 .. _MediaWiki: http://www.mediawiki.org/wiki/MediaWiki
