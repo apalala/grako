@@ -44,6 +44,39 @@ class GrammarTests(unittest.TestCase):
         ast = m.parse("1101110100", nameguard=False)
         self.assertEquals([['11'], ['111'], ['1'], []], ast.items_)
 
+    def test_ast_assignment(self):
+        grammar = '''
+            n  = @: {"a"}* $ ;
+            f  = @+: {"a"}* $ ;
+            nn = @: {"a"}*  @: {"b"}* $ ;
+            nf = @: {"a"}*  @+: {"b"}* $ ;
+            fn = @+: {"a"}* @: {"b"}* $ ;
+            ff = @+: {"a"}* @+: {"b"}* $ ;
+        '''
+
+        model = genmodel("test", grammar)
+
+        def p(input, rule):
+            return model.parse(input, start=rule, whitespace='')
+
+        e = self.assertEqual
+
+        e([], p('', 'n'))
+        e(['a'], p('a', 'n'))
+        e(['a', 'a'], p('aa', 'n'))
+
+        e([[]], p('', 'f'))
+        e([['a']], p('a', 'f'))
+        e([['a', 'a']], p('aa', 'f'))
+
+        for r in ('nn', 'nf', 'fn', 'ff'):
+            e([[], []], p('', r))
+            e([['a'], []], p('a', r))
+            e([[], ['b']], p('b', r))
+            e([['a', 'a'], []], p('aa', r))
+            e([[], ['b', 'b']], p('bb', r))
+            e([['a', 'a'], ['b']], p('aab', r))
+
     def test_stateful(self):
         # Parser for mediawiki-style unordered lists.
         grammar = r'''
@@ -188,6 +221,32 @@ class GrammarTests(unittest.TestCase):
         model = genmodel("test", grammar)
         ast = model.parse("A", nameguard=False)
         self.assertEquals({'x': 'A', 'o': None}, ast)
+
+    def test_patterns_with_newlines(self):
+        grammar = '''
+            start
+                =
+                blanklines $
+                ;
+
+            blanklines
+                =
+                blankline [blanklines]
+                ;
+
+            blankline
+                =
+                /^[^\n]*\n?$/
+                ;
+
+            blankline2 =
+                ?/^[^\n]*\n?$/?
+                ;
+        '''
+
+        model = genmodel("test", grammar)
+        ast = model.parse('\n\n')
+        self.assertEqual('', str(ast))
 
     def test_new_override(self):
         grammar = '''
@@ -381,39 +440,6 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals(['1', '*', '2', '*', '3'], ast)
         ast = model_b.parse("(((1+2)))")
         self.assertEquals(['1', '+', '2'], ast)
-
-    def test_ast_assignment(self):
-        grammar = '''
-            n  = @: {"a"}* $ ;
-            f  = @+: {"a"}* $ ;
-            nn = @: {"a"}*  @: {"b"}* $ ;
-            nf = @: {"a"}*  @+: {"b"}* $ ;
-            fn = @+: {"a"}* @: {"b"}* $ ;
-            ff = @+: {"a"}* @+: {"b"}* $ ;
-        '''
-
-        model = genmodel("test", grammar)
-
-        def p(input, rule):
-            return model.parse(input, start=rule, whitespace='')
-
-        e = self.assertEqual
-
-        e([], p('', 'n'))
-        e(['a'], p('a', 'n'))
-        e(['a', 'a'], p('aa', 'n'))
-
-        e([[]], p('', 'f'))
-        e([['a']], p('a', 'f'))
-        e([['a', 'a']], p('aa', 'f'))
-
-        for r in ('nn', 'nf', 'fn', 'ff'):
-            e([[], []], p('', r))
-            e([['a'], []], p('a', r))
-            e([[], ['b']], p('b', r))
-            e([['a', 'a'], []], p('aa', r))
-            e([[], ['b', 'b']], p('bb', r))
-            e([['a', 'a'], ['b']], p('aab', r))
 
 
 def suite():

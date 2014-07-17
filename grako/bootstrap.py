@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 17, 6, 40, 28, 3)
+__version__ = (2014, 7, 17, 16, 13, 12, 3)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -32,7 +32,7 @@ class GrakoBootstrapParser(Parser):
             **kwargs
         )
 
-    @graken(u'Grammar')
+    @graken('Grammar')
     def _grammar_(self):
 
         def block1():
@@ -77,7 +77,7 @@ class GrakoBootstrapParser(Parser):
             []
         )
 
-    @graken(u'Rule')
+    @graken('Rule')
     def _rule_(self):
         self._new_name_()
         self.ast['name'] = self.last_node
@@ -169,7 +169,7 @@ class GrakoBootstrapParser(Parser):
                 self._sequence_()
             self._error('no available options')
 
-    @graken(u'Choice')
+    @graken('Choice')
     def _choice_(self):
         self._sequence_()
         self.ast.setlist('@', self.last_node)
@@ -181,7 +181,7 @@ class GrakoBootstrapParser(Parser):
             self.ast.setlist('@', self.last_node)
         self._positive_closure(block1)
 
-    @graken(u'Sequence')
+    @graken('Sequence')
     def _sequence_(self):
 
         def block0():
@@ -201,7 +201,7 @@ class GrakoBootstrapParser(Parser):
                 self._term_()
             self._error('no available options')
 
-    @graken(u'RuleInclude')
+    @graken('RuleInclude')
     def _rule_include_(self):
         self._token('>')
         self._cut()
@@ -217,7 +217,7 @@ class GrakoBootstrapParser(Parser):
                 self._named_single_()
             self._error('no available options')
 
-    @graken(u'NamedList')
+    @graken('NamedList')
     def _named_list_(self):
         self._name_()
         self.ast['name'] = self.last_node
@@ -231,7 +231,7 @@ class GrakoBootstrapParser(Parser):
             []
         )
 
-    @graken(u'Named')
+    @graken('Named')
     def _named_single_(self):
         self._name_()
         self.ast['name'] = self.last_node
@@ -256,21 +256,21 @@ class GrakoBootstrapParser(Parser):
                 self._override_single_deprecated_()
             self._error('no available options')
 
-    @graken(u'OverrideList')
+    @graken('OverrideList')
     def _override_list_(self):
         self._token('@+:')
         self._cut()
         self._element_()
         self.ast['@'] = self.last_node
 
-    @graken(u'Override')
+    @graken('Override')
     def _override_single_(self):
         self._token('@:')
         self._cut()
         self._element_()
         self.ast['@'] = self.last_node
 
-    @graken(u'Override')
+    @graken('Override')
     def _override_single_deprecated_(self):
         self._token('@')
         self._cut()
@@ -300,7 +300,7 @@ class GrakoBootstrapParser(Parser):
                 self._atom_()
             self._error('no available options')
 
-    @graken(u'Group')
+    @graken('Group')
     def _group_(self):
         self._token('(')
         self._cut()
@@ -309,7 +309,7 @@ class GrakoBootstrapParser(Parser):
         self._token(')')
         self._cut()
 
-    @graken(u'PositiveClosure')
+    @graken('PositiveClosure')
     def _positive_closure_(self):
         self._token('{')
         self._expre_()
@@ -324,7 +324,7 @@ class GrakoBootstrapParser(Parser):
                 self._error('expecting one of: + -')
         self._cut()
 
-    @graken(u'Closure')
+    @graken('Closure')
     def _closure_(self):
         self._token('{')
         self._expre_()
@@ -334,7 +334,7 @@ class GrakoBootstrapParser(Parser):
             self._token('*')
         self._cut()
 
-    @graken(u'Optional')
+    @graken('Optional')
     def _optional_(self):
         self._token('[')
         self._cut()
@@ -343,7 +343,7 @@ class GrakoBootstrapParser(Parser):
         self._token(']')
         self._cut()
 
-    @graken(u'Special')
+    @graken('Special')
     def _special_(self):
         self._token('?(')
         self._cut()
@@ -352,14 +352,14 @@ class GrakoBootstrapParser(Parser):
         self._token(')?')
         self._cut()
 
-    @graken(u'Lookahead')
+    @graken('Lookahead')
     def _kif_(self):
         self._token('&')
         self._cut()
         self._term_()
         self.ast['@'] = self.last_node
 
-    @graken(u'NegativeLookahead')
+    @graken('NegativeLookahead')
     def _knot_(self):
         self._token('!')
         self._cut()
@@ -383,21 +383,21 @@ class GrakoBootstrapParser(Parser):
                 self._eof_()
             self._error('no available options')
 
-    @graken(u'RuleRef')
+    @graken('RuleRef')
     def _call_(self):
         self._word_()
 
-    @graken(u'Void')
+    @graken('Void')
     def _void_(self):
         self._token('()')
         self._cut()
 
-    @graken(u'Cut')
+    @graken('Cut')
     def _cut_(self):
         self._token('~')
         self._cut()
 
-    @graken(u'Cut')
+    @graken('Cut')
     def _cut_deprecated_(self):
         self._token('>>')
         self._cut()
@@ -427,7 +427,7 @@ class GrakoBootstrapParser(Parser):
                 self._word_()
             self._error('no available options')
 
-    @graken(u'Token')
+    @graken('Token')
     def _token_(self):
         with self._group():
             with self._choice():
@@ -446,7 +446,7 @@ class GrakoBootstrapParser(Parser):
                 self._error('expecting one of: " \'')
         self._cut()
 
-    @graken(u'Token')
+    @graken('Token')
     def _number_(self):
         self._pattern(r'[0-9]+')
 
@@ -454,26 +454,26 @@ class GrakoBootstrapParser(Parser):
     def _word_(self):
         self._pattern(r'[-_A-Za-z0-9]+')
 
-    @graken(u'Pattern')
+    @graken('Pattern')
     def _pattern_(self):
         with self._choice():
             with self._option():
                 self._token('?/')
                 self._cut()
-                self._pattern(r'(.*?)(?=/\?)')
+                self._pattern(r'(.|\n)+?(?=/\?)')
                 self.ast['@'] = self.last_node
                 self._pattern(r'/\?+')
                 self._cut()
             with self._option():
                 self._token('/')
                 self._cut()
-                self._pattern(r'([^\/\n]|\\/|\\\\)*')
+                self._pattern(r'(.|\n)+?(?=/)')
                 self.ast['@'] = self.last_node
                 self._token('/')
                 self._cut()
             self._error('expecting one of: / ?/')
 
-    @graken(u'EOF')
+    @graken('EOF')
     def _eof_(self):
         self._token('$')
         self._cut()
