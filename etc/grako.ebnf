@@ -27,19 +27,19 @@ rule::Rule
 
 params
     =
-    @+:literal {',' @+:literal}
+    @+:literal {',' ~  @+:literal}
     ;
 
 
 kwparams
     =
-    @+:pair {',' @+:pair}
+    @+:pair {',' ~ @+:pair}
     ;
 
 
 pair
     =
-    @+:word '=' @+:literal
+    @+:word '=' ~ @+:literal
     ;
 
 
@@ -69,7 +69,7 @@ element
 
 rule_include::RuleInclude
     =
-    '>' @:known_name
+    '>' ~ @:known_name
     ;
 
 
@@ -81,13 +81,13 @@ named
 
 named_list::NamedList
     =
-    name:name '+:' exp:element
+    name:name '+:' ~ exp:element
     ;
 
 
 named_single::Named
     =
-    name:name ':' exp:element
+    name:name ':' ~ exp:element
     ;
 
 
@@ -99,19 +99,19 @@ override
 
 override_list::OverrideList
     =
-    '@+:' @:element
+    '@+:' ~ @:element
     ;
 
 
 override_single::Override
     =
-    '@:' @:element
+    '@:' ~ @:element
     ;
 
 
 override_single_deprecated::Override
     =
-    '@' @:element
+    '@' ~ @:element
     ;
 
 
@@ -227,7 +227,7 @@ literal
 
 token::Token
     =
-    '"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'"
+    ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
     ;
 
 
@@ -245,8 +245,8 @@ word
 
 pattern::Pattern
     =
-      '/' @:?/([^\/\n]|\\/|\\\\)*/? '/' ~
-    | '?/' @:?/(.*?)(?=/\?)/?? ?//\?+/?? ~
+      '?/' ~ @:?/(.*?)(?=/\?)/?? ?//\?+/?? ~
+    | '/' ~ @:?/([^\/\n]|\\/|\\\\)*/? '/' ~
     ;
 
 
