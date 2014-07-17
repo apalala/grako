@@ -15,7 +15,7 @@ PY3 = sys.version_info[0] >= 3
 if PY3:
     strtype = str
 else:
-    strtype = basestring
+    strtype = __builtins__.basestring
 
 
 def debug(*args, **kwargs):
