@@ -149,8 +149,8 @@ class DepthFirstWalker(NodeWalker):
             return tv(node, [], *args, **kwargs)
 
 
-class ModelBuilder(object):
-    """ Intended as a semantic action for parsing, a ModelBuilder creates
+class ModelBuilderSemantics(object):
+    """ Intended as a semantic action for parsing, a ModelBuilderSemantics creates
         nodes using the class name given as first parameter to a grammar
         rule, and synthesizes the class/type if it's not known.
     """

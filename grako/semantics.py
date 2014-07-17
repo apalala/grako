@@ -8,7 +8,7 @@ from collections import OrderedDict
 from grako.util import simplify_list, eval_escapes, warning
 from grako import grammars
 from grako.exceptions import FailedSemantics
-from grako.model import ModelBuilder
+from grako.model import ModelBuilderSemantics
 
 
 class GrakoASTSemantics(object):
@@ -28,7 +28,7 @@ class GrakoASTSemantics(object):
         return ast
 
 
-class GrakoSemantics(ModelBuilder):
+class GrakoSemantics(ModelBuilderSemantics):
     def __init__(self, grammar_name):
         super(GrakoSemantics, self).__init__(
             baseType=grammars.Model,
