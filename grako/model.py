@@ -21,7 +21,7 @@ class Node(object):
 
     inline = True
 
-    def __init__(self, ast=None, ctx=None, parseinfo=None):
+    def __init__(self, ctx=None, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
         self._parseinfo = parseinfo
