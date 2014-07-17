@@ -687,7 +687,11 @@ Changes
 3.1.2
 -----
 
-* Improvements to handling of let recursion now support more complex cases.
+* **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
+
+* Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
+
+* The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
 
 * If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
 
@@ -697,22 +701,6 @@ Changes
 
 .. _33: https://bitbucket.org/apalala/grako/issue/33/
 
-3.1.1
------
-
-* Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
-
-* The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
-
-* `Paul Sargent`_ generalized left-recursion to support complex cases.
-
-* *BUGs* Minor bnd not-so-minor ug fixes.See the Bitbucket_ logs for details.
-
-
-3.1.0
------
-
-* **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
 
 3.0.5-rc.1
 ----------
