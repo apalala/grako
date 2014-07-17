@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = '2014.07.16.02.25.26.02'
+__version__ = '2014.07.17.16.19.28.03'
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -439,16 +439,18 @@ class GrakoBootstrapParser(Parser):
     def _pattern_(self):
         with self._choice():
             with self._option():
-                self._token('/')
-                self._pattern(r'([^\/\n]|\\/|\\\\)*')
-                self.ast['@'] = self.last_node
-                self._token('/')
-                self._cut()
-            with self._option():
                 self._token('?/')
-                self._pattern(r'(.*?)(?=/\?)')
+                self._cut()
+                self._pattern(r'(.|\n)+?(?=/\?)')
                 self.ast['@'] = self.last_node
                 self._pattern(r'/\?+')
+                self._cut()
+            with self._option():
+                self._token('/')
+                self._cut()
+                self._pattern(r'(.|\n)+?(?=/)')
+                self.ast['@'] = self.last_node
+                self._token('/')
                 self._cut()
             self._error('expecting one of: / ?/')
 

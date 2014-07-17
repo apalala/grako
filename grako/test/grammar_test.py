@@ -189,6 +189,32 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("A", nameguard=False)
         self.assertEquals({'x': 'A', 'o': None}, ast)
 
+    def test_patterns_with_newlines(self):
+        grammar = '''
+            start
+                =
+                blanklines $
+                ;
+
+            blanklines
+                =
+                blankline [blanklines]
+                ;
+
+            blankline
+                =
+                /^[^\n]*\n?$/
+                ;
+
+            blankline2 =
+                ?/^[^\n]*\n?$/?
+                ;
+        '''
+
+        model = genmodel("test", grammar)
+        ast = model.parse('\n\n')
+        self.assertEqual('', str(ast))
+
     def test_new_override(self):
         grammar = '''
             start
