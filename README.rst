@@ -660,7 +660,7 @@ Changes
 3.2.0-rc.1
 ----------
 
-* **Grako** now uses rule parameters and ``model.ModelBuilderSemantics`` to produce grammar models with few semantic actions.
+* **Grako** now uses rule parameters and ``model.ModelBuilderSemantics`` to produce grammar models with very few semantic actions.
 
 * **Grako** code generation is now separtate from the grammar model: it is an invitation for developing other runtime targets.
 
