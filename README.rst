@@ -689,8 +689,6 @@ Changes
 
 * **Grako** now supports direct and indirect left recursion thanks to the implementation done by `Paul Sargent`_ of the work by `Warth et al`_. Performance for non-left-recursive grammars is unaffected.
 
-* Stateful parsing (stateful rules) is back. It was not possible to implement in a semantic class because those do not participate in backtracking.
-
 * The old grammar syntax is now supported with deprecation warnings. Use the `--pretty` option to upgrade a grammar.
 
 * If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
@@ -699,19 +697,13 @@ Changes
 
 * *BUG* The bootstrap parser contained errors due to the previous bug in ``util.ustr()``.
 
-.. _33: https://bitbucket.org/apalala/grako/issue/33/
-
-
-3.0.5-rc.1
-----------
-
-* Removed the concept of *rule state*. The requirement is better implemented using attributes of the semantics class, not the parsing context.
-
 * *BUG* 30_  Make sure that escapes in `--whitespace` are evaluated before being passed to the model.
 
 * *BUG* 30_ Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
 
 .. _30: https://bitbucket.org/apalala/grako/issue/30/
+.. _33: https://bitbucket.org/apalala/grako/issue/33/
+
 
 3.0.4
 -----
