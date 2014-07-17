@@ -657,8 +657,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.2.0-rc.1
-----------
+3.2.0
+-----
 
 * **Grako** now uses rule parameters and ``model.ModelBuilderSemantics`` to produce grammar models with very few semantic actions.
 
@@ -666,7 +666,11 @@ Changes
 
 * Removed attribute assignment to underlying ``dict`` in ``AST``. It was the source of obscure bugs for **Grako** users.
 
-* Several *BUGs* in the advanced features were fixed. See the `Bitbucket commits`_ for details.
+* *BUG* Need to allow newline (``\n``) characters within grammar patterns.
+
+* Several *BUGs* in the advanced features (like `rule arguments`_) were fixed. See the `Bitbucket commits`_ for details.
+
+.. _`rule arguments`: http:#rules_with_arguments
 
 
 3.1.2
