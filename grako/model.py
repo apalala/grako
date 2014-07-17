@@ -21,11 +21,13 @@ class Node(object):
 
     inline = True
 
-    def __init__(self, ast=None, ctx=None):
+    def __init__(self, ast=None, ctx=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
+        self._parseinfo = parseinfo
+        if isinstance(ast, AST):
+            self._parseinfo = ast.parseinfo if not parseinfo else None
 
-        self._parseinfo = ast.parseinfo if isinstance(ast, AST) else None
         self._parent = None
         self._adopt_children(ast)
         self.__postinit__(ast)
