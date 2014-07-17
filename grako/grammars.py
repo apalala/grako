@@ -29,7 +29,7 @@ PEP8_LLEN = 72
 
 
 def check(result):
-    assert isinstance(result, _Model), str(result)
+    assert isinstance(result, Model), str(result)
 
 
 def dot(x, y, k):
@@ -57,9 +57,16 @@ class ModelContext(ParseContext):
         return functools.partial(self.rules[name].parse, self)
 
 
-class _Model(Node):
+class Model(Node):
+    @staticmethod
+    def classes():
+        return [
+            c for c in globals().values()
+            if isinstance(c, type) and issubclass(c, Model)
+        ]
+
     def __init__(self, ast=None, ctx=None):
-        super(_Model, self).__init__(ast=ast)
+        super(Model, self).__init__(ast=ast, ctx=ctx)
         self._lookahead = None
         self._first_set = None
         self._follow_set = set()
@@ -96,17 +103,17 @@ class _Model(Node):
         return A
 
 
-class Void(_Model):
+class Void(Model):
     def __str__(self):
         return '()'
 
 
-class Fail(_Model):
+class Fail(Model):
     def __str__(self):
         return '!()'
 
 
-class Comment(_Model):
+class Comment(Model):
     def __init__(self, ast):
         super(Comment, self).__init__(AST(comment=ast))
 
@@ -114,7 +121,7 @@ class Comment(_Model):
         return '(* %s *)' % self.comment
 
 
-class EOF(_Model):
+class EOF(Model):
     def parse(self, ctx):
         ctx._next_token()
         if not ctx.buf.atend():
@@ -124,10 +131,10 @@ class EOF(_Model):
         return '$'
 
 
-class _Decorator(_Model):
+class _Decorator(Model):
     def __init__(self, ast):
         super(_Decorator, self).__init__(AST(exp=ast))
-        assert isinstance(self.exp, _Model)
+        assert isinstance(self.exp, Model)
 
     def parse(self, ctx):
         return self.exp.parse(ctx)
@@ -162,7 +169,7 @@ class Group(_Decorator):
             return '(%s)' % trim(exp)
 
 
-class Token(_Model):
+class Token(Model):
     def __postinit__(self, ast):
         super(Token, self).__postinit__(ast)
         self.token = ast
@@ -177,7 +184,7 @@ class Token(_Model):
         return urepr(self.token)
 
 
-class Pattern(_Model):
+class Pattern(Model):
     def __postinit__(self, ast):
         re.compile(ast)
         super(Pattern, self).__postinit__(ast)
@@ -217,7 +224,7 @@ class LookaheadNot(_Decorator):
             super(LookaheadNot, self).parse(ctx)
 
 
-class Sequence(_Model):
+class Sequence(Model):
     def __init__(self, ast):
         super(Sequence, self).__init__(AST(sequence=ast))
 
@@ -255,7 +262,7 @@ class Sequence(_Model):
             return '\n'.join(seq)
 
 
-class Choice(_Model):
+class Choice(Model):
     def __init__(self, ast):
         super(Choice, self).__init__(AST(options=ast))
         assert isinstance(self.options, list), urepr(self.options)
@@ -362,7 +369,7 @@ class Optional(_Decorator):
             '''
 
 
-class Cut(_Model):
+class Cut(Model):
     def parse(self, ctx):
         ctx._cut()
         return None
@@ -420,7 +427,7 @@ class OverrideList(NamedList):
         return []
 
 
-class Special(_Model):
+class Special(Model):
     def _first(self, k, F):
         return set([(self.value,)])
 
@@ -428,7 +435,7 @@ class Special(_Model):
         return '?%s?' % self.value
 
 
-class RuleRef(_Model):
+class RuleRef(Model):
     def __postinit__(self, ast):
         super(RuleRef, self).__postinit__(ast)
         self.name = ast
@@ -548,7 +555,7 @@ class BasedRule(Rule):
         return self.rhs.defines()
 
 
-class Grammar(_Model):
+class Grammar(Model):
     def __init__(self, name, rules, whitespace=None, nameguard=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)

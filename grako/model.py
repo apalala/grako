@@ -20,13 +20,11 @@ class Node(object):
 
     inline = True
 
-    def __init__(self, ctx=None, ast=None, parseinfo=None):
+    def __init__(self, ast=None, ctx=None):
         super(Node, self).__init__()
         self._ctx = ctx
-        if isinstance(ast, AST):
-            parseinfo = parseinfo or ast.parseinfo
-        self._parseinfo = parseinfo
 
+        self._parseinfo = ast.parseinfo if isinstance(ast, AST) else None
         self._parent = None
         self._adopt_children(ast)
         self.__postinit__(ast)
@@ -172,6 +170,7 @@ class ModelBuilder(object):
         if typename in self.nodetypes:
             return self.nodetypes[typename]
         # create a new type
+        raise('NOT FOUND', typename)
         nodetype = type(typename, (self.baseType,), {})
         self._register_nodetype(nodetype)
         return nodetype
@@ -179,6 +178,7 @@ class ModelBuilder(object):
     def _default(self, ast, *args, **kwargs):
         if not args:
             return ast
+        print('NAME', args[0])
         nodetype = self._get_nodetype(args[0])
-        node = nodetype(self.ctx, ast=ast)
+        node = nodetype(ast=ast, ctx=self.ctx)
         return node

@@ -8,6 +8,7 @@ from collections import OrderedDict
 from grako.util import simplify_list, eval_escapes, warning
 from grako import grammars
 from grako.exceptions import FailedSemantics
+from grako.model import ModelBuilder
 
 
 class GrakoASTSemantics(object):
@@ -27,20 +28,23 @@ class GrakoASTSemantics(object):
         return ast
 
 
-class GrakoSemantics(object):
+class GrakoSemantics(ModelBuilder):
     def __init__(self, grammar_name):
-        super(GrakoSemantics, self).__init__()
+        super(GrakoSemantics, self).__init__(
+            baseType=grammars.Model,
+            types=grammars.Model.classes()
+        )
         self.grammar_name = grammar_name
         self.rules = OrderedDict()
 
-    def token(self, ast):
+    def token(self, ast, *args):
         token = eval_escapes(ast)
         return grammars.Token(token)
 
-    def call(self, ast):
+    def call(self, ast, *args):
         return grammars.RuleRef(ast)
 
-    def pattern(self, ast):
+    def pattern(self, ast, *args):
         pattern = ast
         try:
             re.compile(pattern)
@@ -48,64 +52,66 @@ class GrakoSemantics(object):
             raise FailedSemantics('regexp error: ' + str(e))
         return grammars.Pattern(ast)
 
-    def cut(self, ast):
+    def cut(self, ast, *args):
         return grammars.Cut()
 
-    def cut_deprecated(self, ast):
+    def cut_deprecated(self, ast, *args):
         warning('The use of >> for cut is deprecated. Use the ~ symbol instead.')
         return grammars.Cut()
 
-    def eof(self, ast):
+    def eof(self, ast, *args):
         return grammars.EOF()
 
-    def void(self, ast):
+    def void(self, ast, *args):
         return grammars.Void()
 
-    def group(self, ast):
+    def group(self, ast, *args):
         return grammars.Group(ast)
 
-    def optional(self, ast):
+    def optional(self, ast, *args):
+        # print('OPTIONAL', args)
+        # raise Exception('How?', args)
         return grammars.Optional(ast)
 
-    def positive_closure(self, ast):
+    def positive_closure(self, ast, *args):
         return grammars.PositiveClosure(ast)
 
-    def closure(self, ast):
+    def closure(self, ast, *args):
         return grammars.Closure(ast)
 
-    def special(self, ast):
+    def special(self, ast, *args):
         return grammars.Special(ast)
 
-    def kif(self, ast):
+    def kif(self, ast, *args):
         return grammars.Lookahead(ast)
 
-    def knot(self, ast):
+    def knot(self, ast, *args):
         return grammars.LookaheadNot(ast)
 
-    def named_list(self, ast):
+    def named_list(self, ast, *args):
         return grammars.NamedList(ast)
 
-    def named_single(self, ast):
+    def named_single(self, ast, *args):
         return grammars.Named(ast)
 
-    def override_list(self, ast):
+    def override_list(self, ast, *args):
         return grammars.OverrideList(ast)
 
-    def override_single(self, ast):
+    def override_single(self, ast, *args):
         return grammars.Override(ast)
 
-    def override_single_deprecated(self, ast):
+    def override_single_deprecated(self, ast, *args):
         warning('The use of @ for override is deprecated. Use @: instead')
         return grammars.Override(ast)
 
-    def sequence(self, ast):
+    def sequence(self, ast, *args):
         seq = ast
         assert isinstance(seq, list), str(seq)
         if len(seq) == 1:
             return seq[0]
         return grammars.Sequence(seq)
 
-    def choice(self, ast):
+    def choice(self, ast, *args):
         if len(ast) == 1:
             return ast[0]
         return grammars.Choice(ast)
@@ -120,7 +126,7 @@ class GrakoSemantics(object):
             raise FailedSemantics('rule "%s" not yet defined' % str(ast))
         return ast
 
-    def rule(self, ast):
+    def rule(self, ast, *args):
         name = ast.name
         rhs = ast.rhs
         base = ast.base
@@ -139,12 +145,12 @@ class GrakoSemantics(object):
         self.rules[name] = rule
         return rule
 
-    def rule_include(self, ast):
+    def rule_include(self, ast, *args):
         name = str(ast)
         self.known_name(name)
 
         rule = self.rules[name]
         return grammars.RuleInclude(rule)
 
-    def grammar(self, ast):
+    def grammar(self, ast, *args):
         return grammars.Grammar(self.grammar_name, list(self.rules.values()))
