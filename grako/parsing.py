@@ -16,13 +16,22 @@ Parser.parse() will take the text to parse directly, or an instance of the
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import functools
-
 from grako.exceptions import FailedRef
-from grako.contexts import ParseContext
+from grako.contexts import ParseContext, graken
+
+
+graken = graken
 
 
 class Parser(ParseContext):
+    def _find_rule(self, name):
+        rule = getattr(self, '_' + name + '_', None)
+        if isinstance(rule, type(self._find_rule)):
+            return rule
+        rule = getattr(self, name, None)
+        if isinstance(rule, type(self._find_rule)):
+            return rule
+        self._error(name, etype=FailedRef)
 
     @classmethod
     def rule_list(cls):
@@ -38,40 +47,3 @@ class Parser(ParseContext):
             if name.startswith('_') and name.endswith('_'):
                 result.append(name[1:-1])
         return result
-
-    def result(self):
-        return self.ast
-
-    def _find_rule(self, name):
-        rule = getattr(self, '_' + name + '_', None)
-        if isinstance(rule, type(self._find_rule)):
-            return rule
-        rule = getattr(self, name, None)
-        if isinstance(rule, type(self._find_rule)):
-            return rule
-        self._error(name, etype=FailedRef)
-
-    def _eof(self):
-        return self._buffer.atend()
-
-    def _eol(self):
-        return self._buffer.ateol()
-
-    def _check_eof(self):
-        self._next_token()
-        if not self._buffer.atend():
-            self._error('Expecting end of text.')
-
-
-# decorator for rule implementation methods
-def graken(*params, **kwparams):
-    def decorator(rule):
-        @functools.wraps(rule)
-        def wrapper(self):
-            name = rule.__name__
-            # remove the single leading and trailing underscore
-            # that the parser generator added
-            name = name[1:-1]
-            return self._call(rule, name, params, kwparams)
-        return wrapper
-    return decorator

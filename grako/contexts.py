@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import sys
+import functools
 from collections import namedtuple
 from contextlib import contextmanager
 
@@ -32,6 +33,20 @@ ParseInfo = namedtuple(
         'endpos'
     ]
 )
+
+
+# decorator for rule implementation methods
+def graken(*params, **kwparams):
+    def decorator(rule):
+        @functools.wraps(rule)
+        def wrapper(self):
+            name = rule.__name__
+            # remove the single leading and trailing underscore
+            # that the parser generator added
+            name = name[1:-1]
+            return self._call(rule, name, params, kwparams)
+        return wrapper
+    return decorator
 
 
 class Closure(list):
@@ -505,6 +520,17 @@ class ParseContext(object):
         self._last_node = token
         return token
 
+    def _eof(self):
+        return self._buffer.atend()
+
+    def _eol(self):
+        return self._buffer.ateol()
+
+    def _check_eof(self):
+        self._next_token()
+        if not self._buffer.atend():
+            self._error('Expecting end of text.')
+
     @contextmanager
     def _try(self):
         p = self._pos
@@ -637,3 +663,4 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
+
