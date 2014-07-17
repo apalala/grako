@@ -58,7 +58,7 @@ class ModelContext(ParseContext):
 
 
 class _Model(Node):
-    def __init__(self, ast=None):
+    def __init__(self, ast=None, ctx=None):
         super(_Model, self).__init__(ast=ast)
         self._lookahead = None
         self._first_set = None
@@ -478,6 +478,8 @@ class Rule(_Decorator):
         self.kwparams = kwparams
         self._adopt_children([params, kwparams])
 
+        self.base = None
+
     def parse(self, ctx):
         return self._parse_rhs(ctx, self.exp)
 
@@ -500,10 +502,28 @@ class Rule(_Decorator):
         return self.exp._follow(k, FL, FL[self.name])
 
     def __str__(self):
-        return trim(self.str_template) % (self.name, indent(str(self.exp)))
+        params = ', '.join(self.params) if self.params else ''
+        kwparams = ','.join(self.kwparams) if self.kwparams else ''
+        allparams = ''
+        if kwparams:
+            if params:
+                allparams = '(%s, %s)' % (params, kwparams)
+            else:
+                allparams = '(%s, %s)' % (params, kwparams)
+        elif params:
+            allparams = '::%s' % params
+
+        base = ' < %s' % self.base.name if self.base else ''
+
+        return trim(self.str_template) % (
+            self.name,
+            base,
+            allparams,
+            indent(str(self.exp))
+        )
 
     str_template = '''\
-                %s
+                %s%s%s
                     =
                 %s
                     ;
@@ -526,20 +546,6 @@ class BasedRule(Rule):
 
     def defines(self):
         return self.rhs.defines()
-
-    def __str__(self):
-        return trim(self.str_template) % (
-            self.name,
-            self.base.name,
-            indent(str(self.exp))
-        )
-
-    str_template = '''\
-                %s < %s
-                    =
-                %s
-                    ;
-                '''
 
 
 class Grammar(_Model):
