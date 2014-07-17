@@ -423,6 +423,14 @@ Parsers will skip over comments specified as a regular expression using the ``co
 
 For more complex comment handling, you can override the ``Buffer.eatcomments()`` method.
 
+Fro flexibility, it is possible to specify a pattern for end-of-line comments separately::
+
+    parser = MyParser(
+        text,
+        comments_re="\(\*.*?\*\)",
+        eol_comments_re="#.*?$"
+    )
+
 
 Semantic Actions
 ================
