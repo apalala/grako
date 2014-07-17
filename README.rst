@@ -657,12 +657,17 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.1.3-rc.1
+3.2.0-rc.1
 ----------
 
-* **Grako** code generation is now separtate from the grammar model. An invitation to develop other runtime targets.
+* **Grako** now uses rule parameters and ``model.ModelBuilderSemantics`` to produce grammar models with few semantic actions.
 
-* Removed attribute assignment to underlying ``dict`` in ``AST``.
+* **Grako** code generation is now separtate from the grammar model: it is an invitation for developing other runtime targets.
+
+* Removed attribute assignment to underlying ``dict`` in ``AST``. It was the source of obscure bugs for **Grako** users.
+
+* Several *BUGs* in the advanced features were fixed. See the `Bitbucket commits`_ for details.
+
 
 3.1.2
 -----
@@ -890,4 +895,5 @@ Changes
 .. _`Vim spell`:  http://vimdoc.sourceforge.net/htmldoc/spell.html
 .. _flake8: https://pypi.python.org/pypi/flake8
 .. _Bitbucket: https://bitbucket.org/apalala/grako
+.. _`Bitbucket commits`: https://bitbucket.org/apalala/grako/commits/
 .. _PyPi: https://pypi.python.org/pypi/grako

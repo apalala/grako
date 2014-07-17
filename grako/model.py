@@ -9,6 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import collections
 
 from grako.util import asjson, asjsons
+from grako.exceptions import SemanticError
 from grako.ast import AST
 
 EOLCOL = 50
@@ -23,9 +24,9 @@ class Node(object):
     def __init__(self, ctx=None, ast=None, parseinfo=None):
         super(Node, self).__init__()
         self._ctx = ctx
-        if isinstance(ast, AST):
-            parseinfo = parseinfo or ast.parseinfo
         self._parseinfo = parseinfo
+        if isinstance(ast, AST):
+            self._parseinfo = ast.parseinfo if not parseinfo else None
 
         self._parent = None
         self._adopt_children(ast)
@@ -150,8 +151,8 @@ class DepthFirstWalker(NodeWalker):
             return tv(node, [], *args, **kwargs)
 
 
-class ModelBuilder(object):
-    """ Intended as a semantic action for parsing, a ModelBuilder creates
+class ModelBuilderSemantics(object):
+    """ Intended as a semantic action for parsing, a ModelBuilderSemantics creates
         nodes using the class name given as first parameter to a grammar
         rule, and synthesizes the class/type if it's not known.
     """
@@ -171,7 +172,8 @@ class ModelBuilder(object):
         typename = str(typename)
         if typename in self.nodetypes:
             return self.nodetypes[typename]
-        # create a new type
+
+        # synthethize a new type
         nodetype = type(typename, (self.baseType,), {})
         self._register_nodetype(nodetype)
         return nodetype
@@ -179,6 +181,15 @@ class ModelBuilder(object):
     def _default(self, ast, *args, **kwargs):
         if not args:
             return ast
-        nodetype = self._get_nodetype(args[0])
-        node = nodetype(self.ctx, ast=ast)
-        return node
+        name = args[0]
+        nodetype = self._get_nodetype(name)
+        try:
+            return nodetype(ast=ast, ctx=self.ctx)
+        except Exception as e:
+            raise SemanticError(
+                'Could not call constructor for %s: %s'
+                % (
+                    name,
+                    str(e)
+                )
+            )

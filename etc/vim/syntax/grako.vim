@@ -21,10 +21,10 @@ syn match ebnfName /@:\|@+:\|@\|[A-Za-z0-9_-]\+:/ contained skipwhite skipempty
 syn match ebnfInherit /<[ \t\n]*[A-Za-z0-9_-]\+/  skipwhite skipempty nextgroup=ebnfParamStart,ebnfSeparator
 
 syn match ebnfParamsStart "::" nextgroup=ebnfParams skipwhite skipempty
-syn match ebnfParams /.*[^=:]/ contained skipwhite skipempty nextgroup=ebnfSeparator
+syn match ebnfParams /.*[^=]/ contained skipwhite skipempty nextgroup=ebnfSeparator
 syn region ebnfParams start=/(/ end=')' skipwhite skipempty nextgroup=ebnfSeparator
 
-syn match ebnfSeparator /[=:]/ contained nextgroup=ebnfProduction skipwhite skipempty
+syn match ebnfSeparator /[=]/ contained nextgroup=ebnfProduction skipwhite skipempty
 syn region ebnfProduction start=/\zs[^\.;]/ end=/[\.;]/me=e-1 contained contains=ebnfSpecial,ebnfDelimiter,ebnfTerminal,ebnfSpecialSequence,ebnfPattern,ebnfComment,ebnfName,ebnfRuleInclude nextgroup=ebnfEndProduction skipwhite skipempty
 syn match ebnfDelimiter #[\-\*+]\|>>\|[&~,(|)\]}\[{!]\|\(\*)\)\|\((\*\)\|\(:)\)\|\((:\)# contained
 syn match ebnfSpecial /[~+]/ contained

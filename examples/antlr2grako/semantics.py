@@ -63,7 +63,7 @@ class ANTLRSemantics(object):
         return model.PositiveClosure(ast)
 
     def negative(self, ast):
-        neg = model.LookaheadNot(ast)
+        neg = model.NegativeLookahead(ast)
         any = model.Pattern('.')
         return model.Sequence([neg, any])
 

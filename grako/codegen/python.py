@@ -86,7 +86,7 @@ class Lookahead(_Decorator):
                 '''
 
 
-class LookaheadNot(_Decorator):
+class NegativeLookahead(_Decorator):
     template = '''\
                 with self._ifnot():
                 {exp:1::}\
@@ -342,9 +342,11 @@ class Grammar(Base):
             self.get_renderer(rule).render() for rule in self.node.rules
         ])
 
+        version = str(tuple(int(n) for n in str(timestamp()).split('.')))
+
         fields.update(rules=indent(rules),
                       abstract_rules=abstract_rules,
-                      version=timestamp(),
+                      version=version,
                       whitespace=whitespace,
                       nameguard=nameguard
                       )
@@ -372,7 +374,7 @@ class Grammar(Base):
                 from grako.parsing import graken, Parser
 
 
-                __version__ = '{version}'
+                __version__ = {version}
 
                 __all__ = [
                     '{name}Parser',

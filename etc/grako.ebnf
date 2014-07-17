@@ -1,4 +1,4 @@
-grammar
+grammar::Grammar
     =
     @:{rule}+ $
     ;
@@ -19,7 +19,7 @@ paramdef
     ;
 
 
-rule
+rule::Rule
     =
     name:new_name ~ [>paramdef] ['<' ~ base:known_name] '=' ~ rhs:expre ';' ~
     ;
@@ -27,19 +27,19 @@ rule
 
 params
     =
-    @+:literal {',' @+:literal}
+    @+:literal {',' ~  @+:literal}
     ;
 
 
 kwparams
     =
-    @+:pair {',' @+:pair}
+    @+:pair {',' ~ @+:pair}
     ;
 
 
 pair
     =
-    @+:word '=' @+:literal
+    @+:word '=' ~ @+:literal
     ;
 
 
@@ -49,13 +49,13 @@ expre
     ;
 
 
-choice
+choice::Choice
     =
     @+:sequence {'|' ~ @+:sequence}+
     ;
 
 
-sequence
+sequence::Sequence
     =
     {element}+
     ;
@@ -67,9 +67,9 @@ element
     ;
 
 
-rule_include
+rule_include::RuleInclude
     =
-    '>' @:known_name
+    '>' ~ @:known_name
     ;
 
 
@@ -79,15 +79,15 @@ named
     ;
 
 
-named_list
+named_list::NamedList
     =
-    name:name '+:' exp:element
+    name:name '+:' ~ exp:element
     ;
 
 
-named_single
+named_single::Named
     =
-    name:name ':' exp:element
+    name:name ':' ~ exp:element
     ;
 
 
@@ -97,21 +97,21 @@ override
     ;
 
 
-override_list
+override_list::OverrideList
     =
-    '@+:' @:element
+    '@+:' ~ @:element
     ;
 
 
-override_single
+override_single::Override
     =
-    '@:' @:element
+    '@:' ~ @:element
     ;
 
 
-override_single_deprecated
+override_single_deprecated::Override
     =
-    '@' @:element
+    '@' ~ @:element
     ;
 
 
@@ -129,43 +129,43 @@ term
     ;
 
 
-group
+group::Group
     =
     '(' ~ @:expre ')' ~
     ;
 
 
-positive_closure
+positive_closure::PositiveClosure
     =
     '{' @:expre '}' ('-' | '+') ~
     ;
 
 
-closure
+closure::Closure
     =
     '{' @:expre '}' ['*'] ~
     ;
 
 
-optional
+optional::Optional
     =
     '[' ~ @:expre ']' ~
     ;
 
 
-special
+special::Special
     =
     '?(' ~ @:/(.*)/ ')?' ~
     ;
 
 
-kif
+kif::Lookahead
     =
     '&' ~ @:term
     ;
 
 
-knot
+knot::NegativeLookahead
     =
     '!' ~ @:term
     ;
@@ -177,25 +177,25 @@ atom
     ;
 
 
-call
+call::RuleRef
     =
     word
     ;
 
 
-void
+void::Void
     =
     '()' ~
     ;
 
 
-cut
+cut::Cut
     =
     '~' ~
     ;
 
 
-cut_deprecated
+cut_deprecated::Cut
     =
     '>>' ~
     ;
@@ -225,13 +225,13 @@ literal
     ;
 
 
-token
+token::Token
     =
-    '"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'"
+    ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
     ;
 
 
-number
+number::Token
     =
     /[0-9]+/
     ;
@@ -243,16 +243,14 @@ word
     ;
 
 
-pattern
+pattern::Pattern
     =
-      '/' @:?/([^\/\n]|\\/|\\\\)*/? '/' ~
-    | '?/' @:?/(.*?)(?=/\?)/?? ?//\?+/?? ~
+      '?/' ~ @:?/(.*?)(?=/\?)/?? ?//\?+/?? ~
+    | '/' ~ @:?/([^\/\n]|\\/|\\\\)*/? '/' ~
     ;
 
 
-eof
+eof::EOF
     =
     '$' ~
     ;
-
-

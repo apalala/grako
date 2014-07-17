@@ -67,11 +67,11 @@ class Parser(ParseContext):
 def graken(*params, **kwparams):
     def decorator(rule):
         @functools.wraps(rule)
-        def wrapper(self, *args, **kwargs):
+        def wrapper(self):
             name = rule.__name__
             # remove the single leading and trailing underscore
             # that the parser generator added
             name = name[1:-1]
-            return self._call(rule, name, args, kwargs)
+            return self._call(rule, name, params, kwparams)
         return wrapper
     return decorator
