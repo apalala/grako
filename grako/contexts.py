@@ -663,4 +663,3 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
-
