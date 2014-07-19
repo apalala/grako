@@ -668,8 +668,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.2.0
------
+3.2.1-rc.1
+----------
 
 * Now rule parameters and ``model.ModelBuilderSemantics`` are used to produce grammar models with a minimal set of semantic methods.
 
@@ -681,8 +681,12 @@ Changes
 
 * *BUG* Need to allow newline (``\n``) characters within grammar patterns.
 
+* *BUG* 36_ Keyword agruments in rules were not working (Franz_G_)
+
 * Several *BUGs* in the advanced features (like *rules with arguments*) were fixed. See the `Bitbucket commits`_ for details.
 
+.. _36: https://bitbucket.org/apalala/grako/issue/36
+.. _Franz_G: https://bitbucket.org/Franz_G
 
 3.1.2
 -----
