@@ -7,7 +7,7 @@ import functools
 from collections import namedtuple
 from contextlib import contextmanager
 
-from grako.util import notnone, ustr, prune_dict, is_list
+from grako.util import notnone, ustr, prune_dict, is_list, info
 from grako.ast import AST
 from grako import buffering
 from grako.exceptions import (
@@ -327,7 +327,7 @@ class ParseContext(object):
     def _trace(self, msg, *params):
         if self.trace:
             msg = msg % params
-            print(ustr(msg), file=sys.stderr)
+            info(ustr(msg), file=sys.stderr)
 
     def _trace_event(self, event):
         if self.trace:

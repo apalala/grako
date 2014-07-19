@@ -20,6 +20,14 @@ else:
     strtype = basestring  # noqa
 
 
+def info(*args, **kwargs):
+    kwargs['file'] = sys.stderr
+    if PY3:
+        print(*args, **kwargs)
+    else:
+        print(*(a.encode('utf-8') for a in args), **kwargs)
+
+
 def debug(*args, **kwargs):
     kwargs['file'] = sys.stderr
     print(*args, **kwargs)
