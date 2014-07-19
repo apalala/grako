@@ -8,7 +8,7 @@ from __future__ import (absolute_import, division, print_function,
 from grako import tool
 
 genmodel = tool.genmodel
-codegen = tool.codegen
+gencode = tool.gencode
 
 
 def main():
