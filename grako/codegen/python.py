@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import keyword
 
-from grako.util import indent, trim, timestamp, urepr, compress_seq
+from grako.util import indent, trim, timestamp, ustr, urepr, compress_seq
 from grako.exceptions import CodegenError
 from grako.model import Node
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
@@ -259,13 +259,13 @@ class Rule(_Decorator):
         params = kwparams = ''
         if self.node.params:
             params = ', '.join(repr(
-                urepr(self.rend(p))) for p in self.node.params
+                ustr(self.rend(p))) for p in self.node.params
             )
         if self.node.kwparams:
             kwparams = ', '.join(
                 '%s=%s'
                 %
-                (k, urepr(self.rend(v)))
+                (k, ustr(self.rend(v)))
                 for k, v in self.kwparams
             )
 
