@@ -33,7 +33,10 @@ class RenderingFormatter(string.Formatter):
 
     def format_field(self, value, spec):
         if ':' not in spec:
-            return super(RenderingFormatter, self).format_field(render(value), spec)
+            return super(RenderingFormatter, self).format_field(
+                self.render(value),
+                spec
+            )
 
         ind, sep, fmt = spec.split(':')
         if sep == '\\n':
