@@ -95,11 +95,15 @@ class AST(dict):
     def __getitem__(self, key):
         if key in self:
             return super(AST, self).__getitem__(key)
+        key = self._safekey(key)
+        if key in self:
+            return super(AST, self).__getitem__(key)
 
     def __setitem__(self, key, value):
         self.set(key, value)
 
     def __delitem__(self, key):
+        key = self._safekey(key)
         super(AST, self).__delitem__(key)
         self._order.remove(key)
 

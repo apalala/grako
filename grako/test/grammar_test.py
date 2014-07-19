@@ -6,8 +6,10 @@ import unittest
 
 from grako.exceptions import FailedSemantics
 from grako.grammars import ModelContext
+from grako.parser import GrakoGrammarGenerator
 from grako.tool import genmodel
 from grako.util import trim
+from grako.codegen import codegen
 
 
 class GrammarTests(unittest.TestCase):
@@ -440,6 +442,39 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals(['1', '*', '2', '*', '3'], ast)
         ast = model_b.parse("(((1+2)))")
         self.assertEquals(['1', '+', '2'], ast)
+
+    def test_keyword_params(self):
+        grammar = '''
+            start(k1=1, k2=2)
+                =
+                {'a'} $
+                ;
+        '''
+        g = GrakoGrammarGenerator('Keywords', parseinfo=True)
+        model = g.parse(grammar, trace=False)
+        code = codegen(model)
+        self.assertEquals('#!/usr/bin/env python', code.splitlines()[0])
+        pass
+
+    def test_35_only_keyword_params(self):
+        grammar = '''
+            rule(kwdA=A, kwdB=B)
+                =
+                'a'
+                ;
+        '''
+        model = genmodel("test", grammar)
+        self.assertEquals(trim(grammar), str(model))
+
+    def test_36_params_and_keyword_params(self):
+        grammar = '''
+            rule(A, kwdB=B)
+                =
+                'a'
+                ;
+        '''
+        model = genmodel("test", grammar)
+        self.assertEquals(trim(grammar), str(model))
 
 
 def suite():

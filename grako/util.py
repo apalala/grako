@@ -8,15 +8,24 @@ import json
 import datetime
 import re
 import codecs
-import keyword
 
 
 PY3 = sys.version_info[0] >= 3
 
 if PY3:
     strtype = str
+    basestring = None
+    unicode = None
 else:
-    strtype = basestring
+    strtype = basestring  # noqa
+
+
+def info(*args, **kwargs):
+    kwargs['file'] = sys.stderr
+    if PY3:
+        print(*args, **kwargs)
+    else:
+        print(*(a.encode('utf-8') for a in args), **kwargs)
 
 
 def debug(*args, **kwargs):
@@ -60,7 +69,7 @@ def ustr(s):
     elif isinstance(s, str):
         return unicode(s, 'utf-8')
     else:
-        return unicode(str(s), 'utf-8')
+        return repr(s)  # FIXME: last case resource!  We don't know unicode, period.
 
 
 def urepr(obj):
@@ -186,9 +195,3 @@ def prune_dict(d, predicate):
     keys = [k for k, v in d.items() if predicate(k, v)]
     for k in keys:
         del d[k]
-
-
-def safe_name(s):
-    if keyword.iskeyword(s):
-        return s + '_'
-    return s

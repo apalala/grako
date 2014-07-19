@@ -510,22 +510,24 @@ class Rule(_Decorator):
 
     def __str__(self):
         params = ', '.join(self.params) if self.params else ''
-        kwparams = ','.join(self.kwparams) if self.kwparams else ''
-        allparams = ''
-        if kwparams:
-            if params:
-                allparams = '(%s, %s)' % (params, kwparams)
-            else:
-                allparams = '(%s, %s)' % (params, kwparams)
+
+        kwparams = ''
+        if self.kwparams:
+            kwparams = ', '.join('%s=%s' % (k, v) for (k, v) in self.kwparams)
+
+        if params and kwparams:
+            params = '(%s, %s)' % (params, kwparams)
+        elif kwparams:
+                params = '(%s)' % (kwparams)
         elif params:
-            allparams = '::%s' % params
+            params = '::%s' % params
 
         base = ' < %s' % self.base.name if self.base else ''
 
         return trim(self.str_template) % (
             self.name,
             base,
-            allparams,
+            params,
             indent(str(self.exp))
         )
 

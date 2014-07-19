@@ -27,7 +27,7 @@ rule::Rule
 
 params
     =
-    @+:literal {',' ~  @+:literal}
+    @+:literal {',' @+:literal !'=' ~}
     ;
 
 
@@ -221,21 +221,25 @@ name
 
 literal
     =
-    token | number | word
+    string | number | word
     ;
 
 
 token::Token
     =
+    string
+    ;
+
+string
+    =
     ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
     ;
 
 
-number::Token
+number
     =
     /[0-9]+/
     ;
-
 
 word
     =

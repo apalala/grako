@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 17, 16, 13, 12, 3)
+__version__ = (2014, 7, 19, 17, 43, 43, 5)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -134,9 +134,11 @@ class GrakoBootstrapParser(Parser):
 
         def block1():
             self._token(',')
-            self._cut()
             self._literal_()
             self.ast.setlist('@', self.last_node)
+            with self._ifnot():
+                self._token('=')
+            self._cut()
         self._closure(block1)
 
     @graken()
@@ -321,7 +323,7 @@ class GrakoBootstrapParser(Parser):
                     self._token('-')
                 with self._option():
                     self._token('+')
-                self._error('expecting one of: + -')
+                self._error('no available options')
         self._cut()
 
     @graken('Closure')
@@ -420,7 +422,7 @@ class GrakoBootstrapParser(Parser):
     def _literal_(self):
         with self._choice():
             with self._option():
-                self._token_()
+                self._string_()
             with self._option():
                 self._number_()
             with self._option():
@@ -429,6 +431,10 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Token')
     def _token_(self):
+        self._string_()
+
+    @graken()
+    def _string_(self):
         with self._group():
             with self._choice():
                 with self._option():
@@ -443,10 +449,10 @@ class GrakoBootstrapParser(Parser):
                     self._pattern(r"([^'\n]|\\'|\\\\)*")
                     self.ast['@'] = self.last_node
                     self._token("'")
-                self._error('expecting one of: " \'')
+                self._error('no available options')
         self._cut()
 
-    @graken('Token')
+    @graken()
     def _number_(self):
         self._pattern(r'[0-9]+')
 
@@ -471,7 +477,7 @@ class GrakoBootstrapParser(Parser):
                 self.ast['@'] = self.last_node
                 self._token('/')
                 self._cut()
-            self._error('expecting one of: / ?/')
+            self._error('no available options')
 
     @graken('EOF')
     def _eof_(self):
@@ -586,6 +592,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def token(self, ast):
+        return ast
+
+    def string(self, ast):
         return ast
 
     def number(self, ast):
