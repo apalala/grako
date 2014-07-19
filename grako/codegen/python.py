@@ -258,9 +258,16 @@ class Rule(_Decorator):
 
         params = kwparams = ''
         if self.node.params:
-            params = ', '.join(repr(self.rend(p)) for p in self.node.params)
+            params = ', '.join(repr(
+                urepr(self.rend(p))) for p in self.node.params
+            )
         if self.node.kwparams:
-            kwparams = ', '.join('%s=%s' % (k, repr(self.rend(v))) for k, v in self.kwparams)
+            kwparams = ', '.join(
+                '%s=%s'
+                %
+                (k, urepr(self.rend(v)))
+                for k, v in self.kwparams
+            )
 
         if params and kwparams:
             params = params + ', ' + kwparams
