@@ -11,10 +11,10 @@ import os
 import pickle
 import sys
 
+import grako.codegen
 from grako.util import eval_escapes
 from grako.exceptions import GrakoException
 from grako.parser import GrakoGrammarGenerator
-from grako.codegen import codegen
 
 DESCRIPTION = ('GRAKO (for "grammar compiler") takes grammars'
                ' in a variation of EBNF as input, and outputs a memoizing'
@@ -70,9 +70,9 @@ def genmodel(name, grammar, trace=False, filename=None):
     return parser.parse(grammar, filename=filename)
 
 
-def gencode(name, grammar, trace=False, filename=None):
+def codegen(name, grammar, trace=False, filename=None):
     model = genmodel(name, grammar, trace=trace, filename=filename)
-    return codegen(model)
+    return grako.codegen.codegen(model)
 
 
 def _error(*args, **kwargs):
