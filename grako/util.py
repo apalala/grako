@@ -61,7 +61,7 @@ def ustr(s):
     elif isinstance(s, str):
         return unicode(s, 'utf-8')
     else:
-        return unicode(str(s), 'utf-8')
+        return repr(s)  # FIXME: last case resource!  We don't know unicode, period.
 
 
 def urepr(obj):
