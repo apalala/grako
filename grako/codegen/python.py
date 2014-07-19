@@ -124,7 +124,7 @@ class Choice(Base):
                 option=indent(self.rend(o))) for o in self.node.options
         ]
         options = '\n'.join(o for o in options)
-        firstset = ' '.join(f[0] for f in sorted(self.node.lookahead) if f)
+        firstset = ' '.join(f[0] for f in sorted(self.node.firstset) if f)
         if firstset:
             error = 'expecting one of: ' + firstset
         else:
