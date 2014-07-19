@@ -27,7 +27,7 @@ rule::Rule
 
 params
     =
-    @+:literal {',' ~  @+:literal}
+    @+:literal {',' @+:literal !'=' ~}
     ;
 
 

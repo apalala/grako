@@ -456,9 +456,22 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals('#!/usr/bin/env python', code.splitlines()[0])
         pass
 
-    def test_35(self):
+    def test_35_only_keyword_params(self):
         grammar = '''
-            rule(A, kwdB=B) = "a" ;
+            rule(kwdA=A, kwdB=B)
+                =
+                'a'
+                ;
+        '''
+        model = genmodel("test", grammar)
+        self.assertEquals(trim(grammar), str(model))
+
+    def test_36_params_and_keyword_params(self):
+        grammar = '''
+            rule(A, kwdB=B)
+                =
+                'a'
+                ;
         '''
         model = genmodel("test", grammar)
         self.assertEquals(trim(grammar), str(model))
