@@ -456,6 +456,13 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals('#!/usr/bin/env python', code.splitlines()[0])
         pass
 
+    def test_35(self):
+        grammar = '''
+            rule(A, kwdB=B) = "a" ;
+        '''
+        model = genmodel("test", grammar)
+        self.assertEquals(trim(grammar), str(model))
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
