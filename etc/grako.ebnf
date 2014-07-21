@@ -1,6 +1,8 @@
+(* The language for Grako grammars *)
 grammar::Grammar
     =
-    @:{rule}+ $
+    rules:{rule}+ $
+    epilogue:{comment|eol_comment}
     ;
 
 
@@ -21,7 +23,12 @@ paramdef
 
 rule::Rule
     =
-    name:new_name ~ [>paramdef] ['<' ~ base:known_name] '=' ~ rhs:expre ';' ~
+    (* capture comments between rules *)
+    prologue:{comment}
+    name:new_name ~ [>paramdef] ['<' ~ base:known_name] '=' ~ rhs:expre
+    (* this is in case the rule is a choice *)
+    epilogue:{comment|eol_comment}
+    ';' ~
     ;
 
 
@@ -64,7 +71,7 @@ choice::Choice
 
 sequence::Sequence
     =
-    {element}+
+    {{@+:comment} @+:element {@+:(comment|eol_comment)}}+
     ;
 
 
@@ -269,6 +276,17 @@ pattern::Pattern
     =
       '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
     | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
+    ;
+
+
+comment::Comment
+    =
+    /\(\*\s*/ ~ @:/(?:.|\n)*?(?=\s*\*\))/ /\s*\*\)/
+    ;
+
+eol_comment::EOLComment
+    =
+    /#\s*/ ~ @:/.*?(?=\s*$)/ /\s*\n/
     ;
 
 

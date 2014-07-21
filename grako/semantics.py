@@ -94,15 +94,17 @@ class GrakoSemantics(ModelBuilderSemantics):
         base = ast.base
         params = ast.params
         kwparams = OrderedDict(ast.kwparams) if ast.kwparams else None
+        prologue = ast.prologue
+        epilogue = ast.epilogue
 
         self.new_name(name)
 
         if not base:
-            rule = grammars.Rule(name, rhs, params, kwparams)
+            rule = grammars.Rule(name, rhs, params, kwparams, prologue, epilogue)
         else:
             self.known_name(base)
             base_rule = self.rules[base]
-            rule = grammars.BasedRule(name, rhs, base_rule, params, kwparams)
+            rule = grammars.BasedRule(name, rhs, base_rule, params, kwparams, prologue, epilogue)
 
         self.rules[name] = rule
         return rule
@@ -115,4 +117,8 @@ class GrakoSemantics(ModelBuilderSemantics):
         return grammars.RuleInclude(rule)
 
     def grammar(self, ast, *args):
-        return grammars.Grammar(self.grammar_name, list(self.rules.values()))
+        return grammars.Grammar(
+            self.grammar_name,
+            list(self.rules.values()),
+            ''
+        )

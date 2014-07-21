@@ -23,8 +23,6 @@ from grako.semantics import GrakoASTSemantics, GrakoSemantics
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
-COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
-EOL_COMMENTS_RE = r'#.*?$'
 PRAGMA_RE = r'^\s*#[a-z]+'
 
 
@@ -33,8 +31,6 @@ class GrakoBuffer(Buffer):
         super(GrakoBuffer, self).__init__(
             text,
             filename=filename,
-            comments_re=COMMENTS_RE,
-            eol_comments_re=EOL_COMMENTS_RE,
             memoize_lookaheads=False,
             **kwargs
         )
