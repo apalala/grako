@@ -518,7 +518,6 @@ class Rule(_Decorator):
         else:
             return urepr(p)
 
-
     def __str__(self):
         params = ', '.join(
             self.param_repr(p) for p in self.params
@@ -526,7 +525,10 @@ class Rule(_Decorator):
 
         kwparams = ''
         if self.kwparams:
-            kwparams = ', '.join('%s=%s' % (k, v) for (k, v) in self.kwparams.items())
+            kwparams = ', '.join(
+                '%s=%s' % (k, self.param_repr(v)) for (k, v)
+                in self.kwparams.items()
+            )
 
         if params and kwparams:
             params = '(%s, %s)' % (params, kwparams)
