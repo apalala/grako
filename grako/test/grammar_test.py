@@ -541,7 +541,7 @@ class GrammarTests(unittest.TestCase):
                 ;
 
 
-            rule_positional::ABC, 123, '=', '+'
+            rule_positional(ABC, 123, '=', '+')
                 =
                 'a'
                 ;

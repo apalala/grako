@@ -535,7 +535,7 @@ class Rule(_Decorator):
         elif kwparams:
                 params = '(%s)' % (kwparams)
         elif params:
-            params = '::%s' % params
+            params = '(%s)' % params
 
         base = ' < %s' % self.base.name if self.base else ''
 
