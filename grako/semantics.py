@@ -84,7 +84,7 @@ class GrakoSemantics(ModelBuilderSemantics):
         rhs = ast.rhs
         base = ast.base
         params = ast.params
-        kwparams = ast.kwparams
+        kwparams = dict(ast.kwparams) if ast.kwparams else None
 
         self.new_name(name)
 

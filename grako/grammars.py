@@ -15,7 +15,7 @@ from __future__ import (absolute_import, division, print_function,
 import re
 import sys
 import functools
-from collections import defaultdict
+from collections import defaultdict, Mapping
 from copy import copy
 
 from grako.util import indent, trim, urepr, compress_seq
@@ -479,6 +479,7 @@ class RuleInclude(_Decorator):
 
 class Rule(_Decorator):
     def __init__(self, name, exp, params, kwparams):
+        assert kwparams is None or isinstance(kwparams, Mapping), kwparams
         super(Rule, self).__init__(exp)
         self.name = name
         self.params = params
