@@ -476,6 +476,100 @@ class GrammarTests(unittest.TestCase):
         model = genmodel("test", grammar)
         self.assertEquals(trim(grammar), str(model))
 
+    def test_36_param_combinations(self):
+        def assert_equal(target, value):
+            self.assertEqual(target, value)
+
+        class TC36Semantics(object):
+
+            """Check all rule parameters for expected types and values"""
+
+            def rule_positional(self, ast, p1, p2, p3, p4):
+                assert_equal("ABC", p1)
+                assert_equal(123, p2)
+                assert_equal('=', p3)
+                assert_equal("+", p4)
+                return ast
+
+            def rule_keyword(self, ast, k1, k2, k3, k4):
+                assert_equal("ABC", k1)
+                assert_equal(123, k2)
+                assert_equal('=', k3)
+                assert_equal('+', k4)
+                return ast
+
+            def rule_all(self, ast, p1, p2, p3, p4, k1, k2, k3, k4):
+                assert_equal("DEF", p1)
+                assert_equal(456, p2)
+                assert_equal('=', p3)
+                assert_equal("+", p4)
+                assert_equal("HIJ", k1)
+                assert_equal(789, k2)
+                assert_equal('=', k3)
+                assert_equal('+', k4)
+                return ast
+
+        grammar = '''
+            start
+                =
+                {rule_positional | rule_keywords | rule_all} $
+                ;
+
+
+            rule_positional('ABC', 123, '=', '+')
+                =
+                'a'
+                ;
+
+
+            rule_keywords(k1=ABC, k3='=', k4='+', k2=123)
+                =
+                'b'
+                ;
+
+
+            rule_all('DEF', 456, '=', '+', k1=HIJ, k3='=', k4='+', k2=789)
+                =
+                'c'
+                ;
+        '''
+
+        pretty = '''
+            start
+                =
+                {rule_positional | rule_keywords | rule_all} $
+                ;
+
+
+            rule_positional::ABC, 123, '=', '+'
+                =
+                'a'
+                ;
+
+
+            rule_keywords(k1=ABC, k3='=', k4='+', k2=123)
+                =
+                'b'
+                ;
+
+
+            rule_all(DEF, 456, '=', '+', k1=HIJ, k3='=', k4='+', k2=789)
+                =
+                'c'
+                ;
+        '''
+
+        model = genmodel('RuleArguments', grammar)
+        self.assertEqual(trim(pretty), str(model))
+
+        ast = model.parse("a b c")
+        self.assertEqual(['a', 'b', 'c'], ast)
+        semantics = TC36Semantics()
+        ast = model.parse("a b c", semantics=semantics)
+        self.assertEqual(['a', 'b', 'c'], ast)
+        codegen(model)
+
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

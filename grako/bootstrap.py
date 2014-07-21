@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 21, 2, 50, 46, 0)
+__version__ = (2014, 7, 21, 3, 36, 22, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -138,7 +138,6 @@ class GrakoBootstrapParser(Parser):
             self.ast.setlist('@', self.last_node)
             with self._ifnot():
                 self._token('=')
-            self._cut()
         self._closure(block1)
 
     @graken()
