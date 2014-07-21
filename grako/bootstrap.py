@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 21, 4, 14, 13, 0)
+__version__ = (2014, 7, 21, 15, 7, 52, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -436,7 +436,11 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._word_()
             with self._option():
-                self._number_()
+                self._hex_()
+            with self._option():
+                self._float_()
+            with self._option():
+                self._int_()
             self._error('no available options')
 
     @graken('Token')
@@ -463,12 +467,25 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
     @graken()
-    def _number_(self):
-        self._pattern(r'[0-9]+(?:\.[0-9]+)?')
+    def _hex_(self):
+        self._pattern(r'0[xX](\d|[a-fA-F])+')
+
+    @graken()
+    def _float_(self):
+        with self._choice():
+            with self._option():
+                self._pattern(r'[-+]?\d+\.(?:\d*)?(?:[Ee][-+]?\d+)?')
+            with self._option():
+                self._pattern(r'[-+]?\d*\.\d+(?:[Ee][-+]?\d+)?')
+            self._error('expecting one of: [-+]?\\d*\\.\\d+(?:[Ee][-+]?\\d+)? [-+]?\\d+\\.(?:\\d*)?(?:[Ee][-+]?\\d+)?')
+
+    @graken()
+    def _int_(self):
+        self._pattern(r'[-+]?\d+')
 
     @graken()
     def _word_(self):
-        self._pattern(r'[-_A-Za-z][-_A-Za-z0-9]*')
+        self._pattern(r'[_A-Za-z][_A-Za-z0-9]*')
 
     @graken('Pattern')
     def _pattern_(self):
@@ -610,7 +627,13 @@ class GrakoBootstrapSemantics(object):
     def string(self, ast):
         return ast
 
-    def number(self, ast):
+    def hex(self, ast):
+        return ast
+
+    def float(self, ast):
+        return ast
+
+    def int(self, ast):
         return ast
 
     def word(self, ast):

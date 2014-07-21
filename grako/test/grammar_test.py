@@ -630,6 +630,16 @@ class GrammarTests(unittest.TestCase):
         tc36unicharstest
         _trydelete("tc36unicharstest")
 
+    def test_numbers(self):
+        grammar = '''
+            rule(1, -23, 4.56, 7.89e-11, 0xABCDEF)
+                =
+                'a'
+                ;
+        '''
+        model = genmodel("test", grammar)
+        self.assertEquals(trim(grammar), str(model))
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

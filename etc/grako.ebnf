@@ -228,7 +228,7 @@ name
 
 literal
     =
-    string | word | number
+    string | word | hex | float | int
     ;
 
 
@@ -243,14 +243,25 @@ string
     ;
 
 
-number
+hex
     =
-    /[0-9]+(?:\.[0-9]+)?/
+     /0[xX](\d|[a-fA-F])+/
+     ;
+
+float
+    =
+      /[-+]?\d+\.(?:\d*)?(?:[Ee][-+]?\d+)?/
+    | /[-+]?\d*\.\d+(?:[Ee][-+]?\d+)?/
+    ;
+
+int
+    =
+    /[-+]?\d+/
     ;
 
 word
     =
-    /[-_A-Za-z][-_A-Za-z0-9]*/
+    /[_A-Za-z][_A-Za-z0-9]*/
     ;
 
 
