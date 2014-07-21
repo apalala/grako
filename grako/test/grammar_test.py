@@ -570,6 +570,65 @@ class GrammarTests(unittest.TestCase):
         self.assertEqual(['a', 'b', 'c'], ast)
         codegen(model)
 
+    def test_36_unichars(self):
+        grammar = '''
+            start = { rule_positional | rule_keywords | rule_all }* $ ;
+
+            rule_positional("ÄÖÜäöüß") = 'a' ;
+
+            rule_keywords(k1='äöüÄÖÜß') = 'b' ;
+
+            rule_all('ßÄÖÜäöü', k1="ßäöüÄÖÜ") = 'c' ;
+        '''
+
+        def _trydelete(pymodule):
+            import os
+            try:
+                os.unlink(pymodule + ".py")
+            except EnvironmentError:
+                pass
+            try:
+                os.unlink(pymodule + ".pyc")
+            except EnvironmentError:
+                pass
+            try:
+                os.unlink(pymodule + ".pyo")
+            except EnvironmentError:
+                pass
+
+        def assert_equal(target, value):
+            self.assertEqual(target, value)
+
+        class UnicharsSemantics(object):
+            """Check all rule parameters for expected types and values"""
+            def rule_positional(self, ast, p1):
+                assert_equal("ÄÖÜäöüß", p1)
+                return ast
+
+            def rule_keyword(self, ast, k1):
+                assert_equal("äöüÄÖÜß", k1)
+                return ast
+
+            def rule_all(self, ast, p1, k1):
+                assert_equal("ßÄÖÜäöü", p1)
+                assert_equal("ßäöüÄÖÜ", k1)
+                return ast
+
+        m = genmodel("UnicodeRuleArguments", grammar)
+        ast = m.parse("a b c")
+        self.assertEqual(['a', 'b', 'c'], ast)
+
+        semantics = UnicharsSemantics()
+        ast = m.parse("a b c", semantics=semantics)
+        self.assertEqual(['a', 'b', 'c'], ast)
+
+        code = codegen(m)
+        import codecs
+        with codecs.open("tc36unicharstest.py", "w", "utf-8") as f:
+            f.write(code)
+        import tc36unicharstest
+        tc36unicharstest
+        _trydelete("tc36unicharstest")
 
 
 def suite():
