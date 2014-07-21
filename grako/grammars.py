@@ -514,7 +514,7 @@ class Rule(_Decorator):
 
         kwparams = ''
         if self.kwparams:
-            kwparams = ', '.join('%s=%s' % (k, v) for (k, v) in self.kwparams)
+            kwparams = ', '.join('%s=%s' % (k, v) for (k, v) in self.kwparams.items())
 
         if params and kwparams:
             params = '(%s, %s)' % (params, kwparams)
