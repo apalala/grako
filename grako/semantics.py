@@ -90,7 +90,7 @@ class GrakoSemantics(ModelBuilderSemantics):
         rhs = ast.rhs
         base = ast.base
         params = ast.params
-        kwparams = dict(ast.kwparams) if ast.kwparams else None
+        kwparams = OrderedDict(ast.kwparams) if ast.kwparams else None
 
         self.new_name(name)
 
