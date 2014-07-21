@@ -15,7 +15,7 @@ endif
 syn match ebnfInclude /#[ \t\n]*[A-Za-z0-9_-]\+/  skipwhite skipempty nextgroup=ebnfParamStart
 syn match ebnfRuleInclude />[ \t\n]*[A-Za-z0-9_-]\+/  skipwhite skipempty
 syn match ebnfMetaIdentifier /[A-Za-z0-9_-]\+/ skipwhite skipempty nextgroup=ebnfSeparator
-syn match ebnfName /@:\|@+:\|@\|[A-Za-z0-9_-]\+:/ contained skipwhite skipempty
+syn match ebnfName /@:\|@+:\|@\|[A-Za-z0-9_-]\+:\|[A-Za-z0-9_-]\++:/ contained skipwhite skipempty
 
 
 syn match ebnfInherit /<[ \t\n]*[A-Za-z0-9_-]\+/  skipwhite skipempty nextgroup=ebnfParamStart,ebnfSeparator
