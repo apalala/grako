@@ -561,6 +561,7 @@ class GrammarTests(unittest.TestCase):
 
         model = genmodel('RuleArguments', grammar)
         self.assertEqual(trim(pretty), str(model))
+        model = genmodel('RuleArguments', pretty)
 
         ast = model.parse("a b c")
         self.assertEqual(['a', 'b', 'c'], ast)

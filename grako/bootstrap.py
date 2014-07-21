@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 21, 3, 36, 22, 0)
+__version__ = (2014, 7, 21, 4, 14, 13, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -48,7 +48,7 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._token('::')
                 self._cut()
-                self._params_()
+                self._params_only_()
                 self.ast['params'] = self.last_node
             with self._option():
                 self._token('(')
@@ -87,7 +87,7 @@ class GrakoBootstrapParser(Parser):
                 with self._option():
                     self._token('::')
                     self._cut()
-                    self._params_()
+                    self._params_only_()
                     self.ast['params'] = self.last_node
                 with self._option():
                     self._token('(')
@@ -138,6 +138,17 @@ class GrakoBootstrapParser(Parser):
             self.ast.setlist('@', self.last_node)
             with self._ifnot():
                 self._token('=')
+        self._closure(block1)
+
+    @graken()
+    def _params_only_(self):
+        self._literal_()
+        self.ast.setlist('@', self.last_node)
+
+        def block1():
+            self._token(',')
+            self._literal_()
+            self.ast.setlist('@', self.last_node)
         self._closure(block1)
 
     @graken()
@@ -495,6 +506,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def params(self, ast):
+        return ast
+
+    def params_only(self, ast):
         return ast
 
     def kwparams(self, ast):

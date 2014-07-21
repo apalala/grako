@@ -6,7 +6,7 @@ grammar::Grammar
 
 paramdef
     =
-        '::' ~ params:params
+        '::' ~ params:params_only
     |
         '('
         ~
@@ -28,6 +28,13 @@ rule::Rule
 params
     =
     @+:literal {',' @+:literal !'=' }
+    ;
+
+
+
+params_only
+    =
+    @+:literal {',' @+:literal }
     ;
 
 
