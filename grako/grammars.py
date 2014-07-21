@@ -252,7 +252,7 @@ class Sequence(Model):
     def __str__(self):
         seq = [str(s) for s in self.sequence]
         single = ' '.join(seq)
-        if len(single) <= PEP8_LLEN or len(single.splitlines()) <= 1:
+        if len(single) <= PEP8_LLEN and len(single.splitlines()) <= 1:
             return single
         else:
             return '\n'.join(seq)
