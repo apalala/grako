@@ -85,15 +85,15 @@ class GrammarTests(unittest.TestCase):
         document = @:ul [ nl ] $ ;
         ul = "*" ul_start el+:li { nl el:li } * ul_end ;
         li = ul | li_text ;
-        (* Quirk: If a text line is followed by a sublist, the sublist does not get its own li.  *)
+        (* Quirk: If a text line is followed by a sublist, the sublist does not get its own li. *)
         li_text = text:text [ ul:li_followed_by_ul ] ;
         li_followed_by_ul = nl @:ul ;
         text = ?/.*/? ;
         nl = ?/\n/? ul_marker ;
-        (* The following rules are placeholders for state transitions.  *)
+        (* The following rules are placeholders for state transitions. *)
         ul_start = () ;
         ul_end = () ;
-        (* The following rules are placeholders for state validations and grammar rules.  *)
+        (* The following rules are placeholders for state validations and grammar rules. *)
         ul_marker = () ;
         '''
 

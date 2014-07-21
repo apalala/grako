@@ -55,10 +55,17 @@ class Fail(Base):
 
 
 class Comment(Base):
-    template = '''
-        (* {comment} *)
+    def render_fields(self, fields):
+        lines =  '\n'.join(
+            '# %s' % ustr(c) for c in self.node.comment.splitlines()
+        )
+        fields.update(lines=lines)
 
-        '''
+    template = '\n{lines}\n'
+
+
+class EOLComment(Comment):
+    pass
 
 
 class EOF(Base):
@@ -192,12 +199,6 @@ class Optional(_Decorator):
                 {exp:1::}\
                 '''
 
-    str_template = '''
-            [
-            %s
-            ]
-            '''
-
 
 class Cut(Base):
     template = 'self._cut()'
@@ -310,19 +311,23 @@ class Rule(_Decorator):
                                                 )
                                   )
 
-        fields.update(defines=sdefines)
+        prologue = epilogue = ''
+        if self.node.prologue:
+            prologue='\n'.join(self.rend(c) for c in self.node.prologue),
+        if self.node.epilogue:
+            epilogue='\n'.join(self.rend(c) for c in self.node.epilogue),
+
+        fields.update(
+            defines=sdefines,
+            prologue=prologue,
+            epilogue=epilogue,
+        )
 
     template = '''
+                {prologue}
                 @graken({params})
                 def _{name}_(self):
-                {exp:1::}{defines}
-                '''
-
-    str_template = '''\
-                %s
-                    =
-                %s
-                    ;
+                {exp:1::}{defines}{epilogue}
                 '''
 
 
@@ -333,20 +338,6 @@ class BasedRule(Rule):
     def render_fields(self, fields):
         super(BasedRule, self).render_fields(fields)
         fields.update(exp=self.rhs)
-
-    def __str__(self):
-        return trim(self.str_template) % (
-            self.name,
-            self.base.name,
-            indent(self.rend(self.exp))
-        )
-
-    str_template = '''\
-                %s < %s
-                    =
-                %s
-                    ;
-                '''
 
 
 class Grammar(Base):
@@ -471,5 +462,10 @@ class Grammar(Base):
                                         help="the start rule for parsing")
                     args = parser.parse_args()
 
-                    main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace)
+                    main(
+                        args.file,
+                        args.startrule,
+                        trace=args.trace,
+                        whitespace=args.whitespace
+                    ){epilogue}
                     '''

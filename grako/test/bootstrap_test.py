@@ -13,7 +13,7 @@ import sys
 import unittest
 
 from grako.model import DepthFirstWalker
-from grako.parser import COMMENTS_RE, GrakoGrammarGenerator, GrakoParser
+from grako.parser import GrakoGrammarGenerator, GrakoParser
 from grako.semantics import GrakoSemantics
 from grako.codegen import codegen
 
@@ -117,7 +117,6 @@ class BootstrapTests(unittest.TestCase):
             text,
             start_rule='grammar',
             semantics=GrakoSemantics('GrakoBootstrap'),
-            comments_re=COMMENTS_RE
         )
         generated_grammar10 = str(g10)
         with open('tmp/10.ebnf', 'w') as f:
@@ -134,7 +133,6 @@ class BootstrapTests(unittest.TestCase):
         r11 = g11.parse(text,
                         start_rule='grammar',
                         semantics=GrakoSemantics('GrakoBootstrap'),
-                        comments_re=COMMENTS_RE
                         )
         with open('tmp/11.ebnf', 'w') as f:
             f.write(str(g11))

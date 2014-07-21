@@ -1,6 +1,7 @@
-grammar::Grammar
+(* The language for Grako grammars *)
+grammar(Grammar)
     =
-    @:{rule}+ $
+    rules:{rule}+ epilogue:{comment | eol_comment} $
     ;
 
 
@@ -19,22 +20,33 @@ paramdef
     ;
 
 
-rule::Rule
+rule(Rule)
     =
-    name:new_name ~ [>paramdef] ['<' ~ base:known_name] '=' ~ rhs:expre ';' ~
+    (* capture comments between rules *)
+    prologue:{comment}
+    name:new_name
+    ~
+    [>paramdef]
+    ['<' ~ base:known_name]
+    '='
+    ~
+    rhs:expre
+    (* this is in case the rule is a choice *)
+    epilogue:{comment | eol_comment}
+    ';'
+    ~
     ;
 
 
 params
     =
-    @+:literal {',' @+:literal !'=' }
+    @+:literal {',' @+:literal !'='}
     ;
-
 
 
 params_only
     =
-    @+:literal {',' @+:literal }
+    @+:literal {',' @+:literal}
     ;
 
 
@@ -56,15 +68,15 @@ expre
     ;
 
 
-choice::Choice
+choice(Choice)
     =
     @+:sequence {'|' ~ @+:sequence}+
     ;
 
 
-sequence::Sequence
+sequence(Sequence)
     =
-    {element}+
+    {{@+:comment} @+:element {@+:(comment | eol_comment)}}+
     ;
 
 
@@ -74,7 +86,7 @@ element
     ;
 
 
-rule_include::RuleInclude
+rule_include(RuleInclude)
     =
     '>' ~ @:known_name
     ;
@@ -86,13 +98,13 @@ named
     ;
 
 
-named_list::NamedList
+named_list(NamedList)
     =
     name:name '+:' ~ exp:element
     ;
 
 
-named_single::Named
+named_single(Named)
     =
     name:name ':' ~ exp:element
     ;
@@ -104,19 +116,19 @@ override
     ;
 
 
-override_list::OverrideList
+override_list(OverrideList)
     =
     '@+:' ~ @:element
     ;
 
 
-override_single::Override
+override_single(Override)
     =
     '@:' ~ @:element
     ;
 
 
-override_single_deprecated::Override
+override_single_deprecated(Override)
     =
     '@' ~ @:element
     ;
@@ -136,43 +148,43 @@ term
     ;
 
 
-group::Group
+group(Group)
     =
     '(' ~ @:expre ')' ~
     ;
 
 
-positive_closure::PositiveClosure
+positive_closure(PositiveClosure)
     =
     '{' @:expre '}' ('-' | '+') ~
     ;
 
 
-closure::Closure
+closure(Closure)
     =
     '{' @:expre '}' ['*'] ~
     ;
 
 
-optional::Optional
+optional(Optional)
     =
     '[' ~ @:expre ']' ~
     ;
 
 
-special::Special
+special(Special)
     =
     '?(' ~ @:/(.*)/ ')?' ~
     ;
 
 
-kif::Lookahead
+kif(Lookahead)
     =
     '&' ~ @:term
     ;
 
 
-knot::NegativeLookahead
+knot(NegativeLookahead)
     =
     '!' ~ @:term
     ;
@@ -184,25 +196,25 @@ atom
     ;
 
 
-call::RuleRef
+call(RuleRef)
     =
     word
     ;
 
 
-void::Void
+void(Void)
     =
     '()' ~
     ;
 
 
-cut::Cut
+cut(Cut)
     =
     '~' ~
     ;
 
 
-cut_deprecated::Cut
+cut_deprecated(Cut)
     =
     '>>' ~
     ;
@@ -232,10 +244,11 @@ literal
     ;
 
 
-token::Token
+token(Token)
     =
     string
     ;
+
 
 string
     =
@@ -245,19 +258,21 @@ string
 
 hex
     =
-     /0[xX](\d|[a-fA-F])+/
-     ;
+    /0[xX](\d|[a-fA-F])+/
+    ;
+
 
 float
     =
-      /[-+]?\d+\.(?:\d*)?(?:[Ee][-+]?\d+)?/
-    | /[-+]?\d*\.\d+(?:[Ee][-+]?\d+)?/
+    /[-+]?\d+\.(?:\d*)?(?:[Ee][-+]?\d+)?/ | /[-+]?\d*\.\d+(?:[Ee][-+]?\d+)?/
     ;
+
 
 int
     =
     /[-+]?\d+/
     ;
+
 
 word
     =
@@ -265,14 +280,27 @@ word
     ;
 
 
-pattern::Pattern
+pattern(Pattern)
     =
       '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
     | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
     ;
 
 
-eof::EOF
+comment(Comment)
+    =
+    /\(\*\s*/ ~ @:/(?:.|\n)*?(?=\s*\*\))/ /\s*\*\)/
+    ;
+
+
+eol_comment(EOLComment)
+    =
+    /#\s*/ ~ @:/.*?(?=\s*$)/ /\s*\n/
+    ;
+
+
+eof(EOF)
     =
     '$' ~
     ;
+
