@@ -76,6 +76,13 @@ def urepr(obj):
     return repr(obj).lstrip('u')
 
 
+def param_repr(p):
+    if isinstance(p, (int, float)):
+        return ustr(p)
+    else:
+        return urepr(p)
+
+
 ESCAPE_SEQUENCE_RE = re.compile(
     r'''
     ( \\U........      # 8-digit Unicode escapes
