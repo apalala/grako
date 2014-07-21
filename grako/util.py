@@ -79,6 +79,8 @@ def urepr(obj):
 def param_repr(p):
     if isinstance(p, (int, float)):
         return ustr(p)
+    elif isinstance(p, strtype) and p.isalnum():
+        return ustr(p)
     else:
         return urepr(p)
 

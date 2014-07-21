@@ -18,7 +18,7 @@ import functools
 from collections import defaultdict, Mapping
 from copy import copy
 
-from grako.util import indent, trim, urepr, param_repr, compress_seq
+from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
@@ -509,9 +509,19 @@ class Rule(_Decorator):
     def _follow(self, k, FL, A):
         return self.exp._follow(k, FL, FL[self.name])
 
+    @staticmethod
+    def param_repr(p):
+        if isinstance(p, (int, float)):
+            return ustr(p)
+        elif isinstance(p, strtype) and p.isalnum():
+            return ustr(p)
+        else:
+            return urepr(p)
+
+
     def __str__(self):
         params = ', '.join(
-            param_repr(p) for p in self.params
+            self.param_repr(p) for p in self.params
         ) if self.params else ''
 
         kwparams = ''

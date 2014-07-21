@@ -11,7 +11,7 @@ from grako.util import (
     trim,
     timestamp,
     urepr,
-    param_repr,
+    ustr,
     compress_seq
 )
 from grako.exceptions import CodegenError
@@ -260,20 +260,27 @@ class RuleInclude(_Decorator):
 
 
 class Rule(_Decorator):
+    @staticmethod
+    def param_repr(p):
+        if isinstance(p, (int, float)):
+            return ustr(p)
+        else:
+            return urepr(p)
+
     def render_fields(self, fields):
         self.reset_counter()
 
         params = kwparams = ''
         if self.node.params:
             params = ', '.join(
-                param_repr(self.rend(p))
+                self.param_repr(self.rend(p))
                 for p in self.node.params
             )
         if self.node.kwparams:
             kwparams = ', '.join(
                 '%s=%s'
                 %
-                (k, param_repr(self.rend(v)))
+                (k, self.param_repr(self.rend(v)))
                 for k, v in self.kwparams.items()
             )
 
