@@ -69,11 +69,11 @@ def ustr(s):
     elif isinstance(s, str):
         return unicode(s, 'utf-8')
     else:
-        return repr(s)  # FIXME: last case resource!  We don't know unicode, period.
+        return ustr(s.__str__())  # FIXME: last case resource!  We don't know unicode, period.
 
 
 def urepr(obj):
-    return repr(obj).lstrip('u')
+    return ustr(repr(obj)).lstrip('u')
 
 
 ESCAPE_SEQUENCE_RE = re.compile(

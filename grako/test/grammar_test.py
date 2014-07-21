@@ -8,7 +8,7 @@ from grako.exceptions import FailedSemantics
 from grako.grammars import ModelContext
 from grako.parser import GrakoGrammarGenerator
 from grako.tool import genmodel
-from grako.util import trim
+from grako.util import trim, ustr, PY3
 from grako.codegen import codegen
 
 
@@ -248,7 +248,7 @@ class GrammarTests(unittest.TestCase):
 
         model = genmodel("test", grammar)
         ast = model.parse('\n\n')
-        self.assertEqual('', str(ast))
+        self.assertEqual('', ustr(ast))
 
     def test_new_override(self):
         grammar = '''
@@ -307,7 +307,7 @@ class GrammarTests(unittest.TestCase):
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
         self.assertEquals(['a', 'b', 'b'], ast)
-        self.assertEqual(trim(grammar), str(model))
+        self.assertEqual(trim(grammar), ustr(model))
 
     def test_rule_include(self):
         grammar = '''
@@ -464,7 +464,7 @@ class GrammarTests(unittest.TestCase):
                 ;
         '''
         model = genmodel("test", grammar)
-        self.assertEquals(trim(grammar), str(model))
+        self.assertEquals(trim(grammar), ustr(model))
 
     def test_36_params_and_keyword_params(self):
         grammar = '''
@@ -474,7 +474,7 @@ class GrammarTests(unittest.TestCase):
                 ;
         '''
         model = genmodel("test", grammar)
-        self.assertEquals(trim(grammar), str(model))
+        self.assertEquals(trim(grammar), ustr(model))
 
     def test_36_param_combinations(self):
         def assert_equal(target, value):
@@ -560,7 +560,7 @@ class GrammarTests(unittest.TestCase):
         '''
 
         model = genmodel('RuleArguments', grammar)
-        self.assertEqual(trim(pretty), str(model))
+        self.assertEqual(trim(pretty), ustr(model))
         model = genmodel('RuleArguments', pretty)
 
         ast = model.parse("a b c")
@@ -630,15 +630,34 @@ class GrammarTests(unittest.TestCase):
         tc36unicharstest
         _trydelete("tc36unicharstest")
 
-    def test_numbers(self):
+    def test_numbers_and_unicode(self):
         grammar = '''
-            rule(1, -23, 4.56, 7.89e-11, 0xABCDEF)
+            rúle(1, -23, 4.56, 7.89e-11, 0xABCDEF, Añez)
                 =
                 'a'
                 ;
         '''
+        rule2 = '''
+
+            rulé(Añez)
+                =
+                '\\xf1'
+                ;
+        '''
+        rule3 = '''
+
+            rúlé(Añez)
+                =
+                'ñ'
+                ;
+        '''
+        if PY3:
+            grammar += rule3
+        else:
+            grammar += rule2
+
         model = genmodel("test", grammar)
-        self.assertEquals(trim(grammar), str(model))
+        self.assertEquals(trim(grammar), ustr(model))
 
 
 def suite():

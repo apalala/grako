@@ -533,7 +533,7 @@ class Rule(_Decorator):
         elif params:
             params = '(%s)' % params
 
-        base = ' < %s' % self.base.name if self.base else ''
+        base = ' < %s' % ustr(self.base.name) if self.base else ''
 
         return trim(self.str_template) % (
             self.name,
@@ -636,6 +636,6 @@ class Grammar(Model):
 
     def __str__(self):
         return (
-            '\n\n'.join(str(rule)
+            '\n\n'.join(ustr(rule)
                         for rule in self.rules)
         ).rstrip() + '\n'

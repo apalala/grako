@@ -247,9 +247,14 @@ class Buffer(object):
         elif pattern in self._re_cache:
             re = self._re_cache[pattern]
         else:
+            flags = (
+                regexp.MULTILINE
+                | regexp.UNICODE
+                | (regexp.IGNORECASE if ignorecase else 0)
+            )
             re = regexp.compile(
                 pattern,
-                regexp.MULTILINE | (regexp.IGNORECASE if ignorecase else 0)
+                flags
             )
             self._re_cache[pattern] = re
         matched = re.match(self.text, self.pos)

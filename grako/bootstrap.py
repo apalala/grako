@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 21, 15, 7, 52, 0)
+__version__ = (2014, 7, 21, 15, 53, 45, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -485,7 +485,7 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _word_(self):
-        self._pattern(r'[_A-Za-z][_A-Za-z0-9]*')
+        self._pattern(r'(?!\d)\w+')
 
     @graken('Pattern')
     def _pattern_(self):
