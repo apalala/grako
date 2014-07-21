@@ -206,8 +206,15 @@ class Pattern(Model):
 
     def __str__(self):
         pattern = str(self.pattern)
-        template = '/%s/' if '/' not in pattern else '?/%s/?'
-        return template % pattern
+        if '/' not in pattern :
+            template = '/%s/'
+            return template % pattern
+        else:
+            template = '?/%s/?'
+            result = template % pattern
+            if result.count('?') % 2:
+                result += '?'  # for the VIM syntax
+            return result
 
 
 class Lookahead(_Decorator):

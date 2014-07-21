@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 21, 19, 31, 48, 0)
+__version__ = (2014, 7, 21, 19, 55, 6, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -41,23 +41,21 @@ class GrakoBootstrapParser(Parser):
         self._positive_closure(block1)
 
         self.ast['rules'] = self.last_node
+
+        def block3():
+            with self._choice():
+                with self._option():
+                    self._comment_()
+                with self._option():
+                    self._eol_comment_()
+                self._error('no available options')
+        self._closure(block3)
+        self.ast['epilogue'] = self.last_node
         self._check_eof()
 
-        def block2():
-            with self._group():
-                with self._choice():
-                    with self._option():
-                        self._comment_()
-                    with self._option():
-                        self._eol_comment_()
-                    self._error('no available options')
-            self.ast.setlist('epilogue', self.last_node)
-        self._closure(block2)
-        # an epilogue
-
         self.ast._define(
-            ['rules'],
-            ['epilogue']
+            ['rules', 'epilogue'],
+            []
         )
 
 
@@ -99,12 +97,12 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Rule')
     def _rule_(self):
+        # capture comments between rules
 
         def block1():
             self._comment_()
         self._closure(block1)
         self.ast['prologue'] = self.last_node
-        # comments in between rules
         self._new_name_()
         self.ast['name'] = self.last_node
         self._cut()
@@ -145,23 +143,23 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._expre_()
         self.ast['rhs'] = self.last_node
+        # this is in case the rule is a choice
 
-        def block12():
-            with self._group():
-                with self._choice():
-                    with self._option():
-                        self._comment_()
-                    with self._option():
-                        self._eol_comment_()
-                    self._error('no available options')
-            self.ast.setlist('epilogue', self.last_node)
-        self._closure(block12)
+        def block13():
+            with self._choice():
+                with self._option():
+                    self._comment_()
+                with self._option():
+                    self._eol_comment_()
+                self._error('no available options')
+        self._closure(block13)
+        self.ast['epilogue'] = self.last_node
         self._token(';')
         self._cut()
 
         self.ast._define(
-            ['prologue', 'name', 'params', 'kwparams', 'base', 'rhs'],
-            ['epilogue']
+            ['prologue', 'name', 'params', 'kwparams', 'base', 'rhs', 'epilogue'],
+            []
         )
 
 
@@ -808,4 +806,9 @@ if __name__ == '__main__':
                         help="the start rule for parsing")
     args = parser.parse_args()
 
-    main(args.file, args.startrule, trace=args.trace, whitespace=args.whitespace)
+    main(
+        args.file,
+        args.startrule,
+        trace=args.trace,
+        whitespace=args.whitespace
+    )
