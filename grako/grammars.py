@@ -199,11 +199,7 @@ class Pattern(Model):
     def __str__(self):
         pattern = str(self.pattern)
         template = '/%s/' if '/' not in pattern else '?/%s/?'
-        result = template % pattern
-        if pattern.count('?') % 2:
-            return result + '?'
-        else:
-            return result
+        return template % pattern
 
 
 class Lookahead(_Decorator):
