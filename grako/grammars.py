@@ -15,10 +15,10 @@ from __future__ import (absolute_import, division, print_function,
 import re
 import sys
 import functools
-from collections import defaultdict
+from collections import defaultdict, Mapping
 from copy import copy
 
-from grako.util import indent, trim, urepr, compress_seq
+from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.model import Node
@@ -479,6 +479,7 @@ class RuleInclude(_Decorator):
 
 class Rule(_Decorator):
     def __init__(self, name, exp, params, kwparams):
+        assert kwparams is None or isinstance(kwparams, Mapping), kwparams
         super(Rule, self).__init__(exp)
         self.name = name
         self.params = params
@@ -508,19 +509,33 @@ class Rule(_Decorator):
     def _follow(self, k, FL, A):
         return self.exp._follow(k, FL, FL[self.name])
 
+    @staticmethod
+    def param_repr(p):
+        if isinstance(p, (int, float)):
+            return ustr(p)
+        elif isinstance(p, strtype) and p.isalnum():
+            return ustr(p)
+        else:
+            return urepr(p)
+
     def __str__(self):
-        params = ', '.join(self.params) if self.params else ''
+        params = ', '.join(
+            self.param_repr(p) for p in self.params
+        ) if self.params else ''
 
         kwparams = ''
         if self.kwparams:
-            kwparams = ', '.join('%s=%s' % (k, v) for (k, v) in self.kwparams)
+            kwparams = ', '.join(
+                '%s=%s' % (k, self.param_repr(v)) for (k, v)
+                in self.kwparams.items()
+            )
 
         if params and kwparams:
             params = '(%s, %s)' % (params, kwparams)
         elif kwparams:
                 params = '(%s)' % (kwparams)
         elif params:
-            params = '::%s' % params
+            params = '(%s)' % params
 
         base = ' < %s' % self.base.name if self.base else ''
 

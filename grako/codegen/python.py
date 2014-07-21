@@ -6,7 +6,14 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import keyword
 
-from grako.util import indent, trim, timestamp, ustr, urepr, compress_seq
+from grako.util import (
+    indent,
+    trim,
+    timestamp,
+    urepr,
+    ustr,
+    compress_seq
+)
 from grako.exceptions import CodegenError
 from grako.model import Node
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
@@ -253,20 +260,28 @@ class RuleInclude(_Decorator):
 
 
 class Rule(_Decorator):
+    @staticmethod
+    def param_repr(p):
+        if isinstance(p, (int, float)):
+            return ustr(p)
+        else:
+            return urepr(p)
+
     def render_fields(self, fields):
         self.reset_counter()
 
         params = kwparams = ''
         if self.node.params:
-            params = ', '.join(repr(
-                ustr(self.rend(p))) for p in self.node.params
+            params = ', '.join(
+                self.param_repr(self.rend(p))
+                for p in self.node.params
             )
         if self.node.kwparams:
             kwparams = ', '.join(
                 '%s=%s'
                 %
-                (k, ustr(self.rend(v)))
-                for k, v in self.kwparams
+                (k, self.param_repr(self.rend(v)))
+                for k, v in self.kwparams.items()
             )
 
         if params and kwparams:
