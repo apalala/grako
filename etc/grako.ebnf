@@ -221,7 +221,7 @@ name
 
 literal
     =
-    string | number | word
+    string | word | number
     ;
 
 
@@ -238,12 +238,12 @@ string
 
 number
     =
-    /[0-9]+/
+    /[0-9]+(?:\.[0-9]+)?/
     ;
 
 word
     =
-    /[-_A-Za-z0-9]+/
+    /[-_A-Za-z][-_A-Za-z0-9]*/
     ;
 
 

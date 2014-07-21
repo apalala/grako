@@ -254,19 +254,27 @@ class RuleInclude(_Decorator):
 
 class Rule(_Decorator):
     def render_fields(self, fields):
+        def param_repr(p):
+            if isinstance(p, (int, float)):
+                return ustr(p)
+            else:
+                return urepr(p)
+
+
         self.reset_counter()
 
         params = kwparams = ''
         if self.node.params:
-            params = ', '.join(repr(
-                ustr(self.rend(p))) for p in self.node.params
+            params = ', '.join(
+                param_repr(self.rend(p))
+                for p in self.node.params
             )
         if self.node.kwparams:
             kwparams = ', '.join(
                 '%s=%s'
                 %
-                (k, ustr(self.rend(v)))
-                for k, v in self.kwparams
+                (k, param_repr(self.rend(v)))
+                for k, v in self.kwparams.items()
             )
 
         if params and kwparams:

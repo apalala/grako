@@ -49,6 +49,12 @@ class GrakoSemantics(ModelBuilderSemantics):
             raise FailedSemantics('regexp error: ' + str(e))
         return grammars.Pattern(ast)
 
+    def number(self, ast):
+        try:
+            return int(ast)
+        except ValueError:
+            return float(ast)
+
     def cut_deprecated(self, ast, *args):
         warning('The use of >> for cut is deprecated. Use the ~ symbol instead.')
         return grammars.Cut()

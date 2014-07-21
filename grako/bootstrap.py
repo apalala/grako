@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 19, 17, 43, 43, 5)
+__version__ = (2014, 7, 21, 2, 50, 46, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -323,7 +323,7 @@ class GrakoBootstrapParser(Parser):
                     self._token('-')
                 with self._option():
                     self._token('+')
-                self._error('no available options')
+                self._error('expecting one of: + -')
         self._cut()
 
     @graken('Closure')
@@ -424,9 +424,9 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._string_()
             with self._option():
-                self._number_()
-            with self._option():
                 self._word_()
+            with self._option():
+                self._number_()
             self._error('no available options')
 
     @graken('Token')
@@ -449,16 +449,16 @@ class GrakoBootstrapParser(Parser):
                     self._pattern(r"([^'\n]|\\'|\\\\)*")
                     self.ast['@'] = self.last_node
                     self._token("'")
-                self._error('no available options')
+                self._error('expecting one of: " \'')
         self._cut()
 
     @graken()
     def _number_(self):
-        self._pattern(r'[0-9]+')
+        self._pattern(r'[0-9]+(?:\.[0-9]+)?')
 
     @graken()
     def _word_(self):
-        self._pattern(r'[-_A-Za-z0-9]+')
+        self._pattern(r'[-_A-Za-z][-_A-Za-z0-9]*')
 
     @graken('Pattern')
     def _pattern_(self):
@@ -477,7 +477,7 @@ class GrakoBootstrapParser(Parser):
                 self.ast['@'] = self.last_node
                 self._token('/')
                 self._cut()
-            self._error('no available options')
+            self._error('expecting one of: / ?/')
 
     @graken('EOF')
     def _eof_(self):
