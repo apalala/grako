@@ -14,6 +14,7 @@ import unittest
 
 from grako.model import DepthFirstWalker
 from grako.parser import GrakoGrammarGenerator, GrakoParser
+from grako.parser import COMMENTS_RE, EOL_COMMENTS_RE
 from grako.semantics import GrakoSemantics
 from grako.codegen import codegen
 
@@ -117,6 +118,8 @@ class BootstrapTests(unittest.TestCase):
             text,
             start_rule='grammar',
             semantics=GrakoSemantics('GrakoBootstrap'),
+            comments_re=COMMENTS_RE,
+            eol_comments_re=EOL_COMMENTS_RE
         )
         generated_grammar10 = str(g10)
         with open('tmp/10.ebnf', 'w') as f:
@@ -130,10 +133,13 @@ class BootstrapTests(unittest.TestCase):
             pickle.dump(g10, f, protocol=2)
         with open('tmp/11.grako', 'rb') as f:
             g11 = pickle.load(f)
-        r11 = g11.parse(text,
-                        start_rule='grammar',
-                        semantics=GrakoSemantics('GrakoBootstrap'),
-                        )
+        r11 = g11.parse(
+            text,
+            start_rule='grammar',
+            semantics=GrakoSemantics('GrakoBootstrap'),
+            comments_re=COMMENTS_RE,
+            eol_comments_re=EOL_COMMENTS_RE
+        )
         with open('tmp/11.ebnf', 'w') as f:
             f.write(str(g11))
         gencode11 = codegen(r11)
