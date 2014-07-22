@@ -63,9 +63,11 @@ class Buffer(object):
         self._len = 0
         self._linecount = 0
         self._line_index = []
+        self._comment_index = []
         self._preprocess()
         self._linecache = []
         self._build_line_cache()
+        self._comment_index = [[] for _ in self._line_index]
         self._len = len(self.text)
         self._re_cache = {}
 
@@ -160,6 +162,20 @@ class Buffer(object):
     def move(self, n):
         self.goto(self.pos + n)
 
+    def comments(self, p):
+        n = self.line_info(p).line
+        eolcmm = self._comment_index[n]
+        n -= 1
+
+        cmm = []
+        while n >= 0 and self._comment_index[n]:
+            cmm.insert(0, self._comment_index[n])
+            n -= 1
+
+        return cmm, eolcmm
+
+
+
     def eat_whitespace(self):
         p = self._pos
         le = self._len
@@ -170,13 +186,21 @@ class Buffer(object):
 
     def eat_comments(self):
         if self.comments_re is not None:
-            while self.matchre(self.comments_re, regexp.MULTILINE):
-                pass
+            while True:
+                comment = self.matchre(self.comments_re, regexp.MULTILINE)
+                if not comment:
+                    break
+                n = self.line
+                self._comment_index[n].append(comment)
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
-            while self.matchre(self.eol_comments_re, regexp.MULTILINE):
-                pass
+            while True:
+                n = self.line
+                comment = self.matchre(self.eol_comments_re, regexp.MULTILINE)
+                if not comment:
+                    break
+                self._comment_index[n].append(comment)
 
     def next_token(self):
         p = None
