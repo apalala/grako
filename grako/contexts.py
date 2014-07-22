@@ -30,7 +30,9 @@ ParseInfo = namedtuple(
         'buffer',
         'rule',
         'pos',
-        'endpos'
+        'endpos',
+        'comments',
+        'eol_comments'
     ]
 )
 
@@ -70,7 +72,7 @@ class ParseContext(object):
         self._buffer = None
         self.semantics = semantics
         self.encoding = encoding
-        self.enable_parseinfo = parseinfo
+        self.parseinfo = parseinfo
         self.trace = trace
 
         self.comments_re = comments_re
@@ -150,7 +152,7 @@ class ParseContext(object):
               whitespace=None,
               **kwargs):
         try:
-            self.enable_parseinfo = kwargs.pop('parseinfo', self.enable_parseinfo)
+            self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
             self._reset(
                 text=text,
                 filename=filename,
@@ -358,12 +360,15 @@ class ParseContext(object):
     def _fail(self):
         self._error('fail')
 
-    def _parseinfo(self, name, start):
+    def _get_parseinfo(self, node, name, start):
+        comments, eol_comments = self._buffer.comments(start)
         return ParseInfo(
             self._buffer,
             name,
             start,
             self._pos,
+            comments,
+            eol_comments
         )
 
     def _call(self, rule, name, params, kwparams):
@@ -379,6 +384,8 @@ class ParseContext(object):
             self._add_cst_node(node)
             self._last_node = node
             return node
+        except FailedPattern:
+            self._error('Expecting <%s>' % name)
         except FailedParse:
             self._trace_event('FAILED')
             self._goto(pos)
@@ -410,8 +417,8 @@ class ParseContext(object):
                 node = self.cst
             elif '@' in node:
                 node = node['@']  # override the AST
-            elif self.enable_parseinfo:
-                node._parseinfo = self._parseinfo(name, pos)
+            elif self.parseinfo:
+                node._parseinfo = self._get_parseinfo(node, name, pos)
 
             node = self._invoke_semantic_rule(name, node, params, kwparams)
             result = (node, self._pos, self._state)
