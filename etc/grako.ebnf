@@ -1,3 +1,4 @@
+(* The language for Grako grammars *)
 grammar(Grammar)
     =
     rules:{rule}+ $
@@ -6,6 +7,7 @@ grammar(Grammar)
 
 paramdef
     =
+        (* no keyword params if ':: *)
         '::' ~ params:params_only
     |
         '('
@@ -27,7 +29,7 @@ rule(Rule)
     ['<' ~ base:known_name]
     '='
     ~
-    rhs:expre
+    exp:expre
     ';'
     ~
     ;
@@ -169,7 +171,7 @@ optional(Optional)
 
 special(Special)
     =
-    '?(' ~ @:/(.*)/ ')?' ~
+    '?(' ~ @:/.*?(?!\)\?)/ ')?' ~
     ;
 
 

@@ -123,12 +123,12 @@ class GrakoBootstrapParser(Parser):
         self._token('=')
         self._cut()
         self._expre_()
-        self.ast['rhs'] = self.last_node
+        self.ast['exp'] = self.last_node
         self._token(';')
         self._cut()
 
         self.ast._define(
-            ['name', 'params', 'kwparams', 'base', 'rhs'],
+            ['name', 'params', 'kwparams', 'base', 'exp'],
             []
         )
 
@@ -366,7 +366,7 @@ class GrakoBootstrapParser(Parser):
     def _special_(self):
         self._token('?(')
         self._cut()
-        self._pattern(r'(.*)')
+        self._pattern(r'.*?(?!\)\?)')
         self.ast['@'] = self.last_node
         self._token(')?')
         self._cut()

@@ -8,7 +8,7 @@ from __future__ import (absolute_import, division, print_function,
 import unittest
 
 from grako.util import trim, eval_escapes
-from grako.parser import GrakoBuffer
+from grako.grammars import GrakoBuffer
 
 
 class MockIncludeBuffer(GrakoBuffer):
