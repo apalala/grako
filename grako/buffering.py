@@ -165,16 +165,16 @@ class Buffer(object):
     def comments(self, p):
         n = self.line_info(p).line
         eolcmm = self._comment_index[n]
+        self._comment_index[n] = []
         n -= 1
 
         cmm = []
         while n >= 0 and self._comment_index[n]:
             cmm.insert(0, self._comment_index[n])
+            self._comment_index[n] = []
             n -= 1
 
         return cmm, eolcmm
-
-
 
     def eat_whitespace(self):
         p = self._pos
