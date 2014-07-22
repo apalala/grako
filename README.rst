@@ -668,14 +668,18 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.2.2-rc.3
-----------
+**Grako**'s uses `Semantic Versioning`_ for its releases, so parsts of the a version number can go up without significant changes or backwards incompatibilities.
+
+.. _`Semantic Versioning`:
+
+3.3.0
+-----
 
 * Refactorings to enhance consistency in parsing between models and and generated parsers.
 
-* 37_ Comments are preserved when using  the ``--pretty`` option.
+* 37_ Block comments are preserved when using  the ``--pretty`` option.
 
-* 38_ Trace output uses color if the colorama_ package is installed. Also, the vertical size of trace logs was reduced.
+* 38_ Trace output uses color if the colorama_ package is installed. Also, the vertical size of trace logs was reduced to three lines per entry.
 
 * 40_ The widht and the separator used in parse traces are now configurable with keyword arguments.
 
