@@ -1,4 +1,5 @@
 Cython==0.20.2
+colorama==0.3.1
 flake8==2.2.2
 ipython==2.1.0
 mccabe==0.2.1

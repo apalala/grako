@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from grako.util import notnone, ustr, prune_dict, is_list, info
 from grako.ast import AST
 from grako import buffering
+from grako.color import Fore, Style
 from grako.exceptions import (
     FailedCut,
     FailedLeftRecursion,
@@ -64,7 +65,7 @@ class ParseContext(object):
                  ignorecase=False,
                  nameguard=None,
                  memoize_lookaheads=True,
-                 trace_length=74,
+                 trace_length=72,
                  trace_separator='.',
                  **kwargs):
         super(ParseContext, self).__init__()
@@ -335,20 +336,20 @@ class ParseContext(object):
 
     def _trace_event(self, event):
         if self.trace:
-            self._trace('%s \n%s   \n%s \n%s \n',
-                        event,
-                        self._rulestack(),
-                        self._buffer.line_info().filename,
+            self._trace('%s   \n%s \n%s \n',
+                        event + ' ' + self._rulestack(),
+                        Style.DIM + self._buffer.line_info().filename,
                         self._buffer.lookahead()
                         )
 
     def _trace_match(self, token, name=None):
         if self.trace:
-            name = name if name else ''
+            name = '/%s/' % name if name else ''
             self._trace(
-                'MATCHED <%s> /%s/\n\t%s',
+                Fore.GREEN + Style.BRIGHT + '"%s" %s\n%s\n%s\n',
                 token,
                 name,
+                Style.DIM + self._buffer.line_info().filename,
                 self._buffer.lookahead()
             )
 
@@ -374,17 +375,17 @@ class ParseContext(object):
         self._rule_stack.append(name)
         pos = self._pos
         try:
-            self._trace_event('ENTER ')
+            self._trace_event(Fore.YELLOW + '>')
             self._last_node = None
             node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
             self._goto(newpos)
             self._state = newstate
-            self._trace_event('SUCCESS')
+            self._trace_event(Fore.GREEN + Style.BRIGHT + '<')
             self._add_cst_node(node)
             self._last_node = node
             return node
         except FailedParse:
-            self._trace_event('FAILED')
+            self._trace_event(Fore.RED + Style.BRIGHT + '!')
             self._goto(pos)
             raise
         finally:
