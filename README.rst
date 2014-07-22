@@ -668,12 +668,17 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.2.2-rc.1
+3.2.2-rc.2
 ----------
+
+* 38_ Trace output use color if the colorama_ package is installed. Also reduced the text and the vertical size of logs.
 
 * 40_ The widht and the separator used in parse traces are now configurable with keyword arguments.
 
+.. _38: https://bitbucket.org/apalala/grako/issue/38/
 .. _40: https://bitbucket.org/apalala/grako/issue/40/
+
+.. _colorama: https://pypi.python.org/pypi/colorama/
 
 3.2.1
 -----
