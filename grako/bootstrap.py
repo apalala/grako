@@ -205,7 +205,7 @@ class GrakoBootstrapParser(Parser):
             self._element_()
         self._positive_closure(block1)
 
-        self.ast['@'] = self.last_node
+        self.ast['sequence'] = self.last_node
 
     @graken()
     def _element_(self):

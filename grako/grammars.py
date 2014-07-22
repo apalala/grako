@@ -309,8 +309,9 @@ class NegativeLookahead(_Decorator):
 
 
 class Sequence(Model):
-    def __init__(self, ast=None, **kwargs):
-        super(Sequence, self).__init__(ast=AST(sequence=ast))
+    def __init__(self, ast, **kwargs):
+        assert ast.sequence
+        super(Sequence, self).__init__(ast=ast)
 
     def parse(self, ctx):
         ctx.last_node = [s.parse(ctx) for s in self.sequence]
@@ -339,9 +340,9 @@ class Sequence(Model):
 
     def __str__(self):
         seq = [ustr(s) for s in self.sequence]
-        single = self.comments_str() + ' '.join(seq)
+        single = ' '.join(seq)
         if len(single) <= PEP8_LLEN and len(single.splitlines()) <= 1:
-            return single
+            return self.comments_str() + single
         else:
             return self.comments_str() + '\n'.join(seq)
 
@@ -649,7 +650,9 @@ class BasedRule(Rule):
             kwparams or base.kwparams
         )
         self.base = base
-        self.rhs = Sequence([self.base.exp, self.exp])
+        ast = AST(sequence=[self.base.exp, self.exp])
+        ast._parseinfo = self.base.parseinfo
+        self.rhs = Sequence(ast)
 
     def parse(self, ctx):
         return self._parse_rhs(ctx, self.rhs)

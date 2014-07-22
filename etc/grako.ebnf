@@ -73,7 +73,7 @@ choice(Choice)
 
 sequence(Sequence)
     =
-    @:{element}+
+    sequence:{element}+
     ;
 
 

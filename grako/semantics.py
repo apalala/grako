@@ -67,11 +67,11 @@ class GrakoSemantics(ModelBuilderSemantics):
         return grammars.Override(ast)
 
     def sequence(self, ast, *args):
-        seq = ast
+        seq = ast.sequence
         assert isinstance(seq, list), str(seq)
         if len(seq) == 1:
             return seq[0]
-        return grammars.Sequence(seq)
+        return grammars.Sequence(ast)
 
     def choice(self, ast, *args):
         if len(ast) == 1:
