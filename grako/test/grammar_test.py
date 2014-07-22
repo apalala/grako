@@ -450,7 +450,7 @@ class GrammarTests(unittest.TestCase):
                 {'a'} $
                 ;
         '''
-        g = GrakoGrammarGenerator('Keywords', parseinfo=True)
+        g = GrakoGrammarGenerator('Keywords')
         model = g.parse(grammar, trace=False)
         code = codegen(model)
         self.assertEquals('#!/usr/bin/env python', code.splitlines()[0])
