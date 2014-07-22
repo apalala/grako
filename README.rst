@@ -675,7 +675,7 @@ Changes
 
 * 37_ Comments are preserved when using  the ``--pretty`` option.
 
-* 38_ Trace output use color if the colorama_ package is installed. Also reduced the text and the vertical size of logs.
+* 38_ Trace output uses color if the colorama_ package is installed. Also, the vertical size of trace logs was reduced.
 
 * 40_ The widht and the separator used in parse traces are now configurable with keyword arguments.
 
