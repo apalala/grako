@@ -46,6 +46,7 @@ class GrakoBuffer(Buffer):
             comments_re=COMMENTS_RE,
             eol_comments_re=EOL_COMMENTS_RE,
             memoize_lookaheads=False,
+            comment_recovery=True,
             **kwargs
         )
 

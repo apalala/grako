@@ -44,6 +44,7 @@ class Buffer(object):
                  ignorecase=False,
                  trace=False,
                  nameguard=None,
+                 comment_recovery=False,
                  **kwargs):
         self.original_text = text
         self.text = ustr(text)
@@ -59,6 +60,8 @@ class Buffer(object):
         self.nameguard = (nameguard
                           if nameguard is not None
                           else bool(self.whitespace))
+        self.comment_recovery = comment_recovery
+
         self._pos = 0
         self._len = 0
         self._linecount = 0
@@ -163,6 +166,9 @@ class Buffer(object):
         self.goto(self.pos + n)
 
     def comments(self, p, clear=True):
+        if not self.comment_recovery:
+            return [], []
+
         n = self.line_info(p).line
         if n >= len(self._comment_index):
             n -= 1
@@ -195,17 +201,20 @@ class Buffer(object):
                 comment = self.matchre(self.comments_re, regexp.MULTILINE)
                 if not comment:
                     break
-                n = self.line
-                self._comment_index[n].append(comment)
+                if self.comment_recovery:
+                    n = self.line
+                    self._comment_index[n].append(comment)
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
             while True:
-                n = self.line
+                if self.comment_recovery:
+                    n = self.line
                 comment = self.matchre(self.eol_comments_re, regexp.MULTILINE)
                 if not comment:
                     break
-                self._comment_index[n].append(comment)
+                if self.comment_recovery:
+                    self._comment_index[n].append(comment)
 
     def next_token(self):
         p = None
