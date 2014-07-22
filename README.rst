@@ -668,6 +668,13 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
+3.2.2-rc.1
+----------
+
+* 40_ The widht and the separator used in parse traces are now configurable with keyword arguments.
+
+.. _40: https://bitbucket.org/apalala/grako/issue/40/
+
 3.2.1
 -----
 
