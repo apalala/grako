@@ -64,6 +64,8 @@ class ParseContext(object):
                  ignorecase=False,
                  nameguard=None,
                  memoize_lookaheads=True,
+                 trace_length=74,
+                 trace_separator='.',
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -72,6 +74,8 @@ class ParseContext(object):
         self.encoding = encoding
         self.enable_parseinfo = parseinfo
         self.trace = trace
+        self.trace_length = trace_length
+        self.trace_separator = trace_separator
 
         self.comments_re = comments_re
         self.whitespace = whitespace
@@ -298,9 +302,9 @@ class ParseContext(object):
         return self.memoize_lookaheads or self._lookahead == 0
 
     def _rulestack(self):
-        stack = '.'.join(self._rule_stack)
-        if len(stack) > 60:
-            stack = '...' + stack[-60:]
+        stack = self.trace_separator.join(self._rule_stack)
+        if len(stack) > self.trace_length:
+            stack = '...' + stack[-self.trace_length:].lstrip(self.trace_separator)
         return stack
 
     def _find_rule(self, name):
