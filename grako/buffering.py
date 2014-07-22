@@ -162,16 +162,21 @@ class Buffer(object):
     def move(self, n):
         self.goto(self.pos + n)
 
-    def comments(self, p):
+    def comments(self, p, clear=True):
         n = self.line_info(p).line
+        if n >= len(self._comment_index):
+            n -= 1
+
         eolcmm = self._comment_index[n]
-        self._comment_index[n] = []
+        if clear:
+            self._comment_index[n] = []
         n -= 1
 
         cmm = []
         while n >= 0 and self._comment_index[n]:
             cmm.insert(0, self._comment_index[n])
-            self._comment_index[n] = []
+            if clear:
+                self._comment_index[n] = []
             n -= 1
 
         return cmm, eolcmm

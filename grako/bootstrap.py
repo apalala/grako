@@ -324,7 +324,7 @@ class GrakoBootstrapParser(Parser):
         self._token('(')
         self._cut()
         self._expre_()
-        self.ast['@'] = self.last_node
+        self.ast['exp'] = self.last_node
         self._token(')')
         self._cut()
 

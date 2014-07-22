@@ -147,7 +147,7 @@ term
 
 group(Group)
     =
-    '(' ~ @:expre ')' ~
+    '(' ~ exp:expre ')' ~
     ;
 
 
@@ -249,6 +249,7 @@ token(Token)
 
 string
     =
+    (* allow single and double quotes *)
     ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
     ;
 

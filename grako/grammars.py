@@ -159,22 +159,14 @@ class Model(Node):
         return A
 
     def comments_str(self):
-        comments = ''
-        if self.parseinfo and self.parseinfo.comments:
-            comments = '\n'.join(
-                '(* %s *)\n' % '\n'.join(c).replace('(*', '').replace('*)', '').strip()
-                for c in self.parseinfo.comments
-            )
-        return comments
+        comments, eol = self.comments
+        if not comments:
+            return ''
 
-    def eol_comments_str(self):
-        comments = ''
-        if self.parseinfo and self.parseinfo.eol_comments:
-            comments = '\n'.join(
-                '  # %s\n' % '\n'.join(c).replace('(*', '').replace('*)', '').strip()
-                for c in self.parseinfo.eol_comments
-            )
-        return comments
+        return '\n'.join(
+            '(* %s *)\n' % '\n'.join(c).replace('(*', '').replace('*)', '').strip()
+            for c in comments
+        )
 
 
 class Void(Model):
@@ -233,7 +225,7 @@ class _Decorator(Model):
         return self.exp._follow(k, FL, A)
 
     def __str__(self):
-        return str(self.exp)
+        return ustr(self.exp)
 
 
 class Group(_Decorator):
@@ -243,7 +235,7 @@ class Group(_Decorator):
             return ctx.last_node
 
     def __str__(self):
-        exp = str(self.exp)
+        exp = ustr(self.exp)
         if len(exp.splitlines()) > 1:
             return '(\n%s\n)' % indent(exp)
         else:
@@ -278,7 +270,7 @@ class Pattern(Model):
         return set([(self.pattern,)])
 
     def __str__(self):
-        pattern = str(self.pattern)
+        pattern = ustr(self.pattern)
         if '/' not in pattern:
             template = '/%s/'
             return template % pattern
@@ -296,12 +288,12 @@ class Lookahead(_Decorator):
             super(Lookahead, self).parse(ctx)
 
     def __str__(self):
-        return '&' + str(self.exp)
+        return '&' + ustr(self.exp)
 
 
 class NegativeLookahead(_Decorator):
     def __str__(self):
-        return '!' + str(self.exp)
+        return '!' + ustr(self.exp)
 
     def parse(self, ctx):
         with ctx._ifnot():
@@ -339,12 +331,13 @@ class Sequence(Model):
         return A
 
     def __str__(self):
+        comments = self.comments_str()
         seq = [ustr(s) for s in self.sequence]
         single = ' '.join(seq)
         if len(single) <= PEP8_LLEN and len(single.splitlines()) <= 1:
-            return self.comments_str() + single
+            return comments + single
         else:
-            return self.comments_str() + '\n'.join(seq)
+            return comments + '\n'.join(seq)
 
 
 class Choice(Model):
@@ -604,6 +597,7 @@ class Rule(_Decorator):
             return urepr(p)
 
     def __str__(self):
+        comments = self.comments_str()
         params = ', '.join(
             self.param_repr(p) for p in self.params
         ) if self.params else ''
@@ -629,7 +623,7 @@ class Rule(_Decorator):
             base=base,
             params=params,
             exp=indent(str(self.exp)),
-            comments=self.comments_str(),
+            comments=comments
         )
 
     str_template = '''\
