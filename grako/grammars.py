@@ -19,24 +19,81 @@ from collections import defaultdict, Mapping
 from copy import copy
 
 from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
-from grako.exceptions import FailedRef, GrammarError
+from grako.exceptions import FailedRef, GrammarError, ParseError
 from grako.ast import AST
-from grako.model import Node
+from grako.buffering import Buffer
 from grako.contexts import ParseContext
+from grako.model import Node
 
 
 PEP8_LLEN = 72
 
 
-def check(result):
-    assert isinstance(result, Model), str(result)
+COMMENTS_RE = r'\(\*((?:.|\n)*?)\*\)'
+EOL_COMMENTS_RE = r'#(.*?)$'
+PRAGMA_RE = r'^\s*#[a-z]+'
 
 
 def dot(x, y, k):
     return set([(a + b)[:k] for a in x for b in y])
 
 
-class ModelContext(ParseContext):
+class GrakoBuffer(Buffer):
+    def __init__(self, text, filename=None, **kwargs):
+        super(GrakoBuffer, self).__init__(
+            text,
+            filename=filename,
+            comments_re=COMMENTS_RE,
+            eol_comments_re=EOL_COMMENTS_RE,
+            memoize_lookaheads=False,
+            comment_recovery=True,
+            **kwargs
+        )
+
+    def process_block(self, name, lines, index, **kwargs):
+        # search for pragmas of the form
+        # .. pragma_name :: params
+
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            if re.match(PRAGMA_RE, line):
+                directive, arg = line.split('#', 1)[1], ''
+                if '::' in directive:
+                    directive, arg = directive.split('::')
+                directive, arg = directive.strip(), arg.strip()
+                i = self.pragma(name, directive, arg, lines, index, i)
+            else:
+                i += 1
+        return lines, index
+
+    def pragma(self, source, name, arg, lines, index, i):
+        # we only recognize the 'include' pragama
+        if name == 'include':
+            filename = arg.strip('\'"')
+            return self.include_file(source, filename, lines, index, i, i)
+        else:
+            raise ParseError('Unknown pragma: %s' % name)
+
+
+class GrakoContext(ParseContext):
+    def parse(self, text, rule='grammar', filename=None, parseinfo=True, **kwargs):
+        if not isinstance(text, Buffer):
+            text = GrakoBuffer(
+                text,
+                filename=filename,
+                **kwargs
+            )
+        return super(GrakoContext, self).parse(
+            text,
+            rule,
+            filename=filename,
+            parseinfo=parseinfo,
+            **kwargs
+        )
+
+
+class ModelContext(GrakoContext):
     def __init__(self, rules, semantics=None, trace=False, **kwargs):
         super(ModelContext, self).__init__(
             semantics=semantics,
@@ -102,6 +159,16 @@ class Model(Node):
     def _follow(self, k, FL, A):
         return A
 
+    def comments_str(self):
+        comments, eol = self.comments
+        if not comments:
+            return ''
+
+        return '\n'.join(
+            '(* %s *)\n' % '\n'.join(c).replace('(*', '').replace('*)', '').strip()
+            for c in comments
+        )
+
 
 class Void(Model):
     def __str__(self):
@@ -138,7 +205,9 @@ class EOF(Model):
 
 class _Decorator(Model):
     def __init__(self, ast=None, **kwargs):
-        super(_Decorator, self).__init__(ast=AST(exp=ast))
+        if not isinstance(ast, AST):
+            ast = AST(exp=ast)
+        super(_Decorator, self).__init__(ast)
         assert isinstance(self.exp, Model)
 
     def parse(self, ctx):
@@ -157,7 +226,7 @@ class _Decorator(Model):
         return self.exp._follow(k, FL, A)
 
     def __str__(self):
-        return str(self.exp)
+        return ustr(self.exp)
 
 
 class Group(_Decorator):
@@ -167,7 +236,7 @@ class Group(_Decorator):
             return ctx.last_node
 
     def __str__(self):
-        exp = str(self.exp)
+        exp = ustr(self.exp)
         if len(exp.splitlines()) > 1:
             return '(\n%s\n)' % indent(exp)
         else:
@@ -202,7 +271,7 @@ class Pattern(Model):
         return set([(self.pattern,)])
 
     def __str__(self):
-        pattern = str(self.pattern)
+        pattern = ustr(self.pattern)
         if '/' not in pattern:
             template = '/%s/'
             return template % pattern
@@ -220,12 +289,12 @@ class Lookahead(_Decorator):
             super(Lookahead, self).parse(ctx)
 
     def __str__(self):
-        return '&' + str(self.exp)
+        return '&' + ustr(self.exp)
 
 
 class NegativeLookahead(_Decorator):
     def __str__(self):
-        return '!' + str(self.exp)
+        return '!' + ustr(self.exp)
 
     def parse(self, ctx):
         with ctx._ifnot():
@@ -233,8 +302,9 @@ class NegativeLookahead(_Decorator):
 
 
 class Sequence(Model):
-    def __init__(self, ast=None, **kwargs):
-        super(Sequence, self).__init__(ast=AST(sequence=ast))
+    def __init__(self, ast, **kwargs):
+        assert ast.sequence
+        super(Sequence, self).__init__(ast=ast)
 
     def parse(self, ctx):
         ctx.last_node = [s.parse(ctx) for s in self.sequence]
@@ -262,12 +332,13 @@ class Sequence(Model):
         return A
 
     def __str__(self):
-        seq = [str(s) for s in self.sequence]
+        comments = self.comments_str()
+        seq = [ustr(s) for s in self.sequence]
         single = ' '.join(seq)
         if len(single) <= PEP8_LLEN and len(single.splitlines()) <= 1:
-            return single
+            return comments + single
         else:
-            return '\n'.join(seq)
+            return comments + '\n'.join(seq)
 
 
 class Choice(Model):
@@ -282,7 +353,7 @@ class Choice(Model):
                     ctx.last_node = o.parse(ctx)
                     return ctx.last_node
 
-            lookahead = ' '.join(str(urepr(f[0])) for f in self.lookahead if f)
+            lookahead = ' '.join(ustr(urepr(f[0])) for f in self.lookahead if f)
             if lookahead:
                 ctx._error('expecting one of {%s}' % lookahead)
             ctx._error('no available options')
@@ -305,7 +376,7 @@ class Choice(Model):
         return A
 
     def __str__(self):
-        options = [str(o) for o in self.options]
+        options = [ustr(o) for o in self.options]
 
         multi = any(len(o.splitlines()) > 1 for o in options)
         single = ' | '.join(o for o in options)
@@ -330,7 +401,7 @@ class Closure(_Decorator):
         return {()} | result
 
     def __str__(self):
-        sexp = str(self.exp)
+        sexp = ustr(self.exp)
         if len(sexp.splitlines()) <= 1:
             return '{%s}' % sexp
         else:
@@ -362,7 +433,7 @@ class Optional(_Decorator):
         return {()} | self.exp._first(k, F)
 
     def __str__(self):
-        exp = str(self.exp)
+        exp = ustr(self.exp)
         template = '[%s]'
         if isinstance(self.exp, Choice):
             template = trim(self.str_template)
@@ -403,7 +474,7 @@ class Named(_Decorator):
         return [(self.name, False)] + super(Named, self).defines()
 
     def __str__(self):
-        return '%s:%s' % (self.name, str(self.exp))
+        return '%s:%s' % (self.name, ustr(self.exp))
 
 
 class NamedList(Named):
@@ -416,7 +487,7 @@ class NamedList(Named):
         return [(self.name, True)] + super(Named, self).defines()
 
     def __str__(self):
-        return '%s+:%s' % (self.name, str(self.exp))
+        return '%s+:%s' % (self.name, ustr(self.exp))
 
 
 class Override(Named):
@@ -477,7 +548,7 @@ class RuleRef(Model):
 
 class RuleInclude(_Decorator):
     def __init__(self, rule):
-        assert isinstance(rule, Rule), str(rule.name)
+        assert isinstance(rule, Rule), ustr(rule.name)
         super(RuleInclude, self).__init__(rule.exp)
         self.rule = rule
 
@@ -486,9 +557,9 @@ class RuleInclude(_Decorator):
 
 
 class Rule(_Decorator):
-    def __init__(self, name, exp, params, kwparams):
+    def __init__(self, ast, name, exp, params, kwparams):
         assert kwparams is None or isinstance(kwparams, Mapping), kwparams
-        super(Rule, self).__init__(exp)
+        super(Rule, self).__init__(ast)
         self.name = name
         self.params = params
         self.kwparams = kwparams
@@ -527,6 +598,7 @@ class Rule(_Decorator):
             return urepr(p)
 
     def __str__(self):
+        comments = self.comments_str()
         params = ', '.join(
             self.param_repr(p) for p in self.params
         ) if self.params else ''
@@ -552,10 +624,11 @@ class Rule(_Decorator):
             base=base,
             params=params,
             exp=indent(str(self.exp)),
+            comments=comments
         )
 
     str_template = '''\
-                {name}{base}{params}
+                {comments}{name}{base}{params}
                     =
                 {exp}
                     ;
@@ -563,15 +636,18 @@ class Rule(_Decorator):
 
 
 class BasedRule(Rule):
-    def __init__(self, name, exp, base, params, kwparams):
+    def __init__(self, ast, name, exp, base, params, kwparams):
         super(BasedRule, self).__init__(
+            ast,
             name,
             exp,
             params or base.params,
             kwparams or base.kwparams
         )
         self.base = base
-        self.rhs = Sequence([self.base.exp, self.exp])
+        ast = AST(sequence=[self.base.exp, self.exp])
+        ast._parseinfo = self.base.parseinfo
+        self.rhs = Sequence(ast)
 
     def parse(self, ctx):
         return self._parse_rhs(ctx, self.rhs)

@@ -44,6 +44,7 @@ class Buffer(object):
                  ignorecase=False,
                  trace=False,
                  nameguard=None,
+                 comment_recovery=False,
                  **kwargs):
         self.original_text = text
         self.text = ustr(text)
@@ -59,13 +60,17 @@ class Buffer(object):
         self.nameguard = (nameguard
                           if nameguard is not None
                           else bool(self.whitespace))
+        self.comment_recovery = comment_recovery
+
         self._pos = 0
         self._len = 0
         self._linecount = 0
         self._line_index = []
+        self._comment_index = []
         self._preprocess()
         self._linecache = []
         self._build_line_cache()
+        self._comment_index = [[] for _ in self._line_index]
         self._len = len(self.text)
         self._re_cache = {}
 
@@ -160,6 +165,28 @@ class Buffer(object):
     def move(self, n):
         self.goto(self.pos + n)
 
+    def comments(self, p, clear=True):
+        if not self.comment_recovery:
+            return [], []
+
+        n = self.line_info(p).line
+        if n >= len(self._comment_index):
+            n -= 1
+
+        eolcmm = self._comment_index[n]
+        if clear:
+            self._comment_index[n] = []
+        n -= 1
+
+        cmm = []
+        while n >= 0 and self._comment_index[n]:
+            cmm.insert(0, self._comment_index[n])
+            if clear:
+                self._comment_index[n] = []
+            n -= 1
+
+        return cmm, eolcmm
+
     def eat_whitespace(self):
         p = self._pos
         le = self._len
@@ -170,13 +197,24 @@ class Buffer(object):
 
     def eat_comments(self):
         if self.comments_re is not None:
-            while self.matchre(self.comments_re, regexp.MULTILINE):
-                pass
+            while True:
+                comment = self.matchre(self.comments_re, regexp.MULTILINE)
+                if not comment:
+                    break
+                if self.comment_recovery:
+                    n = self.line
+                    self._comment_index[n].append(comment)
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
-            while self.matchre(self.eol_comments_re, regexp.MULTILINE):
-                pass
+            while True:
+                if self.comment_recovery:
+                    n = self.line
+                comment = self.matchre(self.eol_comments_re, regexp.MULTILINE)
+                if not comment:
+                    break
+                if self.comment_recovery:
+                    self._comment_index[n].append(comment)
 
     def next_token(self):
         p = None

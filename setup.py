@@ -10,7 +10,7 @@ else:
 
 setup(
     name='grako',
-    version='3.2.2-rc.2',
+    version='3.2.2-rc.3',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.codegen', 'grako.test'],

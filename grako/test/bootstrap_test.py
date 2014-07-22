@@ -14,8 +14,8 @@ import unittest
 
 from grako.model import DepthFirstWalker
 from grako.parser import GrakoGrammarGenerator, GrakoParser
-from grako.parser import COMMENTS_RE, EOL_COMMENTS_RE
 from grako.semantics import GrakoSemantics
+from grako.grammars import COMMENTS_RE, EOL_COMMENTS_RE
 from grako.codegen import codegen
 
 sys.path.append('tmp')
@@ -33,7 +33,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
         with open('etc/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoParser('GrakoBootstrap', parseinfo=True)
+        g = GrakoParser('GrakoBootstrap')
         grammar0 = g.parse(text)
         ast0 = json.dumps(grammar0, indent=2)
         with open('tmp/00.ast', 'w') as f:
@@ -42,7 +42,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 01 - parse with parser generator')
         with open('etc/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoGrammarGenerator('GrakoBootstrap', parseinfo=True)
+        g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text, trace=False)
 
         generated_grammar1 = str(g.ast['grammar'])
@@ -62,7 +62,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 03 - repeat')
         with open('tmp/02.ebnf') as f:
             text = f.read()
-        g = GrakoParser('GrakoBootstrap', parseinfo=True)
+        g = GrakoParser('GrakoBootstrap')
         ast3 = g.parse(text)
         with open('tmp/03.ast', 'w') as f:
             f.write(json.dumps(ast3, indent=2))
@@ -96,7 +96,12 @@ class BootstrapTests(unittest.TestCase):
 
         print('-' * 20, 'phase 08 - compile using generated code')
         parser = GenParser(trace=False)
-        result = parser.parse(text, 'grammar')
+        result = parser.parse(
+            text,
+            'grammar',
+            comments_re=COMMENTS_RE,
+            eol_comments_re=EOL_COMMENTS_RE
+        )
         self.assertEqual(result, parser.ast['grammar'])
         ast8 = parser.ast['grammar']
         json8 = json.dumps(ast8, indent=2)
@@ -117,9 +122,7 @@ class BootstrapTests(unittest.TestCase):
         g10 = g9.parse(
             text,
             start_rule='grammar',
-            semantics=GrakoSemantics('GrakoBootstrap'),
-            comments_re=COMMENTS_RE,
-            eol_comments_re=EOL_COMMENTS_RE
+            semantics=GrakoSemantics('GrakoBootstrap')
         )
         generated_grammar10 = str(g10)
         with open('tmp/10.ebnf', 'w') as f:
@@ -136,9 +139,7 @@ class BootstrapTests(unittest.TestCase):
         r11 = g11.parse(
             text,
             start_rule='grammar',
-            semantics=GrakoSemantics('GrakoBootstrap'),
-            comments_re=COMMENTS_RE,
-            eol_comments_re=EOL_COMMENTS_RE
+            semantics=GrakoSemantics('GrakoBootstrap')
         )
         with open('tmp/11.ebnf', 'w') as f:
             f.write(str(g11))

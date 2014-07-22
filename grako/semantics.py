@@ -67,11 +67,11 @@ class GrakoSemantics(ModelBuilderSemantics):
         return grammars.Override(ast)
 
     def sequence(self, ast, *args):
-        seq = ast
+        seq = ast.sequence
         assert isinstance(seq, list), str(seq)
         if len(seq) == 1:
             return seq[0]
-        return grammars.Sequence(seq)
+        return grammars.Sequence(ast)
 
     def choice(self, ast, *args):
         if len(ast) == 1:
@@ -90,7 +90,7 @@ class GrakoSemantics(ModelBuilderSemantics):
 
     def rule(self, ast, *args):
         name = ast.name
-        rhs = ast.rhs
+        exp = ast.exp
         base = ast.base
         params = ast.params
         kwparams = OrderedDict(ast.kwparams) if ast.kwparams else None
@@ -98,11 +98,11 @@ class GrakoSemantics(ModelBuilderSemantics):
         self.new_name(name)
 
         if not base:
-            rule = grammars.Rule(name, rhs, params, kwparams)
+            rule = grammars.Rule(ast, name, exp, params, kwparams)
         else:
             self.known_name(base)
             base_rule = self.rules[base]
-            rule = grammars.BasedRule(name, rhs, base_rule, params, kwparams)
+            rule = grammars.BasedRule(ast, name, exp, base_rule, params, kwparams)
 
         self.rules[name] = rule
         return rule

@@ -61,6 +61,7 @@ class ParseContext(object):
                  trace=False,
                  encoding='utf-8',
                  comments_re=None,
+                 eol_comments_re=None,
                  whitespace=None,
                  ignorecase=False,
                  nameguard=None,
@@ -73,12 +74,13 @@ class ParseContext(object):
         self._buffer = None
         self.semantics = semantics
         self.encoding = encoding
-        self.enable_parseinfo = parseinfo
+        self.parseinfo = parseinfo
         self.trace = trace
         self.trace_length = trace_length
         self.trace_separator = trace_separator
 
         self.comments_re = comments_re
+        self.eol_comments_re = eol_comments_re
         self.whitespace = whitespace
         self.ignorecase = ignorecase
         self.nameguard = nameguard
@@ -104,6 +106,7 @@ class ParseContext(object):
                semantics=None,
                trace=None,
                comments_re=None,
+               eol_comments_re=None,
                whitespace=None,
                ignorecase=None,
                nameguard=None,
@@ -127,6 +130,7 @@ class ParseContext(object):
                 text,
                 filename=filename,
                 comments_re=comments_re or self.comments_re,
+                eol_comments_re=eol_comments_re or self.eol_comments_re,
                 whitespace=notnone(whitespace, default=self.whitespace),
                 ignorecase=ignorecase,
                 nameguard=nameguard,
@@ -155,7 +159,7 @@ class ParseContext(object):
               whitespace=None,
               **kwargs):
         try:
-            self.enable_parseinfo = kwargs.pop('parseinfo', self.enable_parseinfo)
+            self.parseinfo = kwargs.pop('parseinfo', self.parseinfo)
             self._reset(
                 text=text,
                 filename=filename,
@@ -363,12 +367,12 @@ class ParseContext(object):
     def _fail(self):
         self._error('fail')
 
-    def _parseinfo(self, name, start):
+    def _get_parseinfo(self, node, name, start):
         return ParseInfo(
             self._buffer,
             name,
             start,
-            self._pos,
+            self._pos
         )
 
     def _call(self, rule, name, params, kwparams):
@@ -384,6 +388,8 @@ class ParseContext(object):
             self._add_cst_node(node)
             self._last_node = node
             return node
+        except FailedPattern:
+            self._error('Expecting <%s>' % name)
         except FailedParse:
             self._trace_event(Fore.RED + Style.BRIGHT + '!')
             self._goto(pos)
@@ -415,8 +421,12 @@ class ParseContext(object):
                 node = self.cst
             elif '@' in node:
                 node = node['@']  # override the AST
-            elif self.enable_parseinfo:
-                node._parseinfo = self._parseinfo(name, pos)
+            elif self.parseinfo:
+                node._parseinfo = self._get_parseinfo(
+                    node,
+                    name,
+                    pos
+                )
 
             node = self._invoke_semantic_rule(name, node, params, kwparams)
             result = (node, self._pos, self._state)

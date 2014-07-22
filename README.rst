@@ -668,13 +668,18 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-3.2.2-rc.2
+3.2.2-rc.3
 ----------
+
+* Refactorings to enhance consistency in parsing between models and and generated parsers.
+
+* 37_ Comments are preserved when using  the `--pretty` option.
 
 * 38_ Trace output use color if the colorama_ package is installed. Also reduced the text and the vertical size of logs.
 
 * 40_ The widht and the separator used in parse traces are now configurable with keyword arguments.
 
+.. _37: https://bitbucket.org/apalala/grako/issue/37/
 .. _38: https://bitbucket.org/apalala/grako/issue/38/
 .. _40: https://bitbucket.org/apalala/grako/issue/40/
 

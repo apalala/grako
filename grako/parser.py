@@ -14,72 +14,15 @@ in the .grammars module.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-import re
-
-from grako.exceptions import ParseError
-from grako.buffering import Buffer
 from grako.bootstrap import GrakoBootstrapParser
+from grako.grammars import GrakoContext
 from grako.semantics import GrakoASTSemantics, GrakoSemantics
 
 __all__ = ['GrakoParser', 'GrakoGrammarGenerator']
 
-COMMENTS_RE = r'\(\*(?:.|\n)*?\*\)'
-EOL_COMMENTS_RE = r'#.*?$'
-PRAGMA_RE = r'^\s*#[a-z]+'
 
-
-class GrakoBuffer(Buffer):
-    def __init__(self, text, filename=None, **kwargs):
-        super(GrakoBuffer, self).__init__(
-            text,
-            filename=filename,
-            comments_re=COMMENTS_RE,
-            eol_comments_re=EOL_COMMENTS_RE,
-            memoize_lookaheads=False,
-            **kwargs
-        )
-
-    def process_block(self, name, lines, index, **kwargs):
-        # search for pragmas of the form
-        # .. pragma_name :: params
-
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-            if re.match(PRAGMA_RE, line):
-                directive, arg = line.split('#', 1)[1], ''
-                if '::' in directive:
-                    directive, arg = directive.split('::')
-                directive, arg = directive.strip(), arg.strip()
-                i = self.pragma(name, directive, arg, lines, index, i)
-            else:
-                i += 1
-        return lines, index
-
-    def pragma(self, source, name, arg, lines, index, i):
-        # we only recognize the 'include' pragama
-        if name == 'include':
-            filename = arg.strip('\'"')
-            return self.include_file(source, filename, lines, index, i, i)
-        else:
-            raise ParseError('Unknown pragma: %s' % name)
-
-
-class GrakoParserBase(GrakoBootstrapParser):
-
-    def parse(self, text, rule='grammar', filename=None, **kwargs):
-        if not isinstance(text, Buffer):
-            text = GrakoBuffer(
-                text,
-                filename=filename,
-                **kwargs
-            )
-        return super(GrakoParserBase, self).parse(
-            text,
-            rule,
-            filename=filename,
-            **kwargs
-        )
+class GrakoParserBase(GrakoBootstrapParser, GrakoContext):
+    pass
 
 
 class GrakoParser(GrakoParserBase):
@@ -90,7 +33,11 @@ class GrakoParser(GrakoParserBase):
 
 
 class GrakoGrammarGenerator(GrakoParserBase):
-    def __init__(self, grammar_name, semantics=None, **kwargs):
+    def __init__(self, grammar_name, semantics=None, parseinfo=True, **kwargs):
         if semantics is None:
             semantics = GrakoSemantics(grammar_name)
-        super(GrakoGrammarGenerator, self).__init__(semantics=semantics, **kwargs)
+        super(GrakoGrammarGenerator, self).__init__(
+            semantics=semantics,
+            parseinfo=True,
+            **kwargs
+        )

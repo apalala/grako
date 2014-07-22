@@ -72,6 +72,12 @@ class Node(object):
             text = self.parseinfo.buffer.text
             return text[self.parseinfo.pos:self.parseinfo.endpos]
 
+    @property
+    def comments(self):
+        if self.parseinfo:
+            return self.parseinfo.buffer.comments(self.parseinfo.pos)
+        return [], []
+
     def children(self):
         childl = []
 
