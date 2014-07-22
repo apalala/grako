@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 21, 19, 55, 6, 0)
+__version__ = (2014, 7, 22, 0, 4, 16, 1)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -41,15 +41,7 @@ class GrakoBootstrapParser(Parser):
         self._positive_closure(block1)
 
         self.ast['rules'] = self.last_node
-
-        def block3():
-            with self._choice():
-                with self._option():
-                    self._comment_()
-                with self._option():
-                    self._eol_comment_()
-                self._error('no available options')
-        self._closure(block3)
+        self._comments_()
         self.ast['epilogue'] = self.last_node
         self._check_eof()
 
@@ -98,10 +90,7 @@ class GrakoBootstrapParser(Parser):
     @graken('Rule')
     def _rule_(self):
         # capture comments between rules
-
-        def block1():
-            self._comment_()
-        self._closure(block1)
+        self._comments_()
         self.ast['prologue'] = self.last_node
         self._new_name_()
         self.ast['name'] = self.last_node
@@ -144,15 +133,7 @@ class GrakoBootstrapParser(Parser):
         self._expre_()
         self.ast['rhs'] = self.last_node
         # this is in case the rule is a choice
-
-        def block13():
-            with self._choice():
-                with self._option():
-                    self._comment_()
-                with self._option():
-                    self._eol_comment_()
-                self._error('no available options')
-        self._closure(block13)
+        self._comments_()
         self.ast['epilogue'] = self.last_node
         self._token(';')
         self._cut()
@@ -237,6 +218,7 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Sequence')
     def _sequence_(self):
+        # inline comments with elements
 
         def block0():
 
@@ -248,13 +230,7 @@ class GrakoBootstrapParser(Parser):
             self.ast.setlist('@', self.last_node)
 
             def block4():
-                with self._group():
-                    with self._choice():
-                        with self._option():
-                            self._comment_()
-                        with self._option():
-                            self._eol_comment_()
-                        self._error('no available options')
+                self._comment_()
                 self.ast.setlist('@', self.last_node)
             self._closure(block4)
         self._positive_closure(block0)
@@ -599,8 +575,26 @@ class GrakoBootstrapParser(Parser):
             self._error('expecting one of: / ?/')
 
 
-    @graken('Comment')
+    @graken()
+    def _comments_(self):
+
+        def block0():
+            self._comment_()
+        self._closure(block0)
+
+
+    @graken()
     def _comment_(self):
+        with self._choice():
+            with self._option():
+                self._block_comment_()
+            with self._option():
+                self._eol_comment_()
+            self._error('no available options')
+
+
+    @graken('Comment')
+    def _block_comment_(self):
         self._pattern(r'\(\*\s*')
         self._cut()
         self._pattern(r'(?:.|\n)*?(?=\s*\*\))')
@@ -753,7 +747,13 @@ class GrakoBootstrapSemantics(object):
     def pattern(self, ast):
         return ast
 
+    def comments(self, ast):
+        return ast
+
     def comment(self, ast):
+        return ast
+
+    def block_comment(self, ast):
         return ast
 
     def eol_comment(self, ast):
