@@ -673,7 +673,7 @@ Changes
 
 * Refactorings to enhance consistency in parsing between models and and generated parsers.
 
-* 37_ Comments are preserved when using  the `--pretty` option.
+* 37_ Comments are preserved when using  the ``--pretty`` option.
 
 * 38_ Trace output use color if the colorama_ package is installed. Also reduced the text and the vertical size of logs.
 
