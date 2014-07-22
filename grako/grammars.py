@@ -121,10 +121,7 @@ class Comment(Model):
         return '(* %s *)' % self.comment
 
 
-class EOLComment(Model):
-    def __init__(self, ast=None, **kwargs):
-        super(Comment, self).__init__(ast=AST(comment=ast))
-
+class EOLComment(Comment):
     def __str__(self):
         return '  # %s\n' % self.comment
 
@@ -206,7 +203,7 @@ class Pattern(Model):
 
     def __str__(self):
         pattern = str(self.pattern)
-        if '/' not in pattern :
+        if '/' not in pattern:
             template = '/%s/'
             return template % pattern
         else:
