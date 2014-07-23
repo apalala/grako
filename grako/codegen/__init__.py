@@ -6,8 +6,11 @@ from grako.codegen.cgbase import *  # noqa
 from grako.codegen import python
 
 
+pythoncg = python.codegen
+
+
 def codegen(model, target='python'):
     if target.lower() == 'python':
-        return python.codegen(model)
+        return pythoncg(model)
     else:
         raise CodegenError('Unknown target language: %s' % target)

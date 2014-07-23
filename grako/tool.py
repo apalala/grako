@@ -14,7 +14,9 @@ from grako._version import __version__
 from grako.util import eval_escapes
 from grako.exceptions import GrakoException
 from grako.parser import GrakoGrammarGenerator
-from grako.codegen import codegen
+
+# we hook the tool to the Python code generator as the default
+from grako.codegen import pythoncg
 
 DESCRIPTION = (
     'Grako (for "grammar compiler") takes grammars'
@@ -78,7 +80,7 @@ def genmodel(name, grammar, trace=False, filename=None):
     return parser.parse(grammar, filename=filename)
 
 
-def gencode(name, grammar, trace=False, filename=None):
+def gencode(name, grammar, trace=False, filename=None, codegen=pythoncg):
     model = genmodel(name, grammar, trace=trace, filename=filename)
     return codegen(model)
 
@@ -87,7 +89,7 @@ def _error(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def main():
+def main(codegen=pythoncg):
     try:
         args = argparser.parse_args()
     except Exception as e:
