@@ -343,7 +343,7 @@ class ParseContext(object):
             self._trace('%s   \n%s \n%s \n',
                         event + ' ' + self._rulestack(),
                         Style.DIM + self._buffer.line_info().filename,
-                        self._buffer.lookahead()
+                        self._buffer.lookahead().rstrip('\r\n')
                         )
 
     def _trace_match(self, token, name=None):
