@@ -14,7 +14,7 @@ gencode = functools.partial(tool.gencode, codegen=pythoncg)
 
 
 def main():
-    tool.main(codegen=pythoncg)
+    tool.main(codegen=pythoncg, outer_version='')
 
 if __name__ == '__main__':
     main()

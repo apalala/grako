@@ -63,11 +63,6 @@ argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
                        )
-argparser.add_argument('-v', '--version',
-                       help='provide version information and exit',
-                       action='version',
-                       version='Grako ' + __version__
-                       )
 argparser.add_argument('-w', '--whitespace',
                        metavar='CHARACTERS',
                        help='characters to skip during parsing (use "" to disable)',
@@ -89,7 +84,12 @@ def _error(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def main(codegen=pythoncg):
+def main(codegen=pythoncg, outer_version=''):
+    argparser.add_argument('-v', '--version',
+                        help='provide version information and exit',
+                        action='version',
+                        version=outer_version + 'Grako ' + __version__
+                        )
     try:
         args = argparser.parse_args()
     except Exception as e:
