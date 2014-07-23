@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
+import grako
 
 try:
     from Cython.Build import cythonize
@@ -10,7 +11,7 @@ else:
 
 setup(
     name='grako',
-    version='3.3.0',
+    version=grako.__version__,
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     packages=['grako', 'grako.codegen', 'grako.test'],

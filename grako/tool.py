@@ -3,14 +3,14 @@
 Parse and translate an EBNF grammar into a Python parser for
 the described language.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 import codecs
 import argparse
 import os
 import pickle
 import sys
 
+from grako._version import __version__
 from grako.util import eval_escapes
 from grako.exceptions import GrakoException
 from grako.parser import GrakoGrammarGenerator
@@ -39,7 +39,9 @@ argparser.add_argument('filename',
                        )
 argparser.add_argument('-n', '--no-nameguard',
                        help='allow tokens that are prefixes of others',
-                       dest="nameguard", action='store_false', default=True
+                       dest="nameguard",
+                       action='store_false',
+                       default=True
                        )
 argparser.add_argument('-m', '--name',
                        nargs=1,
@@ -57,6 +59,11 @@ argparser.add_argument('-p', '--pretty',
 argparser.add_argument('-t', '--trace',
                        help='produce verbose parsing output',
                        action='store_true'
+                       )
+argparser.add_argument('-v', '--version',
+                       help='provide version information and exit',
+                       action='version',
+                       version='Grako ' + __version__
                        )
 argparser.add_argument('-w', '--whitespace',
                        metavar='CHARACTERS',
