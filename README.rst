@@ -554,10 +554,13 @@ Other Open-source Examples
 .. _WTK: http://en.wikipedia.org/wiki/Well-known_text
 
 
-* **Marcus Brinkmann** wrote smc.mw_, a parser for a MediaWiki_-style language.
+* **Marcus Brinkmann** (lambdafu_) wrote smc.mw_, a parser for a MediaWiki_-style language.
+
+* **Marcus Brinkmann** (lambdafu_) is working on a *C++ code generator* for **Grako** called GrakoPP_. Help in the form of testing, test cases, and pull requests is welcome.
 
 .. _smc.mw: https://github.com/lambdafu/smc.mw
 .. _MediaWiki: http://www.mediawiki.org/wiki/MediaWiki
+.. _GrakoPP: https://github.com/lambdafu/grakopp/
 
 
 License
