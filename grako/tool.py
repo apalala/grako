@@ -16,10 +16,11 @@ from grako.exceptions import GrakoException
 from grako.parser import GrakoGrammarGenerator
 from grako.codegen import codegen
 
-DESCRIPTION = ('GRAKO (for "grammar compiler") takes grammars'
-               ' in a variation of EBNF as input, and outputs a memoizing'
-               ' PEG/Packrat parser in Python.'
-               )
+DESCRIPTION = (
+    'Grako (for "grammar compiler") takes grammars'
+    ' in a variation of EBNF as input, and outputs a memoizing'
+    ' PEG/Packrat parser in Python.'
+)
 
 
 argparser = argparse.ArgumentParser(prog='grako',
@@ -37,16 +38,16 @@ argparser.add_argument('filename',
                        metavar='GRAMMAR',
                        help='The filename of the Grako grammar'
                        )
+argparser.add_argument('-m', '--name',
+                       nargs=1,
+                       metavar='NAME',
+                       help='Name for the grammar (defaults to GRAMMAR base name)'
+                       )
 argparser.add_argument('-n', '--no-nameguard',
                        help='allow tokens that are prefixes of others',
                        dest="nameguard",
                        action='store_false',
                        default=True
-                       )
-argparser.add_argument('-m', '--name',
-                       nargs=1,
-                       metavar='NAME',
-                       help='Name for the grammar (defaults to GRAMMAR base name)'
                        )
 argparser.add_argument('-o', '--output',
                        metavar='FILE',
