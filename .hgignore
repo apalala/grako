@@ -2,6 +2,7 @@
 \.(pyc|pyo|swp|orig|c|so)$
 ^\.
 ^tmp/
+^env
 ^MANIFEST$
 ^dist$
 ^build$

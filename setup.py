@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
+import setuptools
 import grako
 
 try:
@@ -9,19 +9,26 @@ except ImportError:
 else:
     CYTHON = True
 
-setup(
+setuptools.setup(
+    zip_safe=True,
     name='grako',
     version=grako.__version__,
+    url='http://bitbucket.org/apalala/grako',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
-    packages=['grako', 'grako.codegen', 'grako.test'],
-    scripts=['scripts/grako'],
-    url='http://bitbucket.org/apalala/grako',
-    license='BSD License',
     description='A generator of PEG/Packrat parsers from EBNF grammars.',
     long_description=open('README.rst').read(),
+    license='BSD License',
+    packages=setuptools.find_packages(),
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'grako = grako:main'
+        ]
+    },
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        # 'Development Status :: 5 - Production/Stable',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Intended Audience :: Developers',
