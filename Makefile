@@ -14,6 +14,17 @@ antlr_test:
 flake8:
 	flake8 --exclude .tox,docs,tmp,.ropeproject --max-line-length 200
 
+docs: tmp/grako_docs.zip
+
+tmp/grako_docs.zip: tmp/index.html
+	zip --junk-paths tmp/grako_docs.zip tmp/index.html
+
+tmp/index.html: README.rst etc/style.css
+	rst2html \
+		--stylesheet-path etc/style.css \
+		--embed-stylesheet \
+		README.rst > tmp/index.html
+
 cython:
 	python setup.py build_ext --inplace
 	python3 setup.py build_ext --inplace
