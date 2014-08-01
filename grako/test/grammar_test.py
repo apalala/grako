@@ -132,13 +132,13 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse('*abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
         self.assertEqual(ast, "<ul><li>abc</li></ul>")
         ast = model.parse('*abc\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc</li></ul>")
+        self.assertEqual("<ul><li>abc</li></ul>", ast)
         ast = model.parse('*abc\n*def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc</li><li>def</li></ul>")
+        self.assertEqual("<ul><li>abc</li><li>def</li></ul>", ast)
         ast = model.parse('**abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li><ul><li>abc</li></ul></li></ul>")
+        self.assertEqual("<ul><li><ul><li>abc</li></ul></li></ul>", ast)
         ast = model.parse('*abc\n**def\n', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
-        self.assertEqual(ast, "<ul><li>abc<ul><li>def</li></ul></li></ul>")
+        self.assertEqual("<ul><li>abc<ul><li>def</li></ul></li></ul>", ast)
 
     def test_optional_closure(self):
         grammar = 'start = foo+:"x" foo:{"y"}* {foo:"z"}* ;'

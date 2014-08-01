@@ -12,13 +12,13 @@ computed, but they are not.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import re
 import sys
 import functools
 from collections import defaultdict, Mapping
 from copy import copy
 
 from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
+from grako.util import re, RE_FLAGS
 from grako.exceptions import FailedRef, GrammarError, ParseError
 from grako.ast import AST
 from grako.buffering import Buffer
@@ -30,7 +30,7 @@ PEP8_LLEN = 72
 
 
 COMMENTS_RE = r'\(\*((?:.|\n)*?)\*\)'
-EOL_COMMENTS_RE = r'#(.*?)$'
+EOL_COMMENTS_RE = r'#([^\n]*?)$'
 PRAGMA_RE = r'^\s*#[a-z]+'
 
 
@@ -260,7 +260,7 @@ class Token(Model):
 
 class Pattern(Model):
     def __postinit__(self, ast):
-        re.compile(ast)
+        re.compile(ast, RE_FLAGS)
         super(Pattern, self).__postinit__(ast)
         self.pattern = ast
 

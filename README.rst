@@ -30,7 +30,7 @@ Grako
 
 **Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
-**Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries.
+**Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries. The proposed regex_ module will be used insted of re_ if installed. The pygraphviz_ module is required for generating diagrams.
 
 **Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, and Java_.
 
@@ -40,12 +40,14 @@ Grako
 .. _`legacy code`: http://en.wikipedia.org/wiki/Legacy_code
 .. _PyPy: http://pypy.org/
 .. _`context managers`: http://docs.python.org/2/library/contextlib.html
-.. _re: http://docs.python.org/2/library/re.html
 .. _Perl: http://www.perl.org/
 .. _NATURAL: http://en.wikipedia.org/wiki/NATURAL
 .. _COBOL: http://en.wikipedia.org/wiki/Cobol
 .. _Java:  http://en.wikipedia.org/wiki/Java_(programming_language)
 .. _VB6: http://en.wikipedia.org/wiki/Visual_basic_6
+.. _regex: https://pypi.python.org/pypi/regex
+.. _re: https://docs.python.org/3.4/library/re.html
+.. _pygraphviz: https://pypi.python.org/pypi/pygraphviz
 
 Table of Contents
 =================
@@ -264,7 +266,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
 
-        The ``regexp`` is passed *as-is* to the Python_ ``re`` module, using ``re.match()`` at the current position in the text. The matched text is the AST_ for the expression.
+        The ``regexp`` is passed *as-is* to the Python_ re_ module (or regex_ if available), using ``match()`` at the current position in the text. The matched text is the AST_ for the expression.
 
     ``?/regexp/?``
         Another form of the pattern expression that can be used when there are slashes (``/``) in
@@ -395,9 +397,19 @@ With the help of the ``Buffer.line_info()`` method, it is possible to recover th
 Whitespace
 ==========
 
-By default, **Grako** generated parsers skip the usual whitespace characters (whatever Python_ defines as ``string.whitespace``), but you can change that behavior by passing a ``whitespace`` parameter to your parser. For example, the following will skip over *tab* (``\t``) and *space* characters, but not so with other typical whitespace characters such as *newline* (``\n``)::
+By default, **Grako** generated parsers skip the usual whitespace characters with the regular expression ``r'\s+'`` using the ``re.UNICODE`` flag (or with the ``Pattern_White_Space`` property if the regex_ module is available), but you can change that behavior by passing a ``whitespace`` parameter to your parser.
+
+For example, the following will skip over *tab* (``\t``) and *space* characters, but not so with other typical whitespace characters such as *newline* (``\n``)::
 
     parser = MyParser(text, whitespace='\t ')
+
+The character string is converted into a regular expression character set before starting to parse.
+
+You can also provide a regular expression directly instead of a string. The following is equivalent to the above example::
+
+    parser = MyParser(text, whitespace=re.compile(r'[\t ]+'))
+
+Note that the regular expression must be pre-compiled to let **Grako** distinghish it from plain string.
 
 If you do not define any whitespace characters, then you will have to handle whitespace in your grammar rules (as it's often done in PEG_ parsers)::
 
@@ -674,7 +686,16 @@ Changes
 
 **Grako**'s uses `Semantic Versioning`_ for its releases, so parsts of the a version number can go up without significant changes or backwards incompatibilities.
 
-.. _`Semantic Versioning`:
+.. _`Semantic Versioning`: http://semver.org/
+
+
+3.4.0.rc.1
+----------
+
+    * Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching, and character sets provided as strings, lists, or sets are converted to the corresponding regular expression.
+
+    * Added a ``--version`` option to the commandline tool, and a ``grako.__version__`` variable.
+
 
 3.3.0
 -----
@@ -915,7 +936,6 @@ Changes
 * First public release.
 
 .. _`Visitor Pattern`: http://en.wikipedia.org/wiki/Visitor_pattern
-.. _pygraphviz: https://pypi.python.org/pypi/pygraphviz/
 .. _`Vim spell`:  http://vimdoc.sourceforge.net/htmldoc/spell.html
 .. _flake8: https://pypi.python.org/pypi/flake8
 .. _Bitbucket: https://bitbucket.org/apalala/grako

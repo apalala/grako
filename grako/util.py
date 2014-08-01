@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 import collections
 import json
 import datetime
-import re
 import codecs
+
+try:
+    import regex as re
+    WHITESPACE_RE = re.compile(r'\p{IsPattern_White_Space}+', re.UNICODE)
+except ImportError:
+    import re
+    WHITESPACE_RE = re.compile(r'\s+', re.UNICODE)
+RE_FLAGS = re.UNICODE | re.MULTILINE
 
 
 PY3 = sys.version_info[0] >= 3
