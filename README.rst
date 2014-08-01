@@ -654,6 +654,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left recursion in PEG_ parsers.
 
+* `Kathryn Long`_ proposed better support for UNICODE in the treatment of whitespace and regular expressions (patterns) in general.
+
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
 .. _`LL(1)`: http://en.wikipedia.org/wiki/LL(1)
@@ -680,11 +682,13 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _`Basel Shishani`: https://bitbucket.org/basel-shishani
 .. _`Paul Sargent`: https://bitbucket.org/PaulS/
 .. _`Warth et al`: http://www.vpri.org/pdf/tr2007002_packrat.pdf
+.. _`Kathryn Long`: https://bitbucket.org/starkat
+.. _starkat: https://bitbucket.org/starkat
 
 Changes
 =======
 
-**Grako**'s uses `Semantic Versioning`_ for its releases, so parsts of the a version number can go up without significant changes or backwards incompatibilities.
+**Grako** uses `Semantic Versioning`_ for its releases, so parsts of the a version number can go up without significant changes or backwards incompatibilities.
 
 .. _`Semantic Versioning`: http://semver.org/
 
@@ -692,9 +696,11 @@ Changes
 3.4.0.rc.1
 ----------
 
-    * Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching, and character sets provided as strings, lists, or sets are converted to the corresponding regular expression.
+* Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching, and character sets provided as strings, lists, or sets are converted to the corresponding regular expression (starkat_).
 
-    * Added a ``--version`` option to the commandline tool, and a ``grako.__version__`` variable.
+* If installed, the regex_ module will be used instead of re_ in all pattern matching (starkat_). See the section about *whitespace* above.
+
+* Added a ``--version`` option to the commandline tool, as well as a ``grako.__version__`` variable.
 
 
 3.3.0
