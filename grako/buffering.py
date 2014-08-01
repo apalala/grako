@@ -10,12 +10,10 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
-import re as regexp
-import string
 from bisect import bisect_left
 from collections import namedtuple
 
-from grako.util import ustr
+from grako.util import ustr, strtype, re as regexp, WHITESPACE_RE, RE_FLAGS
 from grako.exceptions import ParseError
 
 # TODO: There could be a file buffer using random access
@@ -23,6 +21,7 @@ from grako.exceptions import ParseError
 __all__ = ['Buffer']
 
 RETYPE = type(regexp.compile('.'))
+
 
 PosLine = namedtuple('PosLine', ['pos', 'line'])
 
@@ -49,9 +48,9 @@ class Buffer(object):
         self.original_text = text
         self.text = ustr(text)
         self.filename = filename or ''
-        self.whitespace = set(whitespace
-                              if whitespace is not None
-                              else string.whitespace)
+
+        self.whitespace = self._build_whitespace_re(whitespace)
+
         self.tabwidth = tabwidth
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
@@ -73,6 +72,23 @@ class Buffer(object):
         self._comment_index = [[] for _ in self._line_index]
         self._len = len(self.text)
         self._re_cache = {}
+
+    @staticmethod
+    def _build_whitespace_re(whitespace):
+        if whitespace is None:
+            return WHITESPACE_RE
+        elif isinstance(whitespace, RETYPE):
+            return whitespace
+        elif whitespace:
+            if not isinstance(whitespace, strtype):
+                # a list or a set?
+                whitespace = ''.join(c for c in whitespace)
+            return regexp.compile(
+                '[%s]+' % regexp.escape(whitespace),
+                RE_FLAGS | regexp.DOTALL
+            )
+        else:
+            return None
 
     def _preprocess(self, *args, **kwargs):
         lines, index = self._preprocess_block(self.filename, self.text)
@@ -188,17 +204,14 @@ class Buffer(object):
         return cmm, eolcmm
 
     def eat_whitespace(self):
-        p = self._pos
-        le = self._len
-        ws = self.whitespace
-        while p < le and self.text[p] in ws:
-            p += 1
-        self.goto(p)
+        if self.whitespace is not None:
+            while self.matchre(self.whitespace):
+                pass
 
     def eat_comments(self):
         if self.comments_re is not None:
             while True:
-                comment = self.matchre(self.comments_re, regexp.MULTILINE)
+                comment = self.matchre(self.comments_re)
                 if not comment:
                     break
                 if self.comment_recovery:
@@ -210,7 +223,7 @@ class Buffer(object):
             while True:
                 if self.comment_recovery:
                     n = self.line
-                comment = self.matchre(self.eol_comments_re, regexp.MULTILINE)
+                comment = self.matchre(self.eol_comments_re)
                 if not comment:
                     break
                 if self.comment_recovery:
@@ -285,11 +298,7 @@ class Buffer(object):
         elif pattern in self._re_cache:
             re = self._re_cache[pattern]
         else:
-            flags = (
-                regexp.MULTILINE
-                | regexp.UNICODE
-                | (regexp.IGNORECASE if ignorecase else 0)
-            )
+            flags = RE_FLAGS | (regexp.IGNORECASE if ignorecase else 0)
             re = regexp.compile(
                 pattern,
                 flags

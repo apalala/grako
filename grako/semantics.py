@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-import re
 from collections import OrderedDict
 
 from grako.util import simplify_list, eval_escapes, warning
+from grako.util import re, RE_FLAGS
 from grako import grammars
 from grako.exceptions import FailedSemantics
 from grako.model import ModelBuilderSemantics
@@ -44,7 +43,7 @@ class GrakoSemantics(ModelBuilderSemantics):
     def pattern(self, ast, *args):
         pattern = ast
         try:
-            re.compile(pattern)
+            re.compile(pattern, RE_FLAGS)
         except re.error as e:
             raise FailedSemantics('regexp error: ' + str(e))
         return grammars.Pattern(ast)

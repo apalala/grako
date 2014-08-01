@@ -42,6 +42,9 @@ setuptools.setup(
         'Topic :: Software Development :: Interpreters',
         'Topic :: Text Processing :: General'
     ],
+    extras_require={
+        'future-regex': ['regex']
+    },
     ext_modules=cythonize(
         "grako/**/*.py",
         exclude=[
