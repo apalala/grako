@@ -10,6 +10,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
+import string
 from bisect import bisect_left
 from collections import namedtuple
 
@@ -49,7 +50,7 @@ class Buffer(object):
         self.text = ustr(text)
         self.filename = filename or ''
 
-        self.whitespace = self._build_whitespace_re(whitespace)
+        self.whitespace_re = self._build_whitespace_re(whitespace)
 
         self.tabwidth = tabwidth
         self.comments_re = comments_re
@@ -58,7 +59,7 @@ class Buffer(object):
         self.trace = True
         self.nameguard = (nameguard
                           if nameguard is not None
-                          else bool(self.whitespace))
+                          else bool(self.whitespace_re))
         self.comment_recovery = comment_recovery
 
         self._pos = 0
@@ -204,8 +205,8 @@ class Buffer(object):
         return cmm, eolcmm
 
     def eat_whitespace(self):
-        if self.whitespace is not None:
-            while self.matchre(self.whitespace):
+        if self.whitespace_re is not None:
+            while self.matchre(self.whitespace_re):
                 pass
 
     def eat_comments(self):
@@ -253,8 +254,14 @@ class Buffer(object):
     def skip_to_eol(self):
         return self.skip_to('\n')
 
+    def scan_space(self, offset=0):
+        return (
+            self.whitespace_re
+            and self._scanre(self.whitespace_re, offset=offset) is not None
+        )
+
     def is_space(self):
-        return self.current() in self.whitespace
+        return self.scan_space()
 
     def is_name_char(self, c):
         return c is not None and c.isalnum()
@@ -286,11 +293,13 @@ class Buffer(object):
         self.goto(p)
 
     def matchre(self, pattern, ignorecase=None):
-        matched = self._do_matchre(pattern, ignorecase=ignorecase)
+        matched = self._scanre(pattern, ignorecase=ignorecase)
         if matched:
-            return matched.group()
+            token = matched.group()
+            self.move(len(token))
+            return token
 
-    def _do_matchre(self, pattern, ignorecase=None):
+    def _scanre(self, pattern, ignorecase=None, offset=0):
         ignorecase = ignorecase if ignorecase is not None else self.ignorecase
 
         if isinstance(pattern, RETYPE):
@@ -304,11 +313,7 @@ class Buffer(object):
                 flags
             )
             self._re_cache[pattern] = re
-        matched = re.match(self.text, self.pos)
-        if matched:
-            token = matched.group()
-            self.move(len(token))
-        return matched
+        return re.match(self.text, self.pos + offset)
 
     def _build_line_cache(self):
         # The line cache holds the position of the last character
