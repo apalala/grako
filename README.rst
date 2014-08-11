@@ -568,11 +568,11 @@ Other Open-source Examples
 
 * **Marcus Brinkmann** (lambdafu_) wrote smc.mw_, a parser for a MediaWiki_-style language.
 
-* **Marcus Brinkmann** (lambdafu_) is working on a *C++ code generator* for **Grako** called GrakoPP_. Help in the form of testing, test cases, and pull requests is welcome.
+* **Marcus Brinkmann** (lambdafu_) is working on a *C++ code generator* for **Grako** called `Grako++`_. Help in the form of testing, test cases, and pull requests is welcome.
 
 .. _smc.mw: https://github.com/lambdafu/smc.mw
 .. _MediaWiki: http://www.mediawiki.org/wiki/MediaWiki
-.. _GrakoPP: https://github.com/lambdafu/grakopp/
+.. _`Grako++`: https://github.com/lambdafu/grakopp/
 
 
 License
