@@ -685,7 +685,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-**Grako** uses `Semantic Versioning`_ for its releases, so parsts of the a version number can go up without significant changes or backwards incompatibilities.
+**Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
 
