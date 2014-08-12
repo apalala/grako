@@ -22,10 +22,8 @@ except ImportError:
         WHITE = ''
         YELLOW = ''
 
-
     class Fore(_BF):
         pass
-
 
     class Back(_BF):
         pass
