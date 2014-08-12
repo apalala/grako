@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 7, 22, 2, 0, 54, 1)
+__version__ = (2014, 8, 12, 2, 36, 41, 1)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -207,6 +207,11 @@ class GrakoBootstrapParser(Parser):
 
         self.ast['sequence'] = self.last_node
 
+        self.ast._define(
+            ['sequence'],
+            []
+        )
+
     @graken()
     def _element_(self):
         with self._choice():
@@ -327,6 +332,11 @@ class GrakoBootstrapParser(Parser):
         self.ast['exp'] = self.last_node
         self._token(')')
         self._cut()
+
+        self.ast._define(
+            ['exp'],
+            []
+        )
 
     @graken('PositiveClosure')
     def _positive_closure_(self):
