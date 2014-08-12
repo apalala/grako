@@ -32,6 +32,8 @@ The parser-generator, the runtime support, and the generated parsers have measur
 
 The only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries (the proposed regex_ module will be used if installed, and pygraphviz_ is required for generating diagrams).
 
+For performance beyond what which Python_ or PyPy_ can provide, take a look at the `Grako++`_ project.
+
 **Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, and Java_.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
@@ -434,7 +436,7 @@ Parsers will skip over comments specified as a regular expression using the ``co
 
     parser = MyParser(text, comments_re="\(\*.*?\*\)")
 
-For more complex comment handling, you can override the ``Buffer.eatcomments()`` method.
+For more complex comment handling, you can override the ``Buffer.eat_comments()`` method.
 
 Fro flexibility, it is possible to specify a pattern for end-of-line comments separately::
 
@@ -561,15 +563,13 @@ Other Open-source Examples
 
 * **Christian Ledermann** wrote  parsewkt_ a parser for `Well-known text`_ (WTK_) using **Grako**.
 
-.. _parsewkt: https://github.com/cleder/parsewkt
-.. _`Well-known text`: http://en.wikipedia.org/wiki/Well-known_text
-.. _WTK: http://en.wikipedia.org/wiki/Well-known_text
-
-
 * **Marcus Brinkmann** (lambdafu_) wrote smc.mw_, a parser for a MediaWiki_-style language.
 
 * **Marcus Brinkmann** (lambdafu_) is working on a *C++ code generator* for **Grako** called `Grako++`_. Help in the form of testing, test cases, and pull requests is welcome.
 
+.. _parsewkt: https://github.com/cleder/parsewkt
+.. _`Well-known text`: http://en.wikipedia.org/wiki/Well-known_text
+.. _WTK: http://en.wikipedia.org/wiki/Well-known_text
 .. _smc.mw: https://github.com/lambdafu/smc.mw
 .. _MediaWiki: http://www.mediawiki.org/wiki/MediaWiki
 .. _`Grako++`: https://github.com/lambdafu/grakopp/
