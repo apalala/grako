@@ -30,9 +30,7 @@ Grako
 
 The parser-generator, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
-The only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries (the proposed regex_ module will be used if installed, and pygraphviz_ is required for generating diagrams).
-
-For performance beyond what which Python_ or PyPy_ can provide, take a look at the `Grako++`_ project.
+The only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries (the proposed regex_ module will be used if installed, and pygraphviz_ is required for generating diagrams). For performance beyond what which Python_ or PyPy_ can provide, take a look at the `Grako++`_ project.
 
 **Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, and Java_.
 
