@@ -730,7 +730,7 @@ Changes
 
 * *BUG* Need to allow newline (``\n``) characters within grammar patterns.
 
-* *BUG* 36_ Keyword agruments in rules were not being parsed correctly (Franz_G_).
+* *BUG* 36_ Keyword arguments in rules were not being parsed correctly (Franz_G_).
 
 * Several *BUGs* in the advanced features were fixed. See the `Bitbucket commits`_ for details.
 
