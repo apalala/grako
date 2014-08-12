@@ -304,7 +304,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
 
-    ``@@e``
+    ``@e``
         Another form of the override operator. *Deprecated*.
 
     ``@+:e``
@@ -610,16 +610,6 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Niklaus Wirth** was the chief designer of the programming languages Euler_, `Algol W`_, Pascal_, Modula_, Modula-2_, Oberon_, and Oberon-2_. In the last chapter of his 1976 book `Algorithms + Data Structures = Programs`_, Wirth_ creates a top-down, descent parser with recovery for the Pascal_-like, `LL(1)`_ programming language `PL/0`_. The structure of the program is that of a PEG_ parser, though the concept of PEG_ wasn't formalized until 2004.
 
-.. _Wirth: http://en.wikipedia.org/wiki/Niklaus_Wirth
-.. _Euler: http://en.wikipedia.org/wiki/Euler_programming_language
-.. _`Algol W`: http://en.wikipedia.org/wiki/Algol_W
-.. _Pascal: http://en.wikipedia.org/wiki/Pascal_programming_language
-.. _Modula: http://en.wikipedia.org/wiki/Modula
-.. _Modula-2: http://en.wikipedia.org/wiki/Modula-2
-.. _Oberon: http://en.wikipedia.org/wiki/Oberon_(programming_language)
-.. _Oberon-2: http://en.wikipedia.org/wiki/Oberon-2
-.. _`PL/0`: http://en.wikipedia.org/wiki/PL/0
-
 * **Bryan Ford** introduced_ PEG_ (parsing expression grammars) in 2004.
 
 * Other parser generators like `PEG.js`_ by **David Majda** inspired the work in **Grako**.
@@ -656,6 +646,15 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
+.. _Wirth: http://en.wikipedia.org/wiki/Niklaus_Wirth
+.. _Euler: http://en.wikipedia.org/wiki/Euler_programming_language
+.. _`Algol W`: http://en.wikipedia.org/wiki/Algol_W
+.. _Pascal: http://en.wikipedia.org/wiki/Pascal_programming_language
+.. _Modula: http://en.wikipedia.org/wiki/Modula
+.. _Modula-2: http://en.wikipedia.org/wiki/Modula-2
+.. _Oberon: http://en.wikipedia.org/wiki/Oberon_(programming_language)
+.. _Oberon-2: http://en.wikipedia.org/wiki/Oberon-2
+.. _`PL/0`: http://en.wikipedia.org/wiki/PL/0
 .. _`LL(1)`: http://en.wikipedia.org/wiki/LL(1)
 .. _`Algorithms + Data Structures = Programs`: http://www.amazon.com/Algorithms-Structures-Prentice-Hall-Automatic-Computation/dp/0130224189/
 .. _`blog post`: http://dietbuddha.blogspot.com/2012/12/52python-encapsulating-exceptions-with.html
