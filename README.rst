@@ -304,7 +304,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
 
-    ``@e``
+    ``@@e``
         Another form of the override operator. *Deprecated*.
 
     ``@+:e``
