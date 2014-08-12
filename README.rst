@@ -819,11 +819,11 @@ Changes
 
 * The `Visitor Pattern`_ doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible ``Traverser`` classes. The new ``_traverse_XX()`` methods in `Traverser` classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
 
-* Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
+* Now a ``_default()`` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
 
 * Added compatibility with tox_. Now tests are performed against the latest releases of Python_ 2.7.x and 3.x, and PyPy_ 2.x.
 
-* Added `--whitespace` parameter to generated `main()`.
+* Added ``--whitespace`` parameter to generated ``main()``.
 
 * Applied Flake8_ to project and to generated parsers.
 
@@ -834,7 +834,7 @@ Changes
 2.3.0
 -----
 
-* Now the ``@`` operator behaves as a special case of the ``name:`` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as `@+:e`, with the expected semantics.
+* Now the ``@`` operator behaves as a special case of the ``name:`` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as ``@+:e``, with the expected semantics.
 
 * *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into ``Context``.
 
@@ -888,7 +888,7 @@ Changes
 
 1.4.0
 -----
-* *BUG!* Sometimes the AST_ for a closure ({}) was not a list.
+* *BUG!* Sometimes the AST_ for a closure (``{}``) was not a list.
 * Semantic actions can now be implemented by a delegate.
 * Reset synthetic method count and use decorators to increase readability of generated parsers.
 * The **Grako** EBNF_ grammar and the bootstrap parser now align, so the grammar can be used to bootstrap **Grako**.
