@@ -693,11 +693,11 @@ Changes
 3.4.0
 -----
 
-* Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching; character sets provided as strings, lists, or sets are converted to the corresponding regular expression (starkat_).
+* Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching. Character sets provided as ``str``, ``list``, or ``set`` are converted to the corresponding regular expression (starkat_).
 
 * If installed, the regex_ module will be used instead of re_ in all pattern matching (starkat_). See the section about *whitespace* above.
 
-* Added a ``--version`` option to the commandline tool, as well as a ``grako.__version__`` variable.
+* Added a ``--version`` option to the commandline tool. A ``grako.__version__`` variable is now available.
 
 
 3.3.0
