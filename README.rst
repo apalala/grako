@@ -28,9 +28,9 @@ Grako
 
 * Efficient support for direct and indirect left recursion allows for more intuitive grammars.
 
-**Grako**, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4.5 KLOC_ of Python_, it is possible to study all its source code in a single session.
+The parser-generator, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
-**Grako**'s only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries. The proposed regex_ module will be used insted of re_ if installed. The pygraphviz_ module is required for generating diagrams.
+The only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries (the proposed regex_ module will be used if installed, and pygraphviz_ is required for generating diagrams).
 
 **Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, and Java_.
 
