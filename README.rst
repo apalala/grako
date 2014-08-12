@@ -138,7 +138,7 @@ if **Grako** was installed using *easy_install* or *pip*.
 The *-h* and *--help* parameters provide full usage information::
 
         $ python -m grako -h
-        usage: grako [-h] [-b] [-d] [-n] [-m NAME] [-o FILE] [-p] [-t] [-w CHARACTERS]
+        usage: grako [-h] [-b] [-d] [-n] [-m NAME] [-o FILE] [-p] [-t] [-v] [-w CHARACTERS]
                     GRAMMAR
 
         GRAKO (for "grammar compiler") takes grammars in a variation of EBNF as input,
@@ -189,7 +189,7 @@ If special lexical treatment is required (like in Python_'s structure-through-in
         ...
 
     buf = MySpecialBuffer(text)
-    model = parser.parse(text, rule_name='start', semantics=MySemantics())
+    model = parser.parse(buf, rule_name='start', semantics=MySemantics())
 
 
 
@@ -235,7 +235,7 @@ The expressions, in reverse order of operator precedence, can be:
         Closure. Match ``e`` zero or more times. Note that the AST_ returned for a closure is always a list.
 
     ``{ e }+`` or ``{ e }-``
-        Closure+1. Match ``e`` one or more times. The AST_ is always a list.
+        Positive closure. Match ``e`` one or more times. The AST_ is always a list.
 
     ``&e``
         Positive lookahead. Try parsing ``e``, but do not consume any input.
@@ -261,7 +261,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``'text'`` or ``"text"``
         Match the token *text* within the quotation marks.
 
-        **Note that** if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
+        Note that if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
 
     ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
@@ -304,7 +304,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
 
-    ``@e``
+    ``\@e``
         Another form of the override operator. *Deprecated*.
 
     ``@+:e``
