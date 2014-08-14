@@ -690,7 +690,7 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.4.0
+3.4.1
 -----
 
 * Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching. Character sets provided as ``str``, ``list``, or ``set`` are converted to the corresponding regular expression (starkat_).
