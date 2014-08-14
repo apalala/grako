@@ -351,14 +351,15 @@ class ParseContext(object):
                         Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
                         )
 
-    def _trace_match(self, token, name=None):
+    def _trace_match(self, token, name=None, failed=False):
         if self.trace:
             fname = ''
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
+            color = Fore.GREEN if not failed else Fore.RED + '! '
             self._trace(
-                Fore.GREEN + Style.BRIGHT + '"%s" %s\n%s%s\n',
+                color + Style.BRIGHT + '"%s" %s\n%s%s\n',
                 token,
                 name,
                 Style.DIM + fname,
@@ -528,6 +529,7 @@ class ParseContext(object):
     def _token(self, token):
         self._next_token()
         if self._buffer.match(token) is None:
+            self._trace_match(token, failed=True)
             self._error(token, etype=FailedToken)
         self._trace_match(token)
         self._add_cst_node(token)
@@ -537,6 +539,7 @@ class ParseContext(object):
     def _pattern(self, pattern):
         token = self._buffer.matchre(pattern)
         if token is None:
+            self._trace_match('', pattern, failed=True)
             self._error(pattern, etype=FailedPattern)
         self._trace_match(token, pattern)
         self._add_cst_node(token)
