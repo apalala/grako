@@ -196,8 +196,9 @@ If special lexical treatment is required (like in Python_'s structure-through-in
 The EBNF Grammar Syntax
 =======================
 
-**Grako** uses a variant of the standard EBNF_ syntax.
+**Grako** uses a variant of the standard EBNF_ syntax. Syntax definitions for VIM_ can be found under the ``etc/vim`` directory in the source code distribution.
 
+.. _VIM: http://www.vim.org/
 
 Rules
 -----
@@ -210,7 +211,7 @@ If a *name* collides with a Python_ keyword, an underscore (``_``) will be appen
 
 Rule names that start with an uppercase character::
 
-   FRAGMENT = ?/[a-z]+/? ;
+   FRAGMENT = /[a-z]+/ ;
 
 *do not* advance over whitespace before beginning to parse. This feature becomes handy when defining complex lexical elements, as it allows breaking them into several rules.
 
@@ -269,8 +270,7 @@ The expressions, in reverse order of operator precedence, can be:
         The ``regexp`` is passed *as-is* to the Python_ re_ module (or regex_ if available), using ``match()`` at the current position in the text. The matched text is the AST_ for the expression.
 
     ``?/regexp/?``
-        Another form of the pattern expression that can be used when there are slashes (``/``) in
-        the pattern.
+        Another form of the pattern expression that can be used when there are slashes (``/``) in the pattern.
 
     ``rulename``
         Invoke the rule named ``rulename``. To help with lexical aspects of grammars, rules with names that begin with an uppercase letter will not advance the input over whitespace or comments.
@@ -324,11 +324,11 @@ The expressions, in reverse order of operator precedence, can be:
 
 When there are no named items in a rule, the AST_ consists of the elements parsed by the rule, either a single item or a list. This default behavior makes it easier to write simple rules::
 
-    number = ?/[0-9]+/? ;
+    number = /[0-9]+/ ;
 
 Without having to write::
 
-    number = number:?/[0-9]+/? ;
+    number = number:/[0-9]+/ ;
 
 When a rule has named elements, the unnamed ones are excluded from the AST_ (they are ignored).
 
