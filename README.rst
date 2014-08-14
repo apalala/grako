@@ -685,12 +685,12 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 Changes
 =======
 
-**Grako** uses `Semantic Versioning`_ for its releases, so parsts of the a version number can go up without significant changes or backwards incompatibilities.
+**Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.4.0
+3.4.1
 -----
 
 * Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching. Character sets provided as ``str``, ``list``, or ``set`` are converted to the corresponding regular expression (starkat_).
