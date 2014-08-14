@@ -348,7 +348,7 @@ class ParseContext(object):
             self._trace('%s   \n%s%s \n',
                         event + ' ' + self._rulestack(),
                         Style.DIM + fname,
-                        Style.BRIGHT + self._buffer.lookahead().rstrip('\r\n')
+                        Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
                         )
 
     def _trace_match(self, token, name=None):
@@ -362,7 +362,7 @@ class ParseContext(object):
                 token,
                 name,
                 Style.DIM + fname,
-                Style.BRIGHT + self._buffer.lookahead().rstrip('\r\n')
+                Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
             )
 
     def _error(self, item, etype=FailedParse):
@@ -387,7 +387,7 @@ class ParseContext(object):
         self._rule_stack.append(name)
         pos = self._pos
         try:
-            self._trace_event(Fore.YELLOW + '>')
+            self._trace_event(Fore.YELLOW + Style.BRIGHT + '>')
             self._last_node = None
             node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
             self._goto(newpos)
