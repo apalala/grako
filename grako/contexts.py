@@ -359,7 +359,7 @@ class ParseContext(object):
             name = '/%s/' % name if name else ''
             color = Fore.GREEN + '< 'if not failed else Fore.RED + '! '
             self._trace(
-                color + Style.BRIGHT + '"%s" %s\n%s%s\n',
+                Style.BRIGHT + color + '"%s" %s\n%s%s\n',
                 token,
                 name,
                 Style.DIM + fname,
