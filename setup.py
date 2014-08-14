@@ -10,7 +10,7 @@ else:
     CYTHON = True
 
 setuptools.setup(
-    zip_safe=True,
+    zip_safe=False,
     name='grako',
     version=grako.__version__,
     url='http://bitbucket.org/apalala/grako',

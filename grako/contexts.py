@@ -67,7 +67,8 @@ class ParseContext(object):
                  nameguard=None,
                  memoize_lookaheads=True,
                  trace_length=72,
-                 trace_separator='.',
+                 trace_separator=':',
+                 trace_filename=False,
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -78,6 +79,7 @@ class ParseContext(object):
         self.trace = trace
         self.trace_length = trace_length
         self.trace_separator = trace_separator
+        self.trace_filename = trace_filename
 
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
@@ -340,21 +342,28 @@ class ParseContext(object):
 
     def _trace_event(self, event):
         if self.trace:
-            self._trace('%s   \n%s \n%s \n',
+            fname = ''
+            if self.trace_filename:
+                fname = self._buffer.line_info().filename + '\n'
+            self._trace('%s   \n%s%s \n',
                         event + ' ' + self._rulestack(),
-                        Style.DIM + self._buffer.line_info().filename,
-                        self._buffer.lookahead().rstrip('\r\n')
+                        Style.DIM + fname,
+                        Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
                         )
 
-    def _trace_match(self, token, name=None):
+    def _trace_match(self, token, name=None, failed=False):
         if self.trace:
+            fname = ''
+            if self.trace_filename:
+                fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
+            color = Fore.GREEN + '< 'if not failed else Fore.RED + '! '
             self._trace(
-                Fore.GREEN + Style.BRIGHT + '"%s" %s\n%s\n%s\n',
+                Style.BRIGHT + color + '"%s" %s\n%s%s\n',
                 token,
                 name,
-                Style.DIM + self._buffer.line_info().filename,
-                self._buffer.lookahead()
+                Style.DIM + fname,
+                Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
             )
 
     def _error(self, item, etype=FailedParse):
@@ -379,7 +388,7 @@ class ParseContext(object):
         self._rule_stack.append(name)
         pos = self._pos
         try:
-            self._trace_event(Fore.YELLOW + '>')
+            self._trace_event(Fore.YELLOW + Style.BRIGHT + '>')
             self._last_node = None
             node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
             self._goto(newpos)
@@ -520,6 +529,7 @@ class ParseContext(object):
     def _token(self, token):
         self._next_token()
         if self._buffer.match(token) is None:
+            self._trace_match(token, failed=True)
             self._error(token, etype=FailedToken)
         self._trace_match(token)
         self._add_cst_node(token)
@@ -529,6 +539,7 @@ class ParseContext(object):
     def _pattern(self, pattern):
         token = self._buffer.matchre(pattern)
         if token is None:
+            self._trace_match('', pattern, failed=True)
             self._error(pattern, etype=FailedPattern)
         self._trace_match(token, pattern)
         self._add_cst_node(token)
