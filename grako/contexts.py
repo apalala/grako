@@ -357,7 +357,7 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
-            color = Fore.GREEN + '> 'if not failed else Fore.RED + '! '
+            color = Fore.GREEN + '< 'if not failed else Fore.RED + '! '
             self._trace(
                 color + Style.BRIGHT + '"%s" %s\n%s%s\n',
                 token,
