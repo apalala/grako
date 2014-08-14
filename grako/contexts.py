@@ -67,7 +67,8 @@ class ParseContext(object):
                  nameguard=None,
                  memoize_lookaheads=True,
                  trace_length=72,
-                 trace_separator='.',
+                 trace_separator=':',
+                 trace_filename=False,
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -78,6 +79,7 @@ class ParseContext(object):
         self.trace = trace
         self.trace_length = trace_length
         self.trace_separator = trace_separator
+        self.trace_filename = trace_filename
 
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
@@ -340,21 +342,27 @@ class ParseContext(object):
 
     def _trace_event(self, event):
         if self.trace:
-            self._trace('%s   \n%s \n%s \n',
+            fname = ''
+            if self.trace_filename:
+                fname = self._buffer.line_info().filename + '\n'
+            self._trace('%s   \n%s%s \n',
                         event + ' ' + self._rulestack(),
-                        Style.DIM + self._buffer.line_info().filename,
-                        self._buffer.lookahead().rstrip('\r\n')
+                        Style.DIM + fname,
+                        Style.BRIGHT + self._buffer.lookahead().rstrip('\r\n')
                         )
 
     def _trace_match(self, token, name=None):
         if self.trace:
+            fname = ''
+            if self.trace_filename:
+                fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
             self._trace(
-                Fore.GREEN + Style.BRIGHT + '"%s" %s\n%s\n%s\n',
+                Fore.GREEN + Style.BRIGHT + '"%s" %s\n%s%s\n',
                 token,
                 name,
-                Style.DIM + self._buffer.line_info().filename,
-                self._buffer.lookahead()
+                Style.DIM + fname,
+                Style.BRIGHT + self._buffer.lookahead().rstrip('\r\n')
             )
 
     def _error(self, item, etype=FailedParse):
