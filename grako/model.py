@@ -50,6 +50,12 @@ class Node(object):
             return info.line
 
     @property
+    def col(self):
+        info = self.line_info
+        if info:
+            return info.col
+
+    @property
     def ctx(self):
         return self._ctx
 
