@@ -38,6 +38,10 @@ def dot(x, y, k):
     return set([(a + b)[:k] for a in x for b in y])
 
 
+def pythonize_name(name):
+    return ''.join('_' + c.lower() if c.isupper() else c for c in name)
+
+
 class GrakoBuffer(Buffer):
     def __init__(self, text, filename=None, **kwargs):
         super(GrakoBuffer, self).__init__(
