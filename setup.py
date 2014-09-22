@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import io
 import setuptools
 import grako
 
@@ -17,7 +18,7 @@ setuptools.setup(
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     description='A generator of PEG/Packrat parsers from EBNF grammars.',
-    long_description=open('README.rst').read(),
+    long_description=io.open('README.rst', encoding='utf-8').read(),
     license='BSD License',
     packages=setuptools.find_packages(),
     include_package_data=True,
