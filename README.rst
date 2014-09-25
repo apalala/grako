@@ -693,7 +693,7 @@ Changes
 3.4.2-rc.2
 ----------
 
-* *BUG* 42_ ``setup.py`` might give errors under some locales because the non-ASCII characters in  ``README.rst``.
+* *BUG* 42_ ``setup.py`` might give errors under some locales because of the non-ASCII characters in  ``README.rst``.
 
 * Added a ``--no-nameguard`` command-line option to generated parsers.
 
