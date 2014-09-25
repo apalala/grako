@@ -690,6 +690,15 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
+3.4.2-rc.2
+----------
+
+* *BUG* 42_ ``setup.py`` might give errors under some locales because the non-ASCII characters in  ``README.rst``.
+
+* Added a ``--no-nameguard`` command-line option to generated parsers.
+
+.. _42: https://bitbucket.org/apalala/grako/issue/42
+
 3.4.1
 -----
 
