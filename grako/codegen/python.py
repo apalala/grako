@@ -408,7 +408,7 @@ class Grammar(Base):
                 {abstract_rules}
 
 
-                def main(filename, startrule, trace=False, whitespace=None):
+                def main(filename, startrule, trace=False, whitespace=None, nameguard=None):
                     import json
                     with open(filename) as f:
                         text = f.read()
@@ -418,7 +418,8 @@ class Grammar(Base):
                         startrule,
                         filename=filename,
                         trace=trace,
-                        whitespace=whitespace)
+                        whitespace=whitespace,
+                        nameguard=nameguard)
                     print('AST:')
                     print(ast)
                     print()
@@ -442,6 +443,9 @@ class Grammar(Base):
                     parser = argparse.ArgumentParser(description="Simple parser for {name}.")
                     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                                         help="list all rules and exit")
+                    parser.add_argument('-n', '--no-nameguard', action='store_true',
+                                        dest='no_nameguard',
+                                        help="disable the 'nameguard' feature")
                     parser.add_argument('-t', '--trace', action='store_true',
                                         help="output trace information")
                     parser.add_argument('-w', '--whitespace', type=str, default=string.whitespace,
@@ -455,6 +459,7 @@ class Grammar(Base):
                         args.file,
                         args.startrule,
                         trace=args.trace,
-                        whitespace=args.whitespace
+                        whitespace=args.whitespace,
+                        nameguard=not args.no_nameguard
                     )
                     '''
