@@ -697,10 +697,9 @@ Changes
 
 * Added a ``--no-nameguard`` command-line option to generated parsers.
 
-* #24_ Allow *Buffer* descendants to customize how text is split into lines (starkat_).
+* Allow *Buffer* descendants to customize how text is split into lines (starkat_).
 
 .. _42: https://bitbucket.org/apalala/grako/issue/42
-.. _24: https://bitbucket.org/apalala/grako/pull-request/24
 
 3.4.1
 -----
