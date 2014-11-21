@@ -168,7 +168,7 @@ class Buffer(object):
             return None
         return self.text[p]
 
-    def peek(self, n):
+    def peek(self, n=1):
         return self.at(self._pos + n)
 
     def next(self):
