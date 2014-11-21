@@ -219,17 +219,20 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
+                    while n >= len(self._comment_index):
+                        self._comment_index.append([])
                     self._comment_index[n].append(comment)
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
             while True:
-                if self.comment_recovery:
-                    n = self.line
                 comment = self.matchre(self.eol_comments_re)
                 if not comment:
                     break
                 if self.comment_recovery:
+                    n = self.line
+                    while n >= len(self._comment_index):
+                        self._comment_index.append([])
                     self._comment_index[n].append(comment)
 
     def next_token(self):
