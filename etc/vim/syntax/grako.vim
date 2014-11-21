@@ -27,7 +27,7 @@ syn region ebnfParams start=/(/ end=')' skipwhite skipempty nextgroup=ebnfSepara
 syn match ebnfSeparator /[=]/ contained nextgroup=ebnfProduction skipwhite skipempty
 syn region ebnfProduction start=/\zs[^\.;]/ end=/[\.;]/me=e-1 contained contains=ebnfSpecial,ebnfDelimiter,ebnfTerminal,ebnfSpecialSequence,ebnfPattern,ebnfComment,ebnfName,ebnfRuleInclude nextgroup=ebnfEndProduction skipwhite skipempty
 syn match ebnfDelimiter #[\-\*+]\|>>\|[&~,(|)\]}\[{!]\|\(\*)\)\|\((\*\)\|\(:)\)\|\((:\)# contained
-syn match ebnfSpecial /[~+]/ contained
+syn match ebnfSpecial /[~+*]/ contained
 syn region ebnfPattern matchgroup=Delimiter start=/\// end=/\// contained
 syn region ebnfSpecialSequence matchgroup=Delimiter start=/?/ end=/?/ contained
 syn match ebnfEndProduction /[\.;]/ contained
