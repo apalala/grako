@@ -690,6 +690,11 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
+3.4.3
+-----
+
+* Minor improvements to ``buffering.Buffer``.
+
 3.4.2
 -----
 
