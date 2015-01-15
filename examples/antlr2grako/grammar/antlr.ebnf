@@ -10,6 +10,8 @@ grammar
     =
     [('lexer'|'parser')] 'grammar'  name:name ';'
     [options]
+    [header]
+    [members]
     [imports]
     [tokens]
     {scope}
@@ -31,6 +33,16 @@ option
 imports
     =
     'import'  name {',' name} ';'
+    ;
+
+header
+    =
+    '@header' block
+    ;
+
+members
+    =
+    '@members' block
     ;
 
 tokens
@@ -67,7 +79,7 @@ action
 
 block
     =
-    '{' {(block|?/[^}]*/?)} '}'
+    '{' {block|/[^{}]*/} '}'
     ;
 
 rule
