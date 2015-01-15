@@ -14,6 +14,11 @@ antlr_test:
 flake8:
 	flake8 --exclude .tox,docs,tmp,.ropeproject --max-line-length 200
 
+
+publish:
+	python setup.py sdist
+	python setup.py sdist bdist_wheel --universal
+
 docs: tmp/grako_docs.zip
 
 tmp/grako_docs.zip: tmp/index.html
