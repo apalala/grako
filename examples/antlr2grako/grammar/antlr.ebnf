@@ -178,17 +178,32 @@ syntactic_predicate
 
 optional
     =
-    @:(closure|positive_closure|atom) '?' ~
+    (
+        '(' @:alternatives ')'
+    |
+        @:(closure|positive_closure|atom)
+    )
+    '?' ~
     ;
 
 closure
     =
-    @:atom '*' ~
+    (
+        '(' @:alternatives ')'
+    |
+        @:atom
+    )
+    '*' ~
     ;
 
 positive_closure
     =
-    @:atom '+' ~
+    (
+        '(' @:alternatives ')'
+    |
+        @:atom
+    )
+    '+' ~
     ;
 
 atom
