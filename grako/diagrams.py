@@ -15,6 +15,12 @@ except:
 __all__ = ['draw']
 
 
+def draw(filename, grammar):
+    traverser = GraphvizWalker()
+    traverser.walk(grammar)
+    traverser.draw(filename)
+
+
 class GraphvizWalker(NodeWalker):
     def __init__(self):
         super(GraphvizWalker, self).__init__()
@@ -267,9 +273,3 @@ class GraphvizWalker(NodeWalker):
         # n = self.node('$')
         # return (n, n)
         return None
-
-
-def draw(filename, grammar):
-    traverser = GraphvizWalker()
-    traverser.walk(grammar)
-    traverser.draw(filename)
