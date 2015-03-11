@@ -43,8 +43,3 @@ class TestCodegen(unittest.TestCase):
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestCodegen)
-
-
-def load_tests(loader, tests, pattern):
-    tests = loader.loadTestsFromTestCase(TestCodegen)
-    return tests
