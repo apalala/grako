@@ -561,12 +561,13 @@ class RuleInclude(_Decorator):
 
 
 class Rule(_Decorator):
-    def __init__(self, ast, name, exp, params, kwparams):
+    def __init__(self, ast, name, exp, params, kwparams, decorators=None):
         assert kwparams is None or isinstance(kwparams, Mapping), kwparams
         super(Rule, self).__init__(ast)
         self.name = name
         self.params = params
         self.kwparams = kwparams
+        self.decorators = decorators or []
         self._adopt_children([params, kwparams])
 
         self.base = None
@@ -640,13 +641,14 @@ class Rule(_Decorator):
 
 
 class BasedRule(Rule):
-    def __init__(self, ast, name, exp, base, params, kwparams):
+    def __init__(self, ast, name, exp, base, params, kwparams, decorators=None):
         super(BasedRule, self).__init__(
             ast,
             name,
             exp,
             params or base.params,
-            kwparams or base.kwparams
+            kwparams or base.kwparams,
+            decorators=decorators
         )
         self.base = base
         ast = AST(sequence=[self.base.exp, self.exp])

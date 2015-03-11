@@ -686,6 +686,19 @@ class GrammarTests(unittest.TestCase):
         model = genmodel("test", grammar)
         self.assertEquals(trim(grammar), ustr(model))
 
+    def test_48_rule_override(self):
+        grammar = '''
+            start = ab $;
+
+            ab = 'xyz' ;
+
+            @override
+            ab = @:'a' {@:'b'} ;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("abb", nameguard=False)
+        self.assertEquals(['a', 'b', 'b'], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

@@ -23,7 +23,8 @@ paramdef
 
 rule(Rule)
     =
-    name:new_name
+    decorators:{decorator}
+    name:name
     ~
     [>paramdef]
     ['<' ~ base:known_name]
@@ -32,6 +33,12 @@ rule(Rule)
     exp:expre
     ';'
     ~
+    ;
+
+
+decorator
+    =
+    '@' ~ @:('override')
     ;
 
 
@@ -214,12 +221,6 @@ cut(Cut)
 cut_deprecated(Cut)
     =
     '>>' ~
-    ;
-
-
-new_name
-    =
-    name ~
     ;
 
 

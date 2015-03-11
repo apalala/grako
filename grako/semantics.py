@@ -77,31 +77,35 @@ class GrakoSemantics(ModelBuilderSemantics):
             return ast[0]
         return grammars.Choice(ast)
 
-    def new_name(self, ast):
-        if ast in self.rules:
-            raise FailedSemantics('rule "%s" already defined' % str(ast))
-        return ast
+    def new_name(self, name):
+        if name in self.rules:
+            raise FailedSemantics('rule "%s" already defined' % str(name))
+        return name
 
-    def known_name(self, ast):
-        if ast not in self.rules:
-            raise FailedSemantics('rule "%s" not yet defined' % str(ast))
-        return ast
+    def known_name(self, name):
+        if name not in self.rules:
+            raise FailedSemantics('rule "%s" not yet defined' % str(name))
+        return name
 
     def rule(self, ast, *args):
+        decorators = ast.decorators
         name = ast.name
         exp = ast.exp
         base = ast.base
         params = ast.params
         kwparams = OrderedDict(ast.kwparams) if ast.kwparams else None
 
-        self.new_name(name)
+        if 'override' not in decorators and name in self.rules:
+            self.new_name(name)
+        elif 'override' in decorators:
+            self.known_name(name)
 
         if not base:
-            rule = grammars.Rule(ast, name, exp, params, kwparams)
+            rule = grammars.Rule(ast, name, exp, params, kwparams, decorators=decorators)
         else:
             self.known_name(base)
             base_rule = self.rules[base]
-            rule = grammars.BasedRule(ast, name, exp, base_rule, params, kwparams)
+            rule = grammars.BasedRule(ast, name, exp, base_rule, params, kwparams, decorators=decorators)
 
         self.rules[name] = rule
         return rule

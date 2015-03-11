@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 8, 12, 2, 36, 41, 1)
+__version__ = (2015, 3, 11, 21, 57, 38, 2)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -84,7 +84,12 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Rule')
     def _rule_(self):
-        self._new_name_()
+
+        def block1():
+            self._decorator_()
+        self._closure(block1)
+        self.ast['decorators'] = self.last_node
+        self._name_()
         self.ast['name'] = self.last_node
         self._cut()
         with self._optional():
@@ -128,9 +133,17 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
         self.ast._define(
-            ['name', 'params', 'kwparams', 'base', 'exp'],
+            ['decorators', 'name', 'params', 'kwparams', 'base', 'exp'],
             []
         )
+
+    @graken()
+    def _decorator_(self):
+        self._token('@')
+        self._cut()
+        with self._group():
+            self._token('override')
+        self.ast['@'] = self.last_node
 
     @graken()
     def _params_(self):
@@ -432,11 +445,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
     @graken()
-    def _new_name_(self):
-        self._name_()
-        self._cut()
-
-    @graken()
     def _known_name_(self):
         self._name_()
         self._cut()
@@ -539,6 +547,9 @@ class GrakoBootstrapSemantics(object):
     def rule(self, ast):
         return ast
 
+    def decorator(self, ast):
+        return ast
+
     def params(self, ast):
         return ast
 
@@ -626,9 +637,6 @@ class GrakoBootstrapSemantics(object):
     def cut_deprecated(self, ast):
         return ast
 
-    def new_name(self, ast):
-        return ast
-
     def known_name(self, ast):
         return ast
 
@@ -663,7 +671,7 @@ class GrakoBootstrapSemantics(object):
         return ast
 
 
-def main(filename, startrule, trace=False, whitespace=None):
+def main(filename, startrule, trace=False, whitespace=None, nameguard=None):
     import json
     with open(filename) as f:
         text = f.read()
@@ -673,7 +681,8 @@ def main(filename, startrule, trace=False, whitespace=None):
         startrule,
         filename=filename,
         trace=trace,
-        whitespace=whitespace)
+        whitespace=whitespace,
+        nameguard=nameguard)
     print('AST:')
     print(ast)
     print()
@@ -697,6 +706,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Simple parser for GrakoBootstrap.")
     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                         help="list all rules and exit")
+    parser.add_argument('-n', '--no-nameguard', action='store_true',
+                        dest='no_nameguard',
+                        help="disable the 'nameguard' feature")
     parser.add_argument('-t', '--trace', action='store_true',
                         help="output trace information")
     parser.add_argument('-w', '--whitespace', type=str, default=string.whitespace,
@@ -710,5 +722,6 @@ if __name__ == '__main__':
         args.file,
         args.startrule,
         trace=args.trace,
-        whitespace=args.whitespace
+        whitespace=args.whitespace,
+        nameguard=not args.no_nameguard
     )
