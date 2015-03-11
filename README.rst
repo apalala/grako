@@ -713,6 +713,9 @@ Changes
 
 * 46_ Left recursion support can be turned off using the ``left_recursion=`` parameter to parser constructors.
 
+* 45_ The ``grako`` tool now produces basic statistics about the processed grammar.
+
+.. _45: https://bitbucket.org/apalala/grako/issue/45
 .. _46: https://bitbucket.org/apalala/grako/issue/46
 .. _48: https://bitbucket.org/apalala/grako/issue/48
 

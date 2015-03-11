@@ -173,6 +173,9 @@ class Model(Node):
             for c in comments
         )
 
+    def nodecount(self):
+        return 1
+
 
 class Void(Model):
     def __str__(self):
@@ -228,6 +231,9 @@ class _Decorator(Model):
 
     def _follow(self, k, FL, A):
         return self.exp._follow(k, FL, A)
+
+    def nodecount(self):
+        return 1 + self.exp.nodecount()
 
     def __str__(self):
         return ustr(self.exp)
@@ -335,6 +341,9 @@ class Sequence(Model):
             fs = dot(x.firstset, fs, k)
         return A
 
+    def nodecount(self):
+        return 1 + sum(s.nodecount() for s in self.sequence)
+
     def __str__(self):
         comments = self.comments_str()
         seq = [ustr(s) for s in self.sequence]
@@ -378,6 +387,9 @@ class Choice(Model):
         for o in self.options:
             o._follow(k, FL, A)
         return A
+
+    def nodecount(self):
+        return 1 + sum(o.nodecount() for o in self.options)
 
     def __str__(self):
         options = [ustr(o) for o in self.options]
@@ -727,6 +739,9 @@ class Grammar(Model):
             whitespace=whitespace,
             **kwargs
         )
+
+    def nodecount(self):
+        return 1 + sum(r.nodecount() for r in self.rules)
 
     def __str__(self):
         return (

@@ -154,6 +154,11 @@ def main(codegen=pythoncg, outer_version=''):
                 f.write(result)
         else:
             print(result)
+
+        print('-' * 72, file=sys.stderr)
+        print('{:12,d}  lines in grammar'.format(len(grammar.split())), file=sys.stderr)
+        print('{:12,d}  rules in grammar'.format(len(model.rules)), file=sys.stderr)
+        print('{:12,d}  nodes in AST'.format(model.nodecount()), file=sys.stderr)
     except GrakoException as e:
         _error(e)
         sys.exit(1)
