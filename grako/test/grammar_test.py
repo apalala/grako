@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import unittest
 
-from grako.exceptions import FailedSemantics
+from grako.exceptions import FailedSemantics, FailedLeftRecursion
 from grako.grammars import ModelContext
 from grako.parser import GrakoGrammarGenerator
 from grako.tool import genmodel
@@ -417,6 +417,33 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals(['this', '.', 'x', '.', 'm', '()'], ast)
         ast = model.parse("x[i][j].y")
         self.assertEquals(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
+
+    def test_no_left_recursion(self):
+        grammar = '''
+            start
+                =
+                expre $
+                ;
+
+            expre
+                =
+                expre '+' number
+                |
+                expre '*' number
+                |
+                number
+                ;
+
+            number
+                =
+                ?/[0-9]+/?
+                ;
+        '''
+        try:
+            genmodel("test", grammar, left_recursion=False)
+            self.fail('expected left recursion failure')
+        except FailedLeftRecursion:
+            pass
 
     def test_nested_left_recursion(self):
         grammar_a = '''

@@ -70,8 +70,8 @@ argparser.add_argument('-w', '--whitespace',
                        )
 
 
-def genmodel(name, grammar, trace=False, filename=None):
-    parser = GrakoGrammarGenerator(name, trace=trace)
+def genmodel(name, grammar, trace=False, filename=None, **kwargs):
+    parser = GrakoGrammarGenerator(name, trace=trace, **kwargs)
     return parser.parse(grammar, filename=filename)
 
 

@@ -66,6 +66,7 @@ class ParseContext(object):
                  ignorecase=False,
                  nameguard=None,
                  memoize_lookaheads=True,
+                 left_recursion=True,
                  trace_length=72,
                  trace_separator=':',
                  trace_filename=False,
@@ -87,6 +88,7 @@ class ParseContext(object):
         self.ignorecase = ignorecase
         self.nameguard = nameguard
         self.memoize_lookaheads = memoize_lookaheads
+        self.left_recursion = left_recursion
 
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
@@ -113,6 +115,7 @@ class ParseContext(object):
                ignorecase=None,
                nameguard=None,
                memoize_lookaheads=None,
+               left_recursion=None,
                **kwargs):
         if ignorecase is None:
             ignorecase = self.ignorecase
@@ -120,6 +123,9 @@ class ParseContext(object):
             nameguard = self.nameguard
         if memoize_lookaheads is not None:
             self.memoize_lookaheads = memoize_lookaheads
+        if left_recursion is not None:
+            self.left_recursion = left_recursion
+
         if trace is not None:
             self.trace = trace
         if semantics is not None:
@@ -412,7 +418,8 @@ class ParseContext(object):
 
         key = (pos, rule, self._state)
         if key in cache:
-            memo = self._left_recursion_check(name, key, cache[key])
+            memo = cache[key]
+            memo = self._left_recursion_check(name, key, memo)
             if isinstance(memo, Exception):
                 raise memo
             return memo
@@ -442,6 +449,7 @@ class ParseContext(object):
 
             result = self._left_recurse(rule, name, pos, key, result, params, kwparams)
 
+
             if self._memoization() and not self._in_recursive_loop():
                 cache[key] = result
             return result
@@ -453,6 +461,14 @@ class ParseContext(object):
             self._pop_ast()
 
     def _set_left_recursion_guard(self, name, key):
+        exception = FailedLeftRecursion(
+            self._buffer,
+            list(reversed(self._rule_stack[:])),
+            name
+        )
+        if not self.left_recursion and name in self._rule_stack:
+            raise exception
+
         # Alessandro Warth et al say that we can deal with
         # direct and indirect left-recursion by seeding the
         # memoization cache with a parse failure.
@@ -460,11 +476,7 @@ class ParseContext(object):
         #   http://www.vpri.org/pdf/tr2007002_packrat.pdf
         #
         if self._memoization():
-            self._memoization_cache[key] = FailedLeftRecursion(
-                self._buffer,
-                list(reversed(self._rule_stack[:])),
-                name
-            )
+            self._memoization_cache[key] = exception
 
     def _left_recursion_check(self, name, key, memo):
         if isinstance(memo, FailedLeftRecursion):
