@@ -706,8 +706,8 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.5.1-rc.1
-----------
+3.5.1
+-----
 
 * 48_ Rules can now be overriden/redefined using the ``@override`` decorator.
 
