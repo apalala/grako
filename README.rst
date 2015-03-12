@@ -737,10 +737,6 @@ Changes
 
 * Minor improvements to ``buffering.Buffer``.
 
-
-3.4.2
------
-
 * *BUG* 42_ ``setup.py`` might give errors under some locales because of the non-ASCII characters in  ``README.rst``.
 
 * Added a ``--no-nameguard`` command-line option to generated parsers.
@@ -748,9 +744,6 @@ Changes
 * Allow *Buffer* descendants to customize how text is split into lines (starkat_).
 
 .. _42: https://bitbucket.org/apalala/grako/issue/42
-
-3.4.1
------
 
 * Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching. Character sets provided as ``str``, ``list``, or ``set`` are converted to the corresponding regular expression (starkat_).
 
