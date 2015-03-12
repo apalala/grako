@@ -348,6 +348,9 @@ class Grammar(Base):
         else:
             nameguard = urepr(self.node.nameguard)
 
+        comments_re = urepr(self.node.directives.get('comments'))
+        eol_comments_re = urepr(self.node.directives.get('eol_comments'))
+
         rules = '\n'.join([
             self.get_renderer(rule).render() for rule in self.node.rules
         ])
@@ -358,7 +361,9 @@ class Grammar(Base):
                       abstract_rules=abstract_rules,
                       version=version,
                       whitespace=whitespace,
-                      nameguard=nameguard
+                      nameguard=nameguard,
+                      comments_re=comments_re,
+                      eol_comments_re=eol_comments_re
                       )
 
     abstract_rule_template = '''
@@ -398,6 +403,8 @@ class Grammar(Base):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,
                             nameguard=nameguard,
+                            comments_re={comments_re},
+                            eol_comments_re={eol_comments_re},
                             **kwargs
                         )
 

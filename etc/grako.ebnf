@@ -1,7 +1,18 @@
 (* The language for Grako grammars *)
+
+@@comments :: /\(\*((?:.|\n)*?)\*\)/
+@@eol_comments :: /#([^\n]*?)$/
+
 grammar(Grammar)
     =
+    directives:{directive}
     rules:{rule}+ $
+    ;
+
+
+directive
+    =
+    '@@' ~ name:('comments'|'eol_comments') '::' value:regex
     ;
 
 
@@ -280,6 +291,11 @@ word
 
 
 pattern(Pattern)
+    =
+    regex
+    ;
+
+regex
     =
       '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
     | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~

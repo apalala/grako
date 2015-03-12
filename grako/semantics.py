@@ -44,9 +44,9 @@ class GrakoSemantics(ModelBuilderSemantics):
         pattern = ast
         try:
             re.compile(pattern, RE_FLAGS)
-        except re.error as e:
+        except (TypeError, re.error) as e:
             raise FailedSemantics('regexp error: ' + str(e))
-        return grammars.Pattern(ast)
+        return grammars.Pattern(pattern)
 
     def hext(self, ast):
         return int(ast, 16)
@@ -87,6 +87,9 @@ class GrakoSemantics(ModelBuilderSemantics):
             raise FailedSemantics('rule "%s" not yet defined' % str(name))
         return name
 
+    def directive(self, ast):
+        return ast
+
     def rule(self, ast, *args):
         decorators = ast.decorators
         name = ast.name
@@ -118,7 +121,9 @@ class GrakoSemantics(ModelBuilderSemantics):
         return grammars.RuleInclude(rule)
 
     def grammar(self, ast, *args):
+        directives = {d.name: d.value for d in ast.directives}
         return grammars.Grammar(
             self.grammar_name,
-            list(self.rules.values())
+            list(self.rules.values()),
+            directives=directives
         )

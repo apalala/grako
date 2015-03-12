@@ -452,13 +452,19 @@ Parsers will skip over comments specified as a regular expression using the ``co
 
 For more complex comment handling, you can override the ``Buffer.eat_comments()`` method.
 
-Fro flexibility, it is possible to specify a pattern for end-of-line comments separately::
+For flexibility, it is possible to specify a pattern for end-of-line comments separately::
 
     parser = MyParser(
         text,
         comments_re="\(\*.*?\*\)",
         eol_comments_re="#.*?$"
     )
+
+Both patterns may also be specified within a grammar using the ``@@comments`` and
+``@@eol_comments`` directives::
+
+        @@comments :: /\(\*.*?\*\)/
+        @@eol_comments_re :: /#.*?$/
 
 
 Semantic Actions
@@ -706,17 +712,20 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.5.1
------
-
-* 48_ Rules can now be overriden/redefined using the ``@override`` decorator.
-
-* 46_ Left recursion support can be turned off using the ``left_recursion=`` parameter to parser constructors.
+3.5.1-rc.1
+----------
 
 * 45_ The ``grako`` tool now produces basic statistics about the processed grammar.
 
+* 46_ Left recursion support can be turned off using the ``left_recursion=`` parameter to parser constructors.
+
+* 47_ New ``@@comments`` and ``@@eol_comments`` can be used within a grammar to specify the respective regular expressions.
+
+* 48_ Rules can now be overriden/redefined using the ``@override`` decorator.
+
 .. _45: https://bitbucket.org/apalala/grako/issue/45
 .. _46: https://bitbucket.org/apalala/grako/issue/46
+.. _47: https://bitbucket.org/apalala/grako/issue/47
 .. _48: https://bitbucket.org/apalala/grako/issue/48
 
 3.4.3

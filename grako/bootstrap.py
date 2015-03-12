@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2015, 3, 11, 21, 57, 38, 2)
+__version__ = (2015, 3, 12, 0, 5, 44, 3)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -29,6 +29,8 @@ class GrakoBootstrapParser(Parser):
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,
+            comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+            eol_comments_re='#([^\\n]*?)$',
             **kwargs
         )
 
@@ -36,14 +38,40 @@ class GrakoBootstrapParser(Parser):
     def _grammar_(self):
 
         def block1():
+            self._directive_()
+        self._closure(block1)
+        self.ast['directives'] = self.last_node
+
+        def block3():
             self._rule_()
-        self._positive_closure(block1)
+        self._positive_closure(block3)
 
         self.ast['rules'] = self.last_node
         self._check_eof()
 
         self.ast._define(
-            ['rules'],
+            ['directives', 'rules'],
+            []
+        )
+
+    @graken()
+    def _directive_(self):
+        self._token('@@')
+        self._cut()
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('comments')
+                with self._option():
+                    self._token('eol_comments')
+                self._error('expecting one of: comments eol_comments')
+        self.ast['name'] = self.last_node
+        self._token('::')
+        self._regex_()
+        self.ast['value'] = self.last_node
+
+        self.ast._define(
+            ['name', 'value'],
             []
         )
 
@@ -514,6 +542,10 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Pattern')
     def _pattern_(self):
+        self._regex_()
+
+    @graken()
+    def _regex_(self):
         with self._choice():
             with self._option():
                 self._token('?/')
@@ -539,6 +571,9 @@ class GrakoBootstrapParser(Parser):
 
 class GrakoBootstrapSemantics(object):
     def grammar(self, ast):
+        return ast
+
+    def directive(self, ast):
         return ast
 
     def paramdef(self, ast):
@@ -665,6 +700,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def pattern(self, ast):
+        return ast
+
+    def regex(self, ast):
         return ast
 
     def eof(self, ast):

@@ -43,14 +43,20 @@ def pythonize_name(name):
 
 
 class GrakoBuffer(Buffer):
-    def __init__(self, text, filename=None, **kwargs):
+    def __init__(
+            self,
+            text,
+            filename=None,
+            comments_re=None,
+            eol_comments_re=None,
+            **kwargs):
         super(GrakoBuffer, self).__init__(
             text,
             filename=filename,
-            comments_re=COMMENTS_RE,
-            eol_comments_re=EOL_COMMENTS_RE,
             memoize_lookaheads=False,
             comment_recovery=True,
+            comments_re=comments_re or COMMENTS_RE,
+            eol_comments_re=eol_comments_re or EOL_COMMENTS_RE,
             **kwargs
         )
 
@@ -77,7 +83,7 @@ class GrakoBuffer(Buffer):
             filename = arg.strip('\'"')
             return self.include_file(source, filename, lines, index, i, i)
         else:
-            raise ParseError('Unknown pragma: %s' % name)
+            return i + 1 # will be treated as a directive by the parser
 
 
 class GrakoContext(ParseContext):
@@ -675,13 +681,14 @@ class BasedRule(Rule):
 
 
 class Grammar(Model):
-    def __init__(self, name, rules, whitespace=None, nameguard=None):
+    def __init__(self, name, rules, whitespace=None, nameguard=None, directives=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
+        self.rules = rules
         self.whitespace = whitespace
         self.nameguard = nameguard
-        self.rules = rules
+        self.directives = directives or {}
         self._adopt_children(rules)
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
@@ -729,7 +736,10 @@ class Grammar(Model):
               context=None,
               whitespace=None,
               **kwargs):
-        ctx = context or ModelContext(self.rules, trace=trace, **kwargs)
+        ctx = context or ModelContext(
+            self.rules,
+            trace=trace,
+            **kwargs)
         return ctx.parse(
             text,
             start or self.rules[0].name,
@@ -737,6 +747,8 @@ class Grammar(Model):
             semantics=semantics,
             trace=trace,
             whitespace=whitespace,
+            comments_re=self.directives.get('comments'),
+            eol_comments_re=self.directives.get('eol_comments'),
             **kwargs
         )
 
