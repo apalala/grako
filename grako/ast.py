@@ -31,6 +31,9 @@ class AST(dict):
     def parseinfo(self, value):
         self._parseinfo = value
 
+    def asjson(self):
+        return asjson(self)
+
     def iterkeys(self):
         return iter(self)
 

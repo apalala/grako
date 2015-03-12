@@ -725,6 +725,8 @@ Changes
 
 * Added backwards compatibility with ``Buffer.whitespace``.
 
+* Added ``AST.asjson()`` to not jave to import ``grako.util.asjson()`` for the same purpose.
+
 .. _45: https://bitbucket.org/apalala/grako/issue/45
 .. _46: https://bitbucket.org/apalala/grako/issue/46
 .. _47: https://bitbucket.org/apalala/grako/issue/47
