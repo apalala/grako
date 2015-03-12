@@ -386,7 +386,7 @@ Rule Overrides
 --------------
 
 A grammar rule may be redefined by using the
-``@@override`` decorator::
+``@override`` decorator::
 
     start = ab $;
 
@@ -713,7 +713,7 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.5.0
+3.5.1
 -----
 
 * 45_ The ``grako`` tool now produces basic statistics about the processed grammar.
