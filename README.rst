@@ -712,8 +712,8 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.5.1-rc.1
-----------
+3.5.0
+-----
 
 * 45_ The ``grako`` tool now produces basic statistics about the processed grammar.
 
