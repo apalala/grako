@@ -385,7 +385,7 @@ Parameters from the *base rule* are copied to the new rule if the new rule doesn
 Rule Overrides
 --------------
 
-A grammar rule may be redefined by using the ``@override`` decorator::
+A grammar rule may be redefined by using the ``\@override`` decorator::
 
     start = ab $;
 
@@ -460,8 +460,8 @@ For flexibility, it is possible to specify a pattern for end-of-line comments se
         eol_comments_re="#.*?$"
     )
 
-Both patterns may also be specified within a grammar using the ``@@comments`` and
-``@@eol_comments`` directives::
+Both patterns may also be specified within a grammar using the ``\@@comments`` and
+``\@@eol_comments`` directives::
 
         @@comments :: /\(\*.*?\*\)/
         @@eol_comments_re :: /#.*?$/
