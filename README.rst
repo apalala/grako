@@ -461,8 +461,8 @@ For flexibility, it is possible to specify a pattern for end-of-line comments se
         eol_comments_re="#.*?$"
     )
 
-Both patterns may also be specified within a grammar using the ``\@@comments`` and
-``\@@eol_comments`` directives::
+Both patterns may also be specified within a grammar using the ``@@comments`` and
+``@@eol_comments`` directives::
 
         @@comments :: /\(\*.*?\*\)/
         @@eol_comments_re :: /#.*?$/
