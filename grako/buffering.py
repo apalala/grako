@@ -49,7 +49,7 @@ class Buffer(object):
         self.text = ustr(text)
         self.filename = filename or ''
 
-        self.whitespace_re = self._build_whitespace_re(whitespace)
+        self.whitespace = whitespace
 
         self.tabwidth = tabwidth
         self.comments_re = comments_re
@@ -72,6 +72,15 @@ class Buffer(object):
         self._comment_index = [[] for _ in self._line_index]
         self._len = len(self.text)
         self._re_cache = {}
+
+    @property
+    def whitespace(self):
+        return self._whitespace
+
+    @whitespace.setter
+    def whitespace(self, value):
+        self._whitespace = value
+        self.whitespace_re = self._build_whitespace_re(value)
 
     @staticmethod
     def _build_whitespace_re(whitespace):

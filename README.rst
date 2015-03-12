@@ -723,6 +723,8 @@ Changes
 
 * 48_ Rules can now be overriden/redefined using the ``@override`` decorator.
 
+* Added backwards compatibility with ``Buffer.whitespace``.
+
 .. _45: https://bitbucket.org/apalala/grako/issue/45
 .. _46: https://bitbucket.org/apalala/grako/issue/46
 .. _47: https://bitbucket.org/apalala/grako/issue/47
