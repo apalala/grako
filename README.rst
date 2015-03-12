@@ -385,7 +385,8 @@ Parameters from the *base rule* are copied to the new rule if the new rule doesn
 Rule Overrides
 --------------
 
-A grammar rule may be redefined by using the ``\\@override`` decorator::
+A grammar rule may be redefined by using the
+``@override`` decorator::
 
     start = ab $;
 
