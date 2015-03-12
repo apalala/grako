@@ -386,7 +386,7 @@ Rule Overrides
 --------------
 
 A grammar rule may be redefined by using the
-``@override`` decorator::
+``@@override`` decorator::
 
     start = ab $;
 
