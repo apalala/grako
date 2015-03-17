@@ -85,11 +85,12 @@ class Node(object):
         return [], []
 
     def children(self):
-        childl = []
+        childset = set()
 
         def cn(child):
             if isinstance(child, Node):
-                childl.append(child)
+                if child.parent == self and child not in childset:
+                    childset.add(child)
             elif isinstance(child, dict):
                 for c in child.values():
                     cn(c)
@@ -99,18 +100,24 @@ class Node(object):
 
         for c in vars(self).values():
             cn(c)
-        return childl
+        return list(childset)
 
     def _adopt_children(self, ast, parent=None):
-        if isinstance(ast, Node):
-            if isinstance(parent, Node):
-                ast._parent = parent
-        elif isinstance(ast, dict):
-            for c in ast.values():
-                self._adopt_children(c, parent=ast)
-        elif isinstance(ast, list):
-            for c in ast:
-                self._adopt_children(c, parent=ast)
+        childset = set()
+
+        def adopt(node):
+            if isinstance(node, Node) and node not in childset:
+                if isinstance(parent, Node):
+                    node._parent = parent
+                    childset.add(node)
+            elif isinstance(node, dict):
+                for c in node.values():
+                    self._adopt_children(c, parent=node)
+            elif isinstance(node, list):
+                for c in node:
+                    self._adopt_children(c, parent=node)
+
+            adopt(ast)
 
     def _pubdict(self):
         return {
