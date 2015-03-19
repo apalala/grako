@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from grako.model import Node
+from grako.codegen import CodegenError
 from grako.rendering import render, Renderer, RenderingFormatter
 
 
@@ -77,15 +78,35 @@ class CodeGenerator(object):
     ``ModelRenderer`` class with the same name as each model's node and
     uses it to render the node.
     """
-    def __init__(self):
+    def __init__(self, modules=None):
         self.formatter = DelegatingRenderingFormatter(self)
+        self._renderers = []
+        if modules is not None:
+            self._renderers = self._find_module_renderers(modules)
+
+    def _find_module_renderers(self, modules):
+        result = dict()
+        for module in modules:
+            result.update(
+                (name, dtype)
+                for name, dtype in vars(module).items()
+                if issubclass(dtype, ModelRenderer)
+            )
+        return result
 
     def _find_renderer_class(self, item):
         """
         This method is used to find a ``ModelRenderer`` for the given
-        item. It must be overriden in concrete classes.
+        item. It can be overriden in descendat classes.
         """
-        pass
+        if not isinstance(item, Node):
+            return None
+
+        name = item.__class__.__name__
+        try:
+            return self._renderers[name]
+        except KeyError:
+            raise CodegenError('Renderer for %s not found' % name)
 
     def get_renderer(self, item):
         rendererClass = self._find_renderer_class(item)
