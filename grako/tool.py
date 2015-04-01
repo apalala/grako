@@ -137,7 +137,7 @@ def main(codegen=pythoncg, outer_version=''):
     try:
         model = genmodel(name, grammar, trace=trace, filename=filename)
         model.whitespace = whitespace
-        model.nameguard = nameguard
+        model.nameguard = False if not nameguard else None  # None allows grammar specified or the default of True
 
         if binary:
             result = pickle.dumps(model, protocol=2)

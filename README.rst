@@ -263,6 +263,9 @@ The expressions, in reverse order of operator precedence, can be:
         Match the token *text* within the quotation marks.
 
         Note that if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
+        Alternatively, the ``@@nameguard`` directive may be specified in the grammar::
+
+            @@nameguard :: False
 
     ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
@@ -443,6 +446,10 @@ Case Sensitivity
 If the source language is case insensitive, you can tell your parser by using the ``ignorecase`` parameter::
 
     parser = MyParser(text, ignorecase=True)
+
+You may also specify case insensitivity within the grammar using the ``@@ignorecase`` directive::
+
+    @@ignorecase :: True
 
 The change will affect both token and pattern matching.
 
@@ -715,6 +722,13 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+
+3.6.0-rc.0
+----------
+
+* Added ``@@whitespace`` directive to specify whitespace regular expression within the grammar (starkat_).
+
+* Added ``@@nameguard`` and ``@@ignorecase`` directives to toggle the respective boolean parameters within the grammar (starkat_).
 
 3.5.1
 -----
