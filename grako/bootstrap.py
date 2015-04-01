@@ -13,9 +13,10 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 from grako.parsing import graken, Parser
+from grako.util import re, RE_FLAGS
 
 
-__version__ = (2015, 3, 12, 0, 5, 44, 3)
+__version__ = (2015, 4, 1, 3, 2, 56, 2)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -64,7 +65,9 @@ class GrakoBootstrapParser(Parser):
                     self._token('comments')
                 with self._option():
                     self._token('eol_comments')
-                self._error('expecting one of: comments eol_comments')
+                with self._option():
+                    self._token('whitespace')
+                self._error('expecting one of: comments eol_comments whitespace')
         self.ast['name'] = self.last_node
         self._token('::')
         self._regex_()

@@ -426,12 +426,15 @@ You can also provide a regular expression directly instead of a string. The foll
 
     parser = MyParser(text, whitespace=re.compile(r'[\t ]+'))
 
-Note that the regular expression must be pre-compiled to let **Grako** distinghish it from plain string.
+Note that the regular expression must be pre-compiled to let **Grako** distinguish it from plain string.
 
 If you do not define any whitespace characters, then you will have to handle whitespace in your grammar rules (as it's often done in PEG_ parsers)::
 
     parser = MyParser(text, whitespace='')
 
+Whitespace may also be specified within the grammar using the ``@@whitespace`` directive, although any of the above methods will overwrite the grammar directive::
+
+    @@whitespace :: /[\t ]+/
 
 
 Case Sensitivity
@@ -726,7 +729,7 @@ Changes
 
 * Added backwards compatibility with ``Buffer.whitespace``.
 
-* Added ``AST.asjson()`` to not jave to import ``grako.util.asjson()`` for the same purpose.
+* Added ``AST.asjson()`` to not have to import ``grako.util.asjson()`` for the same purpose.
 
 .. _45: https://bitbucket.org/apalala/grako/issue/45
 .. _46: https://bitbucket.org/apalala/grako/issue/46

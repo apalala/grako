@@ -746,7 +746,7 @@ class Grammar(Model):
             filename=filename,
             semantics=semantics,
             trace=trace,
-            whitespace=whitespace,
+            whitespace=whitespace or self.whitespace or self.directives.get('whitespace'),
             comments_re=self.directives.get('comments'),
             eol_comments_re=self.directives.get('eol_comments'),
             **kwargs

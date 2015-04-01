@@ -338,10 +338,12 @@ class Grammar(Base):
         ]
         abstract_rules = indent('\n'.join(abstract_rules))
 
-        if self.node.whitespace is None:
-            whitespace = 'None'
-        else:
+        if self.node.whitespace is not None:
             whitespace = urepr(self.node.whitespace)
+        elif self.node.directives.get('whitespace') is not None:
+            whitespace = 're.compile({0}, RE_FLAGS | re.DOTALL)'.format(urepr(self.node.directives.get('whitespace')))
+        else:
+            whitespace = 'None'
 
         if self.node.nameguard is None:
             nameguard = 'None'
@@ -387,6 +389,7 @@ class Grammar(Base):
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
                 from grako.parsing import graken, Parser
+                from grako.util import re, RE_FLAGS
 
 
                 __version__ = {version}
