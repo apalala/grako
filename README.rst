@@ -723,8 +723,8 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.6.0-rc.0
-----------
+3.6.0
+-----
 
 * Added ``@@whitespace`` directive to specify whitespace regular expression within the grammar (starkat_).
 
