@@ -19,7 +19,7 @@ from copy import copy
 
 from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
 from grako.util import re, RE_FLAGS
-from grako.exceptions import FailedRef, GrammarError, ParseError
+from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.buffering import Buffer
 from grako.contexts import ParseContext
@@ -83,7 +83,7 @@ class GrakoBuffer(Buffer):
             filename = arg.strip('\'"')
             return self.include_file(source, filename, lines, index, i, i)
         else:
-            return i + 1 # will be treated as a directive by the parser
+            return i + 1  # will be treated as a directive by the parser
 
 
 class GrakoContext(ParseContext):
@@ -740,13 +740,17 @@ class Grammar(Model):
             self.rules,
             trace=trace,
             **kwargs)
+        if whitespace is None:
+            whitespace = self.whitespace
+        if whitespace is None:
+            whitespace = self.directives.get('whitespace')
         return ctx.parse(
             text,
             start or self.rules[0].name,
             filename=filename,
             semantics=semantics,
             trace=trace,
-            whitespace=whitespace or self.whitespace or self.directives.get('whitespace'),
+            whitespace=whitespace,
             comments_re=self.directives.get('comments'),
             eol_comments_re=self.directives.get('eol_comments'),
             **kwargs
