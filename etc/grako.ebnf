@@ -12,7 +12,12 @@ grammar(Grammar)
 
 directive
     =
-    '@@' ~ name:('comments'|'eol_comments') '::' value:regex
+    '@@' ~
+    (
+        name:('comments'|'eol_comments'|'whitespace') '::' ~ value:regex
+        |
+        name:('nameguard'|'ignorecase') '::' ~ value:boolean
+    )
     ;
 
 
@@ -299,6 +304,12 @@ regex
     =
       '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
     | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
+    ;
+
+boolean
+    =
+      'True'
+    | 'False'
     ;
 
 

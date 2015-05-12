@@ -13,9 +13,10 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 from grako.parsing import graken, Parser
+from grako.util import re, RE_FLAGS
 
 
-__version__ = (2015, 3, 12, 0, 5, 44, 3)
+__version__ = (2015, 4, 1, 4, 38, 10, 2)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -31,6 +32,7 @@ class GrakoBootstrapParser(Parser):
             nameguard=nameguard,
             comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
             eol_comments_re='#([^\\n]*?)$',
+            ignorecase=None,
             **kwargs
         )
 
@@ -61,14 +63,34 @@ class GrakoBootstrapParser(Parser):
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('comments')
+                    with self._group():
+                        with self._choice():
+                            with self._option():
+                                self._token('comments')
+                            with self._option():
+                                self._token('eol_comments')
+                            with self._option():
+                                self._token('whitespace')
+                            self._error('expecting one of: comments eol_comments whitespace')
+                    self.ast['name'] = self.last_node
+                    self._token('::')
+                    self._cut()
+                    self._regex_()
+                    self.ast['value'] = self.last_node
                 with self._option():
-                    self._token('eol_comments')
-                self._error('expecting one of: comments eol_comments')
-        self.ast['name'] = self.last_node
-        self._token('::')
-        self._regex_()
-        self.ast['value'] = self.last_node
+                    with self._group():
+                        with self._choice():
+                            with self._option():
+                                self._token('nameguard')
+                            with self._option():
+                                self._token('ignorecase')
+                            self._error('expecting one of: ignorecase nameguard')
+                    self.ast['name'] = self.last_node
+                    self._token('::')
+                    self._cut()
+                    self._boolean_()
+                    self.ast['value'] = self.last_node
+                self._error('no available options')
 
         self.ast._define(
             ['name', 'value'],
@@ -563,6 +585,15 @@ class GrakoBootstrapParser(Parser):
                 self._cut()
             self._error('expecting one of: / ?/')
 
+    @graken()
+    def _boolean_(self):
+        with self._choice():
+            with self._option():
+                self._token('True')
+            with self._option():
+                self._token('False')
+            self._error('expecting one of: False True')
+
     @graken('EOF')
     def _eof_(self):
         self._token('$')
@@ -703,6 +734,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def regex(self, ast):
+        return ast
+
+    def boolean(self, ast):
         return ast
 
     def eof(self, ast):

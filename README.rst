@@ -263,6 +263,9 @@ The expressions, in reverse order of operator precedence, can be:
         Match the token *text* within the quotation marks.
 
         Note that if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
+        Alternatively, the ``@@nameguard`` directive may be specified in the grammar::
+
+            @@nameguard :: False
 
     ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
@@ -426,12 +429,15 @@ You can also provide a regular expression directly instead of a string. The foll
 
     parser = MyParser(text, whitespace=re.compile(r'[\t ]+'))
 
-Note that the regular expression must be pre-compiled to let **Grako** distinghish it from plain string.
+Note that the regular expression must be pre-compiled to let **Grako** distinguish it from plain string.
 
 If you do not define any whitespace characters, then you will have to handle whitespace in your grammar rules (as it's often done in PEG_ parsers)::
 
     parser = MyParser(text, whitespace='')
 
+Whitespace may also be specified within the grammar using the ``@@whitespace`` directive, although any of the above methods will overwrite the grammar directive::
+
+    @@whitespace :: /[\t ]+/
 
 
 Case Sensitivity
@@ -440,6 +446,10 @@ Case Sensitivity
 If the source language is case insensitive, you can tell your parser by using the ``ignorecase`` parameter::
 
     parser = MyParser(text, ignorecase=True)
+
+You may also specify case insensitivity within the grammar using the ``@@ignorecase`` directive::
+
+    @@ignorecase :: True
 
 The change will affect both token and pattern matching.
 
@@ -713,6 +723,13 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
+3.6.0-rc.0
+----------
+
+* Added ``@@whitespace`` directive to specify whitespace regular expression within the grammar (starkat_).
+
+* Added ``@@nameguard`` and ``@@ignorecase`` directives to toggle the respective boolean parameters within the grammar (starkat_).
+
 3.5.1
 -----
 
@@ -726,7 +743,7 @@ Changes
 
 * Added backwards compatibility with ``Buffer.whitespace``.
 
-* Added ``AST.asjson()`` to not jave to import ``grako.util.asjson()`` for the same purpose.
+* Added ``AST.asjson()`` to not have to import ``grako.util.asjson()`` for the same purpose.
 
 .. _45: https://bitbucket.org/apalala/grako/issue/45
 .. _46: https://bitbucket.org/apalala/grako/issue/46

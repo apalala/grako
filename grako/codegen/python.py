@@ -338,18 +338,23 @@ class Grammar(Base):
         ]
         abstract_rules = indent('\n'.join(abstract_rules))
 
-        if self.node.whitespace is None:
-            whitespace = 'None'
-        else:
+        if self.node.whitespace is not None:
             whitespace = urepr(self.node.whitespace)
-
-        if self.node.nameguard is None:
-            nameguard = 'None'
+        elif self.node.directives.get('whitespace') is not None:
+            whitespace = 're.compile({0}, RE_FLAGS | re.DOTALL)'.format(urepr(self.node.directives.get('whitespace')))
         else:
+            whitespace = 'None'
+
+        if self.node.nameguard is not None:
             nameguard = urepr(self.node.nameguard)
+        elif self.node.directives.get('nameguard') is not None:
+            nameguard = self.node.directives.get('nameguard')
+        else:
+            nameguard = 'None'
 
         comments_re = urepr(self.node.directives.get('comments'))
         eol_comments_re = urepr(self.node.directives.get('eol_comments'))
+        ignorecase = self.node.directives.get('ignorecase') or 'None'
 
         rules = '\n'.join([
             self.get_renderer(rule).render() for rule in self.node.rules
@@ -363,7 +368,8 @@ class Grammar(Base):
                       whitespace=whitespace,
                       nameguard=nameguard,
                       comments_re=comments_re,
-                      eol_comments_re=eol_comments_re
+                      eol_comments_re=eol_comments_re,
+                      ignorecase=ignorecase
                       )
 
     abstract_rule_template = '''
@@ -387,6 +393,7 @@ class Grammar(Base):
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
                 from grako.parsing import graken, Parser
+                from grako.util import re, RE_FLAGS
 
 
                 __version__ = {version}
@@ -405,6 +412,7 @@ class Grammar(Base):
                             nameguard=nameguard,
                             comments_re={comments_re},
                             eol_comments_re={eol_comments_re},
+                            ignorecase={ignorecase},
                             **kwargs
                         )
 
