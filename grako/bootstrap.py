@@ -16,7 +16,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS
 
 
-__version__ = (2015, 4, 1, 4, 38, 10, 2)
+__version__ = (2015, 5, 12, 15, 33, 56, 1)
 
 __all__ = [
     'GrakoBootstrapParser',
