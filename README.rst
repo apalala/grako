@@ -675,7 +675,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Paul Sargent`_ implemented `Warth et al`_'s algorithm for supporting direct and indirect left recursion in PEG_ parsers.
 
-* `Kathryn Long`_ proposed better support for UNICODE in the treatment of whitespace and regular expressions (patterns) in general.
+* `Kathryn Long`_ proposed better support for UNICODE in the treatment of whitespace and regular expressions (patterns) in general. Her other contributions have made **Grako** more congruent, and more user-friendly.
 
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
@@ -761,13 +761,13 @@ Changes
 
 * Allow *Buffer* descendants to customize how text is split into lines (starkat_).
 
-.. _42: https://bitbucket.org/apalala/grako/issue/42
-
 * Now the ``re.UNICODE`` flag is consistently used in pattern, comment, and whitespace matching. A re_ regular expression is now accepted for whitespace matching. Character sets provided as ``str``, ``list``, or ``set`` are converted to the corresponding regular expression (starkat_).
 
 * If installed, the regex_ module will be used instead of re_ in all pattern matching (starkat_). See the section about *whitespace* above.
 
 * Added a ``--version`` option to the commandline tool. A ``grako.__version__`` variable is now available.
+
+.. _42: https://bitbucket.org/apalala/grako/issue/42
 
 
 3.3.0
