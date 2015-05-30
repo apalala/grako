@@ -50,6 +50,8 @@ setuptools.setup(
         "grako/**/*.py",
         exclude=[
             'grako/__main__.py',
+            'grako/__init__.py',
+            'grako/codegen/__init__.py',
             'grako/test/__main__.py',
             'grako/test/*.py'
         ]
