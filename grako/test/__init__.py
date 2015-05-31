@@ -20,6 +20,7 @@ def main():
         codegen_test.suite(),
         parsing_test.suite(),
         grammar_test.suite(),
+        diagram_test.suite(),
     ])
 
     unittest.TextTestRunner(verbosity=2).run(suite)

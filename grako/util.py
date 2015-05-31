@@ -121,8 +121,8 @@ def simplify_list(x):
 
 def isiter(value):
     return (
-        isinstance(value, collections.Iterable)
-        and not isinstance(value, strtype)
+        isinstance(value, collections.Iterable) and
+        not isinstance(value, strtype)
     )
 
 

@@ -85,11 +85,12 @@ def _error(*args, **kwargs):
 
 
 def main(codegen=pythoncg, outer_version=''):
-    argparser.add_argument('-v', '--version',
-                        help='provide version information and exit',
-                        action='version',
-                        version=outer_version + 'Grako ' + __version__
-                        )
+    argparser.add_argument(
+        '-v', '--version',
+        help='provide version information and exit',
+        action='version',
+        version=outer_version + 'Grako ' + __version__
+    )
     try:
         args = argparser.parse_args()
     except Exception as e:

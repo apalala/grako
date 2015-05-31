@@ -449,7 +449,6 @@ class ParseContext(object):
 
             result = self._left_recurse(rule, name, pos, key, result, params, kwparams)
 
-
             if self._memoization() and not self._in_recursive_loop():
                 cache[key] = result
             return result
@@ -503,8 +502,10 @@ class ParseContext(object):
         # unwound to the highest rule in the recursion
         cache = self._memoization_cache
         last_pos = pos
-        if ([name] == self._recursive_head[-1:]
-        and self._recursive_head[-1:] != self._recursive_eval[-1:]):
+        if (
+            [name] == self._recursive_head[-1:] and
+            self._recursive_head[-1:] != self._recursive_eval[-1:]
+        ):
             # Repeatedly apply the rule until it can't consume any
             # more. We store the last good result each time. Prior
             # to doing so we reset the position and remove any

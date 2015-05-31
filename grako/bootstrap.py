@@ -13,10 +13,9 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 from grako.parsing import graken, Parser
-from grako.util import re, RE_FLAGS
 
 
-__version__ = (2015, 5, 12, 15, 33, 56, 1)
+__version__ = (2015, 5, 31, 15, 40, 3, 6)
 
 __all__ = [
     'GrakoBootstrapParser',

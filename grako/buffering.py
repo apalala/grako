@@ -270,8 +270,8 @@ class Buffer(object):
 
     def scan_space(self, offset=0):
         return (
-            self.whitespace_re
-            and self._scanre(self.whitespace_re, offset=offset) is not None
+            self.whitespace_re and
+            self._scanre(self.whitespace_re, offset=offset) is not None
         )
 
     def is_space(self):
@@ -298,9 +298,9 @@ class Buffer(object):
                 return token
             else:
                 partial_match = (
-                    token[0].isalpha()
-                    and token.isalnum()
-                    and self.is_name_char(self.current())
+                    token[0].isalpha() and
+                    token.isalnum() and
+                    self.is_name_char(self.current())
                 )
                 if not partial_match:
                     return token
