@@ -723,12 +723,21 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.6.0
+3.6.1
 -----
 
 * Added ``@@whitespace`` directive to specify whitespace regular expression within the grammar (starkat_).
 
 * Added ``@@nameguard`` and ``@@ignorecase`` directives to toggle the respective boolean parameters within the grammar (starkat_).
+
+* 52_ Build with Cython failed on Windows.
+
+* Applied Flake8_ suggestions.
+
+* Upgraded development libraries to their latest versions (see ``requirements.txt``).
+
+.. _52: https://bitbucket.org/apalala/grako/issue/45
+
 
 3.5.1
 -----
