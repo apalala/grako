@@ -465,8 +465,6 @@ class ParseContext(object):
             list(reversed(self._rule_stack[:])),
             name
         )
-        if not self.left_recursion and name in self._rule_stack:
-            raise exception
 
         # Alessandro Warth et al say that we can deal with
         # direct and indirect left-recursion by seeding the
@@ -484,6 +482,9 @@ class ParseContext(object):
             # result from a previous pass that we can return, or
             # we make a note of the rule so that we can take
             # action as we unwind the rule stack.
+            if not self.left_recursion:
+                raise memo
+
             if key in self._recursive_results:
                 memo = self._recursive_results[key]
             else:
