@@ -723,6 +723,11 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
+3.6.2-rc.1
+----------
+
+* BUG: Left recursion in the grammar was checked for in the wrong place when disabled.
+
 3.6.1
 -----
 
