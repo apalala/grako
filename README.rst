@@ -723,10 +723,14 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.6.2-rc.1
-----------
+3.6.2
+-----
 
 * BUG: Left recursion in the grammar was checked for in the wrong place when disabled.
+
+* Added basic support for output of an AST_ in YAML_ format.
+
+.. _YAML: https://en.wikipedia.org/wiki/YAML
 
 3.6.1
 -----
