@@ -714,6 +714,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _`Warth et al`: http://www.vpri.org/pdf/tr2007002_packrat.pdf
 .. _`Kathryn Long`: https://bitbucket.org/starkat
 .. _starkat: https://bitbucket.org/starkat
+.. _nehz: https://bitbucket.org/nehz/grako
+.. _jimon: https://bitbucket.org/jimon/
 
 Changes
 =======
@@ -726,9 +728,11 @@ Changes
 3.6.3-rc.1
 ----------
 
+* 56_ Using @@whitespace generated invalid python programs
+
 * The ``@@whitespace`` directive was not working for regular expressions (nehz_).
 
-.. _nehz: https://bitbucket.org/nehz/grako
+.. _56: https://bitbucket.org/apalala/grako/issues/56/
 
 3.6.2
 -----

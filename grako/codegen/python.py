@@ -392,7 +392,9 @@ class Grammar(Base):
 
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
+
                 from grako.parsing import graken, Parser
+                from grako.util import re, RE_FLAGS
 
 
                 __version__ = {version}

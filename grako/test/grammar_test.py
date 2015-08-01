@@ -701,6 +701,17 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("abb", nameguard=False)
         self.assertEquals(['a', 'b', 'b'], ast)
 
+    def test_whitespace_directive(self):
+        grammar = '''
+            @@whitespace :: /[\t ]+/
+
+            test = "test" $;
+        '''
+        model = genmodel("test", grammar)
+        code = codegen(model)
+        print(code)
+        compile(code, 'test.py', 'exec')
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

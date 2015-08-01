@@ -122,4 +122,4 @@ class CodeGenerator(object):
         renderer = self.get_renderer(item)
         if renderer is None:
             return render(item, join=join, **fields)
-        return renderer.render(**fields)
+        return str(renderer.render(**fields))
