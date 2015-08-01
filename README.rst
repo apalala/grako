@@ -475,7 +475,7 @@ Both patterns may also be specified within a grammar using the ``@@comments`` an
 ``@@eol_comments`` directives::
 
         @@comments :: /\(\*.*?\*\)/
-        @@eol_comments_re :: /#.*?$/
+        @@eol_comments :: /#.*?$/
 
 
 Semantic Actions

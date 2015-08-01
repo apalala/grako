@@ -709,7 +709,16 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         code = codegen(model)
-        print(code)
+        compile(code, 'test.py', 'exec')
+
+    def test_eol_comments_re_directive(self):
+        grammar = '''
+            @@eol_comments :: /#.*?$/
+
+            test = "test" $;
+        '''
+        model = genmodel("test", grammar)
+        code = codegen(model)
         compile(code, 'test.py', 'exec')
 
 
