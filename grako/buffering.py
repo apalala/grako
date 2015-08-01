@@ -80,10 +80,10 @@ class Buffer(object):
     @whitespace.setter
     def whitespace(self, value):
         self._whitespace = value
-        self.whitespace_re = self._build_whitespace_re(value)
+        self.whitespace_re = self.build_whitespace_re(value)
 
     @staticmethod
-    def _build_whitespace_re(whitespace):
+    def build_whitespace_re(whitespace):
         if whitespace is None:
             return WHITESPACE_RE
         elif isinstance(whitespace, RETYPE):
