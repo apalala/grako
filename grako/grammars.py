@@ -744,6 +744,8 @@ class Grammar(Model):
             whitespace = self.whitespace
         if whitespace is None:
             whitespace = self.directives.get('whitespace')
+            if whitespace:
+                whitespace = re.compile(whitespace)
         return ctx.parse(
             text,
             start or self.rules[0].name,
