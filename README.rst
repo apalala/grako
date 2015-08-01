@@ -723,6 +723,13 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
+3.6.3-rc.1
+----------
+
+* The ``@@whitespace`` directive was not working for regular expressions (nehz_).
+
+.. _nehz: https://bitbucket.org/nehz/grako
+
 3.6.2
 -----
 
