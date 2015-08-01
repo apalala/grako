@@ -725,8 +725,8 @@ Changes
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.6.3-rc.1
-----------
+3.6.3
+-----
 
 * 56_ Using @@whitespace generated invalid python programs
 
