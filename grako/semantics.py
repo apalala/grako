@@ -90,6 +90,9 @@ class GrakoSemantics(ModelBuilderSemantics):
     def directive(self, ast):
         return ast
 
+    def boolean(self, ast):
+        return eval(ast)
+
     def rule(self, ast, *args):
         decorators = ast.decorators
         name = ast.name

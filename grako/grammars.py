@@ -681,14 +681,43 @@ class BasedRule(Rule):
 
 
 class Grammar(Model):
-    def __init__(self, name, rules, whitespace=None, nameguard=None, directives=None):
+    def __init__(self,
+                 name,
+                 rules,
+                 whitespace=None,
+                 nameguard=None,
+                 left_recursion=None,
+                 comments_re=None,
+                 eol_comments_re=None,
+                 directives=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
         self.rules = rules
+
+        directives = directives or {}
+        self.directives = directives
+
+        if whitespace is None:
+            whitespace = directives.get('whitespace')
         self.whitespace = whitespace
+
+        if nameguard is None:
+            nameguard = directives.get('nameguard')
         self.nameguard = nameguard
-        self.directives = directives or {}
+
+        if left_recursion is None:
+            left_recursion = directives.get('left_recursion')
+        self.left_recursion = left_recursion
+
+        if comments_re is None:
+            comments_re = directives.get('comments')
+        self.comments_re = comments_re
+
+        if eol_comments_re is None:
+            eol_comments_re = directives.get('eol_comments')
+        self.eol_comments_re = eol_comments_re
+
         self._adopt_children(rules)
         if not self._validate({r.name for r in self.rules}):
             raise GrammarError('Unknown rules, no parser generated.')
@@ -735,17 +764,29 @@ class Grammar(Model):
               trace=False,
               context=None,
               whitespace=None,
+              left_recursion=None,
+              comments_re=None,
+              eol_comments_re=None,
               **kwargs):
         ctx = context or ModelContext(
             self.rules,
             trace=trace,
             **kwargs)
+
         if whitespace is None:
             whitespace = self.whitespace
-        if whitespace is None:
-            whitespace = self.directives.get('whitespace')
-            if whitespace:
-                whitespace = re.compile(whitespace)
+        if whitespace:
+            whitespace = re.compile(whitespace)
+
+        if left_recursion is None:
+            left_recursion = self.left_recursion
+
+        if comments_re is None:
+            comments_re = self.comments_re
+
+        if eol_comments_re is None:
+            eol_comments_re = self.eol_comments_re
+
         return ctx.parse(
             text,
             start or self.rules[0].name,
@@ -753,8 +794,9 @@ class Grammar(Model):
             semantics=semantics,
             trace=trace,
             whitespace=whitespace,
-            comments_re=self.directives.get('comments'),
-            eol_comments_re=self.directives.get('eol_comments'),
+            comments_re=comments_re,
+            eol_comments_re=eol_comments_re,
+            left_recursion=left_recursion,
             **kwargs
         )
 

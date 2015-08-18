@@ -721,6 +721,19 @@ class GrammarTests(unittest.TestCase):
         code = codegen(model)
         compile(code, 'test.py', 'exec')
 
+    def test_left_recursion_directive(self):
+        grammar = '''
+            @@left_recursion :: False
+
+            test = "test" $;
+        '''
+        model = genmodel("test", grammar)
+        self.assertFalse(model.directives.get('left_recursion'))
+        self.assertFalse(model.left_recursion)
+
+        code = codegen(model)
+        compile(code, 'test.py', 'exec')
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

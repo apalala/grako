@@ -40,6 +40,12 @@ argparser.add_argument('filename',
                        metavar='GRAMMAR',
                        help='The filename of the Grako grammar'
                        )
+argparser.add_argument('-l', '--no-left-recursion',
+                       help='turns left-recusion support off',
+                       dest="left_recursion",
+                       action='store_false',
+                       default=True
+                       )
 argparser.add_argument('-m', '--name',
                        nargs=1,
                        metavar='NAME',
@@ -106,6 +112,7 @@ def main(codegen=pythoncg, outer_version=''):
     pretty = args.pretty
     trace = args.trace
     whitespace = args.whitespace
+    left_recursion = args.left_recursion
 
     if whitespace:
         whitespace = eval_escapes(args.whitespace)
@@ -139,6 +146,7 @@ def main(codegen=pythoncg, outer_version=''):
         model = genmodel(name, grammar, trace=trace, filename=filename)
         model.whitespace = whitespace
         model.nameguard = False if not nameguard else None  # None allows grammar specified or the default of True
+        model.left_recursion = left_recursion
 
         if binary:
             result = pickle.dumps(model, protocol=2)

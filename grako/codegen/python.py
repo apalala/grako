@@ -354,7 +354,8 @@ class Grammar(Base):
 
         comments_re = urepr(self.node.directives.get('comments'))
         eol_comments_re = urepr(self.node.directives.get('eol_comments'))
-        ignorecase = self.node.directives.get('ignorecase') or 'None'
+        ignorecase = self.node.directives.get('ignorecase', 'None')
+        left_recursion = self.node.directives.get('left_recursion', True)
 
         rules = '\n'.join([
             self.get_renderer(rule).render() for rule in self.node.rules
@@ -369,7 +370,8 @@ class Grammar(Base):
                       nameguard=nameguard,
                       comments_re=comments_re,
                       eol_comments_re=eol_comments_re,
-                      ignorecase=ignorecase
+                      ignorecase=ignorecase,
+                      left_recursion=left_recursion,
                       )
 
     abstract_rule_template = '''
@@ -414,6 +416,7 @@ class Grammar(Base):
                             comments_re={comments_re},
                             eol_comments_re={eol_comments_re},
                             ignorecase={ignorecase},
+                            left_recursion={left_recursion},
                             **kwargs
                         )
 

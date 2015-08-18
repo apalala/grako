@@ -14,9 +14,21 @@ directive
     =
     '@@' ~
     (
-        name:('comments'|'eol_comments'|'whitespace') '::' ~ value:regex
+        name:
+        (
+              'comments'
+            | 'eol_comments'
+            | 'whitespace'
+        )
+        '::' ~ value:regex
         |
-        name:('nameguard'|'ignorecase') '::' ~ value:boolean
+        name:
+        (
+              'nameguard'
+            | 'ignorecase'
+            | 'left_recursion'
+            )
+            '::' ~ value:boolean
     )
     ;
 

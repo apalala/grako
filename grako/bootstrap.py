@@ -12,10 +12,12 @@
 
 
 from __future__ import print_function, division, absolute_import, unicode_literals
+
 from grako.parsing import graken, Parser
+from grako.util import re, RE_FLAGS
 
 
-__version__ = (2015, 5, 31, 15, 40, 3, 6)
+__version__ = (2015, 8, 18, 12, 29, 14, 1)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -83,7 +85,9 @@ class GrakoBootstrapParser(Parser):
                                 self._token('nameguard')
                             with self._option():
                                 self._token('ignorecase')
-                            self._error('expecting one of: ignorecase nameguard')
+                            with self._option():
+                                self._token('left_recursion')
+                            self._error('expecting one of: ignorecase left_recursion nameguard')
                     self.ast['name'] = self.last_node
                     self._token('::')
                     self._cut()

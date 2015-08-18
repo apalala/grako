@@ -478,6 +478,24 @@ Both patterns may also be specified within a grammar using the ``@@comments`` an
         @@eol_comments :: /#.*?$/
 
 
+Left Recursion
+==============
+
+**Grako** provides support for left recursion in PEG_ grammars.
+
+Sometimes, while debugging a grammar, it is useful to turn left-recursion support off::
+
+    parser = MyParser(
+        text,
+        left_recursion=False,
+    )
+
+Left recursion can also be turned off from within the grammar using the
+``@@left_recursion`` directive::
+
+        @@left_recursion :: False
+
+
 Semantic Actions
 ================
 
