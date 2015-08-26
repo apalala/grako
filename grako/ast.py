@@ -5,7 +5,7 @@ to store the values of named elements of grammar rules.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from grako.util import strtype, asjson, is_list, PY3
+from grako.util import strtype, asjson, is_list, PY3, Mapping
 
 
 class AST(dict):
@@ -61,7 +61,7 @@ class AST(dict):
                 self[k] = v
 
         for d in args:
-            if isinstance(d, dict):
+            if isinstance(d, Mapping):
                 upairs(d.items())
             else:
                 upairs(d)

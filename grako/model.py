@@ -8,7 +8,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import collections
 
-from grako.util import asjson, asjsons
+from grako.util import asjson, asjsons, Mapping
 from grako.exceptions import SemanticError
 from grako.ast import AST
 
@@ -91,7 +91,7 @@ class Node(object):
             if isinstance(child, Node):
                 if child.parent == self and child not in childset:
                     childset.add(child)
-            elif isinstance(child, dict):
+            elif isinstance(child, Mapping):
                 for c in child.values():
                     cn(c)
             elif isinstance(child, list):
@@ -110,7 +110,7 @@ class Node(object):
                 if isinstance(parent, Node):
                     node._parent = parent
                     childset.add(node)
-            elif isinstance(node, dict):
+            elif isinstance(node, Mapping):
                 for c in node.values():
                     self._adopt_children(c, parent=node)
             elif isinstance(node, list):
