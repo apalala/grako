@@ -546,7 +546,7 @@ class RuleRef(Model):
             rule = ctx._find_rule(self.name)
             return rule()
         except KeyError:
-            ctx.error(self.name, etype=FailedRef)
+            ctx._error(self.name, etype=FailedRef)
 
     def _validate(self, rules):
         if self.name not in rules:

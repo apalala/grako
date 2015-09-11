@@ -734,6 +734,26 @@ class GrammarTests(unittest.TestCase):
         code = codegen(model)
         compile(code, 'test.py', 'exec')
 
+    def test_failed_ref(self):
+        grammar = """
+            final = object;
+            type = /[^\s=()]+/;
+            object = '('type')' '{' @:{pair} {',' @:{pair}}* [','] '}';
+            pair = key '=' value;
+            list = '('type')' '[' @:{object} {',' @:{object}}* [','] ']';
+            key = /[^\s=]+/;
+            value = @:(string|list|object|unset|boolean|number|null) [','];
+            null = '('type')' @:{ 'null' };
+            boolean = /(true|false)/;
+            unset = '<unset>';
+            string = '"' @:/[^"]*/ '"';
+            number = /-?[0-9]+/;
+        """
+
+        model = genmodel("final", grammar)
+        codegen(model)
+        model.parse('(sometype){boolean = true}')
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
