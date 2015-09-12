@@ -409,14 +409,21 @@ class Grammar(Base):
 
 
                 class {name}Parser(Parser):
-                    def __init__(self, whitespace={whitespace}, nameguard={nameguard}, **kwargs):
+                    def __init__(self,
+                                 whitespace={whitespace},
+                                 nameguard={nameguard},
+                                 comments_re={comments_re},
+                                 eol_comments_re={eol_comments_re},
+                                 ignorecase={ignorecase},
+                                 left_recursion={left_recursion},
+                                 **kwargs):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,
                             nameguard=nameguard,
-                            comments_re={comments_re},
-                            eol_comments_re={eol_comments_re},
-                            ignorecase={ignorecase},
-                            left_recursion={left_recursion},
+                            comments_re=comments_re,
+                            eol_comments_re=eol_comments_re,
+                            ignorecase=ignorecase,
+                            left_recursion=left_recursion,
                             **kwargs
                         )
 
