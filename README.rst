@@ -734,6 +734,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _starkat: https://bitbucket.org/starkat
 .. _nehz: https://bitbucket.org/nehz/grako
 .. _jimon: https://bitbucket.org/jimon/
+.. _pgebhard: https://github.com/pgebhard?tab=repositories
 
 Changes
 =======
@@ -742,6 +743,14 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+3.6.4
+-----
+
+* 58_ The parameters to the constructor of generated parsers were being ignores (pgebhard).
+
+* **BUG** ``grammars.py`` would call ``ctx.error()`` instead of ``ctx._error()`` on failed rule references.
+
+* Overall cleanu of the code and of the development requirements.
 
 3.6.3
 -----
