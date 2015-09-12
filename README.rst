@@ -750,7 +750,7 @@ Changes
 
 * **BUG** ``grammars.py`` would call ``ctx.error()`` instead of ``ctx._error()`` on failed rule references.
 
-* Overall cleanu of the code and of the development requirements.
+* Overall cleanup of the code and of the development requirements.
 
 3.6.3
 -----
