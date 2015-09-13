@@ -47,3 +47,9 @@ clean: clean_cython
 clean_cython:
 	find grako -name "*.so" | xargs rm -f
 	find grako -name "*.c" | xargs rm -f
+
+release_check:
+	rst2html README.rst > /dev/null
+	python setup.py sdist
+	tox
+	@echo version `python -m grako --version`

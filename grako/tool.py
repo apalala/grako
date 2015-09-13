@@ -95,7 +95,7 @@ def main(codegen=pythoncg, outer_version=''):
         '-v', '--version',
         help='provide version information and exit',
         action='version',
-        version=outer_version + 'Grako ' + __version__
+        version=outer_version + __version__
     )
     try:
         args = argparser.parse_args()
