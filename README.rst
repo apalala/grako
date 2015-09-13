@@ -752,6 +752,8 @@ Changes
 
 * Overall cleanup of the code and of the development requirements.
 
+.. _58: https://bitbucket.org/apalala/grako/issues/58/
+
 3.6.3
 -----
 
