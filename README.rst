@@ -743,7 +743,7 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.6.4
+3.6.5
 -----
 
 * 58_ The parameters to the constructor of generated parsers were being ignores (pgebhard).
