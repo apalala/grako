@@ -7,7 +7,7 @@ import functools
 from collections import namedtuple
 from contextlib import contextmanager
 
-from grako.util import notnone, ustr, prune_dict, is_list, info
+from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
 from grako.ast import AST
 from grako import buffering
 from grako.color import Fore, Style
@@ -331,7 +331,7 @@ class ParseContext(object):
         if not callable(postproc):
             postproc = None
 
-        rule = getattr(self.semantics, name, None)
+        rule = getattr(self.semantics, safe_name(name), None)
         if callable(rule):
             return rule, postproc
 
