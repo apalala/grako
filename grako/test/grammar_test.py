@@ -775,6 +775,52 @@ class GrammarTests(unittest.TestCase):
         codegen(model)
         model.parse('(sometype){boolean = true}')
 
+    def test_whitespace_no_newlines(self):
+        grammar = """
+            @@whitespace :: /[\t ]+/
+            # this is just a token with any character but space and newline
+            # it should finish before it capture space or newline character
+            token = /[^ \n]+/;
+            # expect whitespace to capture spaces between tokens, but newline should be captured afterwards
+            token2 = {token}* /\n/;
+            # document is just list of this strings of tokens
+            document = {@+:token2}* $;
+        """
+        text = trim("""\
+            a b
+            c d
+            e f
+        """)
+
+        expected = [
+                [
+                    [
+                    "a",
+                    "b"
+                    ],
+                    "\n"
+                ],
+                [
+                    [
+                    "c",
+                    "d"
+                    ],
+                    "\n"
+                ],
+                [
+                    [
+                    "e",
+                    "f"
+                    ],
+                    "\n"
+                ]
+            ]
+
+        model = genmodel("document", grammar)
+        print(model)
+        ast = model.parse(text, start='document')
+        self.assertEqual(expected, ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
