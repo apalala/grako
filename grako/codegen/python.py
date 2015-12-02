@@ -8,6 +8,7 @@ import keyword
 
 from grako.util import (
     indent,
+    safe_name,
     trim,
     timestamp,
     urepr,
@@ -29,12 +30,6 @@ class PythonCodeGenerator(CodeGenerator):
         if not renderer or not issubclass(renderer, Base):
             raise CodegenError('Renderer for %s not found' % name)
         return renderer
-
-
-def safe_name(name):
-    if keyword.iskeyword(name):
-        return name + '_'
-    return name
 
 
 def codegen(model):

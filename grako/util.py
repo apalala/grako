@@ -6,6 +6,7 @@ import collections
 import json
 import datetime
 import codecs
+import keyword
 
 try:
     import regex as re
@@ -208,3 +209,9 @@ def prune_dict(d, predicate):
     keys = [k for k, v in d.items() if predicate(k, v)]
     for k in keys:
         del d[k]
+
+
+def safe_name(name):
+    if keyword.iskeyword(name):
+        return name + '_'
+    return name

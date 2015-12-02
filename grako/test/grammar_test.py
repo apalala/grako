@@ -28,6 +28,27 @@ class GrammarTests(unittest.TestCase):
         m = genmodel('Keywords', grammar)
         m.parse('x')
 
+    def test_python_keywords_in_rule_names(self):
+        # This is a regression test for
+        # https://bitbucket.org/apalala/grako/issues/59
+        # (semantic actions not called for rules with the same name as a python
+        # keyword).
+        grammar = '''
+            not = 'x' ;
+        '''
+        m = genmodel('Keywords', grammar)
+
+        class Semantics(object):
+            def __init__(self):
+                self.called = False
+
+            def not_(self, ast):
+                self.called = True
+
+        semantics = Semantics()
+        m.parse('x', semantics=semantics)
+        assert semantics.called
+
     def test_update_ast(self):
         grammar = '''
             foo = name:"1" [ name: bar ] ;
