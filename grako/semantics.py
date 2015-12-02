@@ -124,7 +124,7 @@ class GrakoSemantics(ModelBuilderSemantics):
         return grammars.RuleInclude(rule)
 
     def grammar(self, ast, *args):
-        directives = {d.name: d.value for d in ast.directives}
+        directives = OrderedDict((d.name, d.value) for d in ast.directives)
         return grammars.Grammar(
             self.grammar_name,
             list(self.rules.values()),

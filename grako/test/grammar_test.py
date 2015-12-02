@@ -817,7 +817,6 @@ class GrammarTests(unittest.TestCase):
             ]
 
         model = genmodel("document", grammar)
-        print(model)
         ast = model.parse(text, start='document')
         self.assertEqual(expected, ast)
 

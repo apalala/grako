@@ -20,6 +20,7 @@ directive
             | 'eol_comments'
             | 'whitespace'
         )
+        ~
         '::' ~ value:regex
         |
         name:
@@ -28,6 +29,7 @@ directive
             | 'ignorecase'
             | 'left_recursion'
             )
+            ~
             '::' ~ value:boolean
     )
     ;

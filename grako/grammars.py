@@ -804,7 +804,21 @@ class Grammar(Model):
         return 1 + sum(r.nodecount() for r in self.rules)
 
     def __str__(self):
-        return (
+        directives = ''
+        if 'whitespace' in self.directives:
+            directives += '@@whitespace :: /%s/\n' % self.directives['whitespace']
+        if 'nameguard' in self.directives:
+            directives += '@@nameguard :: %s\n' % self.directives['nameguard']
+        if 'left_recursion' in self.directives:
+            directives += '@@left_recursion: %s\n' % self.directives['left_recursion']
+        if 'comments' in self.directives:
+            directives += '@@comments :: /%s/\n' % ustr(self.directives['comments'])
+        if 'eol_comments' in self.directives:
+            directives += '@@eol_comments :: /%s/\n' % self.directives['eol_comments']
+        directives = directives + '\n' if directives else ''
+
+        rules = (
             '\n\n'.join(ustr(rule)
                         for rule in self.rules)
         ).rstrip() + '\n'
+        return  directives + rules
