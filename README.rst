@@ -764,7 +764,7 @@ Changes
 3.6.5
 -----
 
-* 58_ The parameters to the constructor of generated parsers were being ignores (pgebhard).
+* 58_ The parameters to the constructor of generated parsers were being ignored (pgebhard).
 
 * **BUG** ``grammars.py`` would call ``ctx.error()`` instead of ``ctx._error()`` on failed rule references.
 
