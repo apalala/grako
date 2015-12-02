@@ -695,6 +695,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * `Kathryn Long`_ proposed better support for UNICODE in the treatment of whitespace and regular expressions (patterns) in general. Her other contributions have made **Grako** more congruent, and more user-friendly.
 
+* `David Röthlisberger`_ provided the definitive patch that allows the use of Python_ keywords as rule names.
+
 * **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
 .. _Wirth: http://en.wikipedia.org/wiki/Niklaus_Wirth
@@ -735,6 +737,9 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _nehz: https://bitbucket.org/nehz/grako
 .. _jimon: https://bitbucket.org/jimon/
 .. _pgebhard: https://github.com/pgebhard?tab=repositories
+.. _drothlis: https://bitbucket.org/drothlis/
+.. _`David Röthlisberger`: https://bitbucket.org/drothlis/
+
 
 Changes
 =======
@@ -742,6 +747,19 @@ Changes
 **Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
+
+3.6.6
+-----
+
+* All tests pass with Python_ 3.5.
+
+* 59_ Python_ keywords can now actually be used as rule names in grammars (drothlis_).
+
+* 60_ ``@@`` directives were not pressent in the output of the ``--pretty`` option.
+
+.. _59: https://bitbucket.org/apalala/grako/issues/59/
+.. _60: https://bitbucket.org/apalala/grako/issues/60/
+
 
 3.6.5
 -----
