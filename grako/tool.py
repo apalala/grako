@@ -19,7 +19,7 @@ from grako.parser import GrakoGrammarGenerator
 from grako.codegen import pythoncg
 
 DESCRIPTION = (
-    'Grako (for "grammar compiler") takes grammars'
+    'Grako (for "grammar compiler") takes a grammar'
     ' in a variation of EBNF as input, and outputs a memoizing'
     ' PEG/Packrat parser in Python.'
 )

@@ -17,7 +17,9 @@ setuptools.setup(
     url='http://bitbucket.org/apalala/grako',
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
-    description='A generator of PEG/Packrat parsers from EBNF grammars.',
+    description='Grako (for "grammar compiler") takes a grammar'
+                ' in a variation of EBNF as input, and outputs a memoizing'
+                ' PEG/Packrat parser in Python.',
     long_description=io.open('README.rst', encoding='utf-8').read(),
     license='BSD License',
     packages=setuptools.find_packages(),
