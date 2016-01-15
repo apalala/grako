@@ -298,6 +298,7 @@ class Buffer(object):
                 return token
             else:
                 partial_match = (
+                    token and
                     token[0].isalpha() and
                     token.isalnum() and
                     self.is_name_char(self.current())

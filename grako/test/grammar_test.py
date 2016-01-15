@@ -820,6 +820,21 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse(text, start='document')
         self.assertEqual(expected, ast)
 
+    def test_empty_match_token(self):
+        grammar = """
+            table = { row }+ ;
+            row = (cell1:cell "|" cell2:cell) "\n";
+            cell = /[a-z]+/ ;
+        """
+        text = """
+            a | b
+            c | d
+        """
+
+        model = genmodel("model", grammar)
+
+        model.parse(text, "table")
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
