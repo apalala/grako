@@ -748,6 +748,11 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+3.6.7-rc.1
+----------
+
+* **BUG** Detect anf fail promptly on empty tokens in grammars.
+
 3.6.6
 -----
 
