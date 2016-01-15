@@ -826,14 +826,11 @@ class GrammarTests(unittest.TestCase):
             row = (cell1:cell "|" cell2:cell) "\n";
             cell = /[a-z]+/ ;
         """
-        text = """
-            a | b
-            c | d
-        """
-
-        model = genmodel("model", grammar)
-
-        model.parse(text, "table")
+        try:
+            genmodel("model", grammar)
+            self.fail('allowed empty token')
+        except FailedParse:
+            pass
 
 
 def suite():
