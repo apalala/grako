@@ -793,28 +793,28 @@ class GrammarTests(unittest.TestCase):
         """)
 
         expected = [
+            [
                 [
-                    [
                     "a",
                     "b"
-                    ],
-                    "\n"
                 ],
+                "\n"
+            ],
+            [
                 [
-                    [
                     "c",
                     "d"
-                    ],
-                    "\n"
                 ],
+                "\n"
+            ],
+            [
                 [
-                    [
                     "e",
                     "f"
-                    ],
-                    "\n"
-                ]
+                ],
+                "\n"
             ]
+        ]
 
         model = genmodel("document", grammar)
         ast = model.parse(text, start='document')
