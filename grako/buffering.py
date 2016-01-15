@@ -298,9 +298,8 @@ class Buffer(object):
                 return token
             else:
                 partial_match = (
-                    token and
-                    token[0].isalpha() and
                     token.isalnum() and
+                    token[0].isalpha() and
                     self.is_name_char(self.current())
                 )
                 if not partial_match:
