@@ -751,7 +751,7 @@ Changes
 3.6.7
 -----
 
-* **BUG** Detect anf fail promptly on empty tokens in grammars.
+* **BUG** Detect and fail promptly on empty tokens in grammars.
 * More reasonable treatment for ANTLR_  ``token`` definitions in the ``antlr2grako`` example.
 
 3.6.6
