@@ -14,10 +14,10 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 from grako.parsing import graken, Parser
-from grako.util import re, RE_FLAGS
+from grako.util import re, RE_FLAGS  # noqa
 
 
-__version__ = (2015, 8, 18, 12, 29, 14, 1)
+__version__ = (2016, 1, 27, 17, 36, 14, 2)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -27,13 +27,21 @@ __all__ = [
 
 
 class GrakoBootstrapParser(Parser):
-    def __init__(self, whitespace=None, nameguard=None, **kwargs):
+    def __init__(self,
+                 whitespace=None,
+                 nameguard=None,
+                 comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+                 eol_comments_re='#([^\\n]*?)$',
+                 ignorecase=None,
+                 left_recursion=True,
+                 **kwargs):
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,
-            comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
-            eol_comments_re='#([^\\n]*?)$',
-            ignorecase=None,
+            comments_re=comments_re,
+            eol_comments_re=eol_comments_re,
+            ignorecase=ignorecase,
+            left_recursion=left_recursion,
             **kwargs
         )
 
@@ -74,6 +82,7 @@ class GrakoBootstrapParser(Parser):
                                 self._token('whitespace')
                             self._error('expecting one of: comments eol_comments whitespace')
                     self.ast['name'] = self.last_node
+                    self._cut()
                     self._token('::')
                     self._cut()
                     self._regex_()
@@ -89,6 +98,7 @@ class GrakoBootstrapParser(Parser):
                                 self._token('left_recursion')
                             self._error('expecting one of: ignorecase left_recursion nameguard')
                     self.ast['name'] = self.last_node
+                    self._cut()
                     self._token('::')
                     self._cut()
                     self._boolean_()
