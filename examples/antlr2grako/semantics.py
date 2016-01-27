@@ -6,7 +6,6 @@ import re
 
 from grako.ast import AST
 from grako import grammars as model
-from grako.exceptions import FailedSemantics
 
 
 class ANTLRSemantics(object):

@@ -821,4 +821,4 @@ class Grammar(Model):
             '\n\n'.join(ustr(rule)
                         for rule in self.rules)
         ).rstrip() + '\n'
-        return  directives + rules
+        return directives + rules

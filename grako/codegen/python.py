@@ -4,8 +4,6 @@ Python code generation for models defined with grako.model
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import keyword
-
 from grako.util import (
     indent,
     safe_name,
@@ -391,7 +389,7 @@ class Grammar(Base):
                 from __future__ import print_function, division, absolute_import, unicode_literals
 
                 from grako.parsing import graken, Parser
-                from grako.util import re, RE_FLAGS
+                from grako.util import re, RE_FLAGS  # noqa
 
 
                 __version__ = {version}
