@@ -52,7 +52,7 @@ tokens
 
 token
     =
-    token_name ['='  token_value ] ';' ~
+    name:token_name ['='  ~ exp:token_value ] ';' ~
     ;
 
 token_value
@@ -263,8 +263,8 @@ negative
 non_terminal
     =
     @:(
-      rule_ref
-    | token_ref
+      token_ref
+    | rule_ref
     )
     [arg]
     ;

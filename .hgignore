@@ -13,6 +13,7 @@
 genparser.py$
 parser_base.py$
 docs/_build/
+\.ropeproject/
 
 # IDEs
 \.idea$

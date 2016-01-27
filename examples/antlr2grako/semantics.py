@@ -6,11 +6,13 @@ import re
 
 from grako.ast import AST
 from grako import grammars as model
+from grako.exceptions import FailedSemantics
 
 
 class ANTLRSemantics(object):
     def __init__(self, name):
         self.name = name
+        self.tokens = {}
 
     def grammar(self, ast):
         return model.Grammar(self.name, ast.rules)
@@ -77,7 +79,7 @@ class ANTLRSemantics(object):
     def newrange(self, ast):
         return model.Pattern('[%s]' % re.escape(ast))
 
-    def non_terminal(self, ast):
+    def rule_ref(self, ast):
         return model.RuleRef(ast)
 
     def any(self, ast):
@@ -91,3 +93,17 @@ class ANTLRSemantics(object):
 
     def eof(self, ast):
         return model.EOF()
+
+    def token(self, ast):
+        value = ast.value or ast.name
+        self.tokens[ast.name] = value
+        return value
+
+    def token_ref(self, ast):
+        value = self.tokens.get(ast)
+        if not value:
+            return model.RuleRef(ast)
+        elif isinstance(value, model.Model):
+            return value
+        else:
+            return model.Token(value)
