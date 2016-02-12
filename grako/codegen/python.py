@@ -286,8 +286,8 @@ class Rule(_Decorator):
         fields.update(params=params)
 
         defines = compress_seq(self.defines())
-        sdefs = [d for d, l in defines if not l]
-        ldefs = [d for d, l in defines if l]
+        sdefs = [safe_name(d) for d, l in defines if not l]
+        ldefs = [safe_name(d) for d, l in defines if l]
         if not (sdefs or ldefs):
             sdefines = ''
         else:
