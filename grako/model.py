@@ -102,6 +102,9 @@ class Node(object):
             cn(c)
         return list(childset)
 
+    def asjson(self):
+        return asjson(self)
+
     def _adopt_children(self, ast, parent=None):
         childset = set()
 
