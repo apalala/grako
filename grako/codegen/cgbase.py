@@ -80,7 +80,7 @@ class CodeGenerator(object):
     """
     def __init__(self, modules=None):
         self.formatter = DelegatingRenderingFormatter(self)
-        self._renderers = []
+        self._renderers = {}
         if modules is not None:
             self._renderers = self._find_module_renderers(modules)
 
