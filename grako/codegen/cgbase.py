@@ -86,12 +86,16 @@ class CodeGenerator(object):
 
     def _find_module_renderers(self, modules):
         result = dict()
+
         for module in modules:
-            result.update(
-                (name, dtype)
-                for name, dtype in vars(module).items()
-                if issubclass(dtype, ModelRenderer)
-            )
+            for name, dtype in vars(module).items():
+                if not isinstance(dtype, type):
+                    continue
+                if not issubclass(dtype, ModelRenderer):
+                    continue
+                if dtype is not ModelRenderer:
+                    result[name] = dtype
+
         return result
 
     def _find_renderer_class(self, item):
