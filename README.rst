@@ -748,6 +748,11 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+3.6.8
+-----
+
+* Sever minor **BUG** fixes. See the `commit log`_  for details.
+
 3.6.7
 -----
 
@@ -1094,4 +1099,5 @@ Changes
 .. _flake8: https://pypi.python.org/pypi/flake8
 .. _Bitbucket: https://bitbucket.org/apalala/grako
 .. _`Bitbucket commits`: https://bitbucket.org/apalala/grako/commits/
+.. _`commit log`: https://bitbucket.org/apalala/grako/commits/
 .. _PyPi: https://pypi.python.org/pypi/grako
