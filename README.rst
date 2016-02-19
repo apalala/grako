@@ -185,7 +185,7 @@ To add semantic actions, just pass a semantic delegate to the parse method::
 
 If special lexical treatment is required (like in Python_'s structure-through-indentation), then a descendant of ``grako.buffering.Buffer`` can be passed instead of the text::
 
-    class MySpecialBuffer(grako.bufferingBuffer):
+    class MySpecialBuffer(grako.buffering.Buffer):
         ...
 
     buf = MySpecialBuffer(text)
@@ -205,7 +205,7 @@ Rules
 
 A grammar consists of a sequence of one or more rules of the form::
 
-    name = expre ;
+    name = <expre> ;
 
 If a *name* collides with a Python_ keyword, an underscore (``_``) will be appended to it on the generated parser.
 
@@ -245,7 +245,7 @@ The expressions, in reverse order of operator precedence, can be:
         Negative lookahead. Try parsing ``e`` and fail if there's a match. Do not consume any input whichever the outcome.
 
     ``>rulename``
-        The include operator'. Include the *right hand side* of rule ``rulename`` at this point.
+        The include operator. Include the *right hand side* of rule ``rulename`` at this point.
 
         The following set of declarations::
 
@@ -291,21 +291,21 @@ The expressions, in reverse order of operator precedence, can be:
         Another form of the cut operator. *Deprecated*.
 
     ``name:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, an underscore (``_``) will be appended to it in the AST_.
+        Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, or is a Python_ keyword, an underscore (``_``) will be appended to the name.
 
     ``name+:e``
-        Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added. Collisions with ``dict`` attributes are resolved by appending an underscore to ``name``.
+        Add the result of ``e`` to the AST_ using ``name`` as key. Force the entry to be a list even if only one element is added. Collisions with ``dict`` attributes or Python_ keywords are resolved by appending an underscore to ``name``.
 
     ``@:e``
         The override operator. Make the AST_ for the complete rule be the AST_ for ``e``.
 
-        The override operator is useful to recover only part of the right hand side of a rule without the need to name it, and then add a semantic action to recover the interesting part.
+        The override operator is useful to recover only part of the right hand side of a rule without the need to name it, or add a semantic action.
 
         This is a typical use of the override operator::
 
             subexp = '(' @:expre ')' ;
 
-        The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``, without having to write a semantic action.
+        The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``.
 
     ``@e``
         Another form of the override operator. *Deprecated*.
@@ -324,6 +324,9 @@ The expressions, in reverse order of operator precedence, can be:
 
     ``(*`` *comment* ``*)``
         Comments may appear anywhere in the text.
+
+    ``#`` *comment*
+        Python_-style comments are also allowed.
 
 When there are no named items in a rule, the AST_ consists of the elements parsed by the rule, either a single item or a list. This default behavior makes it easier to write simple rules::
 
@@ -398,12 +401,12 @@ A grammar rule may be redefined by using the
     @override
     ab = @:'a' {@:'b'} ;
 
-When combined with the ``#include`` directive, rule overrides can be used to create a modificated grammar without altering the original.
+When combined with the ``#include`` directive, rule overrides can be used to create a modified grammar without altering the original.
 
 Abstract Syntax Trees (ASTs)
 ============================
 
-By default, and AST_ is either a *list* (for *closures* and rules without named elements), or *dict*-derived object that contains one item for every named element in the grammar rule. Items can be accessed through the standard ``dict`` syntax, ``ast['key']``, or as attributes, ``ast.key``.
+By default, and AST_ is either a *list* (for *closures* and rules without named elements), or *dict*-derived object that contains one item for every named element in the grammar rule. Items can be accessed through the standard ``dict`` syntax (``ast['key']``), or as attributes (``ast.key``).
 
 AST_ entries are single values if only one item was associated with a name, or lists if more than one item was matched. There's a provision in the grammar syntax (the ``+:`` operator) to force an AST_ entry to be a list even if only one element was matched. The value for named elements that were not found during the parse (perhaps because they are optional) is ``None``.
 
@@ -558,24 +561,22 @@ Templates and Translation
 
 Translation in **Grako** is *template-based*, but instead of defining or using a complex templating engine (yet another language), it relies on the simple but powerful ``string.Formatter`` of the Python_ standard library. The templates are simple strings that, in **Grako**'s style, are inlined with the code.
 
-To generate a parser, **Grako** constructs an object model of the parsed grammar. Each node in the model is a descendant of ``rendering.Renderer``, and knows how to render itself. Templates are left-trimmed on whitespace, like Python_ *doc-comments* are. This is an example taken from **Grako**'s source code::
+To generate a parser, **Grako** constructs an object model of the parsed grammar. A
+``grako.codegen.CodeGenerator`` instance matches model objects to classes that descend from ``grako.codegen.ModelRenderer`` and implement the translation and rendering using string templates. Templates are left-trimmed on whitespace, like Python_ *doc-comments* are. This is an example taken from **Grako**'s source code::
 
-    class LookaheadGrammar(_DecoratorGrammar):
-
-        ...
-
+    class Lookahead(ModelRenderer):
         template = '''\
                     with self._if():
                     {exp:1::}\
                     '''
 
-Every *attribute* of the object that doesn't start with an underscore (``_``) may be used as a template field, and fields can be added or modified by overriding the ``render_fields()`` method.  Fields themselves are *lazily rendered* before being expanded by the template, so a field may be an instance of a ``Renderer`` descendant.
+Every *attribute* of the object that doesn't start with an underscore (``_``) may be used as a template field, and fields can be added or modified by overriding the ``render_fields(fields)`` method.  Fields themselves are *lazily rendered* before being expanded by the template, so a field may be an instance of a ``ModelRenderer`` descendant.
 
-The ``rendering`` module uses a ``Formatter`` enhanced to support the rendering of items in an *iterable* one by one. The syntax to achieve that is::
+The ``rendering`` module defines a ``Formatter`` enhanced to support the rendering of items in an *iterable* one by one. The syntax to achieve that is::
 
     {fieldname:ind:sep:fmt}
 
-All of ``ind``, ``sep``, and ``fmt`` are optional, but the three *colons* are not. Such a field will be rendered using::
+All of ``ind``, ``sep``, and ``fmt`` are optional, but the three *colons* are not. A field specified that way will be rendered using::
 
      indent(sep.join(fmt % render(v) for v in value), ind)
 
@@ -595,7 +596,7 @@ Examples
 Grako
 -----
 
-The file ``etc/grako.ebnf`` contains a grammar for the **Grako** EBNF_ language written in the same language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser). **Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
+The file ``etc/grako.ebnf`` contains a grammar for the **Grako** EBNF_ language written in the same **Grako** grammar language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser). **Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
 
 Regex
 -----
@@ -683,7 +684,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 * **Gustavo Lau** was my professor of *Language Theory* at USB_, and he was kind enough to be my tutor in a thesis project on programming languages that was more than I could chew. My peers, and then teaching advisers **Alberto Torres**, and **Enzo Chiariotti** formed a team with **Gustavo** to challenge us with programming languages like *LATORTA* and term exams that went well into the eight hours. And, of course, there was also the *pirate patch* that should be worn on the left or right eye depending on the *LL* or *LR* challenge.
 
-* **Manuel Rey** led me through another, unfinished thesis project that taught me about what languages (spoken languages in general, and programming languages in particular) are about. I learned why languages use declensions_, and why, although the underlying words are in English_, the structure of the programs we write is more like Japanese_.
+* **Manuel Rey** led me through another, unfinished, thesis project that taught me about what languages (spoken languages in general, and programming languages in particular) are about. I learned why languages use declensions_, and why, although the underlying words are in English_, the structure of the programs we write is more like Japanese_.
 
 * `Marcus Brinkmann`_ has kindly submitted patches that have resolved obscure bugs in **Grako**'s implementation, and that have made the tool more user-friendly, specially for newcomers to parsing and translation.
 
