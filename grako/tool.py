@@ -32,6 +32,10 @@ argparser.add_argument('-b', '--binary',
                        help='generate a pickled grammar model (requires --output)',
                        action='store_true'
                        )
+argparser.add_argument('-c', '--color',
+                       help='use color in traces (requires the colorama library)',
+                       action='store_true'
+                       )
 argparser.add_argument('-d', '--draw',
                        help='generate a diagram of the grammar (requires --output)',
                        action='store_true'
@@ -76,9 +80,9 @@ argparser.add_argument('-w', '--whitespace',
                        )
 
 
-def genmodel(name, grammar, trace=False, filename=None, **kwargs):
-    parser = GrakoGrammarGenerator(name, trace=trace, **kwargs)
-    return parser.parse(grammar, filename=filename, **kwargs)
+def genmodel(name, grammar, trace=False, filename=None, colorize=False, **kwargs):
+    parser = GrakoGrammarGenerator(name, trace=trace, colorize=colorize, **kwargs)
+    return parser.parse(grammar, filename=filename, colorize=colorize, **kwargs)
 
 
 def gencode(name, grammar, trace=False, filename=None, codegen=pythoncg):
@@ -104,6 +108,7 @@ def main(codegen=pythoncg, outer_version=''):
         sys.exit(2)
 
     binary = args.binary
+    colorize = args.color
     filename = args.filename
     name = args.name
     nameguard = args.nameguard
@@ -143,7 +148,7 @@ def main(codegen=pythoncg, outer_version=''):
             os.makedirs(dirname)
 
     try:
-        model = genmodel(name, grammar, trace=trace, filename=filename)
+        model = genmodel(name, grammar, trace=trace, filename=filename, colorize=colorize)
         model.whitespace = whitespace
         model.nameguard = False if not nameguard else None  # None allows grammar specified or the default of True
         model.left_recursion = left_recursion

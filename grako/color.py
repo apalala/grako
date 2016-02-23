@@ -1,35 +1,46 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-try:
-    import colorama as _colorama
-    from colorama import Fore, Back, Style
 
-    _colorama.init(autoreset=True)
+class _BF(object):
+    BLACK = ''
+    BLUE = ''
+    CYAN = ''
+    GREEN = ''
+    MAGENTA = ''
+    RED = ''
+    RESET = ''
+    WHITE = ''
+    YELLOW = ''
 
-    Fore = Fore
-    Back = Back
-    Style = Style
-except ImportError:
-    class _BF(object):
-        BLACK = ''
-        BLUE = ''
-        CYAN = ''
-        GREEN = ''
-        MAGENTA = ''
-        RED = ''
-        RESET = ''
-        WHITE = ''
-        YELLOW = ''
 
-    class Fore(_BF):
+class _Fore(_BF):
+    pass
+
+
+class _Back(_BF):
+    pass
+
+
+class _Style(object):
+    BRIGHT = ''
+    DIM = ''
+    NORMAL = ''
+    RESET_ALL = ''
+
+
+Fore = _Fore
+Back = _Back
+Style = _Style
+
+
+def init():
+    try:
+        import colorama
+
+        global Fore, Back, Style
+        Fore = colorama.Fore
+        Back = colorama.Back
+        Style = colorama.Style
+    except ImportError:
         pass
-
-    class Back(_BF):
-        pass
-
-    class Style(object):
-        BRIGHT = ''
-        DIM = ''
-        NORMAL = ''
-        RESET_ALL = ''

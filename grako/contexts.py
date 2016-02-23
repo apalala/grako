@@ -10,7 +10,9 @@ from contextlib import contextmanager
 from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
 from grako.ast import AST
 from grako import buffering
-from grako.color import Fore, Style
+
+from grako import color
+
 from grako.exceptions import (
     FailedCut,
     FailedLeftRecursion,
@@ -70,6 +72,7 @@ class ParseContext(object):
                  trace_length=72,
                  trace_separator=':',
                  trace_filename=False,
+                 colorize=False,
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -104,6 +107,8 @@ class ParseContext(object):
         self._recursive_eval = []
         self._recursive_head = []
 
+        self.colorize = colorize
+
     def _reset(self,
                text=None,
                filename=None,
@@ -116,6 +121,7 @@ class ParseContext(object):
                nameguard=None,
                memoize_lookaheads=None,
                left_recursion=None,
+               colorize=False,
                **kwargs):
         if ignorecase is None:
             ignorecase = self.ignorecase
@@ -130,6 +136,13 @@ class ParseContext(object):
             self.trace = trace
         if semantics is not None:
             self.semantics = semantics
+
+        print('COLORIZE', colorize, self.colorize)
+        if colorize is not None:
+            self.colorize = colorize
+
+        if self.colorize:
+            color.init()
 
         if isinstance(text, buffering.Buffer):
             buffer = text
@@ -353,8 +366,8 @@ class ParseContext(object):
                 fname = self._buffer.line_info().filename + '\n'
             self._trace('%s   \n%s%s \n',
                         event + ' ' + self._rulestack(),
-                        Style.DIM + fname,
-                        Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
+                        color.Style.DIM + fname,
+                        color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
                         )
 
     def _trace_match(self, token, name=None, failed=False):
@@ -363,13 +376,13 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
-            color = Fore.GREEN + '< 'if not failed else Fore.RED + '! '
+            fgcolor = color.Fore.GREEN + '< 'if not failed else color.Fore.RED + '! '
             self._trace(
-                Style.BRIGHT + color + '"%s" %s\n%s%s\n',
+                color.Style.BRIGHT + fgcolor + '"%s" %s\n%s%s\n',
                 token,
                 name,
-                Style.DIM + fname,
-                Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
+                color.Style.DIM + fname,
+                color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
             )
 
     def _error(self, item, etype=FailedParse):
@@ -394,19 +407,19 @@ class ParseContext(object):
         self._rule_stack.append(name)
         pos = self._pos
         try:
-            self._trace_event(Fore.YELLOW + Style.BRIGHT + '>')
+            self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + '>')
             self._last_node = None
             node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
             self._goto(newpos)
             self._state = newstate
-            self._trace_event(Fore.GREEN + Style.BRIGHT + '<')
+            self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + '<')
             self._add_cst_node(node)
             self._last_node = node
             return node
         except FailedPattern:
             self._error('Expecting <%s>' % name)
         except FailedParse:
-            self._trace_event(Fore.RED + Style.BRIGHT + '!')
+            self._trace_event(color.Fore.RED + color.Style.BRIGHT + '!')
             self._goto(pos)
             raise
         finally:

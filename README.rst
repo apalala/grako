@@ -150,7 +150,10 @@ The *-h* and *--help* parameters provide full usage information::
         optional arguments:
         -h, --help            show this help message and exit
         -b, --binary          generate a pickled grammar model (requires --output)
+        -c, --color           use color in traces (requires the colorama library)
         -d, --draw            generate a diagram of the grammar (requires --output)
+        -l, --no-left-recursion
+                              turns left-recusion support off
         -n, --no-nameguard    allow tokens that are prefixes of others
         -m NAME, --name NAME  Name for the grammar (defaults to GRAMMAR base name)
         -o FILE, --output FILE
