@@ -274,6 +274,18 @@ class Token(Model):
         return urepr(self.token)
 
 
+class Constant(Model):
+    def __postinit__(self, ast):
+        super(Constant, self).__postinit__(ast)
+        self.literal = ast
+
+    def parse(self, ctx):
+        return self.literal
+
+    def __str__(self):
+        return '`%s`' % urepr(self.literal)
+
+
 class Pattern(Model):
     def __postinit__(self, ast):
         re.compile(ast, RE_FLAGS)
@@ -443,6 +455,14 @@ class PositiveClosure(Closure):
 
     def __str__(self):
         return super(PositiveClosure, self).__str__() + '+'
+
+
+class EmptyClosure(Model):
+    def parse(self, ctx):
+        return ctx._empty_closure()
+
+    def __str__(self):
+        return '{}'
 
 
 class Optional(_Decorator):
@@ -638,7 +658,10 @@ class Rule(_Decorator):
         elif kwparams:
                 params = '(%s)' % (kwparams)
         elif params:
-            params = '(%s)' % params
+            if len(self.params) == 1:
+                params = '::%s' % params
+            else:
+                params = '(%s)' % params
 
         base = ' < %s' % ustr(self.base.name) if self.base else ''
 
@@ -805,16 +828,18 @@ class Grammar(Model):
 
     def __str__(self):
         directives = ''
-        if 'whitespace' in self.directives:
-            directives += '@@whitespace :: /%s/\n' % self.directives['whitespace']
-        if 'nameguard' in self.directives:
-            directives += '@@nameguard :: %s\n' % self.directives['nameguard']
-        if 'left_recursion' in self.directives:
-            directives += '@@left_recursion: %s\n' % self.directives['left_recursion']
         if 'comments' in self.directives:
             directives += '@@comments :: /%s/\n' % ustr(self.directives['comments'])
+        if 'ignorecase' in self.directives:
+            directives += '@@ignorecase :: %s\n' % self.directives['ignorecase']
+        if 'left_recursion' in self.directives:
+            directives += '@@left_recursion :: %s\n' % self.directives['left_recursion']
+        if 'nameguard' in self.directives:
+            directives += '@@nameguard :: %s\n' % self.directives['nameguard']
         if 'eol_comments' in self.directives:
             directives += '@@eol_comments :: /%s/\n' % self.directives['eol_comments']
+        if 'whitespace' in self.directives:
+            directives += '@@whitespace :: /%s/\n' % self.directives['whitespace']
         directives = directives + '\n' if directives else ''
 
         rules = (

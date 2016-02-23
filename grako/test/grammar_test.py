@@ -560,31 +560,23 @@ class GrammarTests(unittest.TestCase):
                 return ast
 
         grammar = '''
+            @@ignorecase::False
+            @@nameguard
+
             start
-                =
-                {rule_positional | rule_keywords | rule_all} $
-                ;
-
-
+                = {rule_positional | rule_keywords | rule_all} $ ;
             rule_positional('ABC', 123, '=', '+')
-                =
-                'a'
-                ;
-
-
+                = 'a' ;
             rule_keywords(k1=ABC, k3='=', k4='+', k2=123)
-                =
-                'b'
-                ;
-
-
+                = 'b' ;
             rule_all('DEF', 456, '=', '+', k1=HIJ, k3='=', k4='+', k2=789)
-                =
-                'c'
-                ;
+                = 'c' ;
         '''
 
         pretty = '''
+            @@ignorecase :: False
+            @@nameguard :: True
+
             start
                 =
                 {rule_positional | rule_keywords | rule_all} $
@@ -689,14 +681,14 @@ class GrammarTests(unittest.TestCase):
         '''
         rule2 = '''
 
-            rulé(Añez)
+            rulé::Añez
                 =
                 '\\xf1'
                 ;
         '''
         rule3 = '''
 
-            rúlé(Añez)
+            rúlé::Añez
                 =
                 'ñ'
                 ;
@@ -831,6 +823,16 @@ class GrammarTests(unittest.TestCase):
             self.fail('allowed empty token')
         except FailedParse:
             pass
+
+
+    def test_empty_closure(self):
+        grammar = '''
+            start = {'x'}+ {} 'y'$;
+        '''
+        model = genmodel("test", grammar)
+        codegen(model)
+        ast = model.parse("xxxy", nameguard=False)
+        self.assertEquals([['x', 'x', 'x'], [], 'y'], ast)
 
 
 def suite():

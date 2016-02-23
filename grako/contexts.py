@@ -560,6 +560,13 @@ class ParseContext(object):
         self._last_node = token
         return token
 
+    def _constant(self, literal):
+        self._next_token()
+        self._trace_match(literal)
+        self._add_cst_node(literal)
+        self._last_node = literal
+        return literal
+
     def _pattern(self, pattern):
         token = self._buffer.matchre(pattern)
         if token is None:
@@ -713,3 +720,10 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
+
+    def _empty_closure(self):
+        cst = Closure([])
+        self._add_cst_node(cst)
+        self.last_node = cst
+        return cst
+

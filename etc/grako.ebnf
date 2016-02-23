@@ -1,36 +1,23 @@
-(* The language for Grako grammars *)
-
 @@comments :: /\(\*((?:.|\n)*?)\*\)/
 @@eol_comments :: /#([^\n]*?)$/
 
-grammar(Grammar)
+grammar::Grammar
     =
-    directives:{directive}
-    rules:{rule}+ $
+    title:`GRAKO`
+    directives:{directive} rules:{rule}+ $
     ;
 
 
 directive
     =
-    '@@' ~
+    '@@'
+    ~
     (
-        name:
-        (
-              'comments'
-            | 'eol_comments'
-            | 'whitespace'
-        )
-        ~
-        '::' ~ value:regex
+            name:('comments' | 'eol_comments' | 'whitespace') ~ '::' ~ value:regex
         |
-        name:
-        (
-              'nameguard'
-            | 'ignorecase'
-            | 'left_recursion'
-            )
+            name:('nameguard' | 'ignorecase' | 'left_recursion')
             ~
-            '::' ~ value:boolean
+            ('::' ~ value:boolean|value:`True`)
     )
     ;
 
@@ -51,7 +38,7 @@ paramdef
     ;
 
 
-rule(Rule)
+rule::Rule
     =
     decorators:{decorator}
     name:name
@@ -102,13 +89,13 @@ expre
     ;
 
 
-choice(Choice)
+choice::Choice
     =
     @+:sequence {'|' ~ @+:sequence}+
     ;
 
 
-sequence(Sequence)
+sequence::Sequence
     =
     sequence:{element}+
     ;
@@ -120,7 +107,7 @@ element
     ;
 
 
-rule_include(RuleInclude)
+rule_include::RuleInclude
     =
     '>' ~ @:known_name
     ;
@@ -132,13 +119,13 @@ named
     ;
 
 
-named_list(NamedList)
+named_list::NamedList
     =
     name:name '+:' ~ exp:element
     ;
 
 
-named_single(Named)
+named_single::Named
     =
     name:name ':' ~ exp:element
     ;
@@ -150,19 +137,19 @@ override
     ;
 
 
-override_list(OverrideList)
+override_list::OverrideList
     =
     '@+:' ~ @:element
     ;
 
 
-override_single(Override)
+override_single::Override
     =
     '@:' ~ @:element
     ;
 
 
-override_single_deprecated(Override)
+override_single_deprecated::Override
     =
     '@' ~ @:element
     ;
@@ -172,6 +159,7 @@ term
     =
       void
     | group
+    | empty_closure
     | positive_closure
     | closure
     | optional
@@ -182,43 +170,49 @@ term
     ;
 
 
-group(Group)
+group::Group
     =
     '(' ~ exp:expre ')' ~
     ;
 
 
-positive_closure(PositiveClosure)
+positive_closure::PositiveClosure
     =
     '{' @:expre '}' ('-' | '+') ~
     ;
 
 
-closure(Closure)
+empty_closure::EmptyClosure
+    =
+    '{' @:() '}'
+    ;
+
+
+closure::Closure
     =
     '{' @:expre '}' ['*'] ~
     ;
 
 
-optional(Optional)
+optional::Optional
     =
     '[' ~ @:expre ']' ~
     ;
 
 
-special(Special)
+special::Special
     =
     '?(' ~ @:/.*?(?!\)\?)/ ')?' ~
     ;
 
 
-kif(Lookahead)
+kif::Lookahead
     =
     '&' ~ @:term
     ;
 
 
-knot(NegativeLookahead)
+knot::NegativeLookahead
     =
     '!' ~ @:term
     ;
@@ -226,29 +220,29 @@ knot(NegativeLookahead)
 
 atom
     =
-    cut | cut_deprecated | token | call | pattern | eof
+    cut | cut_deprecated | token | constant | call | pattern | eof
     ;
 
 
-call(RuleRef)
+call::RuleRef
     =
     word
     ;
 
 
-void(Void)
+void::Void
     =
     '()' ~
     ;
 
 
-cut(Cut)
+cut::Cut
     =
     '~' ~
     ;
 
 
-cut_deprecated(Cut)
+cut_deprecated::Cut
     =
     '>>' ~
     ;
@@ -266,15 +260,22 @@ name
     ;
 
 
-literal
+
+constant::Constant
     =
-    string | word | hex | float | int
+    /`/ ~ @:literal /`/
     ;
 
 
-token(Token)
+token::Token
     =
     string
+    ;
+
+
+literal
+    =
+    string | word | hex | float | int
     ;
 
 
@@ -309,10 +310,11 @@ word
     ;
 
 
-pattern(Pattern)
+pattern::Pattern
     =
     regex
     ;
+
 
 regex
     =
@@ -320,14 +322,14 @@ regex
     | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
     ;
 
+
 boolean
     =
-      'True'
-    | 'False'
+    'True' | 'False'
     ;
 
 
-eof(EOF)
+eof::EOF
     =
     '$' ~
     ;

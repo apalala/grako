@@ -86,6 +86,13 @@ class Token(Base):
     template = "self._token({token})"
 
 
+class Constant(Base):
+    def render_fields(self, fields):
+        fields.update(literal=urepr(self.node.literal))
+
+    template = "self._constant({literal})"
+
+
 class Pattern(Base):
     def render_fields(self, fields):
         raw_repr = 'r' + urepr(self.node.pattern).replace("\\\\", '\\')
@@ -184,6 +191,10 @@ class PositiveClosure(Closure):
                 {exp:1::}
                 self._positive_closure(block{n})
                 '''
+
+
+class EmptyClosure(Base):
+    template = 'self._empty_closure()'
 
 
 class Optional(_Decorator):
@@ -361,9 +372,9 @@ class Grammar(Base):
                       version=version,
                       whitespace=whitespace,
                       nameguard=nameguard,
+                      ignorecase=ignorecase,
                       comments_re=comments_re,
                       eol_comments_re=eol_comments_re,
-                      ignorecase=ignorecase,
                       left_recursion=left_recursion,
                       )
 
@@ -427,7 +438,18 @@ class Grammar(Base):
                 {abstract_rules}
 
 
-                def main(filename, startrule, trace=False, whitespace=None, nameguard=None):
+                def main(
+                    filename,
+                    startrule,
+                    trace=False,
+                    whitespace={whitespace},
+                    nameguard={nameguard},
+                    comments_re={comments_re},
+                    eol_comments_re={eol_comments_re},
+                    ignorecase={ignorecase},
+                    left_recursion={left_recursion},
+                    **kwargs):
+
                     import json
                     with open(filename) as f:
                         text = f.read()
@@ -438,7 +460,9 @@ class Grammar(Base):
                         filename=filename,
                         trace=trace,
                         whitespace=whitespace,
-                        nameguard=nameguard)
+                        nameguard=nameguard,
+                        ignorecase=ignorecase,
+                        **kwargs)
                     print('AST:')
                     print(ast)
                     print()
@@ -460,6 +484,10 @@ class Grammar(Base):
                             sys.exit(0)
 
                     parser = argparse.ArgumentParser(description="Simple parser for {name}.")
+                    parser.add_argument('-c', '--color',
+                                        help='use color in traces (requires the colorama library)',
+                                        action='store_true'
+                                        )
                     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                                         help="list all rules and exit")
                     parser.add_argument('-n', '--no-nameguard', action='store_true',
@@ -479,6 +507,7 @@ class Grammar(Base):
                         args.startrule,
                         trace=args.trace,
                         whitespace=args.whitespace,
-                        nameguard=not args.no_nameguard
+                        nameguard=not args.no_nameguard,
+                        colorize=args.color
                     )
                     '''
