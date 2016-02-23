@@ -447,7 +447,8 @@ class Grammar(Base):
                     comments_re={comments_re},
                     eol_comments_re={eol_comments_re},
                     ignorecase={ignorecase},
-                    left_recursion={left_recursion}):
+                    left_recursion={left_recursion},
+                    **kwargs):
 
                     import json
                     with open(filename) as f:
@@ -460,7 +461,8 @@ class Grammar(Base):
                         trace=trace,
                         whitespace=whitespace,
                         nameguard=nameguard,
-                        ignorecase=ignorecase)
+                        ignorecase=ignorecase,
+                        **kwargs)
                     print('AST:')
                     print(ast)
                     print()
@@ -482,7 +484,7 @@ class Grammar(Base):
                             sys.exit(0)
 
                     parser = argparse.ArgumentParser(description="Simple parser for {name}.")
-                    arser.add_argument('-c', '--color',
+                    parser.add_argument('-c', '--color',
                                         help='use color in traces (requires the colorama library)',
                                         action='store_true'
                                         )
@@ -506,6 +508,6 @@ class Grammar(Base):
                         trace=args.trace,
                         whitespace=args.whitespace,
                         nameguard=not args.no_nameguard,
-                        colorize=arts.color
+                        colorize=args.color
                     )
                     '''
