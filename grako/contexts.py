@@ -137,7 +137,6 @@ class ParseContext(object):
         if semantics is not None:
             self.semantics = semantics
 
-        print('COLORIZE', colorize, self.colorize)
         if colorize is not None:
             self.colorize = colorize
 
