@@ -720,3 +720,10 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
+
+    def _empty_closure(self):
+        cst = Closure([])
+        self._add_cst_node(cst)
+        self.last_node = cst
+        return cst
+

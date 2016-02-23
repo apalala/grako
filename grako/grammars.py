@@ -457,6 +457,14 @@ class PositiveClosure(Closure):
         return super(PositiveClosure, self).__str__() + '+'
 
 
+class EmptyClosure(Model):
+    def parse(self, ctx):
+        return ctx._empty_closure()
+
+    def __str__(self):
+        return '{}'
+
+
 class Optional(_Decorator):
     def parse(self, ctx):
         ctx.last_node = None

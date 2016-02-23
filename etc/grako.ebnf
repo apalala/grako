@@ -159,6 +159,7 @@ term
     =
       void
     | group
+    | empty_closure
     | positive_closure
     | closure
     | optional
@@ -178,6 +179,12 @@ group::Group
 positive_closure::PositiveClosure
     =
     '{' @:expre '}' ('-' | '+') ~
+    ;
+
+
+empty_closure::EmptyClosure
+    =
+    '{' @:() '}'
     ;
 
 

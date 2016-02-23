@@ -241,6 +241,9 @@ The expressions, in reverse order of operator precedence, can be:
     ``{ e }+`` or ``{ e }-``
         Positive closure. Match ``e`` one or more times. The AST_ is always a list.
 
+    ``{}``
+        Empty closure. Match nothing and produce an empty list as AST_.
+
     ``&e``
         Positive lookahead. Try parsing ``e``, but do not consume any input.
 
@@ -765,6 +768,7 @@ Changes
 ----------
 
 * Added suport for ```constant``` expressions which don't consume any input yet return the specified constant.
+* Now an empty closure (``{}``) consumes no input and generates an empty list as AST_.
 
 3.6.8
 -----

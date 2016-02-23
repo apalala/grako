@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS  # noqa
 
 
-__version__ = (2016, 2, 23, 17, 33, 14, 1)
+__version__ = (2016, 2, 23, 20, 2, 15, 1)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -394,6 +394,8 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._group_()
             with self._option():
+                self._empty_closure_()
+            with self._option():
                 self._positive_closure_()
             with self._option():
                 self._closure_()
@@ -437,6 +439,13 @@ class GrakoBootstrapParser(Parser):
                     self._token('+')
                 self._error('expecting one of: + -')
         self._cut()
+
+    @graken('EmptyClosure')
+    def _empty_closure_(self):
+        self._token('{')
+        pass
+        self.ast['@'] = self.last_node
+        self._token('}')
 
     @graken('Closure')
     def _closure_(self):
@@ -705,6 +714,9 @@ class GrakoBootstrapSemantics(object):
     def positive_closure(self, ast):
         return ast
 
+    def empty_closure(self, ast):
+        return ast
+
     def closure(self, ast):
         return ast
 
@@ -789,7 +801,8 @@ def main(filename, startrule, trace=False, whitespace=None, nameguard=None):
         filename=filename,
         trace=trace,
         whitespace=whitespace,
-        nameguard=nameguard)
+        nameguard=nameguard,
+        ignorecase=ignorecase)
     print('AST:')
     print(ast)
     print()

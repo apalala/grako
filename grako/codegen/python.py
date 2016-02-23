@@ -193,6 +193,10 @@ class PositiveClosure(Closure):
                 '''
 
 
+class EmptyClosure(Base):
+    template = 'self._empty_closure()'
+
+
 class Optional(_Decorator):
     template = '''\
                 with self._optional():

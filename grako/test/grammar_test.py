@@ -825,6 +825,16 @@ class GrammarTests(unittest.TestCase):
             pass
 
 
+    def test_empty_closure(self):
+        grammar = '''
+            start = {'x'}+ {} 'y'$;
+        '''
+        model = genmodel("test", grammar)
+        codegen(model)
+        ast = model.parse("xxxy", nameguard=False)
+        self.assertEquals([['x', 'x', 'x'], [], 'y'], ast)
+
+
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)
 
