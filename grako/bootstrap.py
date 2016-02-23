@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS  # noqa
 
 
-__version__ = (2016, 1, 27, 17, 36, 14, 2)
+__version__ = (2016, 2, 23, 17, 33, 14, 1)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -47,21 +47,23 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Grammar')
     def _grammar_(self):
+        self._constant('GRAKO')
+        self.ast['title'] = self.last_node
 
-        def block1():
+        def block2():
             self._directive_()
-        self._closure(block1)
+        self._closure(block2)
         self.ast['directives'] = self.last_node
 
-        def block3():
+        def block4():
             self._rule_()
-        self._positive_closure(block3)
+        self._positive_closure(block4)
 
         self.ast['rules'] = self.last_node
         self._check_eof()
 
         self.ast._define(
-            ['directives', 'rules'],
+            ['title', 'directives', 'rules'],
             []
         )
 
@@ -99,10 +101,17 @@ class GrakoBootstrapParser(Parser):
                             self._error('expecting one of: ignorecase left_recursion nameguard')
                     self.ast['name'] = self.last_node
                     self._cut()
-                    self._token('::')
-                    self._cut()
-                    self._boolean_()
-                    self.ast['value'] = self.last_node
+                    with self._group():
+                        with self._choice():
+                            with self._option():
+                                self._token('::')
+                                self._cut()
+                                self._boolean_()
+                                self.ast['value'] = self.last_node
+                            with self._option():
+                                self._constant('True')
+                                self.ast['value'] = self.last_node
+                            self._error('no available options')
                 self._error('no available options')
 
         self.ast._define(
@@ -481,6 +490,8 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._token_()
             with self._option():
+                self._constant_()
+            with self._option():
                 self._call_()
             with self._option():
                 self._pattern_()
@@ -516,6 +527,18 @@ class GrakoBootstrapParser(Parser):
     def _name_(self):
         self._word_()
 
+    @graken('Constant')
+    def _constant_(self):
+        self._pattern(r'`')
+        self._cut()
+        self._literal_()
+        self.ast['@'] = self.last_node
+        self._pattern(r'`')
+
+    @graken('Token')
+    def _token_(self):
+        self._string_()
+
     @graken()
     def _literal_(self):
         with self._choice():
@@ -530,10 +553,6 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._int_()
             self._error('no available options')
-
-    @graken('Token')
-    def _token_(self):
-        self._string_()
 
     @graken()
     def _string_(self):
@@ -722,10 +741,13 @@ class GrakoBootstrapSemantics(object):
     def name(self, ast):
         return ast
 
-    def literal(self, ast):
+    def constant(self, ast):
         return ast
 
     def token(self, ast):
+        return ast
+
+    def literal(self, ast):
         return ast
 
     def string(self, ast):

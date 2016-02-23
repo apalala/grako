@@ -278,11 +278,20 @@ The expressions, in reverse order of operator precedence, can be:
     ``?/regexp/?``
         Another form of the pattern expression that can be used when there are slashes (``/``) in the pattern.
 
+
+    ```constant```
+        Match nothing, but behave as if ``constant`` had been parsed.
+
+        Constants can be used to inject elements into the concrete and abstract syntax trees, perhaps avoiding having to write a semantic action. For example::
+
+            boolean_option = name ['=' boolean|`true`] ;
+
     ``rulename``
         Invoke the rule named ``rulename``. To help with lexical aspects of grammars, rules with names that begin with an uppercase letter will not advance the input over whitespace or comments.
 
     ``()``
-        The empty expression. Succeed without advancing over input.
+        The empty expression. Succeed without advancing over input. Its value is ``None``.
+
 
     ``!()``
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
@@ -751,6 +760,11 @@ Changes
 **Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
+
+3.7.0-rc.1
+----------
+
+* Added suport for ```constant``` expressions which don't consume any input yet return the specified constant.
 
 3.6.8
 -----

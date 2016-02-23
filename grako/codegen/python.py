@@ -86,6 +86,13 @@ class Token(Base):
     template = "self._token({token})"
 
 
+class Constant(Base):
+    def render_fields(self, fields):
+        fields.update(literal=urepr(self.node.literal))
+
+    template = "self._constant({literal})"
+
+
 class Pattern(Base):
     def render_fields(self, fields):
         raw_repr = 'r' + urepr(self.node.pattern).replace("\\\\", '\\')
@@ -361,9 +368,9 @@ class Grammar(Base):
                       version=version,
                       whitespace=whitespace,
                       nameguard=nameguard,
+                      ignorecase=ignorecase,
                       comments_re=comments_re,
                       eol_comments_re=eol_comments_re,
-                      ignorecase=ignorecase,
                       left_recursion=left_recursion,
                       )
 
@@ -438,7 +445,8 @@ class Grammar(Base):
                         filename=filename,
                         trace=trace,
                         whitespace=whitespace,
-                        nameguard=nameguard)
+                        nameguard=nameguard,
+                        ignorecase=ignorecase)
                     print('AST:')
                     print(ast)
                     print()
