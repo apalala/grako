@@ -482,6 +482,10 @@ class Grammar(Base):
                             sys.exit(0)
 
                     parser = argparse.ArgumentParser(description="Simple parser for {name}.")
+                    arser.add_argument('-c', '--color',
+                                        help='use color in traces (requires the colorama library)',
+                                        action='store_true'
+                                        )
                     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                                         help="list all rules and exit")
                     parser.add_argument('-n', '--no-nameguard', action='store_true',
@@ -501,6 +505,7 @@ class Grammar(Base):
                         args.startrule,
                         trace=args.trace,
                         whitespace=args.whitespace,
-                        nameguard=not args.no_nameguard
+                        nameguard=not args.no_nameguard,
+                        colorize=arts.color
                     )
                     '''
