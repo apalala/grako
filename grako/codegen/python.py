@@ -438,7 +438,17 @@ class Grammar(Base):
                 {abstract_rules}
 
 
-                def main(filename, startrule, trace=False, whitespace=None, nameguard=None):
+                def main(
+                    filename,
+                    startrule,
+                    trace=False,
+                    whitespace={whitespace},
+                    nameguard={nameguard},
+                    comments_re={comments_re},
+                    eol_comments_re={eol_comments_re},
+                    ignorecase={ignorecase},
+                    left_recursion={left_recursion}):
+
                     import json
                     with open(filename) as f:
                         text = f.read()
