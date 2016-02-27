@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import codecs
 import argparse
 import os
-import pickle
 import sys
 
 from grako._version import __version__
@@ -28,10 +27,6 @@ DESCRIPTION = (
 argparser = argparse.ArgumentParser(prog='grako',
                                     description=DESCRIPTION
                                     )
-argparser.add_argument('-b', '--binary',
-                       help='generate a pickled grammar model (requires --output)',
-                       action='store_true'
-                       )
 argparser.add_argument('-c', '--color',
                        help='use color in traces (requires the colorama library)',
                        action='store_true'
@@ -107,7 +102,6 @@ def main(codegen=pythoncg, outer_version=''):
         _error(str(e))
         sys.exit(2)
 
-    binary = args.binary
     colorize = args.color
     filename = args.filename
     name = args.name
@@ -122,16 +116,12 @@ def main(codegen=pythoncg, outer_version=''):
     if whitespace:
         whitespace = eval_escapes(args.whitespace)
 
-    if binary and not outfile:
-        _error('--binary requires --outfile')
-        sys.exit(2)
-
     if draw and not outfile:
         _error('--draw requires --outfile')
         sys.exit(2)
 
-    if sum((binary, draw, pretty)) > 1:
-        _error('either --binary or --draw or --pretty')
+    if sum([draw, pretty]) > 1:
+        _error('either --draw or --pretty, not both')
         sys.exit(2)
 
     if name is None:
@@ -153,9 +143,7 @@ def main(codegen=pythoncg, outer_version=''):
         model.nameguard = False if not nameguard else None  # None allows grammar specified or the default of True
         model.left_recursion = left_recursion
 
-        if binary:
-            result = pickle.dumps(model, protocol=2)
-        elif pretty:
+        if pretty:
             result = str(model)
         else:
             result = codegen(model)

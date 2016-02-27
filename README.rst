@@ -769,6 +769,8 @@ Changes
 
 * Added suport for ```constant``` expressions which don't consume any input yet return the specified constant.
 * Now an empty closure (``{}``) consumes no input and generates an empty list as AST_.
+* Removed the ``--binary`` command-line option. It went unused, it was untested, and it was
+  incorrectly implemented.
 
 3.6.8
 -----
