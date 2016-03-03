@@ -215,3 +215,53 @@ def safe_name(name):
     if keyword.iskeyword(name):
         return name + '_'
     return name
+
+
+def generic_main(name, ParserClass, custom_main):
+    import argparse
+    import string
+    import sys
+
+    class ListRules(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string):
+            print('Rules:')
+            for r in ParserClass.rule_list():
+                print(r)
+            print()
+            sys.exit(0)
+
+    argp = argparse.ArgumentParser(description="Simple parser for %s." % name)
+    addarg = argp.add_argument
+
+    addarg('-c', '--color',
+           help='use color in traces (requires the colorama library)',
+           action='store_true'
+           )
+    addarg('-l', '--list', action=ListRules, nargs=0,
+           help="list all rules and exit")
+    addarg('-n', '--no-nameguard', action='store_true',
+           dest='no_nameguard',
+           help="disable the 'nameguard' feature")
+    addarg('-t', '--trace', action='store_true',
+           help="output trace information")
+    addarg('-w', '--whitespace', type=str, default=string.whitespace,
+           help="whitespace specification")
+    addarg('file',
+           metavar="FILE",
+           help="the input file to parse")
+    addarg('startrule',
+           metavar="STARTRULE",
+           help="the start rule for parsing")
+
+    args = argp.parse_args()
+    try:
+        return custom_main(
+            args.file,
+            args.startrule,
+            trace=args.trace,
+            whitespace=args.whitespace,
+            nameguard=not args.no_nameguard,
+            colorize=args.color
+        )
+    except KeyboardInterrupt:
+        pass

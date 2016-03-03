@@ -772,6 +772,7 @@ Changes
 * Removed the ``--binary`` command-line option. It went unused, it was untested, and it was
   incorrectly implemented.
 * Generated parsers ``pass`` on ``KeyboardInterrupt``.
+* Moved the bulk of the entry code for generated parsers to ``util.generic_main()``. This allows for the verbose code to be verified by the usual tools.
 
 3.6.8
 -----
