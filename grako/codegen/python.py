@@ -502,12 +502,15 @@ class Grammar(Base):
                                         help="the start rule for parsing")
                     args = parser.parse_args()
 
-                    main(
-                        args.file,
-                        args.startrule,
-                        trace=args.trace,
-                        whitespace=args.whitespace,
-                        nameguard=not args.no_nameguard,
-                        colorize=args.color
-                    )
+                    try:
+                        main(
+                            args.file,
+                            args.startrule,
+                            trace=args.trace,
+                            whitespace=args.whitespace,
+                            nameguard=not args.no_nameguard,
+                            colorize=args.color
+                        )
+                    except KeyboardInterrupt:
+                        pass
                     '''

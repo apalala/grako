@@ -771,6 +771,7 @@ Changes
 * Now an empty closure (``{}``) consumes no input and generates an empty list as AST_.
 * Removed the ``--binary`` command-line option. It went unused, it was untested, and it was
   incorrectly implemented.
+* Generated parsers ``pass`` on ``KeyboardInterrupt``.
 
 3.6.8
 -----
