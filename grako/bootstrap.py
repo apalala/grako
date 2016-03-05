@@ -432,8 +432,18 @@ class GrakoBootstrapParser(Parser):
         self._atom_()
         self.ast['sep'] = self.last_node
         self._token('.')
-        self._positive_closure_()
+        self._token('{')
+        self._expre_()
         self.ast['exp'] = self.last_node
+        self._token('}')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('-')
+                with self._option():
+                    self._token('+')
+                self._error('expecting one of: + -')
+        self._cut()
 
         self.ast._define(
             ['sep', 'exp'],
@@ -445,9 +455,14 @@ class GrakoBootstrapParser(Parser):
         self._atom_()
         self.ast['sep'] = self.last_node
         self._token('.')
+        self._token('{')
         self._cut()
-        self._closure_()
+        self._expre_()
         self.ast['exp'] = self.last_node
+        self._token('}')
+        with self._optional():
+            self._token('*')
+        self._cut()
 
         self.ast._define(
             ['sep', 'exp'],

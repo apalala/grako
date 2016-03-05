@@ -468,7 +468,12 @@ class Join(Closure):
         return ctx._closure(exp, sep=sep)
 
     def __str__(self):
-        return '%s.%s' % (str(self.sep), ustr(self.exp))
+        ssep = str(self.sep)
+        sexp = ustr(self.exp)
+        if len(sexp.splitlines()) <= 1:
+            return '%s.{%s}' % (ssep, sexp)
+        else:
+            return '%s.{\n%s\n}' % (ssep, indent(sexp))
 
 
 class PositiveJoin(Join):
@@ -476,6 +481,9 @@ class PositiveJoin(Join):
         sep = lambda: self.sep.parse(ctx)
         exp = lambda: self.exp.parse(ctx)
         return ctx._positive_closure(exp, sep=sep)
+
+    def __str__(self):
+        return super(PositiveJoin, self).__str__() + '+'
 
 
 class EmptyClosure(Model):
