@@ -253,7 +253,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         Use grouping if ``s`` is more complex than a *token* or a *pattern*::
 
-            { e1 }.(e2)
+            {e1}.(e2)
 
         Use an *optional* if empty sequences are allowed::
 
