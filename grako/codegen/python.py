@@ -466,7 +466,7 @@ class Grammar(Base):
 
                 if __name__ == '__main__':
                     import json
-                    ast = generic_main({name}, {name}Parser, main)
+                    ast = generic_main('{name}', {name}Parser, main)
                     print('AST:')
                     print(ast)
                     print()
