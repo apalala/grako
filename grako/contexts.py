@@ -683,10 +683,9 @@ class ParseContext(object):
             self._push_cut()
             try:
                 p = self._pos
+
                 with self._try():
-                    if not s:
-                        f()
-                    else:
+                    if s:
                         self._push_cst()
                         try:
                             self.cst = None
@@ -694,7 +693,8 @@ class ParseContext(object):
                             self._cut()
                         finally:
                             self._pop_cst()
-                        f()
+                    f()
+
                 if self._pos == p:
                     self._error('empty closure')
                 s = sep
