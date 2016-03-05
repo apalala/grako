@@ -190,19 +190,27 @@ class PositiveClosure(Closure):
                 '''
 
 
-class Join(Closure):
+class Join(_Decorator):
+    def render_fields(self, fields):
+        fields.update(n=self.counter())
+
+    def render(self, **fields):
+        if {()} in self.node.exp.firstset:
+            raise CodegenError('may repeat empty sequence')
+        return '\n' + super(Join, self).render(**fields)
+
     template = '''\
                 def block{n}():
                 {exp:1::}
-                self._closure(block{n}, sep={sep})\
+                self._closure(block{n}, sep=lambda: {sep})\
                 '''
 
 
-class PositiveJoin(PositiveClosure):
+class PositiveJoin(Join):
     template = '''\
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n}, sep={sep})\
+                self._positive_closure(block{n}, sep=lambda: {sep})\
                 '''
 
 
@@ -452,16 +460,16 @@ class Grammar(Base):
 
 
                 def main(
-                    filename,
-                    startrule,
-                    trace=False,
-                    whitespace={whitespace},
-                    nameguard={nameguard},
-                    comments_re={comments_re},
-                    eol_comments_re={eol_comments_re},
-                    ignorecase={ignorecase},
-                    left_recursion={left_recursion},
-                    **kwargs):
+                        filename,
+                        startrule,
+                        trace=False,
+                        whitespace={whitespace},
+                        nameguard={nameguard},
+                        comments_re={comments_re},
+                        eol_comments_re={eol_comments_re},
+                        ignorecase={ignorecase},
+                        left_recursion={left_recursion},
+                        **kwargs):
 
                     with open(filename) as f:
                         text = f.read()

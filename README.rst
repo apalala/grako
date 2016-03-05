@@ -247,12 +247,20 @@ The expressions, in reverse order of operator precedence, can be:
     ``s.{ e }``
         Inspired by Python_'s ``str.join()``, is equivalent to::
 
-           [e { s ~ e}]
+           [s {s ~ e}]
+
+        The ``s`` part is not included in the resulting AST_.
+
+        Use grouping if ``s`` is more complex than a *token* or a *pattern*::
+
+            (esep).{ e }
 
     ``s.{ e }+``
         Equivalent to::
 
-           e { s ~ e}
+           s {s ~ e}
+
+        The ``s`` part is not included in the resulting AST_.
 
     ``&e``
         Positive lookahead. Try parsing ``e``, but do not consume any input.

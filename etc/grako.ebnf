@@ -59,21 +59,21 @@ decorator
     ;
 
 
-params
+params_only
     =
-    @+:literal {',' @+:literal !'='}
+    ','.{@+:literal}+
     ;
 
 
-params_only
+params
     =
-    @+:literal {',' @+:literal}
+    ','.{@+:literal !'='}+
     ;
 
 
 kwparams
     =
-    @+:pair {',' ~ @+:pair}
+    ','.{@+:pair}
     ;
 
 
@@ -91,7 +91,7 @@ expre
 
 choice::Choice
     =
-    @+:sequence {'|' ~ @+:sequence}+
+    '|'.{ @+:sequence}+
     ;
 
 
@@ -180,13 +180,19 @@ group::Group
 
 positive_join::PositiveJoin
     =
-    sep:atom '.' ~ exp:positive_closure
+    sep:separator '.' '{' exp:expre '}' ('-' | '+') ~
     ;
 
 
 join::Join
     =
-    sep:atom '.' ~ exp:closure
+    sep:separator '.' ~ '{' exp:expre '}' ['*'] ~
+    ;
+
+
+separator
+    =
+    group | token |  pattern
     ;
 
 

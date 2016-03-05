@@ -687,7 +687,14 @@ class ParseContext(object):
                     if not s:
                         f()
                     else:
-                        s(); self._cut(); f()
+                        self._push_cst()
+                        try:
+                            self.cst = None
+                            s()
+                            self._cut()
+                        finally:
+                            self._pop_cst()
+                        f()
                 if self._pos == p:
                     self._error('empty closure')
                 s = sep
@@ -731,4 +738,3 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
-
