@@ -14,10 +14,10 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 from grako.parsing import graken, Parser
-from grako.util import re, RE_FLAGS  # noqa
+from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 2, 23, 20, 27, 2, 1)
+__version__ = (2016, 3, 5, 23, 4, 53, 5)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -58,7 +58,6 @@ class GrakoBootstrapParser(Parser):
         def block4():
             self._rule_()
         self._positive_closure(block4)
-
         self.ast['rules'] = self.last_node
         self._check_eof()
 
@@ -289,7 +288,6 @@ class GrakoBootstrapParser(Parser):
         def block1():
             self._element_()
         self._positive_closure(block1)
-
         self.ast['sequence'] = self.last_node
 
         self.ast._define(
@@ -396,6 +394,8 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._empty_closure_()
             with self._option():
+                self._join_()
+            with self._option():
                 self._positive_closure_()
             with self._option():
                 self._closure_()
@@ -425,6 +425,32 @@ class GrakoBootstrapParser(Parser):
             []
         )
 
+    @graken('Join')
+    def _join_(self):
+        self._token('{')
+        self._expre_()
+        self.ast['exp'] = self.last_node
+        self._token('}')
+        self._token('.')
+        self._cut()
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._group_()
+                with self._option():
+                    self._token_()
+                with self._option():
+                    self._constant_()
+                with self._option():
+                    self._pattern_()
+                self._error('no available options')
+        self.ast['sep'] = self.last_node
+
+        self.ast._define(
+            ['exp', 'sep'],
+            []
+        )
+
     @graken('PositiveClosure')
     def _positive_closure_(self):
         self._token('{')
@@ -440,13 +466,6 @@ class GrakoBootstrapParser(Parser):
                 self._error('expecting one of: + -')
         self._cut()
 
-    @graken('EmptyClosure')
-    def _empty_closure_(self):
-        self._token('{')
-        pass
-        self.ast['@'] = self.last_node
-        self._token('}')
-
     @graken('Closure')
     def _closure_(self):
         self._token('{')
@@ -456,6 +475,13 @@ class GrakoBootstrapParser(Parser):
         with self._optional():
             self._token('*')
         self._cut()
+
+    @graken('EmptyClosure')
+    def _empty_closure_(self):
+        self._token('{')
+        pass
+        self.ast['@'] = self.last_node
+        self._token('}')
 
     @graken('Optional')
     def _optional_(self):
@@ -711,13 +737,16 @@ class GrakoBootstrapSemantics(object):
     def group(self, ast):
         return ast
 
+    def join(self, ast):
+        return ast
+
     def positive_closure(self, ast):
         return ast
 
-    def empty_closure(self, ast):
+    def closure(self, ast):
         return ast
 
-    def closure(self, ast):
+    def empty_closure(self, ast):
         return ast
 
     def optional(self, ast):
@@ -791,17 +820,17 @@ class GrakoBootstrapSemantics(object):
 
 
 def main(
-    filename,
-    startrule,
-    trace=False,
-    whitespace=None,
-    nameguard=None,
-    comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
-    eol_comments_re='#([^\\n]*?)$',
-    ignorecase=None,
-    left_recursion=True):
+        filename,
+        startrule,
+        trace=False,
+        whitespace=None,
+        nameguard=None,
+        comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+        eol_comments_re='#([^\\n]*?)$',
+        ignorecase=None,
+        left_recursion=True,
+        **kwargs):
 
-    import json
     with open(filename) as f:
         text = f.read()
     parser = GrakoBootstrapParser(parseinfo=False)
@@ -812,46 +841,16 @@ def main(
         trace=trace,
         whitespace=whitespace,
         nameguard=nameguard,
-        ignorecase=ignorecase)
+        ignorecase=ignorecase,
+        **kwargs)
+    return ast
+
+if __name__ == '__main__':
+    import json
+    ast = generic_main(main, GrakoBootstrapParser, name='GrakoBootstrap')
     print('AST:')
     print(ast)
     print()
     print('JSON:')
     print(json.dumps(ast, indent=2))
     print()
-
-if __name__ == '__main__':
-    import argparse
-    import string
-    import sys
-
-    class ListRules(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string):
-            print('Rules:')
-            for r in GrakoBootstrapParser.rule_list():
-                print(r)
-            print()
-            sys.exit(0)
-
-    parser = argparse.ArgumentParser(description="Simple parser for GrakoBootstrap.")
-    parser.add_argument('-l', '--list', action=ListRules, nargs=0,
-                        help="list all rules and exit")
-    parser.add_argument('-n', '--no-nameguard', action='store_true',
-                        dest='no_nameguard',
-                        help="disable the 'nameguard' feature")
-    parser.add_argument('-t', '--trace', action='store_true',
-                        help="output trace information")
-    parser.add_argument('-w', '--whitespace', type=str, default=string.whitespace,
-                        help="whitespace specification")
-    parser.add_argument('file', metavar="FILE", help="the input file to parse")
-    parser.add_argument('startrule', metavar="STARTRULE",
-                        help="the start rule for parsing")
-    args = parser.parse_args()
-
-    main(
-        args.file,
-        args.startrule,
-        trace=args.trace,
-        whitespace=args.whitespace,
-        nameguard=not args.no_nameguard
-    )
