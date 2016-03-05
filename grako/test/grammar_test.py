@@ -824,7 +824,6 @@ class GrammarTests(unittest.TestCase):
         except FailedParse:
             pass
 
-
     def test_empty_closure(self):
         grammar = '''
             start = {'x'}+ {} 'y'$;
@@ -833,6 +832,39 @@ class GrammarTests(unittest.TestCase):
         codegen(model)
         ast = model.parse("xxxy", nameguard=False)
         self.assertEquals([['x', 'x', 'x'], [], 'y'], ast)
+
+    def test_join(self):
+        grammar = '''
+            start = {'x'}.',' ;
+        '''
+
+        grammar2 = '''
+            start = ({'x'}.','|{}) ;
+        '''
+
+        grammar3 = '''
+            start = [{'x'}.','] ;
+        '''
+
+        model = genmodel("test", grammar)
+        codegen(model)
+        ast = model.parse("x, x, x", nameguard=False)
+        self.assertEquals(['x', 'x', 'x'], ast)
+        ast = model.parse("x x", nameguard=False)
+        self.assertEquals(['x'], ast)
+        try:
+            ast = model.parse("y x", nameguard=False)
+            fail('closure not positive')
+        except FailedParse:
+            pass
+
+        model = genmodel("test", grammar2)
+        ast = model.parse("y x", nameguard=False)
+        self.assertEquals([], ast)
+
+        model = genmodel("test", grammar3)
+        ast = model.parse("y x", nameguard=False)
+        self.assertEquals(None, ast)
 
 
 def suite():

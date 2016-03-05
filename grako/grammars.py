@@ -465,7 +465,7 @@ class Join(_Decorator):
     def parse(self, ctx):
         sep = lambda: self.sep.parse(ctx)
         exp = lambda: self.exp.parse(ctx)
-        return ctx._closure(exp, sep=sep)
+        return ctx._positive_closure(exp, sep=sep)
 
     def __str__(self):
         ssep = str(self.sep)
@@ -474,6 +474,11 @@ class Join(_Decorator):
             return '{%s}.%s' % (sexp, ssep)
         else:
             return '{\n%s\n}.%s' % (sexp, ssep)
+
+
+class PositiveJoin(Join):
+    def __str__(self):
+        return super(PositiveJoin, self).__str__() + '+'
 
 
 class EmptyClosure(Model):
