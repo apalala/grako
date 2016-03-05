@@ -161,6 +161,8 @@ term
     | group
     | empty_closure
     | positive_closure
+    | positive_join
+    | join
     | closure
     | optional
     | special
@@ -176,6 +178,18 @@ group::Group
     ;
 
 
+positive_join::PositiveJoin
+    =
+    sep:atom '.' ~ exp:positive_closure
+    ;
+
+
+join::Join
+    =
+    sep:atom '.' ~ exp:closure
+    ;
+
+
 positive_closure::PositiveClosure
     =
     '{' @:expre '}' ('-' | '+') ~
@@ -184,13 +198,13 @@ positive_closure::PositiveClosure
 
 empty_closure::EmptyClosure
     =
-    '{' @:() '}'
+    '{' @:() '}' ~
     ;
 
 
 closure::Closure
     =
-    '{' @:expre '}' ['*'] ~
+    '{' ~ @:expre '}' ['*'] ~
     ;
 
 

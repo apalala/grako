@@ -457,6 +457,31 @@ class PositiveClosure(Closure):
         return super(PositiveClosure, self).__str__() + '+'
 
 
+class Join(Closure):
+    def __init__(self, ast=None, **kwargs):
+        super(Join, self).__init__(ast.exp)
+        assert isinstance(self.exp, Closure)
+        self.sep = ast.sep
+
+    def parse(self, ctx):
+        sep = lambda: self.sep.parse(ctx)
+        exp = lambda: self.exp.parse(ctx)
+        return ctx._closure(exp, sep=sep)
+
+    def __str__(self):
+        return '%s.%s' % (urepr(self.sep), ustr(self.exp))
+
+
+class PositiveJoin(Join):
+    def parse(self, ctx):
+        sep = lambda: self.sep.parse(ctx)
+        exp = lambda: self.exp.parse(ctx)
+        return ctx._positive_closure(exp, sep=sep)
+
+    def __str__(self):
+        return '%s.%s' % (urepr(self.sep), ustr(self.exp))
+
+
 class EmptyClosure(Model):
     def parse(self, ctx):
         return ctx._empty_closure()

@@ -244,6 +244,16 @@ The expressions, in reverse order of operator precedence, can be:
     ``{}``
         Empty closure. Match nothing and produce an empty list as AST_.
 
+    ``s.{ e }``
+        Inspired by Python_'s ``str.join()``, is equivalent to::
+
+           [e { s ~ e}]
+
+    ``s.{ e }+``
+        Equivalent to::
+
+           e { s ~ e}
+
     ``&e``
         Positive lookahead. Try parsing ``e``, but do not consume any input.
 
@@ -773,6 +783,8 @@ Changes
   incorrectly implemented.
 * Generated parsers ``pass`` on ``KeyboardInterrupt``.
 * Moved the bulk of the entry code for generated parsers to ``util.generic_main()``. This allows for the verbose code to be verified by the usual tools.
+* Deprecate ``{e}*`` and ``{e}-`` by removing them from the documentation.
+* Added the Python_ inspired *join* operator, ``s.{e}``, as a convenient syntax for parsing sequences with separators.
 
 3.6.8
 -----

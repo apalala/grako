@@ -183,13 +183,26 @@ class Closure(_Decorator):
 
 
 class PositiveClosure(Closure):
-    def render_fields(self, fields):
-        fields.update(n=self.counter())
-
     template = '''
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n})
+                self._positive_closure(block{n})\
+                '''
+
+
+class Join(Closure):
+    template = '''\
+                def block{n}():
+                {exp:1::}
+                self._closure(block{n}, sep={sep})\
+                '''
+
+
+class PositiveJoin(PositiveClosure):
+    template = '''\
+                def block{n}():
+                {exp:1::}
+                self._positive_closure(block{n}, sep={sep})\
                 '''
 
 
