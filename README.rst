@@ -783,8 +783,8 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.7.0-rc.1
-----------
+3.7.0
+-----
 
 * Added suport for ```constant``` expressions which don't consume any input yet return the specified constant.
 * Now an empty closure (``{}``) consumes no input and generates an empty list as AST_.
