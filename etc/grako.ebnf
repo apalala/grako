@@ -61,7 +61,7 @@ decorator
 
 params
     =
-    {literal !'='}.','
+    @+:literal {',' @+:literal !'=' ~ }
     ;
 
 

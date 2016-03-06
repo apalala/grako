@@ -100,7 +100,11 @@ class GrakoSemantics(ModelBuilderSemantics):
         exp = ast.exp
         base = ast.base
         params = ast.params
-        kwparams = OrderedDict(ast.kwparams) if ast.kwparams else None
+        try:
+            kwparams = OrderedDict(ast.kwparams) if ast.kwparams else None
+        except:
+            print('KWPARAMS', ast.kwparams)
+            raise
 
         if 'override' not in decorators and name in self.rules:
             self.new_name(name)
