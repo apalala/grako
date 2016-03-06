@@ -788,17 +788,16 @@ Changes
 
 * Added suport for ```constant``` expressions which don't consume any input yet return the specified constant.
 * Now an empty closure (``{}``) consumes no input and generates an empty list as AST_.
-* Removed the ``--binary`` command-line option. It went unused, it was untested, and it was
-  incorrectly implemented.
+* Removed the ``--binary`` command-line option. It went unused, it was untested, and it was incorrectly implemented.
 * Generated parsers ``pass`` on ``KeyboardInterrupt``.
 * Moved the bulk of the entry code for generated parsers to ``util.generic_main()``. This allows for the verbose code to be verified by the usual tools.
 * Deprecate ``{e}*`` and ``{e}-`` by removing them from the documentation.
-* Added the Python_ inspired *join* operator, ``s.{e}``, as a convenient syntax for parsing sequences with separators.
+* Added the Python_-inspired *join* operator, ``s.{e}``, as a convenient syntax for parsing sequences with separators.
 
 3.6.8
 -----
 
-* Sever minor **BUG** fixes. See the `commit log`_  for details.
+* Several minor **bug** fixes. See the `commit log`_  for details.
 
 3.6.7
 -----

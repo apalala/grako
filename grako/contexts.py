@@ -693,8 +693,8 @@ class ParseContext(object):
             try:
                 p = self._pos
                 with self._try():
-                    with self._ignore():
-                        if prefix:
+                    if prefix:
+                        with self._ignore():
                             prefix()
                             self._cut()
 
