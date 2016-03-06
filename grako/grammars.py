@@ -457,6 +457,30 @@ class PositiveClosure(Closure):
         return super(PositiveClosure, self).__str__() + '+'
 
 
+class Join(_Decorator):
+    def __init__(self, ast=None, **kwargs):
+        super(Join, self).__init__(ast.exp)
+        self.sep = ast.sep
+
+    def parse(self, ctx):
+        sep = lambda: self.sep.parse(ctx)
+        exp = lambda: self.exp.parse(ctx)
+        return ctx._positive_closure(exp, prefix=sep)
+
+    def __str__(self):
+        ssep = str(self.sep)
+        sexp = ustr(self.exp)
+        if len(sexp.splitlines()) <= 1:
+            return '%s.{%s}' % (ssep, sexp)
+        else:
+            return '%s.{\n%s\n}' % (ssep, sexp)
+
+
+class PositiveJoin(Join):
+    def __str__(self):
+        return super(PositiveJoin, self).__str__() + '+'
+
+
 class EmptyClosure(Model):
     def parse(self, ctx):
         return ctx._empty_closure()

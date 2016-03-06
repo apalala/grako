@@ -61,19 +61,19 @@ decorator
 
 params
     =
-    @+:literal {',' @+:literal !'='}
+    @+:literal {',' @+:literal !'=' ~ }
     ;
 
 
 params_only
     =
-    @+:literal {',' @+:literal}
+    ','.{literal}
     ;
 
 
 kwparams
     =
-    @+:pair {',' ~ @+:pair}
+    ','.{pair}
     ;
 
 
@@ -158,6 +158,7 @@ override_single_deprecated::Override
 term
     =
       void
+    | join
     | group
     | empty_closure
     | positive_closure
@@ -176,21 +177,33 @@ group::Group
     ;
 
 
+join::Join
+    =
+    sep:separator '.' ~ '{' exp:expre '}'
+    ;
+
+
+separator
+    =
+    group | token | constant |  pattern
+    ;
+
+
 positive_closure::PositiveClosure
     =
     '{' @:expre '}' ('-' | '+') ~
     ;
 
 
-empty_closure::EmptyClosure
-    =
-    '{' @:() '}'
-    ;
-
-
 closure::Closure
     =
     '{' @:expre '}' ['*'] ~
+    ;
+
+
+empty_closure::EmptyClosure
+    =
+    '{' @:() '}'
     ;
 
 

@@ -183,13 +183,36 @@ class Closure(_Decorator):
 
 
 class PositiveClosure(Closure):
-    def render_fields(self, fields):
-        fields.update(n=self.counter())
-
     template = '''
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n})
+                self._positive_closure(block{n})\
+                '''
+
+
+class Join(_Decorator):
+    def render_fields(self, fields):
+        fields.update(n=self.counter())
+
+    def render(self, **fields):
+        if {()} in self.node.exp.firstset:
+            raise CodegenError('may repeat empty sequence')
+        return '\n' + super(Join, self).render(**fields)
+
+    template = '''\
+                def sep{n}():
+                {sep:1::}
+                def block{n}():
+                {exp:1::}
+                self._positive_closure(block{n}, prefix=sep{n})\
+                '''
+
+
+class PositiveJoin(Join):
+    template = '''\
+                def block{n}():
+                {exp:1::}
+                self._positive_closure(block{n}, prefix=lambda: {sep})\
                 '''
 
 
@@ -439,16 +462,16 @@ class Grammar(Base):
 
 
                 def main(
-                    filename,
-                    startrule,
-                    trace=False,
-                    whitespace={whitespace},
-                    nameguard={nameguard},
-                    comments_re={comments_re},
-                    eol_comments_re={eol_comments_re},
-                    ignorecase={ignorecase},
-                    left_recursion={left_recursion},
-                    **kwargs):
+                        filename,
+                        startrule,
+                        trace=False,
+                        whitespace={whitespace},
+                        nameguard={nameguard},
+                        comments_re={comments_re},
+                        eol_comments_re={eol_comments_re},
+                        ignorecase={ignorecase},
+                        left_recursion={left_recursion},
+                        **kwargs):
 
                     with open(filename) as f:
                         text = f.read()
@@ -466,7 +489,7 @@ class Grammar(Base):
 
                 if __name__ == '__main__':
                     import json
-                    ast = generic_main('{name}', {name}Parser, main)
+                    ast = generic_main(main, {name}Parser, name='{name}')
                     print('AST:')
                     print(ast)
                     print()

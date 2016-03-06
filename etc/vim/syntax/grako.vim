@@ -25,13 +25,14 @@ syn match ebnfParamsStart "::" nextgroup=ebnfParams skipwhite skipempty
 syn match ebnfParams /.*[^=]/ contained skipwhite skipempty nextgroup=ebnfSeparator
 syn region ebnfParams start=/(/ end=')' skipwhite skipempty nextgroup=ebnfSeparator
 
+
 syn match ebnfSeparator /[=]/ contained nextgroup=ebnfProduction skipwhite skipempty
-syn region ebnfProduction start=/\zs[^\.;]/ end=/[\.;]/me=e-1 contained contains=ebnfSpecial,ebnfDelimiter,ebnfTerminal,ebnfConstant,ebnfSpecialSequence,ebnfPattern,ebnfComment,ebnfName,ebnfRuleInclude nextgroup=ebnfEndProduction skipwhite skipempty
+syn region ebnfProduction start=/\zs[^;]/ end=/[;]/me=e-1 contained contains=ebnfSpecial,ebnfDelimiter,ebnfTerminal,ebnfConstant,ebnfSpecialSequence,ebnfPattern,ebnfComment,ebnfName,ebnfRuleInclude nextgroup=ebnfEndProduction skipwhite skipempty
 syn match ebnfDelimiter #[\-\*+]\|>>\|[&~,(|)\]}\[{!]\|\(\*)\)\|\((\*\)\|\(:)\)\|\((:\)# contained
-syn match ebnfSpecial /[~+*]/ contained
+syn match ebnfSpecial /[~+*%\.]/ contained
 syn region ebnfPattern matchgroup=Delimiter start=/\// end=/\// contained
 syn region ebnfSpecialSequence matchgroup=Delimiter start=/?/ end=/?/ contained
-syn match ebnfEndProduction /[\.;]/ contained
+syn match ebnfEndProduction /[;]/ contained
 syn region ebnfTerminal matchgroup=delimiter start=/"/ end=/"/ contained
 syn region ebnfTerminal matchgroup=delimiter start=/'/ end=/'/ contained
 syn region ebnfConstant matchgroup=delimiter start=/`/ end=/`/ contained
@@ -39,6 +40,8 @@ syn region ebnfConstant matchgroup=delimiter start=/`/ end=/`/ contained
 syn region ebnfComment start="#" end="$" contains=ebnfTodo
 syn region ebnfComment start="(\*" end="\*)" contains=ebnfTodo
 syn keyword ebnfTodo        FIXME NOTE NOTES TODO XXX contained
+
+syn region ebnfClosure start="'.{" end="}" contains=ebnfTodo
 
 
 hi link ebnfComment Comment
@@ -59,4 +62,5 @@ hi link ebnfConstant ebnfDecorator
 hi link ebnfInherit Include
 hi link ebnfParamsStart ebnfParams
 hi link ebnfParams Type
+hi link ebnfClosure Type
 hi link ebnfTodo Todo

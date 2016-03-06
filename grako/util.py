@@ -217,7 +217,7 @@ def safe_name(name):
     return name
 
 
-def generic_main(name, ParserClass, custom_main):
+def generic_main(custom_main, ParserClass, name='Unknown'):
     import argparse
     import string
     import sys

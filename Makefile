@@ -25,7 +25,7 @@ tmp/grako_docs.zip: tmp/index.html
 	zip --junk-paths tmp/grako_docs.zip tmp/index.html
 
 tmp/index.html: README.rst etc/style.css
-	rst2html \
+	rst2html.py \
 		--stylesheet-path etc/style.css \
 		--embed-stylesheet \
 		README.rst > tmp/index.html
