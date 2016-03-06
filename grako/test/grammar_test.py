@@ -835,23 +835,23 @@ class GrammarTests(unittest.TestCase):
 
     def test_join(self):
         grammar = '''
-            start = {'x'}.',' ;
+            start = ','.{'x' 'y'} ;
         '''
 
         grammar2 = '''
-            start = ({'x'}.','|{}) ;
+            start = (','.{'x'}|{}) ;
         '''
 
         grammar3 = '''
-            start = [{'x'}.','] ;
+            start = [','.{'x'}] ;
         '''
 
         model = genmodel("test", grammar)
         codegen(model)
-        ast = model.parse("x, x, x", nameguard=False)
-        self.assertEquals(['x', 'x', 'x'], ast)
-        ast = model.parse("x x", nameguard=False)
-        self.assertEquals(['x'], ast)
+        ast = model.parse("x y, x y", nameguard=False)
+        self.assertEquals([['x', 'y'], ['x', 'y']], ast)
+        ast = model.parse("x y x y", nameguard=False)
+        self.assertEquals([['x', 'y']], ast)
         try:
             ast = model.parse("y x", nameguard=False)
             fail('closure not positive')

@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 6, 2, 51, 36, 6)
+__version__ = (2016, 3, 6, 2, 58, 28, 6)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -419,26 +419,14 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Join')
     def _join_(self):
-        with self._choice():
-            with self._option():
-                self._separator_()
-                self.ast['sep'] = self.last_node
-                self._token('.')
-                self._cut()
-                self._token('{')
-                self._expre_()
-                self.ast['exp'] = self.last_node
-                self._token('}')
-            with self._option():
-                self._token('{')
-                self._expre_()
-                self.ast['exp'] = self.last_node
-                self._token('}')
-                self._token('.')
-                self._cut()
-                self._separator_()
-                self.ast['sep'] = self.last_node
-            self._error('no available options')
+        self._separator_()
+        self.ast['sep'] = self.last_node
+        self._token('.')
+        self._cut()
+        self._token('{')
+        self._expre_()
+        self.ast['exp'] = self.last_node
+        self._token('}')
 
         self.ast._define(
             ['sep', 'exp'],
