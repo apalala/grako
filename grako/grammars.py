@@ -471,9 +471,9 @@ class Join(_Decorator):
         ssep = str(self.sep)
         sexp = ustr(self.exp)
         if len(sexp.splitlines()) <= 1:
-            return '{%s}.%s' % (sexp, ssep)
+            return '%s.{%s}' % (ssep, sexp)
         else:
-            return '{\n%s\n}.%s' % (sexp, ssep)
+            return '%s.{\n%s\n}' % (ssep, sexp)
 
 
 class PositiveJoin(Join):

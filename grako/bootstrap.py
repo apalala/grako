@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 6, 2, 30, 37, 6)
+__version__ = (2016, 3, 6, 2, 51, 36, 6)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -419,29 +419,44 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Join')
     def _join_(self):
-        self._token('{')
-        self._expre_()
-        self.ast['exp'] = self.last_node
-        self._token('}')
-        self._token('.')
-        self._cut()
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._group_()
-                with self._option():
-                    self._token_()
-                with self._option():
-                    self._constant_()
-                with self._option():
-                    self._pattern_()
-                self._error('no available options')
-        self.ast['sep'] = self.last_node
+        with self._choice():
+            with self._option():
+                self._separator_()
+                self.ast['sep'] = self.last_node
+                self._token('.')
+                self._cut()
+                self._token('{')
+                self._expre_()
+                self.ast['exp'] = self.last_node
+                self._token('}')
+            with self._option():
+                self._token('{')
+                self._expre_()
+                self.ast['exp'] = self.last_node
+                self._token('}')
+                self._token('.')
+                self._cut()
+                self._separator_()
+                self.ast['sep'] = self.last_node
+            self._error('no available options')
 
         self.ast._define(
-            ['exp', 'sep'],
+            ['sep', 'exp'],
             []
         )
+
+    @graken()
+    def _separator_(self):
+        with self._choice():
+            with self._option():
+                self._group_()
+            with self._option():
+                self._token_()
+            with self._option():
+                self._constant_()
+            with self._option():
+                self._pattern_()
+            self._error('no available options')
 
     @graken('PositiveClosure')
     def _positive_closure_(self):
@@ -730,6 +745,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def join(self, ast):
+        return ast
+
+    def separator(self, ast):
         return ast
 
     def positive_closure(self, ast):
