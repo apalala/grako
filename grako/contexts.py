@@ -677,19 +677,18 @@ class ParseContext(object):
         else:
             self._error('', etype=FailedLookahead)
 
-    def _repeater(self, f, sep=None, sep_start=False):
-        s = sep if sep_start else None
+    def _repeater(self, f, prefix=None):
         while True:
             self._push_cut()
             try:
                 p = self._pos
 
                 with self._try():
-                    if s:
+                    if prefix:
                         self._push_cst()
                         try:
                             self.cst = None
-                            s()
+                            prefix()
                             self._cut()
                         finally:
                             self._pop_cst()
@@ -697,7 +696,6 @@ class ParseContext(object):
 
                 if self._pos == p:
                     self._error('empty closure')
-                s = sep
             except FailedCut:
                 raise
             except FailedParse as e:
@@ -707,11 +705,11 @@ class ParseContext(object):
             finally:
                 self._pop_cut()
 
-    def _closure(self, block, sep=None):
+    def _closure(self, block):
         self._push_cst()
         try:
             self.cst = []
-            self._repeater(block, sep=sep)
+            self._repeater(block)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()
@@ -719,13 +717,13 @@ class ParseContext(object):
         self.last_node = cst
         return cst
 
-    def _positive_closure(self, block, sep=None):
+    def _positive_closure(self, block, prefix=None):
         self._push_cst()
         try:
             self.cst = []
             with self._try():
                 block()
-            self._repeater(block, sep=sep, sep_start=True)
+            self._repeater(block, prefix=prefix)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()

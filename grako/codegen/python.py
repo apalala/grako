@@ -201,7 +201,6 @@ class Join(_Decorator):
 
     template = '''\
                 def block{n}():
-                {exp:1::}
                 self._positive_closure(block{n}, sep=lambda: {sep})\
                 '''
 
@@ -209,7 +208,6 @@ class Join(_Decorator):
 class PositiveJoin(Join):
     template = '''\
                 def block{n}():
-                {exp:1::}
                 self._positive_closure(block{n}, sep=lambda: {sep})\
                 '''
 

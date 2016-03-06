@@ -73,7 +73,7 @@ params_only
 
 kwparams
     =
-    {@+:pair}.','
+    {pair}.','
     ;
 
 
