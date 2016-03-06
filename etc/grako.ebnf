@@ -158,9 +158,9 @@ override_single_deprecated::Override
 term
     =
       void
+    | join
     | group
     | empty_closure
-    | join
     | positive_closure
     | closure
     | optional

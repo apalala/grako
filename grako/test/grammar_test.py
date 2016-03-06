@@ -866,6 +866,18 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("y x", nameguard=False)
         self.assertEquals(None, ast)
 
+    def test_group_join(self):
+        grammar = '''
+            start = ('a' 'b').{'x'} ;
+        '''
+        model = genmodel("test", grammar)
+        c = codegen(model)
+        import parser
+        parser.suite(c)
+
+        ast = model.parse("x a b x", nameguard=False)
+        self.assertEquals(['x', 'x'], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

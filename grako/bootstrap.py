@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 6, 2, 58, 28, 6)
+__version__ = (2016, 3, 6, 3, 21, 28, 6)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -233,16 +233,20 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _params_only_(self):
 
+        def sep0():
+            self._token(',')
         def block0():
             self._literal_()
-        self._positive_closure(block0, prefix=lambda: self._token(','))
+        self._positive_closure(block0, prefix=sep0)
 
     @graken()
     def _kwparams_(self):
 
+        def sep0():
+            self._token(',')
         def block0():
             self._pair_()
-        self._positive_closure(block0, prefix=lambda: self._token(','))
+        self._positive_closure(block0, prefix=sep0)
 
     @graken()
     def _pair_(self):
@@ -382,11 +386,11 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._void_()
             with self._option():
+                self._join_()
+            with self._option():
                 self._group_()
             with self._option():
                 self._empty_closure_()
-            with self._option():
-                self._join_()
             with self._option():
                 self._positive_closure_()
             with self._option():

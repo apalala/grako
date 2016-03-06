@@ -200,9 +200,11 @@ class Join(_Decorator):
         return '\n' + super(Join, self).render(**fields)
 
     template = '''\
+                def sep{n}():
+                {sep:1::}
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n}, prefix=lambda: {sep})\
+                self._positive_closure(block{n}, prefix=sep{n})\
                 '''
 
 
