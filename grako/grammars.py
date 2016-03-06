@@ -465,7 +465,7 @@ class Join(_Decorator):
     def parse(self, ctx):
         sep = lambda: self.sep.parse(ctx)
         exp = lambda: self.exp.parse(ctx)
-        return ctx._positive_closure(exp, sep=sep)
+        return ctx._positive_closure(exp, prefix=sep)
 
     def __str__(self):
         ssep = str(self.sep)
