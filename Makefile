@@ -62,6 +62,10 @@ release_check: flake8
 	@echo version `python -m grako --version`
 
 
-publish:
-	python setup.py sdist
-	python setup.py sdist bdist_wheel --universal
+publish: release_check
+	python setup.py sdist --formats=gztar,zip
+	python setup.py bdist_wheel --universal
+
+
+upload: release_check
+	python setup.py sdist --formats=gztar,zip bdist_wheel --universal register upload
