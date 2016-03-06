@@ -464,7 +464,7 @@ class GrammarTests(unittest.TestCase):
         model.parse("1*2+3*5")
         try:
             model.parse("1*2+3*5", left_recursion=False)
-            self.fail('expected left recursion failure')
+            self.Fail('expected left recursion failure')
         except FailedParse:
             pass
 
@@ -854,7 +854,7 @@ class GrammarTests(unittest.TestCase):
         self.assertEquals([['x', 'y']], ast)
         try:
             ast = model.parse("y x", nameguard=False)
-            fail('closure not positive')
+            self.Fail('closure not positive')
         except FailedParse:
             pass
 

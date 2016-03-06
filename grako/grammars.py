@@ -463,8 +463,12 @@ class Join(_Decorator):
         self.sep = ast.sep
 
     def parse(self, ctx):
-        sep = lambda: self.sep.parse(ctx)
-        exp = lambda: self.exp.parse(ctx)
+        def sep():
+            return self.sep.parse(ctx)
+
+        def exp():
+            return self.exp.parse(ctx)
+
         return ctx._positive_closure(exp, prefix=sep)
 
     def __str__(self):

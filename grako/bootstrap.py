@@ -235,6 +235,7 @@ class GrakoBootstrapParser(Parser):
 
         def sep0():
             self._token(',')
+
         def block0():
             self._literal_()
         self._positive_closure(block0, prefix=sep0)
@@ -244,6 +245,7 @@ class GrakoBootstrapParser(Parser):
 
         def sep0():
             self._token(',')
+
         def block0():
             self._pair_()
         self._positive_closure(block0, prefix=sep0)
