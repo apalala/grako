@@ -54,6 +54,7 @@ clean_cython:
 	find grako -name "*.so" | xargs rm -f
 	find grako -name "*.c" | xargs rm -f
 
+
 release_check: flake8
 	rst2html.py README.rst > /dev/null
 	python setup.py sdist
@@ -64,5 +65,3 @@ release_check: flake8
 publish:
 	python setup.py sdist
 	python setup.py sdist bdist_wheel --universal
-
-
