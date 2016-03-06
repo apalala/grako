@@ -179,7 +179,7 @@ group::Group
 
 join::Join
     =
-    sep:separator '.' ~ '{' exp:expre '}'
+    sep:separator '.' '{' ~ exp:expre '}'
     ;
 
 
