@@ -787,11 +787,17 @@ Changes
 -----
 
 * Added suport for ```constant``` expressions which don't consume any input yet return the specified constant.
+
 * Now an empty closure (``{}``) consumes no input and generates an empty list as AST_.
+
 * Removed the ``--binary`` command-line option. It went unused, it was untested, and it was incorrectly implemented.
+
 * Generated parsers ``pass`` on ``KeyboardInterrupt``.
+
 * Moved the bulk of the entry code for generated parsers to ``util.generic_main()``. This allows for the verbose code to be verified by the usual tools.
+
 * Deprecate ``{e}*`` and ``{e}-`` by removing them from the documentation.
+
 * Added the Python_-inspired *join* operator, ``s.{e}``, as a convenient syntax for parsing sequences with separators.
 
 3.6.8
@@ -799,14 +805,9 @@ Changes
 
 * Several minor **bug** fixes. See the `commit log`_  for details.
 
-3.6.7
------
-
 * **BUG** Detect and fail promptly on empty tokens in grammars.
-* More reasonable treatment for ANTLR_  ``token`` definitions in the ``antlr2grako`` example.
 
-3.6.6
------
+* More reasonable treatment for ANTLR_  ``token`` definitions in the ``antlr2grako`` example.
 
 * All tests pass with Python_ 3.5.
 
@@ -814,41 +815,19 @@ Changes
 
 * 60_ ``@@`` directives were not pressent in the output of the ``--pretty`` option.
 
-.. _59: https://bitbucket.org/apalala/grako/issues/59/
-.. _60: https://bitbucket.org/apalala/grako/issues/60/
-
-
-3.6.5
------
-
 * 58_ The parameters to the constructor of generated parsers were being ignored (pgebhard).
 
 * **BUG** ``grammars.py`` would call ``ctx.error()`` instead of ``ctx._error()`` on failed rule references.
 
 * Overall cleanup of the code and of the development requirements.
 
-.. _58: https://bitbucket.org/apalala/grako/issues/58/
-
-3.6.3
------
-
 * 56_ Using @@whitespace generated invalid python programs
 
 * The ``@@whitespace`` directive was not working for regular expressions (nehz_).
 
-.. _56: https://bitbucket.org/apalala/grako/issues/56/
-
-3.6.2
------
-
 * BUG: Left recursion in the grammar was checked for in the wrong place when disabled.
 
 * Added basic support for output of an AST_ in YAML_ format.
-
-.. _YAML: https://en.wikipedia.org/wiki/YAML
-
-3.6.1
------
 
 * Added ``@@whitespace`` directive to specify whitespace regular expression within the grammar (starkat_).
 
@@ -860,7 +839,12 @@ Changes
 
 * Upgraded development libraries to their latest versions (see ``requirements.txt``).
 
+.. _YAML: https://en.wikipedia.org/wiki/YAML
 .. _52: https://bitbucket.org/apalala/grako/issue/45
+.. _56: https://bitbucket.org/apalala/grako/issues/56/
+.. _58: https://bitbucket.org/apalala/grako/issues/58/
+.. _59: https://bitbucket.org/apalala/grako/issues/59/
+.. _60: https://bitbucket.org/apalala/grako/issues/60/
 
 
 3.5.1
