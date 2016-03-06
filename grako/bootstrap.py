@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 6, 0, 46, 13, 6)
+__version__ = (2016, 3, 6, 2, 30, 37, 6)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -227,6 +227,7 @@ class GrakoBootstrapParser(Parser):
             self.ast.setlist('@', self.last_node)
             with self._ifnot():
                 self._token('=')
+            self._cut()
         self._closure(block1)
 
     @graken()
