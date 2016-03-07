@@ -861,6 +861,10 @@ class GrammarTests(unittest.TestCase):
         model = genmodel("test", grammar2)
         ast = model.parse("y x", nameguard=False)
         self.assertEquals([], ast)
+        ast = model.parse("x", nameguard=False)
+        self.assertEquals(['x'], ast)
+        ast = model.parse("x,x", nameguard=False)
+        self.assertEquals(['x', 'x'], ast)
 
         model = genmodel("test", grammar3)
         ast = model.parse("y x", nameguard=False)
