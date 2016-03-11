@@ -27,7 +27,7 @@ directive
 
 keywords
     =
-    {'@@keyword' ~ '::' ~ {@+:literal !/[:=]/} }
+    {'@@keyword' ~ '::' ~ {@+:literal !(':'|'=')} }
     ;
 
 
@@ -326,7 +326,6 @@ int
     ;
 
 
-@name
 word
     =
     /(?!\d)\w+/
