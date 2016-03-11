@@ -20,6 +20,7 @@ from grako.exceptions import (
     FailedParse,
     FailedPattern,
     FailedSemantics,
+    FailedKeywordSemantics,
     FailedToken,
     OptionSucceeded
 )
@@ -756,7 +757,6 @@ class ParseContext(object):
         return cst
 
     def _check_name(self):
-        return
         name = self.last_node
         if (self.ignorecase and name.upper() or name) in self.keywords:
-            raise FailedSemantics('"%s" is a reserved word' % name)
+            raise FailedKeywordSemantics('"%s" is a reserved word' % name)
