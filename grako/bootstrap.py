@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 11, 19, 29, 53, 4)
+__version__ = (2016, 3, 11, 23, 31, 23, 4)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -25,7 +25,7 @@ __all__ = [
     'main'
 ]
 
-KEYWORDS = set()
+KEYWORDS = set([])
 
 
 class GrakoBootstrapParser(Parser):
@@ -135,7 +135,13 @@ class GrakoBootstrapParser(Parser):
                 self._literal_()
                 self.add_last_node_to_name('@')
                 with self._ifnot():
-                    self._pattern(r'[:=]')
+                    with self._group():
+                        with self._choice():
+                            with self._option():
+                                self._token(':')
+                            with self._option():
+                                self._token('=')
+                            self._error('expecting one of: : =')
             self._closure(block1)
         self._closure(block0)
 
@@ -660,7 +666,6 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _word_(self):
         self._pattern(r'(?!\d)\w+')
-        self._check_name()
 
     @graken('Pattern')
     def _pattern_(self):
