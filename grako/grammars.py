@@ -699,7 +699,8 @@ class Rule(_Decorator):
             base=base,
             params=params,
             exp=indent(str(self.exp)),
-            comments=comments
+            comments=comments,
+            is_name='@name\n' if self.is_name else '',
         )
 
     str_template = '''\
