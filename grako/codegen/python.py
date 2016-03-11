@@ -446,7 +446,7 @@ class Grammar(Base):
                     'main'
                 ]
 
-                KEYWORDS = [{keywords}]
+                KEYWORDS = set({keywords})
 
 
                 class {name}Parser(Parser):
@@ -457,6 +457,7 @@ class Grammar(Base):
                                  eol_comments_re={eol_comments_re},
                                  ignorecase={ignorecase},
                                  left_recursion={left_recursion},
+                                 keywords=KEYWORDS,
                                  **kwargs):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,

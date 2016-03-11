@@ -826,6 +826,7 @@ class Grammar(Model):
         ctx = context or ModelContext(
             self.rules,
             trace=trace,
+            keywords=self.keywords,
             **kwargs)
 
         if whitespace is None:

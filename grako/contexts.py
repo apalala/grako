@@ -73,6 +73,7 @@ class ParseContext(object):
                  trace_separator=':',
                  trace_filename=False,
                  colorize=False,
+                 keywords=None,
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -108,6 +109,7 @@ class ParseContext(object):
         self._recursive_head = []
 
         self.colorize = colorize
+        self.keywords = set(keywords or [])
 
     def _reset(self,
                text=None,

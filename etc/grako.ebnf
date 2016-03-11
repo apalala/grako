@@ -326,6 +326,7 @@ int
     ;
 
 
+@name
 word
     =
     /(?!\d)\w+/
