@@ -6,6 +6,7 @@ import collections
 import json
 import datetime
 import codecs
+import itertools
 import keyword
 
 try:
@@ -215,6 +216,10 @@ def safe_name(name):
     if keyword.iskeyword(name):
         return name + '_'
     return name
+
+
+def chunks(coll, size):
+    return itertools.izip_longest(*[iter(t)]*size)
 
 
 def generic_main(custom_main, ParserClass, name='Unknown'):
