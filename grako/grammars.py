@@ -633,10 +633,14 @@ class Rule(_Decorator):
         self.decorators = decorators or []
         self._adopt_children([params, kwparams])
 
+        self.is_name = 'name' in self.decorators
         self.base = None
 
     def parse(self, ctx):
-        return self._parse_rhs(ctx, self.exp)
+        result = self._parse_rhs(ctx, self.exp)
+        if self.is_name:
+            ctx._check_name()
+        return result
 
     def _parse_rhs(self, ctx, exp):
         result = ctx._call(exp.parse, self.name, self.params, self.kwparams)
@@ -737,7 +741,8 @@ class Grammar(Model):
                  left_recursion=None,
                  comments_re=None,
                  eol_comments_re=None,
-                 directives=None):
+                 directives=None,
+                 keywords=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
@@ -765,6 +770,8 @@ class Grammar(Model):
         if eol_comments_re is None:
             eol_comments_re = directives.get('eol_comments')
         self.eol_comments_re = eol_comments_re
+
+        self.keywords = keywords or set()
 
         self._adopt_children(rules)
         if not self._validate({r.name for r in self.rules}):

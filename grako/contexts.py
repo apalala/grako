@@ -230,6 +230,12 @@ class ParseContext(object):
     def ast(self, value):
         self._ast_stack[-1] = value
 
+    def name_last_node(self, name):
+        self.ast[name] = self.last_node
+
+    def add_last_node_to_name(self, name):
+        self.ast.setlist(name, self.last_node)
+
     def _push_ast(self):
         self._push_cst()
         self._ast_stack.append(AST())
@@ -746,3 +752,9 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
+
+    def _check_name(self):
+        return
+        name = self.last_node
+        if (self.ignorecase and name.upper() or name) in self.keywords:
+            raise FailedSemantics('"%s" is a reserved word' % name)

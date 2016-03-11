@@ -4,21 +4,30 @@
 grammar::Grammar
     =
     title:`GRAKO`
-    directives:{directive} rules:{rule}+ $
+    directives:{directive}
+    keywords:keywords
+    rules:{rule}+
+    $
     ;
 
 
 directive
     =
     '@@'
-    ~
     (
-            name:('comments' | 'eol_comments' | 'whitespace') ~ '::' ~ value:regex
+            name:('comments' | 'eol_comments' | 'whitespace') ~
+            '::' ~ value:regex
         |
             name:('nameguard' | 'ignorecase' | 'left_recursion')
             ~
             ('::' ~ value:boolean|value:`True`)
     )
+    ;
+
+
+keywords
+    =
+    {'@@keyword' ~ '::' ~ {@+:literal}+}
     ;
 
 
@@ -55,7 +64,7 @@ rule::Rule
 
 decorator
     =
-    '@' ~ @:('override')
+    '@' ~ @:('override'|'name')
     ;
 
 
