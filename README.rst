@@ -472,7 +472,7 @@ A grammar may specify reserved tokens providing a list of them in one or more ``
 The ``@name`` decorator checks that the result of a grammar rule does not match a token defined as a keyword_::
 
     @name
-    ID = /\w/ ;
+    identifier = /(?!\d)\w+/ ;
 
 There are situations in which a token is reserved only in a very specific context. In those cases, a negative lookahead will prevent the use of the token::
 
