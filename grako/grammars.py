@@ -61,9 +61,6 @@ class GrakoBuffer(Buffer):
         )
 
     def process_block(self, name, lines, index, **kwargs):
-        # search for pragmas of the form
-        # .. pragma_name :: params
-
         i = 0
         while i < len(lines):
             line = lines[i]
