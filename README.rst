@@ -810,6 +810,11 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+3.8.0-rc.1
+----------
+
+* Added grammar support for keywords_ in the source language through the ``@@keyword::`` directive and the ``@name`` decorator for rules.
+
 3.7.0
 -----
 
