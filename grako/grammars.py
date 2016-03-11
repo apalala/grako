@@ -703,7 +703,7 @@ class Rule(_Decorator):
         )
 
     str_template = '''\
-                {comments}{name}{base}{params}
+                {is_name}{comments}{name}{base}{params}
                     =
                 {exp}
                     ;
