@@ -397,7 +397,7 @@ class Grammar(Base):
 
         version = str(tuple(int(n) for n in str(timestamp()).split('.')))
 
-        keywords = '\n'.join("    '%s'," % urepr(k) for k in self.keywords)
+        keywords = '\n'.join("    %s," % urepr(k) for k in sorted(self.keywords))
         if keywords:
             keywords = '\n%s\n' % keywords
 
@@ -446,7 +446,7 @@ class Grammar(Base):
                     'main'
                 ]
 
-                KEYWORDS = set({keywords})
+                KEYWORDS = set([{keywords}])
 
 
                 class {name}Parser(Parser):

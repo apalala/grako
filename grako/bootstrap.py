@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 11, 17, 44, 46, 4)
+__version__ = (2016, 3, 11, 19, 29, 53, 4)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -25,7 +25,7 @@ __all__ = [
     'main'
 ]
 
-KEYWORDS = []
+KEYWORDS = set()
 
 
 class GrakoBootstrapParser(Parser):
@@ -36,6 +36,7 @@ class GrakoBootstrapParser(Parser):
                  eol_comments_re='#([^\\n]*?)$',
                  ignorecase=None,
                  left_recursion=True,
+                 keywords=KEYWORDS,
                  **kwargs):
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
@@ -133,7 +134,9 @@ class GrakoBootstrapParser(Parser):
             def block1():
                 self._literal_()
                 self.add_last_node_to_name('@')
-            self._positive_closure(block1)
+                with self._ifnot():
+                    self._pattern(r'[:=]')
+            self._closure(block1)
         self._closure(block0)
 
     @graken()
@@ -451,11 +454,16 @@ class GrakoBootstrapParser(Parser):
         self._separator_()
         self.name_last_node('sep')
         self._token('.')
+        self._cut()
         self._token('{')
         self._cut()
         self._expre_()
         self.name_last_node('exp')
         self._token('}')
+        self._cut()
+        with self._optional():
+            self._token('+')
+            self._cut()
 
         self.ast._define(
             ['sep', 'exp'],
@@ -652,6 +660,7 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _word_(self):
         self._pattern(r'(?!\d)\w+')
+        self._check_name()
 
     @graken('Pattern')
     def _pattern_(self):

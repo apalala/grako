@@ -17,7 +17,7 @@ import functools
 from collections import defaultdict, Mapping
 from copy import copy
 
-from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
+from grako.util import indent, trim, ustr, urepr, strtype, compress_seq, chunks
 from grako.util import re, RE_FLAGS
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
@@ -875,8 +875,14 @@ class Grammar(Model):
             directives += '@@whitespace :: /%s/\n' % self.directives['whitespace']
         directives = directives + '\n' if directives else ''
 
+        keywords = '\n'.join(
+            '@@keyword :: ' + ' '.join(urepr(k) for k in c if k is not None)
+            for c in chunks(sorted(self.keywords), 8)
+        ).strip()
+        keywords = '\n\n' + keywords + '\n' if keywords else ''
+
         rules = (
             '\n\n'.join(ustr(rule)
                         for rule in self.rules)
         ).rstrip() + '\n'
-        return directives + rules
+        return directives + keywords + rules

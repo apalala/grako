@@ -27,7 +27,7 @@ directive
 
 keywords
     =
-    {'@@keyword' ~ '::' ~ {@+:literal}+}
+    {'@@keyword' ~ '::' ~ {@+:literal !/[:=]/} }
     ;
 
 
@@ -188,7 +188,7 @@ group::Group
 
 join::Join
     =
-    sep:separator '.' '{' ~ exp:expre '}'
+    sep:separator '.' ~ '{' ~ exp:expre '}' ~ ['+' ~]
     ;
 
 

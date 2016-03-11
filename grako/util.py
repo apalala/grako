@@ -218,8 +218,8 @@ def safe_name(name):
     return name
 
 
-def chunks(coll, size):
-    return itertools.izip_longest(*[iter(t)]*size)
+def chunks(iterable, size, fillvalue=None):
+    return itertools.zip_longest(*[iter(iterable)]*size, fillvalue=fillvalue)
 
 
 def generic_main(custom_main, ParserClass, name='Unknown'):
