@@ -452,32 +452,6 @@ When the ``parseinfo=True`` keyword argument has been passed to the ``Parser`` c
 With the help of the ``Buffer.line_info()`` method, it is possible to recover the line, column, and original text parsed for the node. Note that when ``ParseInfo`` is generated, the ``Buffer`` used during parsing is kept in memory for the lifetime of the AST_.
 
 
-Reserved Words and Keywords
-===========================
-
-Some languages must reserve the use of certain tokens as valid identifiers because the tokens are used to mark particular constructs in the language. Those reserved tokens are known as `Reserved Words`_ or `Keywords`_
-
-.. _`keyword`: https://en.wikipedia.org/wiki/Reserved_word
-.. _`keywords`: https://en.wikipedia.org/wiki/Reserved_word
-.. _`Keywords`: https://en.wikipedia.org/wiki/Reserved_word
-.. _`Reserved Words`: https://en.wikipedia.org/wiki/Reserved_word
-
-**Grako** provides support for preventing the use of keywords_ as identifiers though the ``@@keyword`` directive,and the `@name` decorator.
-
-A grammar may specify reserved tokens providing a list of them in one or more ``@@keyword`` directives::
-
-    @@keyword :: if endif
-    @@keyword :: else elseif
-
-The ``@name`` decorator checks that the result of a grammar rule does not match a token defined as a keyword_::
-
-    @name
-    identifier = /(?!\d)\w+/ ;
-
-There are situations in which a token is reserved only in a very specific context. In those cases, a negative lookahead will prevent the use of the token::
-
-    statements = {!'END' statement}+ ;
-
 Whitespace
 ==========
 
@@ -541,6 +515,32 @@ Both patterns may also be specified within a grammar using the ``@@comments`` an
         @@comments :: /\(\*.*?\*\)/
         @@eol_comments :: /#.*?$/
 
+
+Reserved Words and Keywords
+===========================
+
+Some languages must reserve the use of certain tokens as valid identifiers because the tokens are used to mark particular constructs in the language. Those reserved tokens are known as `Reserved Words`_ or `Keywords`_
+
+.. _`keyword`: https://en.wikipedia.org/wiki/Reserved_word
+.. _`keywords`: https://en.wikipedia.org/wiki/Reserved_word
+.. _`Keywords`: https://en.wikipedia.org/wiki/Reserved_word
+.. _`Reserved Words`: https://en.wikipedia.org/wiki/Reserved_word
+
+**Grako** provides support for preventing the use of keywords_ as identifiers though the ``@@keyword`` directive,and the `@name` decorator.
+
+A grammar may specify reserved tokens providing a list of them in one or more ``@@keyword`` directives::
+
+    @@keyword :: if endif
+    @@keyword :: else elseif
+
+The ``@name`` decorator checks that the result of a grammar rule does not match a token defined as a keyword_::
+
+    @name
+    identifier = /(?!\d)\w+/ ;
+
+There are situations in which a token is reserved only in a very specific context. In those cases, a negative lookahead will prevent the use of the token::
+
+    statements = {!'END' statement}+ ;
 
 Left Recursion
 ==============
