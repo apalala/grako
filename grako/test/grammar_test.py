@@ -10,6 +10,7 @@ from grako.parser import GrakoGrammarGenerator
 from grako.tool import genmodel
 from grako.util import trim, ustr, PY3
 from grako.codegen import codegen
+from grako.model import ModelBuilderSemantics
 
 
 class GrammarTests(unittest.TestCase):
@@ -926,6 +927,32 @@ class GrammarTests(unittest.TestCase):
             self.fail('accepted keyword as name')
         except FailedSemantics:
             pass
+
+    def test_builder_semantics(self):
+        grammar = '''
+            start::sum = {number}+ $ ;
+            number::int = /\d+/ ;
+        '''
+        text = '5 4 3 2 1'
+
+        semantics = ModelBuilderSemantics()
+        model = genmodel('test', grammar)
+        ast = model.parse(text, semantics=semantics)
+        self.assertEqual(15, ast)
+
+        import functools
+        dotted = functools.partial(str.join, '.')
+        dotted.__name__ = 'dotted'
+
+        grammar = '''
+            start::dotted = {number}+ $ ;
+            number = /\d+/ ;
+        '''
+
+        semantics = ModelBuilderSemantics(types=[dotted])
+        model = genmodel('test', grammar)
+        ast = model.parse(text, semantics=semantics)
+        self.assertEqual('5.4.3.2.1', ast)
 
 
 def suite():

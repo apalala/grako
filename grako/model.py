@@ -6,6 +6,7 @@ Base definitions for models of programs.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+import builtins
 import collections
 
 from grako.util import asjson, asjsons, Mapping
@@ -195,8 +196,22 @@ class ModelBuilderSemantics(object):
         if typename in self.constructors:
             return self.constructors[typename]
 
-        if typename in __builtins__:
-            return __builtins__[typename]
+        constructor = builtins
+        for name in typename.split('.'):
+            try:
+                context = vars(constructor)
+            except Exception as e:
+                raise SemanticError(
+                    'Could not find constructor for %s: %s'
+                    % (typename, str(e))
+                )
+            if name in context:
+                constructor = context[name]
+            else:
+                constructor = None
+                break
+        if constructor:
+            return constructor
 
         # synthethize a new type
         constructor = type(typename, (self.baseType,), {})
@@ -209,15 +224,12 @@ class ModelBuilderSemantics(object):
         name = args[0]
         constructor = self._get_constructor(name)
         try:
-            if issubclass(constructor, Node):
+            if type(constructor) is type and issubclass(constructor, Node):
                 return constructor(*args[1:], ast=ast, ctx=self.ctx, **kwargs)
             else:
                 return constructor(ast, *args[1:], **kwargs)
         except Exception as e:
             raise SemanticError(
                 'Could not call constructor for %s: %s'
-                % (
-                    name,
-                    str(e)
-                )
+                % (name, str(e))
             )

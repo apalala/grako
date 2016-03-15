@@ -634,6 +634,8 @@ You can also use Python_'s built-in types as node types, and ``ModelBuilderSeman
 
     integer::int = /[0-9]+/ ;
 
+``ModelBuilderSemantics`` acts as any other semantics class, so its default behavior can be overidden by defining a method to handle the result of any particular grammar rule.
+
 
 Traversing Models
 -----------------
