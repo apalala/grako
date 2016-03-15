@@ -31,10 +31,12 @@ if PY3:
     else:
         Mapping = collections.Mapping
     zip_longest = itertools.zip_longest
+    import builtins
 else:
     strtype = basestring  # noqa
     Mapping = collections.Mapping
     zip_longest = itertools.izip_longest
+    import __builtin__ as builtins
 
 
 def info(*args, **kwargs):

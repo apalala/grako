@@ -941,7 +941,7 @@ class GrammarTests(unittest.TestCase):
         self.assertEqual(15, ast)
 
         import functools
-        dotted = functools.partial(str.join, '.')
+        dotted = functools.partial(type('').join, '.')
         dotted.__name__ = 'dotted'
 
         grammar = '''

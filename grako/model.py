@@ -6,10 +6,9 @@ Base definitions for models of programs.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-import builtins
 import collections
 
-from grako.util import asjson, asjsons, Mapping
+from grako.util import asjson, asjsons, Mapping, builtins
 from grako.exceptions import SemanticError
 from grako.ast import AST
 
@@ -202,8 +201,8 @@ class ModelBuilderSemantics(object):
                 context = vars(constructor)
             except Exception as e:
                 raise SemanticError(
-                    'Could not find constructor for %s: %s'
-                    % (typename, str(e))
+                    'Could not find constructor for %s (%s): %s'
+                    % (typename, type(constructor).__name__, str(e))
                 )
             if name in context:
                 constructor = context[name]
