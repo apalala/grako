@@ -612,6 +612,61 @@ The resolution of the *filename* is relative to the directory/folder of the sour
 The functionality required for implementing includes is available to all **Grako**-generated parsers through the ``Buffer`` class; see the ``GrakoBuffer`` class in the ``grako.parser`` module for an example.
 
 
+Building Models
+===============
+
+Naming elements in grammar rules makes the parser discard uninteresting parts of the input, like punctuation, to produce an *Abstract Syntax Tree* (AST_) that reflects the semantic structure of what was parsed. But an AST_ doesn't carry information about the rule that generated it, so navigating the trees may be difficult.
+
+**Grako** defines the ``grako.model.ModelBuilderSemantics`` semantics class which helps
+construct object models from abtract syntax trees::
+
+   from grako.model import ModelBuilderSemantics
+
+   parser = MyParser(semantics=ModelBuilderSemantics())
+
+Then you add the desired node type as first parameter to each grammar rule::
+
+    addition::AddOperator = left:mulexpre '+' right:addition ;
+
+``ModelBuilderSemantics`` will synthesize an ``AddOperator(Node)`` class and use it to construct the node. The synthesized class will have one attribute with the same name as the named elements in the rule.
+
+You can also use Python_'s built-in types as node types, and ``ModelBuilderSemantics`` will do the right thing::
+
+    integer::int = /[0-9]+/ ;
+
+
+Traversing Models
+-----------------
+
+The class ``grako.model.NodeWalker`` allows for the easy traversal (*walk*) a model constructed with a ``ModelBuilderSemantics`` instance::
+
+    from grako.model import NodeWalker
+
+    class MyNodeWalker(NodeWalker):
+
+        def walk_AddOperator(self, node):
+            left = self.walk(node.left)
+            right = self.walk(node.right)
+
+            print('ADDED', left, right)
+
+    model = MyParser(semantics=ModelBuilderSemantics()).parse(input)
+
+    walker = MyNodeWalker()
+    walker.walk(model)
+
+When a method with a name like ``walk_NodeClassName`` is defined, it will be called when a node of that type is *walked*.
+
+Synthesized node classes cannot be pickled because the Python_ runtime won't be able to find a declaration for them (among other things, unpickled objects cannot be passed between processes). Predeclared classes can be passed to ``ModelBuilderSemantics`` instances through the ``types=`` parameter::
+
+    from mymodel import AddOperator, MulOperator
+
+    semantics=ModelBuilderSemantics(types=[AddOperator, MulOperator])
+
+
+``ModelBuilderSemantics`` assumes nothing about ``types=``, so any constructor (a function, or a partial function) can be used.
+
+
 Templates and Translation
 =========================
 
@@ -814,6 +869,8 @@ Changes
 ----------
 
 * Added grammar support for keywords_ in the source language through the ``@@keyword::`` directive and the ``@name`` decorator for rules.
+
+* Make ``ModelBuilderSemantics`` support built-in types.
 
 3.7.0
 -----
