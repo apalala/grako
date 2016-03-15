@@ -175,7 +175,7 @@ class ParseContext(object):
 
     def parse(self,
               text,
-              rule_name,
+              rule_name='start',
               filename=None,
               semantics=None,
               trace=False,
