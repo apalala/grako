@@ -37,6 +37,7 @@ else:
     Mapping = collections.Mapping
     zip_longest = itertools.izip_longest
     import __builtin__ as builtins
+assert builtins
 
 
 def info(*args, **kwargs):

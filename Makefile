@@ -17,7 +17,7 @@ antlr_test:
 
 
 flake8:
-	flake8 --exclude .tox,docs,tmp,.ropeproject --max-line-length 200
+	flake8 --exclude .tox,docs,tmp,.ropeproject,build --max-line-length 200
 
 
 docs: tmp/grako_docs.zip
