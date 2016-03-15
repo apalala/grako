@@ -17,7 +17,7 @@ import functools
 from collections import defaultdict, Mapping
 from copy import copy
 
-from grako.util import indent, trim, ustr, urepr, strtype, compress_seq
+from grako.util import indent, trim, ustr, urepr, strtype, compress_seq, chunks
 from grako.util import re, RE_FLAGS
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
@@ -633,10 +633,14 @@ class Rule(_Decorator):
         self.decorators = decorators or []
         self._adopt_children([params, kwparams])
 
+        self.is_name = 'name' in self.decorators
         self.base = None
 
     def parse(self, ctx):
-        return self._parse_rhs(ctx, self.exp)
+        result = self._parse_rhs(ctx, self.exp)
+        if self.is_name:
+            ctx._check_name()
+        return result
 
     def _parse_rhs(self, ctx, exp):
         result = ctx._call(exp.parse, self.name, self.params, self.kwparams)
@@ -695,11 +699,12 @@ class Rule(_Decorator):
             base=base,
             params=params,
             exp=indent(str(self.exp)),
-            comments=comments
+            comments=comments,
+            is_name='@name\n' if self.is_name else '',
         )
 
     str_template = '''\
-                {comments}{name}{base}{params}
+                {is_name}{comments}{name}{base}{params}
                     =
                 {exp}
                     ;
@@ -737,7 +742,8 @@ class Grammar(Model):
                  left_recursion=None,
                  comments_re=None,
                  eol_comments_re=None,
-                 directives=None):
+                 directives=None,
+                 keywords=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
         self.name = name
@@ -765,6 +771,8 @@ class Grammar(Model):
         if eol_comments_re is None:
             eol_comments_re = directives.get('eol_comments')
         self.eol_comments_re = eol_comments_re
+
+        self.keywords = keywords or set()
 
         self._adopt_children(rules)
         if not self._validate({r.name for r in self.rules}):
@@ -819,6 +827,7 @@ class Grammar(Model):
         ctx = context or ModelContext(
             self.rules,
             trace=trace,
+            keywords=self.keywords,
             **kwargs)
 
         if whitespace is None:
@@ -867,8 +876,14 @@ class Grammar(Model):
             directives += '@@whitespace :: /%s/\n' % self.directives['whitespace']
         directives = directives + '\n' if directives else ''
 
+        keywords = '\n'.join(
+            '@@keyword :: ' + ' '.join(urepr(k) for k in c if k is not None)
+            for c in chunks(sorted(self.keywords), 8)
+        ).strip()
+        keywords = '\n\n' + keywords + '\n' if keywords else ''
+
         rules = (
             '\n\n'.join(ustr(rule)
                         for rule in self.rules)
         ).rstrip() + '\n'
-        return directives + rules
+        return directives + keywords + rules

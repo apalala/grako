@@ -88,9 +88,6 @@ class GrakoSemantics(ModelBuilderSemantics):
             raise FailedSemantics('rule "%s" not yet defined' % str(name))
         return name
 
-    def directive(self, ast):
-        return ast
-
     def boolean(self, ast):
         return eval(ast)
 
@@ -126,8 +123,10 @@ class GrakoSemantics(ModelBuilderSemantics):
 
     def grammar(self, ast, *args):
         directives = OrderedDict((d.name, d.value) for d in ast.directives)
+        keywords = set(ast.keywords or [])
         return grammars.Grammar(
             self.grammar_name,
             list(self.rules.values()),
-            directives=directives
+            directives=directives,
+            keywords=keywords
         )

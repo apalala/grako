@@ -6,6 +6,7 @@ import collections
 import json
 import datetime
 import codecs
+import itertools
 import keyword
 
 try:
@@ -29,9 +30,11 @@ if PY3:
         Mapping = abc.Mapping
     else:
         Mapping = collections.Mapping
+    zip_longest = itertools.zip_longest
 else:
     strtype = basestring  # noqa
     Mapping = collections.Mapping
+    zip_longest = itertools.izip_longest
 
 
 def info(*args, **kwargs):
@@ -215,6 +218,10 @@ def safe_name(name):
     if keyword.iskeyword(name):
         return name + '_'
     return name
+
+
+def chunks(iterable, size, fillvalue=None):
+    return zip_longest(*[iter(iterable)] * size, fillvalue=fillvalue)
 
 
 def generic_main(custom_main, ParserClass, name='Unknown'):

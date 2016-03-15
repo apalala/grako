@@ -882,6 +882,51 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse("x a b x", nameguard=False)
         self.assertEquals(['x', 'x'], ast)
 
+    def test_define_keywords(self):
+        import parser
+
+        grammar = '''
+            @@keyword :: B C
+            @@keyword :: 'A'
+
+            start = ('a' 'b').{'x'} ;
+        '''
+        model = genmodel("test", grammar)
+        c = codegen(model)
+        parser.suite(c)
+
+        grammar2 = str(model)
+        model2 = genmodel("test", grammar2)
+        c2 = codegen(model2)
+        parser.suite(c2)
+
+        self.assertEqual(grammar2, str(model2))
+
+    def test_check_keywords(self):
+        import parser
+
+        grammar = '''
+            @@keyword :: A
+
+            start = {id}+ $ ;
+
+            @name
+            id = /\w+/ ;
+        '''
+        model = genmodel('test', grammar)
+        c = codegen(model)
+        parser.suite(c)
+
+        ast = model.parse('hello world')
+        self.assertEqual(['hello', 'world'], ast)
+
+        try:
+            ast = model.parse("hello A world")
+            self.assertEqual(['hello', 'A', 'world'], ast)
+            self.fail('accepted keyword as name')
+        except FailedSemantics:
+            pass
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

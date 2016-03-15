@@ -249,7 +249,7 @@ class Named(_Decorator):
 
     template = '''
                 {exp}
-                self.ast['{name}'] = self.last_node\
+                self.name_last_node('{name}')\
                 '''
 
 
@@ -259,7 +259,7 @@ class NamedList(Named):
 
     template = '''
                 {exp}
-                self.ast.setlist('{name}', self.last_node)\
+                self.add_last_node_to_name('{name}')\
                 '''
 
 
@@ -343,11 +343,14 @@ class Rule(_Decorator):
                                   )
 
         fields.update(defines=sdefines)
+        fields.update(
+            check_name='\n    self._check_name()' if self.is_name else '',
+        )
 
     template = '''
                 @graken({params})
                 def _{name}_(self):
-                {exp:1::}{defines}
+                {exp:1::}{check_name}{defines}
                 '''
 
 
@@ -394,6 +397,10 @@ class Grammar(Base):
 
         version = str(tuple(int(n) for n in str(timestamp()).split('.')))
 
+        keywords = '\n'.join("    %s," % urepr(k) for k in sorted(self.keywords))
+        if keywords:
+            keywords = '\n%s\n' % keywords
+
         fields.update(rules=indent(rules),
                       abstract_rules=abstract_rules,
                       version=version,
@@ -403,6 +410,7 @@ class Grammar(Base):
                       comments_re=comments_re,
                       eol_comments_re=eol_comments_re,
                       left_recursion=left_recursion,
+                      keywords=keywords,
                       )
 
     abstract_rule_template = '''
@@ -438,6 +446,8 @@ class Grammar(Base):
                     'main'
                 ]
 
+                KEYWORDS = set([{keywords}])
+
 
                 class {name}Parser(Parser):
                     def __init__(self,
@@ -447,6 +457,7 @@ class Grammar(Base):
                                  eol_comments_re={eol_comments_re},
                                  ignorecase={ignorecase},
                                  left_recursion={left_recursion},
+                                 keywords=KEYWORDS,
                                  **kwargs):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,

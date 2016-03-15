@@ -20,6 +20,7 @@ from grako.exceptions import (
     FailedParse,
     FailedPattern,
     FailedSemantics,
+    FailedKeywordSemantics,
     FailedToken,
     OptionSucceeded
 )
@@ -73,6 +74,7 @@ class ParseContext(object):
                  trace_separator=':',
                  trace_filename=False,
                  colorize=False,
+                 keywords=None,
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -108,6 +110,7 @@ class ParseContext(object):
         self._recursive_head = []
 
         self.colorize = colorize
+        self.keywords = set(keywords or [])
 
     def _reset(self,
                text=None,
@@ -229,6 +232,12 @@ class ParseContext(object):
     @ast.setter
     def ast(self, value):
         self._ast_stack[-1] = value
+
+    def name_last_node(self, name):
+        self.ast[name] = self.last_node
+
+    def add_last_node_to_name(self, name):
+        self.ast.setlist(name, self.last_node)
 
     def _push_ast(self):
         self._push_cst()
@@ -746,3 +755,8 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
+
+    def _check_name(self):
+        name = self.last_node
+        if (self.ignorecase and name.upper() or name) in self.keywords:
+            raise FailedKeywordSemantics('"%s" is a reserved word' % name)
