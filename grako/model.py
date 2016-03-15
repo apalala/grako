@@ -182,31 +182,37 @@ class ModelBuilderSemantics(object):
         self.ctx = context
         self.baseType = baseType
 
-        self.nodetypes = dict()
+        self.constructors = dict()
 
         for t in types or ():
-            self._register_nodetype(t)
+            self._register_constructor(t)
 
-    def _register_nodetype(self, nodetype):
-        self.nodetypes[nodetype.__name__] = nodetype
+    def _register_constructor(self, constructor):
+        self.constructors[constructor.__name__] = constructor
 
-    def _get_nodetype(self, typename):
+    def _get_constructor(self, typename):
         typename = str(typename)
-        if typename in self.nodetypes:
-            return self.nodetypes[typename]
+        if typename in self.constructors:
+            return self.constructors[typename]
+
+        if typename in __builtins__:
+            return __builtins__[typename]
 
         # synthethize a new type
-        nodetype = type(typename, (self.baseType,), {})
-        self._register_nodetype(nodetype)
-        return nodetype
+        constructor = type(typename, (self.baseType,), {})
+        self._register_constructor(constructor)
+        return constructor
 
     def _default(self, ast, *args, **kwargs):
         if not args:
             return ast
         name = args[0]
-        nodetype = self._get_nodetype(name)
+        constructor = self._get_constructor(name)
         try:
-            return nodetype(ast=ast, ctx=self.ctx)
+            if issubclass(constructor, Node):
+                return constructor(*args[1:], ast=ast, ctx=self.ctx, **kwargs)
+            else:
+                return constructor(ast, *args[1:], **kwargs)
         except Exception as e:
             raise SemanticError(
                 'Could not call constructor for %s: %s'
