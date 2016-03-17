@@ -1,0 +1,64 @@
+start
+    =
+    object
+    ;
+
+
+object
+    =
+    '{' ~ @:(','.{pair}|{}) '}'
+    ;
+
+
+pair
+    =
+    string ':' ~ value
+    ;
+
+
+array
+    =
+    '[' ~ @:(','.{value}|{}) ']'
+    ;
+
+
+value
+    =
+      string
+    | number
+    | object
+    | array
+    | true
+    | false
+    | null
+    ;
+
+
+string
+    =
+    /"/ ~ @:?/([^"\\]|\\["/bfnrt\\]|\\u[0-9A-Za-z]{4})/? /"/
+    ;
+
+
+number
+    =
+    /[-]?(0|[1-9][0-9]*)(\.[0-9]+)?([eE]{+-]?[0-9]+)?/
+    ;
+
+
+true
+    =
+    'true' ~
+    ;
+
+
+false
+    =
+    'false' ~
+    ;
+
+
+null
+    =
+    'null' ~
+    ;
