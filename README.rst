@@ -867,8 +867,16 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.8.0-rc.1
-----------
+3.8.1
+-----
+
+* 73_ Keywords were not being passed to the base class of the generated parser.
+* Wrong version number (RC) in this document.
+
+.. _73: https://bitbucket.org/apalala/grako/issue/45
+
+3.8.0
+-----
 
 * Added grammar support for keywords_ in the source language through the ``@@keyword::`` directive and the ``@name`` decorator for rules.
 
