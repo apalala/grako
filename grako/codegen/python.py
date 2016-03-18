@@ -466,6 +466,7 @@ class Grammar(Base):
                             eol_comments_re=eol_comments_re,
                             ignorecase=ignorecase,
                             left_recursion=left_recursion,
+                            keywords=keywords,
                             **kwargs
                         )
 
