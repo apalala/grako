@@ -188,7 +188,7 @@ def timestamp():
 
 
 def asjson(obj):
-    if hasattr(obj, '__json__'):
+    if hasattr(obj, '__json__') and type(obj) is not type:
         return obj.__json__()
     elif isinstance(obj, collections.Mapping):
         result = collections.OrderedDict()
