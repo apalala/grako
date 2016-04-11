@@ -187,20 +187,26 @@ def timestamp():
     return '.'.join('%2.2d' % t for t in datetime.datetime.utcnow().utctimetuple()[:-2])
 
 
-def asjson(obj):
+def asjson(obj, seen=None):
+    if seen is None:
+        seen = set()
+    elif id(obj) in seen:
+        return '__RECURSIVE__'
+    seen.add(id(obj))
+
     if hasattr(obj, '__json__') and type(obj) is not type:
         return obj.__json__()
     elif isinstance(obj, collections.Mapping):
         result = collections.OrderedDict()
         for k, v in obj.items():
             try:
-                result[asjson(k)] = asjson(v)
+                result[asjson(k, seen)] = asjson(v, seen)
             except TypeError:
                 debug('Unhashable key?', type(k), str(k))
                 raise
         return result
     elif isiter(obj):
-        return [asjson(e) for e in obj]
+        return [asjson(e, seen) for e in obj]
     else:
         return obj
 
