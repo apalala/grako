@@ -188,10 +188,10 @@ def timestamp():
 
 
 def asjson(obj, seen=None):
-    if seen is None:
-        seen = set()
-    elif obj is None:
+    if obj is None:
         return None
+    elif seen is None:
+        seen = set()
     elif id(obj) in seen:
         return '__RECURSIVE__'
     seen.add(id(obj))
