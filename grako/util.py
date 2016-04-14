@@ -188,13 +188,13 @@ def timestamp():
 
 
 def asjson(obj, seen=None):
-    if obj is None:
-        return None
-    elif seen is None:
-        seen = set()
-    elif id(obj) in seen:
-        return '__RECURSIVE__'
-    seen.add(id(obj))
+    if isinstance(obj, collections.Mapping) or isiter(obj):
+        # prevent traversal of recursive structures
+        if seen is None:
+            seen = set()
+        elif id(obj) in seen:
+            return '__RECURSIVE__'
+        seen.add(id(obj))
 
     if hasattr(obj, '__json__') and type(obj) is not type:
         return obj.__json__()
