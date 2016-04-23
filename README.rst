@@ -867,13 +867,22 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+3.8.2
+-----
+
+* Guard against recursive structures in ``grako.util.asjson()``.
+* 74_ ``grako.model.Node.children()`` returned an empty list even when traversing attributes that with names starting in ``'_'``.
+
+.. _74: https://bitbucket.org/apalala/grako/issue/74
+
 3.8.1
 -----
 
 * 73_ Keywords were not being passed to the base class of the generated parser.
 * Wrong version number (RC) in this document.
 
-.. _73: https://bitbucket.org/apalala/grako/issue/45
+.. _73: https://bitbucket.org/apalala/grako/issue/73
+
 
 3.8.0
 -----
@@ -939,7 +948,7 @@ Changes
 * Upgraded development libraries to their latest versions (see ``requirements.txt``).
 
 .. _YAML: https://en.wikipedia.org/wiki/YAML
-.. _52: https://bitbucket.org/apalala/grako/issue/45
+.. _52: https://bitbucket.org/apalala/grako/issue/52
 .. _56: https://bitbucket.org/apalala/grako/issues/56/
 .. _58: https://bitbucket.org/apalala/grako/issues/58/
 .. _59: https://bitbucket.org/apalala/grako/issues/59/
@@ -1090,9 +1099,9 @@ Changes
 
 * *BUG* 24_ Incorrect template for *--pretty* of multi-line optionals.
 
-.. _22: https://bitbucket.org/apalala/grako/issue/22/grako-script-returns-exit_success-on
-.. _23: https://bitbucket.org/apalala/grako/issue/23/pretty-output-escaping-incorrect
-.. _24: https://bitbucket.org/apalala/grako/issue/24/pretty-output-changes-optional-match-into
+.. _22: https://bitbucket.org/apalala/grako/issue/22
+.. _23: https://bitbucket.org/apalala/grako/issue/23
+.. _24: https://bitbucket.org/apalala/grako/issue/24
 
 
 .. _Cython: http://cython.org/
