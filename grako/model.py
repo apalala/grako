@@ -89,8 +89,7 @@ class Node(object):
 
         def cn(child):
             if isinstance(child, Node):
-                if child.parent == self and child not in childset:
-                    childset.add(child)
+                childset.add(child)
             elif isinstance(child, Mapping):
                 for c in child.values():
                     cn(c)
@@ -98,8 +97,10 @@ class Node(object):
                 for c in child:
                     cn(c)
 
-        for c in vars(self).values():
-            cn(c)
+        print('CHILDREN', type(self).__name__, vars(self).keys())
+        for k, c in vars(self).items():
+            if not 'k'.startswith('_'):
+                cn(c)
         return list(childset)
 
     def asjson(self):
