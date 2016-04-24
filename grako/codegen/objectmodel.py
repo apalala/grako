@@ -8,27 +8,28 @@ from grako.util import (
     safe_name,
     trim,
 )
-from grako import grammars
+from grako.model import Node
+from grako.exceptions import CodegenError
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
-
-
-class ObjectModelCodeGenerator(CodeGenerator):
-    def _find_renderer_class(self, model):
-        if not isinstance(model, grammars.Grammar):
-            return None
-
-        return Grammar
 
 
 def codegen(model):
     return ObjectModelCodeGenerator().render(model)
 
 
-class ModelNodeBase(ModelRenderer):
-    pass
+class ObjectModelCodeGenerator(CodeGenerator):
+    def _find_renderer_class(self, item):
+        if not isinstance(item, Node):
+            return None
+
+        name = item.__class__.__name__
+        renderer = globals().get(name, None)
+        if not renderer or not issubclass(renderer, ModelRenderer):
+            raise CodegenError('Renderer for %s not found' % name)
+        return renderer
 
 
-class Grammar(ModelNodeBase):
+class Grammar(ModelRenderer):
     @staticmethod
     def object_model_typename(rule):
         if not rule.params:
@@ -61,7 +62,7 @@ class Grammar(ModelNodeBase):
         )
 
     model_class_template = '''
-            class {name}(ModelNodeBase):
+            class {name}(ModelBase):
                 pass\
             '''
 
@@ -89,7 +90,7 @@ class Grammar(ModelNodeBase):
                 ]
 
 
-                class ModelNodeBase(Node):
+                class ModelBase(Node):
                     pass
 
 
@@ -97,7 +98,7 @@ class Grammar(ModelNodeBase):
                     def __init__(self):
                         types = [
                             t for t in globals().values()
-                            if issubclass(t, ModelNodeBase)
+                            if issubclass(t, ModelBase)
                         ]
                         super({name}ModelBuilderSemantics, self).__init__(types=types)
 
