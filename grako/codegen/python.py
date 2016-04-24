@@ -36,7 +36,7 @@ def codegen(model):
 
 class Base(ModelRenderer):
     def defines(self):
-        return []
+        return self.node.defines()
 
 
 class Void(Base):
@@ -66,9 +66,6 @@ class EOF(Base):
 
 
 class _Decorator(Base):
-    def defines(self):
-        return self.get_renderer(self.node.exp).defines()
-
     template = '{exp}'
 
 
@@ -116,9 +113,6 @@ class NegativeLookahead(_Decorator):
 
 
 class Sequence(Base):
-    def defines(self):
-        return [d for s in self.node.sequence for d in s.defines()]
-
     def render_fields(self, fields):
         fields.update(seq='\n'.join(self.rend(s) for s in self.node.sequence))
 
@@ -128,9 +122,6 @@ class Sequence(Base):
 
 
 class Choice(Base):
-    def defines(self):
-        return [d for o in self.node.options for d in o.defines()]
-
     def render_fields(self, fields):
         template = trim(self.option_template)
         options = [
@@ -236,9 +227,6 @@ class Cut(Base):
 
 
 class Named(_Decorator):
-    def defines(self):
-        return [(self.node.name, False)] + super(Named, self).defines()
-
     def __str__(self):
         return '%s:%s' % (self.name, self.rend(self.exp))
 
@@ -254,9 +242,6 @@ class Named(_Decorator):
 
 
 class NamedList(Named):
-    def defines(self):
-        return [(self.name, True)] + super(Named, self).defines()
-
     template = '''
                 {exp}
                 self.add_last_node_to_name('{name}')\
@@ -264,13 +249,11 @@ class NamedList(Named):
 
 
 class Override(Named):
-    def defines(self):
-        return []
+    pass
 
 
 class OverrideList(NamedList):
-    def defines(self):
-        return []
+    pass
 
 
 class Special(Base):
