@@ -1,6 +1,13 @@
 @@whitespace :: /((?!^)(?![\r\n])\s)+/
 @@eol_comments :: /#[^\r\n]*/
 
+
+start
+    =
+    file_input
+    ;
+
+
 single_input
     =
     NEWLINE | simple_stmt | compound_stmt NEWLINE
@@ -27,7 +34,7 @@ decorators
 
 decorator
     =
-    '@' dotted_attr ['(' [arglist] ')'] NEWLINE
+    '@' dotted_attr ['(' ~ [arglist] ')'] NEWLINE
     ;
 
 
@@ -39,39 +46,39 @@ dotted_attr
 
 funcdef
     =
-    [decorators] 'def' name parameters ':' suite
+    [decorators] 'def' ~ name parameters ':' ~ suite
     ;
 
 
 parameters
     =
-    '(' [varargslist] ')'
+    '(' ~ [varargslist] ')'
     ;
 
 
 varargslist
     =
-    ','.{defparameter} [',' '*' name] [',' '**' name]
-    | '*' name [',' '**' name]
-    | '**' name
+    ','.{defparameter} [',' '*' ~ name] [',' '**' ~ name]
+    | '*' ~ name [',' '**' ~ name]
+    | '**' ~ name
     ;
 
 
 defparameter
     =
-    fpdef ['=' test]
+    fpdef ['=' ~ test]
     ;
 
 
 fpdef
     =
-    name | '(' fplist ')'
+    name | '(' ~ fplist ')'
     ;
 
 
 fplist
     =
-    ','.{fpdef} [',']
+    ','.{fpdef} [',' ~]
     ;
 
 
@@ -83,7 +90,7 @@ stmt
 
 simple_stmt
     =
-   ';'.{small_stmt} [';'] NEWLINE
+   ';'.{small_stmt} [';' ~] NEWLINE
     ;
 
 
@@ -127,6 +134,7 @@ assign_yield
 
 augassign
     =
+    (
       '+='
     | '-='
     | '*='
@@ -139,33 +147,36 @@ augassign
     | '>>='
     | '**='
     | '//='
+    ) ~
     ;
 
 
 print_stmt
     =
     'print'
-    [
-    printlist | '>>' printlist
-    ]
+    (
+        '(' ~ arglist ')' ~
+    |
+        [ printlist | '>>' ~ printlist ]
+    )
     ;
 
 
 printlist
     =
-    ','.{test} [',']
+    ','.{test} [',' ~]
     ;
 
 
 del_stmt
     =
-    'del' exprlist
+    'del' ~ exprlist
     ;
 
 
 pass_stmt
     =
-    'pass'
+    'pass' ~
     ;
 
 
@@ -177,19 +188,19 @@ flow_stmt
 
 break_stmt
     =
-    'break'
+    'break' ~
     ;
 
 
 continue_stmt
     =
-    'continue'
+    'continue' ~
     ;
 
 
 return_stmt
     =
-    'return' [testlist]
+    'return' ~ [testlist]
     ;
 
 
@@ -201,7 +212,7 @@ yield_stmt
 
 raise_stmt
     =
-    'raise' [test [',' test [',' test]]]
+    'raise' ~ [test [',' ~ test [',' ~ test]]]
     ;
 
 
@@ -213,32 +224,32 @@ import_stmt
 
 import_name
     =
-    'import' dotted_as_names
+    'import' ~ dotted_as_names
     ;
 
 
 import_from
     =
-    'from' ({'.'} dotted_name | {'.'}+)
-    'import' ('*' | import_as_names | '(' import_as_names ')')
+    'from' ({'.' ~} dotted_name | {'.' ~}+)
+    'import' ('*' ~ | import_as_names | '(' ~ import_as_names ')')
     ;
 
 
 import_as_names
     =
-    ','.{import_as_name} [',']
+    ','.{import_as_name} [',' ~]
     ;
 
 
 import_as_name
     =
-    name ['as' name]
+    name ['as' ~ name]
     ;
 
 
 dotted_as_name
     =
-    dotted_name ['as' name]
+    dotted_name ['as' ~ name]
     ;
 
 
@@ -262,19 +273,19 @@ dotted_name
 
 global_stmt
     =
-    'global' ','.{name}
+    'global' ~ ','.{name}
     ;
 
 
 exec_stmt
     =
-    'exec' expr ['in' test [',' test]]
+    'exec' ~ expr ['in' ~ test [',' ~ test]]
     ;
 
 
 assert_stmt
     =
-    'assert' test [',' test]
+    'assert' ~ test [',' ~ test]
     ;
 
 
@@ -292,61 +303,59 @@ compound_stmt
 
 if_stmt
     =
-    'if' test ':' suite {elif_clause} ['else' ':' suite]
+    'if' ~ test ':' ~ suite {elif_clause} ['else' ~ ':' suite]
     ;
 
 
 elif_clause
     =
-    'elif' test ':' suite
+    'elif' ~ test ':' ~ suite
     ;
 
 
 while_stmt
     =
-    'while' test ':' suite ['else' ':' suite]
+    'while' ~ test ':' ~ suite ['else' ~ ':' suite]
     ;
 
 
 for_stmt
     =
-    'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
+    'for' ~ exprlist 'in' ~ testlist ':' ~ suite ['else' ~ ':' suite]
     ;
 
 
 try_stmt
     =
-    'try'
-    ':'
-    suite
+    'try' ~ ':' suite
     (
-          {except_clause}+ ['else' ':' suite] ['finally' ':' suite]
-        | 'finally' ':' suite
+          {except_clause}+ ['else' ~ ':' suite] ['finally' ~ ':' suite]
+        | 'finally' ~ ':' suite
     )
     ;
 
 
 with_stmt
     =
-    'with' test [with_var] ':' suite
+    'with' ~ test [with_var] ':' ~ suite
     ;
 
 
 with_var
     =
-    ('as' | name) expr
+    ('as' ~ | name) expr
     ;
 
 
 except_clause
     =
-    'except' [test [',' test]] ':' suite
+    'except' ~ [test [',' ~ test]] ':' ~ suite
     ;
 
 
 suite
     =
-    simple_stmt | NEWLINE INDENT {stmt}+ DEDENT
+    simple_stmt | NEWLINE ~ INDENT ~ {stmt}+ DEDENT ~
     ;
 
 
@@ -358,13 +367,13 @@ INDENT
 
 DEDENT
     =
-    /^((?![\r\n])\s)+/
+    /^((?![\r\n])\s)*/
     ;
 
 
 test
     =
-    or_test ['if' or_test 'else' test] | lambdef
+    or_test ['if' ~ or_test 'else' ~ test] | lambdef
     ;
 
 
@@ -382,7 +391,7 @@ and_test
 
 not_test
     =
-    'not' not_test | comparison
+    'not' ~ not_test | comparison
     ;
 
 
@@ -446,22 +455,23 @@ term
 
 factor
     =
-    '+' factor | '-' factor | '~' factor | power
+    '+' ~ factor | '-' ~ factor | '~' ~ factor | power
     ;
 
 
 power
     =
-    atom {trailer} ['**' factor]
+    atom {trailer} ['**' ~ factor]
     ;
 
 
 atom
     =
-        '(' [ yield_expr | testlist_gexp ] ')'
-    | '[' [listmaker] ']'
-    | '{' [dictmaker] '}'
-    | '`' testlist '`'
+      '()'
+    | '(' ~ yield_expr | testlist_gexp ')'
+    | '[' ~ [listmaker] ']'
+    | '{' ~ [dictmaker] '}'
+    | '`' ~ testlist '`'
     | name
     | INT
     | LONGINT
@@ -479,7 +489,7 @@ strings
 
 listmaker
     =
-    test (list_for | {',' test}) [',']
+    test (list_for | {',' test}) [',' ~]
     ;
 
 
@@ -491,69 +501,69 @@ testlist_gexp
 
 lambdef
     =
-    'lambda' [varargslist] ':' test
+    'lambda' ~ [varargslist] ':' ~ test
     ;
 
 
 trailer
     =
-    '(' [arglist] ')' | '[' subscriptlist ']' | '.' name
+    '(' ~ [arglist] ')' | '[' ~ subscriptlist ']' | '.' ~ name
     ;
 
 
 subscriptlist
     =
-    ','.{subscript} [',']
+    ','.{subscript} [',' ~]
     ;
 
 
 subscript
     =
-    '.' '.' '.' | test [':' [test] [sliceop]] | ':' [test] [sliceop]
+    '.' '.' '.' ~ | test [':' ~ [test] [sliceop]] | ':' ~ [test] [sliceop]
     ;
 
 
 sliceop
     =
-    ':' [test]
+    ':'~  [test]
     ;
 
 
 exprlist
     =
-    ','.{expr} [',']
+    ','.{expr} [',' ~]
     ;
 
 
 testlist
     =
-    ','.{test} [',']
+    ','.{test} [',' ~]
     ;
 
 
 dictmaker
     =
-    ','.{test ':' test} [',']
+    ','.{test ':' test} [',' ~]
     ;
 
 
 classdef
     =
-    'class' name ['(' [testlist] ')'] ':' suite
+    'class' ~ name ['(' ~ [testlist] ')'] ':' ~ suite
     ;
 
 
 arglist
     =
-      ','.{argument} [',' '*' test] [',' '**' test]
-    | '*' test [',' '**' test]
-    | '**' test
+      ','.{argument} [',' '*' ~ test] [',' '**' ~ test]
+    | '*' ~ test [',' '**' ~ test]
+    | '**' ~ test
     ;
 
 
 argument
     =
-    test [ ('=' test) | gen_for ]
+    test [ '=' ~ test | gen_for ]
     ;
 
 
@@ -565,13 +575,13 @@ list_iter
 
 list_for
     =
-    'for' exprlist 'in' testlist [list_iter]
+    'for' ~ exprlist 'in' ~ testlist [list_iter]
     ;
 
 
 list_if
     =
-    'if' test [list_iter]
+    'if' ~ test [list_iter]
     ;
 
 
@@ -583,19 +593,19 @@ gen_iter
 
 gen_for
     =
-    'for' exprlist 'in' or_test [gen_iter]
+    'for' ~ exprlist 'in' ~ or_test [gen_iter]
     ;
 
 
 gen_if
     =
-    'if' test [gen_iter]
+    'if' ~ test [gen_iter]
     ;
 
 
 yield_expr
     =
-    'yield' [testlist]
+    'yield' ~ [testlist]
     ;
 
 
@@ -651,5 +661,5 @@ STRING
 
 NEWLINE
     =
-    /[\u000C\r\n]+/
+    /[\u000C\r\n]+/ ~
     ;
