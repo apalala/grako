@@ -16,6 +16,7 @@ from grako.parser import GrakoGrammarGenerator
 
 # we hook the tool to the Python code generator as the default
 from grako.codegen import pythoncg
+from grako.codegen import objectmodel
 
 DESCRIPTION = (
     'Grako (for "grammar compiler") takes a grammar'
@@ -38,6 +39,12 @@ argparser.add_argument('-d', '--draw',
 argparser.add_argument('filename',
                        metavar='GRAMMAR',
                        help='The filename of the Grako grammar'
+                       )
+argparser.add_argument('-g', '--generate_object_model',
+                       help='generate object model from class names given as rule arguments',
+                       dest="generate_object_model",
+                       action='store_true',
+                       default=False
                        )
 argparser.add_argument('-l', '--no-left-recursion',
                        help='turns left-recusion support off',
@@ -109,6 +116,7 @@ def main(codegen=pythoncg, outer_version=''):
     draw = args.draw
     outfile = args.output
     pretty = args.pretty
+    generate_object_model = args.generate_object_model
     trace = args.trace
     whitespace = args.whitespace
     left_recursion = args.left_recursion
@@ -120,8 +128,8 @@ def main(codegen=pythoncg, outer_version=''):
         _error('--draw requires --outfile')
         sys.exit(2)
 
-    if sum([draw, pretty]) > 1:
-        _error('either --draw or --pretty, not both')
+    if sum([draw, pretty, generate_object_model]) > 1:
+        _error('only one of --draw, --pretty, --generate_object_model allowed')
         sys.exit(2)
 
     if name is None:
@@ -145,6 +153,8 @@ def main(codegen=pythoncg, outer_version=''):
 
         if pretty:
             result = str(model)
+        elif generate_object_model:
+            result = objectmodel.codegen(model)
         else:
             result = codegen(model)
 
