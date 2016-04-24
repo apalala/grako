@@ -1,4 +1,4 @@
-@@whitespace :: /((?![\r\n])\s)+/
+@@whitespace :: /((?!^)(?![\r\n])\s)+/
 @@eol_comments :: /#[^\r\n]*/
 
 single_input
@@ -15,7 +15,7 @@ file_input
 
 eval_input
     =
-    {NEWLINE} testlist {NEWLINE}
+    {NEWLINE} @:testlist {NEWLINE}
     ;
 
 
@@ -33,13 +33,13 @@ decorator
 
 dotted_attr
     =
-    NAME {'.' NAME}
+    '.'.{name}
     ;
 
 
 funcdef
     =
-    [decorators] 'def' NAME parameters ':' suite
+    [decorators] 'def' name parameters ':' suite
     ;
 
 
@@ -51,17 +51,9 @@ parameters
 
 varargslist
     =
-        defparameter
-        {(',' defparameter)}
-        [','
-        [
-        '*' NAME [',' '**' NAME] | '**' NAME
-        ]
-        ]
-    |
-        '*' NAME [',' '**' NAME]
-    |
-        '**' NAME
+    ','.{defparameter} [',' '*' name] [',' '**' name]
+    | '*' name [',' '**' name]
+    | '**' name
     ;
 
 
@@ -73,13 +65,13 @@ defparameter
 
 fpdef
     =
-    NAME | '(' fplist ')'
+    name | '(' fplist ')'
     ;
 
 
 fplist
     =
-    fpdef {(',' fpdef)} [',']
+    ','.{fpdef} [',']
     ;
 
 
@@ -91,7 +83,7 @@ stmt
 
 simple_stmt
     =
-    small_stmt {(';' small_stmt)} [';'] NEWLINE
+   ';'.{small_stmt} [';'] NEWLINE
     ;
 
 
@@ -111,10 +103,7 @@ small_stmt
 
 expr_stmt
     =
-    testlist
-    [
-    augassign yield_expr | augassign testlist | assigns
-    ]
+    testlist [augassign yield_expr|augassign testlist|assigns]
     ;
 
 
@@ -164,7 +153,7 @@ print_stmt
 
 printlist
     =
-    test {(',' test)} [',']
+    ','.{test} [',']
     ;
 
 
@@ -230,46 +219,50 @@ import_name
 
 import_from
     =
-    'from'
-    ({'.'} dotted_name | {'.'}+)
-    'import'
-    ('*' | import_as_names | '(' import_as_names ')')
+    'from' ({'.'} dotted_name | {'.'}+)
+    'import' ('*' | import_as_names | '(' import_as_names ')')
     ;
 
 
 import_as_names
     =
-    import_as_name {',' import_as_name} [',']
+    ','.{import_as_name} [',']
     ;
 
 
 import_as_name
     =
-    NAME ['as' NAME]
+    name ['as' name]
     ;
 
 
 dotted_as_name
     =
-    dotted_name ['as' NAME]
+    dotted_name ['as' name]
     ;
 
 
 dotted_as_names
     =
-    dotted_as_name {',' dotted_as_name}
+    ','.{dotted_as_name}
+    ;
+
+
+name
+    =
+    NAME
     ;
 
 
 dotted_name
     =
-    NAME {'.' NAME}
+    '.'.{NAME}
     ;
 
 
 global_stmt
     =
-    'global' NAME {',' NAME}
+    'global' ','.{name}
     ;
 
 
@@ -341,7 +334,7 @@ with_stmt
 
 with_var
     =
-    ('as' | NAME) expr
+    ('as' | name) expr
     ;
 
 
@@ -377,13 +370,13 @@ test
 
 or_test
     =
-    and_test {'or' and_test}
+    'or'.{and_test}
     ;
 
 
 and_test
     =
-    not_test {'and' not_test}
+    'and'.{not_test}
     ;
 
 
@@ -395,7 +388,7 @@ not_test
 
 comparison
     =
-    expr {comp_op expr}
+    (comp_op).{expr}
     ;
 
 
@@ -417,37 +410,37 @@ comp_op
 
 expr
     =
-    xor_expr {'|' xor_expr}
+    '|'.{xor_expr}
     ;
 
 
 xor_expr
     =
-    and_expr {'^' and_expr}
+    '^'.{and_expr}
     ;
 
 
 and_expr
     =
-    shift_expr {'&' shift_expr}
+    '&'.{shift_expr}
     ;
 
 
 shift_expr
     =
-    arith_expr {('<<' | '>>') arith_expr}
+    ('<<' | '>>').{arith_expr}
     ;
 
 
 arith_expr
     =
-    term {('+' | '-') term}
+    ('+' | '-').{term}
     ;
 
 
 term
     =
-    factor {('*' | '/' | '%' | '//') factor}
+    ('*' | '/' | '%' | '//').{factor}
     ;
 
 
@@ -465,42 +458,34 @@ power
 
 atom
     =
-        '('
-        [
-        yield_expr | testlist_gexp
-        ]
+        '(' [ yield_expr | testlist_gexp ] ')'
+    | '[' [listmaker] ']'
+    | '{' [dictmaker] '}'
+    | '`' testlist '`'
+    | name
+    | INT
+    | LONGINT
+    | FLOAT
+    | COMPLEX
+    | strings
+    ;
 
-        ')'
-    |
-        '[' [listmaker] ']'
-    |
-        '{' [dictmaker] '}'
-    |
-        '`' testlist '`'
-    |
-        NAME
-    |
-        INT
-    |
-        LONGINT
-    |
-        FLOAT
-    |
-        COMPLEX
-    |
-        {STRING}+
+
+strings
+    =
+    {string}+
     ;
 
 
 listmaker
     =
-    test (list_for | {(',' test)}) [',']
+    test (list_for | {',' test}) [',']
     ;
 
 
 testlist_gexp
     =
-    test ({(',' test)} [','] | gen_for)
+    test ({',' test} [','] | gen_for)
     ;
 
 
@@ -512,13 +497,13 @@ lambdef
 
 trailer
     =
-    '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
+    '(' [arglist] ')' | '[' subscriptlist ']' | '.' name
     ;
 
 
 subscriptlist
     =
-    subscript {(',' subscript)} [',']
+    ','.{subscript} [',']
     ;
 
 
@@ -536,50 +521,39 @@ sliceop
 
 exprlist
     =
-    expr {(',' expr)} [',']
+    ','.{expr} [',']
     ;
 
 
 testlist
     =
-    test {(',' test)} [',']
+    ','.{test} [',']
     ;
 
 
 dictmaker
     =
-    test ':' test {(',' test ':' test)} [',']
+    ','.{test ':' test} [',']
     ;
 
 
 classdef
     =
-    'class' NAME ['(' [testlist] ')'] ':' suite
+    'class' name ['(' [testlist] ')'] ':' suite
     ;
 
 
 arglist
     =
-        argument
-        {',' argument}
-        [','
-        [
-        '*' test [',' '**' test] | '**' test
-        ]
-        ]
-    |
-        '*' test [',' '**' test]
-    |
-        '**' test
+      ','.{argument} [',' '*' test] [',' '**' test]
+    | '*' test [',' '**' test]
+    | '**' test
     ;
 
 
 argument
     =
-    test
-    [
-    ('=' test) | gen_for
-    ]
+    test [ ('=' test) | gen_for ]
     ;
 
 
@@ -653,6 +627,11 @@ NAME
     =
     /(?!\d)\w+/
     ;
+
+
+string
+    =
+    STRING;
 
 
 STRING
