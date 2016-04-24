@@ -21,23 +21,34 @@ class Node(object):
 
     inline = True
 
-    def __init__(self, ctx=None, ast=None, parseinfo=None):
+    def __init__(self, ctx=None, ast=None, parseinfo=None, **kwargs):
         super(Node, self).__init__()
         self._ctx = ctx
-        self._parseinfo = parseinfo
+        self._ast = ast
+
         if isinstance(ast, AST):
-            self._parseinfo = ast.parseinfo if not parseinfo else None
+            parseinfo = ast.parseinfo if not parseinfo else None
+        self._parseinfo = parseinfo
+
+        attributes = ast or {}
+        # asume that kwargs contains node attributes of interest
+        if isinstance(ast, Mapping):
+            attributes.update(kwargs)
 
         self._parent = None
-        self._adopt_children(ast)
-        self.__postinit__(ast)
+        self._adopt_children(attributes)
+        self.__postinit__(attributes)
 
     def __postinit__(self, ast):
-        if isinstance(ast, AST):
+        if isinstance(ast, Mapping):
             for name, value in ast.items():
-                if hasattr(self, name):
+                while hasattr(self, name):
                     name = name + '_'
                 setattr(self, name, value)
+
+    @property
+    def ast(self):
+        return self._ast
 
     @property
     def parent(self):
