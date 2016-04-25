@@ -40,14 +40,13 @@ cython:
 
 
 clean: clean_cython
-	find grako -name "__pycache__" | xargs rm -rf
-	find grako -name "*.pyc" | xargs rm -f
-	find grako -name "*.pyo" | xargs rm -f
-	find grako -name "*.orig" | xargs rm -f
-	find examples -name "__pycache__" | xargs rm -rf
-	find examples -name "*.pyc" | xargs rm -f
-	find examples -name "*.pyo" | xargs rm -f
-	find examples -name "*.orig" | xargs rm -f
+	find -name "__pycache__" | xargs rm -rf
+	find -name "*.pyc" | xargs rm -f
+	find -name "*.pyo" | xargs rm -f
+	find -name "*.orig" | xargs rm -f
+	rm -rf grako.egg-info
+	rm -rf dist
+	rm -rf .tox
 
 
 clean_cython:
