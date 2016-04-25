@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 4, 25, 11, 47, 12, 0)
+__version__ = (2016, 4, 25, 13, 48, 23, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -79,6 +79,9 @@ class GrakoBootstrapParser(Parser):
     @graken()
     def _directive_(self):
         self._token('@@')
+        with self._ifnot():
+            self._token('keyword')
+        self._cut()
         with self._group():
             with self._choice():
                 with self._option():
@@ -92,6 +95,7 @@ class GrakoBootstrapParser(Parser):
                                 self._token('whitespace')
                             self._error('expecting one of: comments eol_comments whitespace')
                     self.name_last_node('name')
+                    self._cut()
                     self._cut()
                     self._token('::')
                     self._cut()

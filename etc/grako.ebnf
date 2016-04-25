@@ -21,9 +21,10 @@ grammar::Grammar
 
 directive
     =
-    '@@'
+    '@@' !'keyword' ~
     (
             name:('comments' | 'eol_comments' | 'whitespace') ~
+            ~
             '::' ~ value:regex
         |
             name:('nameguard' | 'ignorecase' | 'left_recursion')
