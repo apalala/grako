@@ -26,14 +26,14 @@ class GrakoParserBase(GrakoBootstrapParser, GrakoContext):
 
 
 class GrakoParser(GrakoParserBase):
-    def __init__(self, grammar_name, semantics=None, **kwargs):
+    def __init__(self, grammar_name=None, semantics=None, **kwargs):
         if semantics is None:
             semantics = GrakoASTSemantics()
         super(GrakoParser, self).__init__(semantics=semantics, **kwargs)
 
 
 class GrakoGrammarGenerator(GrakoParserBase):
-    def __init__(self, grammar_name, semantics=None, parseinfo=True, **kwargs):
+    def __init__(self, grammar_name=None, semantics=None, parseinfo=True, **kwargs):
         if semantics is None:
             semantics = GrakoSemantics(grammar_name)
         super(GrakoGrammarGenerator, self).__init__(

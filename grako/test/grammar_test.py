@@ -954,6 +954,22 @@ class GrammarTests(unittest.TestCase):
         ast = model.parse(text, semantics=semantics)
         self.assertEqual('5.4.3.2.1', ast)
 
+    def test_grammar_directive(self):
+        grammar = '''
+            @@grammar :: Test
+
+            start = test $;
+            test = "test";
+        '''
+        model = genmodel(grammar=grammar)
+        self.assertEquals('Test', model.directives.get('grammar'))
+        self.assertEquals('Test', model.name)
+
+        code = codegen(model)
+        module = compile(code, 'test.py', 'exec')
+
+        assert 'TestParser' in module.co_names
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 4, 25, 0, 7, 37, 0)
+__version__ = (2016, 4, 25, 11, 47, 12, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -48,6 +48,10 @@ class GrakoBootstrapParser(Parser):
             keywords=keywords,
             **kwargs
         )
+
+    @graken()
+    def _start_(self):
+        self._grammar_()
 
     @graken('Grammar')
     def _grammar_(self):
@@ -118,7 +122,7 @@ class GrakoBootstrapParser(Parser):
                             self._error('no available options')
                 with self._option():
                     with self._group():
-                        self._token('name')
+                        self._token('grammar')
                     self.name_last_node('name')
                     self._cut()
                     self._token('::')
@@ -716,6 +720,9 @@ class GrakoBootstrapParser(Parser):
 
 
 class GrakoBootstrapSemantics(object):
+    def start(self, ast):
+        return ast
+
     def grammar(self, ast):
         return ast
 
@@ -887,6 +894,7 @@ def main(
 
     with open(filename) as f:
         text = f.read()
+    whitespace = whitespace or None
     parser = GrakoBootstrapParser(parseinfo=False)
     ast = parser.parse(
         text,

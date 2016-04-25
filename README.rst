@@ -887,10 +887,10 @@ Changes
 -----
 
 * Guard against recursive structures in ``grako.util.asjson()``.
-* Added ``@@grammarname`` directive to grammars as to avoid having to pass a ``-m NAME`` through the command line.
+* Added ``@@grammar`` directive to grammars as to avoid having to pass a ``-m NAME`` through the command line.
 * Now ``STARTRULE`` defaults to ``start`` in generated parsers.
 * Now the AST_ for a ``grako.model.Node`` is saved as ``Node.ast``.
-* The ``--object-model`` command-line option will generate a python module with definitions for the class names specified as grammar-rule parameters.
+* The ``--object-model`` command-line option will generate a python module with definitions for the class names specified as grammar-rule parameters (untested).
 * Removed outdated information form the *README*.
 * **BUG** Both ``grako.grammars`` and ``grako.codegen.python`` were manipulating the names defined in a grammar rule.
 * Cleaned up the grammar in ``examples/python``; still untested.

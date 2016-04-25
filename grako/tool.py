@@ -82,12 +82,12 @@ argparser.add_argument('-w', '--whitespace',
                        )
 
 
-def genmodel(name, grammar, trace=False, filename=None, colorize=False, **kwargs):
+def genmodel(name=None, grammar=None, trace=False, filename=None, colorize=False, **kwargs):
     parser = GrakoGrammarGenerator(name, filename=filename, trace=trace, colorize=colorize, **kwargs)
     return parser.parse(grammar, filename=filename, colorize=colorize, **kwargs)
 
 
-def gencode(name, grammar, trace=False, filename=None, codegen=pythoncg):
+def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythoncg):
     model = genmodel(name, grammar, filename=filename, trace=trace)
     return codegen(model)
 

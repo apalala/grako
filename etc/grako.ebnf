@@ -1,4 +1,4 @@
-@@name :: Grako
+@@grammar :: Grako
 @@comments :: /\(\*((?:.|\n)*?)\*\)/
 @@eol_comments :: /#([^\n]*?)$/
 
@@ -30,7 +30,7 @@ directive
             ~
             ('::' ~ value:boolean|value:`True`)
         |
-            name:('name')
+            name:('grammar')
             ~
             '::' ~ value:word
     )
