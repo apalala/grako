@@ -13,6 +13,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import sys
+import os
 import functools
 from collections import defaultdict, Mapping
 from copy import copy
@@ -737,6 +738,7 @@ class Grammar(Model):
     def __init__(self,
                  name,
                  rules,
+                 filename='Unknown',
                  whitespace=None,
                  nameguard=None,
                  left_recursion=None,
@@ -746,11 +748,17 @@ class Grammar(Model):
                  keywords=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
-        self.name = name
+
         self.rules = rules
 
         directives = directives or {}
         self.directives = directives
+
+        if name is None:
+            name = self.directives.get('name')
+        if name is None:
+            name = os.path.splitext(os.path.basename(filename))[0]
+        self.name = name
 
         if whitespace is None:
             whitespace = directives.get('whitespace')
@@ -862,6 +870,8 @@ class Grammar(Model):
 
     def __str__(self):
         directives = ''
+        if 'name' in self.directives:
+            directives += '@@name :: %s\n' % ustr(self.directives['name'])
         if 'comments' in self.directives:
             directives += '@@comments :: /%s/\n' % ustr(self.directives['comments'])
         if 'ignorecase' in self.directives:

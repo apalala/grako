@@ -1,5 +1,13 @@
+@@name :: Grako
 @@comments :: /\(\*((?:.|\n)*?)\*\)/
 @@eol_comments :: /#([^\n]*?)$/
+
+
+start
+    =
+    grammar
+    ;
+
 
 grammar::Grammar
     =
@@ -21,6 +29,10 @@ directive
             name:('nameguard' | 'ignorecase' | 'left_recursion')
             ~
             ('::' ~ value:boolean|value:`True`)
+        |
+            name:('name')
+            ~
+            '::' ~ value:word
     )
     ;
 

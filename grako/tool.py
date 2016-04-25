@@ -83,12 +83,12 @@ argparser.add_argument('-w', '--whitespace',
 
 
 def genmodel(name, grammar, trace=False, filename=None, colorize=False, **kwargs):
-    parser = GrakoGrammarGenerator(name, trace=trace, colorize=colorize, **kwargs)
+    parser = GrakoGrammarGenerator(name, filename=filename, trace=trace, colorize=colorize, **kwargs)
     return parser.parse(grammar, filename=filename, colorize=colorize, **kwargs)
 
 
 def gencode(name, grammar, trace=False, filename=None, codegen=pythoncg):
-    model = genmodel(name, grammar, trace=trace, filename=filename)
+    model = genmodel(name, grammar, filename=filename, trace=trace)
     return codegen(model)
 
 
@@ -132,8 +132,8 @@ def main(codegen=pythoncg, outer_version=''):
         _error('only one of --draw, --pretty, --generate_object_model allowed')
         sys.exit(2)
 
-    if name is None:
-        name = os.path.splitext(os.path.basename(filename))[0]
+    # if name is None:
+    #    name = os.path.splitext(os.path.basename(filename))[0]
 
     if outfile and os.path.isfile(outfile):
         os.unlink(outfile)
@@ -146,7 +146,13 @@ def main(codegen=pythoncg, outer_version=''):
             os.makedirs(dirname)
 
     try:
-        model = genmodel(name, grammar, trace=trace, filename=filename, colorize=colorize)
+        model = genmodel(
+            name,
+            grammar,
+            trace=trace,
+            filename=filename,
+            colorize=colorize
+        )
         model.whitespace = whitespace
         model.nameguard = False if not nameguard else None  # None allows grammar specified or the default of True
         model.left_recursion = left_recursion

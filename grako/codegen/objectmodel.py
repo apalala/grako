@@ -84,14 +84,8 @@ class Grammar(ModelRenderer):
                 from grako.model import Node
                 from grako.model import ModelBuilderSemantics
 
+
                 __version__ = '{version}'
-
-                __all__ = [
-                ]
-
-
-                class ModelBase(Node):
-                    pass
 
 
                 class {name}ModelBuilderSemantics(ModelBuilderSemantics):
@@ -101,6 +95,10 @@ class Grammar(ModelRenderer):
                             if issubclass(t, ModelBase)
                         ]
                         super({name}ModelBuilderSemantics, self).__init__(types=types)
+
+
+                class ModelBase(Node):
+                    pass
 
 
                 {model_class_declarations}\

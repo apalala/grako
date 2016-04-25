@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 11, 23, 31, 23, 4)
+__version__ = (2016, 4, 25, 0, 7, 37, 0)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -45,6 +45,7 @@ class GrakoBootstrapParser(Parser):
             eol_comments_re=eol_comments_re,
             ignorecase=ignorecase,
             left_recursion=left_recursion,
+            keywords=keywords,
             **kwargs
         )
 
@@ -115,6 +116,15 @@ class GrakoBootstrapParser(Parser):
                                 self._constant('True')
                                 self.name_last_node('value')
                             self._error('no available options')
+                with self._option():
+                    with self._group():
+                        self._token('name')
+                    self.name_last_node('name')
+                    self._cut()
+                    self._token('::')
+                    self._cut()
+                    self._word_()
+                    self.name_last_node('value')
                 self._error('no available options')
 
         self.ast._define(
