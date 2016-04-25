@@ -237,7 +237,6 @@ def chunks(iterable, size, fillvalue=None):
 
 def generic_main(custom_main, ParserClass, name='Unknown'):
     import argparse
-    import string
     import sys
 
     class ListRules(argparse.Action):
@@ -262,14 +261,16 @@ def generic_main(custom_main, ParserClass, name='Unknown'):
            help="disable the 'nameguard' feature")
     addarg('-t', '--trace', action='store_true',
            help="output trace information")
-    addarg('-w', '--whitespace', type=str, default=string.whitespace,
+    addarg('-w', '--whitespace', type=str, default=None,
            help="whitespace specification")
     addarg('file',
            metavar="FILE",
            help="the input file to parse")
     addarg('startrule',
            metavar="STARTRULE",
-           help="the start rule for parsing")
+           nargs='?',
+           help="the start rule for parsing",
+           default='start')
 
     args = argp.parse_args()
     try:

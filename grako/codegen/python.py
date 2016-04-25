@@ -464,7 +464,7 @@ class Grammar(Base):
                         filename,
                         startrule,
                         trace=False,
-                        whitespace={whitespace},
+                        whitespace=None,
                         nameguard={nameguard},
                         comments_re={comments_re},
                         eol_comments_re={eol_comments_re},
@@ -474,6 +474,7 @@ class Grammar(Base):
 
                     with open(filename) as f:
                         text = f.read()
+                    whitespace = whitespace or {whitespace}
                     parser = {name}Parser(parseinfo=False)
                     ast = parser.parse(
                         text,
@@ -494,5 +495,5 @@ class Grammar(Base):
                     print()
                     print('JSON:')
                     print(json.dumps(ast, indent=2))
-                    print()
+                    print()\
                 '''
