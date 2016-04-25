@@ -28,11 +28,11 @@ Grako
 
 * Efficient support for direct and indirect left recursion allows for more intuitive grammars.
 
-The parser-generator, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 4 KLOC_ of Python_, it is possible to study all its source code in a single session.
+The parser-generator, the runtime support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
 The only dependencies are on the Python_ 2.7, 3.4, or PyPy_ 2.3 standard libraries (the proposed regex_ module will be used if installed, colorama_ will be used on trace output if available, and pygraphviz_ is required for generating diagrams). For performance beyond what which Python_ or PyPy_ can provide, take a look at the `Grako++`_ project.
 
-**Grako** is feature-complete and currently being used with complex grammars to parse and translate *hundreds of thousands* of lines of `legacy code`_ in programming languages like NATURAL_, COBOL_, VB6_, and Java_.
+**Grako** is feature-complete and currently being used with complex grammars to parse and translate hundreds of thousands of lines of complex text, including program source files and other structured input.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
@@ -748,9 +748,8 @@ License
 
 **Grako** is Copyright (C) 2012-2016 by `Thomas Bragg`_ and  `Juancarlo Añez`_
 
-.. _`Thomas Bragg`:  http://www.resqsoft.com/
-.. _ResQSoft:  http://www.resqsoft.com/
 .. _`Juancarlo Añez`: mailto:apalala@gmail.com
+.. _`Thomas Bragg`: mailto:tbragg95@gmail.com
 
 You may use the tool under the terms of the BSD_-style license described in the enclosed **LICENSE.txt** file. *If your project requires different licensing* please email_.
 
@@ -815,8 +814,6 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 * `Kathryn Long`_ proposed better support for UNICODE in the treatment of whitespace and regular expressions (patterns) in general. Her other contributions have made **Grako** more congruent, and more user-friendly.
 
 * `David Röthlisberger`_ provided the definitive patch that allows the use of Python_ keywords as rule names.
-
-* **Grako** would not have been possible without the vision, the funding, and the trust provided by **Thomas Bragg** through ResQSoft_.
 
 .. _Wirth: http://en.wikipedia.org/wiki/Niklaus_Wirth
 .. _Euler: http://en.wikipedia.org/wiki/Euler_programming_language
@@ -1004,7 +1001,7 @@ Changes
 
 * 38_ Trace output uses color if the colorama_ package is installed. Also, the vertical size of trace logs was reduced to three lines per entry.
 
-* 40_ The widht and the separator used in parse traces are now configurable with keyword arguments.
+* 40_ The widtn and the separator used in parse traces are now configurable with keyword arguments.
 
 .. _37: https://bitbucket.org/apalala/grako/issue/37/
 .. _38: https://bitbucket.org/apalala/grako/issue/38/
