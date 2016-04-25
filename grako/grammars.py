@@ -85,7 +85,7 @@ class GrakoBuffer(Buffer):
 
 
 class GrakoContext(ParseContext):
-    def parse(self, text, rule='grammar', filename=None, parseinfo=True, **kwargs):
+    def parse(self, text, rule='start', filename=None, parseinfo=True, **kwargs):
         if not isinstance(text, Buffer):
             text = GrakoBuffer(
                 text,
@@ -755,7 +755,7 @@ class Grammar(Model):
         self.directives = directives
 
         if name is None:
-            name = self.directives.get('name')
+            name = self.directives.get('grammar')
         if name is None:
             name = os.path.splitext(os.path.basename(filename))[0]
         self.name = name
@@ -870,8 +870,8 @@ class Grammar(Model):
 
     def __str__(self):
         directives = ''
-        if 'name' in self.directives:
-            directives += '@@name :: %s\n' % ustr(self.directives['name'])
+        if 'grammar' in self.directives:
+            directives += '@@grammar :: %s\n' % ustr(self.directives['grammar'])
         if 'comments' in self.directives:
             directives += '@@comments :: /%s/\n' % ustr(self.directives['comments'])
         if 'ignorecase' in self.directives:
