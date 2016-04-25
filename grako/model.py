@@ -33,7 +33,7 @@ class Node(object):
         attributes = ast or {}
         # asume that kwargs contains node attributes of interest
         if isinstance(ast, Mapping):
-            attributes.update(kwargs)
+            attributes.update({k: v for k, v in kwargs if v is not None})
 
         self._parent = None
         self._adopt_children(attributes)
