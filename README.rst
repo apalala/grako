@@ -897,6 +897,7 @@ Changes
 * 74_ ``grako.model.Node.children()`` returned an empty list even when traversing attributes that with names starting in ``'_'``.
 * 57_ Still bugs in handling of ``@@whitespace`` in the generated parser's (gkimbar_).
 
+.. _57: https://bitbucket.org/apalala/grako/issue/57
 .. _74: https://bitbucket.org/apalala/grako/issue/74
 
 3.8.1
