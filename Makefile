@@ -54,7 +54,7 @@ clean_cython:
 	find grako -name "*.c" | xargs rm -f
 
 
-release_check: flake8
+release_check:
 	rst2html.py README.rst > /dev/null
 	python setup.py sdist
 	tox
