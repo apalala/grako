@@ -66,5 +66,6 @@ publish: release_check
 	python setup.py bdist_wheel --universal
 
 
-upload: release_check
-	python setup.py sdist --formats=gztar,zip bdist_wheel --universal register upload
+upload:
+	python setup.py sdist --formats=gztar,zip register upload
+	python setup.py bdist_wheel --universal upload
