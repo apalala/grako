@@ -2,11 +2,13 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from datetime import datetime
+from collections import OrderedDict as odict
 
 from grako.util import (
+    compress_seq,
+    indent,
     re,
     safe_name,
-    trim,
 )
 from grako.model import Node
 from grako.exceptions import CodegenError
@@ -29,6 +31,35 @@ class ObjectModelCodeGenerator(CodeGenerator):
         return renderer
 
 
+class Rule(ModelRenderer):
+    def render_fields(self, fields):
+        defs = [safe_name(d) for d, l in compress_seq(self.defines())]
+
+        kwargs = '\n'.join('%s=None, ' % d for d in defs)
+        params = '\n'.join('%s=%s,' % (d, d) for d in defs)
+        if params:
+            params = '\n*args,\n' + params + '\n**kwargs\n'
+            params = indent(params, 3)
+            params = params + '\n' + indent(')', 2)
+
+            kwargs = '\n' + indent(kwargs + '\n**kwargs', 4)
+        else:
+            kwargs = '**kwargs'
+            params = '*args, **kwargs)'
+
+        fields.update(
+            class_name=safe_name(self.params[0]),
+            kwargs=kwargs,
+            params=params,
+        )
+
+    template = '''
+            class {class_name}(ModelBase):
+                def __init__(self, *args, {kwargs}):
+                    super({class_name}, self).__init_({params}\
+            '''
+
+
 class Grammar(ModelRenderer):
     @staticmethod
     def object_model_typename(rule):
@@ -41,16 +72,15 @@ class Grammar(ModelRenderer):
         return rule.params[0]
 
     def render_fields(self, fields):
-        model_class_names = {
-            self.object_model_typename(rule)
+        model_rules = odict([
+            (self.object_model_typename(rule), rule)
             for rule in self.node.rules
-        }
-        model_class_names = [oc for oc in model_class_names if oc is not None]
+        ])
+        del model_rules[None]
+        model_rules = list(model_rules.values())
 
-        class_template = trim(self.model_class_template)
         model_class_declarations = [
-            class_template.format(name=safe_name(oc))
-            for oc in model_class_names
+            self.get_renderer(rule).render() for rule in model_rules
         ]
         model_class_declarations = '\n\n\n'.join(model_class_declarations)
 
@@ -60,11 +90,6 @@ class Grammar(ModelRenderer):
             model_class_declarations=model_class_declarations,
             version=version,
         )
-
-    model_class_template = '''
-            class {name}(ModelBase):
-                pass\
-            '''
 
     template = '''\
                 #!/usr/bin/env python
