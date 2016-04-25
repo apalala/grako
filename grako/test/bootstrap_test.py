@@ -45,7 +45,7 @@ class BootstrapTests(unittest.TestCase):
         g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text, trace=False)
 
-        generated_grammar1 = str(g.ast['grammar'])
+        generated_grammar1 = str(g.ast['start'])
         with open('tmp/01.ebnf', 'w') as f:
             f.write(generated_grammar1)
 
@@ -54,7 +54,7 @@ class BootstrapTests(unittest.TestCase):
             text = str(f.read())
         g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text, trace=False)
-        generated_grammar2 = str(g.ast['grammar'])
+        generated_grammar2 = str(g.ast['start'])
         with open('tmp/02.ebnf', 'w') as f:
             f.write(generated_grammar2)
         self.assertEqual(generated_grammar2, generated_grammar1)
@@ -72,7 +72,7 @@ class BootstrapTests(unittest.TestCase):
             text = f.read()
         g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text)
-        parser = g.ast['grammar']
+        parser = g.ast['start']
     #    pprint(parser.first_sets, indent=2, depth=3)
         generated_grammar4 = str(parser)
         with open('tmp/04.ebnf', 'w') as f:
@@ -98,12 +98,12 @@ class BootstrapTests(unittest.TestCase):
         parser = GenParser(trace=False)
         result = parser.parse(
             text,
-            'grammar',
+            'start',
             comments_re=COMMENTS_RE,
             eol_comments_re=EOL_COMMENTS_RE
         )
-        self.assertEqual(result, parser.ast['grammar'])
-        ast8 = parser.ast['grammar']
+        self.assertEqual(result, parser.ast['start'])
+        ast8 = parser.ast['start']
         json8 = json.dumps(ast8, indent=2)
         open('tmp/08.ast', 'w').write(json8)
         self.assertEqual(ast5, ast8)
@@ -121,7 +121,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 10 - Parse with a model using a semantics')
         g10 = g9.parse(
             text,
-            start_rule='grammar',
+            start_rule='start',
             semantics=GrakoSemantics('GrakoBootstrap')
         )
         generated_grammar10 = str(g10)
@@ -138,7 +138,7 @@ class BootstrapTests(unittest.TestCase):
             g11 = pickle.load(f)
         r11 = g11.parse(
             text,
-            start_rule='grammar',
+            start_rule='start',
             semantics=GrakoSemantics('GrakoBootstrap')
         )
         with open('tmp/11.ebnf', 'w') as f:
