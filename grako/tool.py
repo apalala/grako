@@ -40,9 +40,9 @@ argparser.add_argument('filename',
                        metavar='GRAMMAR',
                        help='The filename of the Grako grammar'
                        )
-argparser.add_argument('-g', '--generate_object_model',
-                       help='generate object model from class names given as rule arguments',
-                       dest="generate_object_model",
+argparser.add_argument('-g', '--object-model',
+                       help='generate object model from the class names given as rule arguments',
+                       dest="object_model",
                        action='store_true',
                        default=False
                        )
@@ -116,7 +116,7 @@ def main(codegen=pythoncg, outer_version=''):
     draw = args.draw
     outfile = args.output
     pretty = args.pretty
-    generate_object_model = args.generate_object_model
+    object_model = args.object_model
     trace = args.trace
     whitespace = args.whitespace
     left_recursion = args.left_recursion
@@ -128,8 +128,8 @@ def main(codegen=pythoncg, outer_version=''):
         _error('--draw requires --outfile')
         sys.exit(2)
 
-    if sum([draw, pretty, generate_object_model]) > 1:
-        _error('only one of --draw, --pretty, --generate_object_model allowed')
+    if sum([draw, pretty, object_model]) > 1:
+        _error('only one of --draw, --pretty, --object_model allowed')
         sys.exit(2)
 
     # if name is None:
@@ -159,7 +159,7 @@ def main(codegen=pythoncg, outer_version=''):
 
         if pretty:
             result = str(model)
-        elif generate_object_model:
+        elif object_model:
             result = objectmodel.codegen(model)
         else:
             result = codegen(model)
