@@ -46,6 +46,7 @@ clean: clean_cython
 	find -name "*.orig" | xargs rm -f
 	rm -rf grako.egg-info
 	rm -rf dist
+	rm -rf build
 	rm -rf .tox
 
 
@@ -54,7 +55,7 @@ clean_cython:
 	find grako -name "*.c" | xargs rm -f
 
 
-release_check:
+release_check: clean
 	rst2html.py README.rst > /dev/null
 	python setup.py sdist
 	tox
