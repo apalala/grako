@@ -670,12 +670,7 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _float_(self):
-        with self._choice():
-            with self._option():
-                self._pattern(r'[-+]?\d+\.(?:\d*)?(?:[Ee][-+]?\d+)?')
-            with self._option():
-                self._pattern(r'[-+]?\d*\.\d+(?:[Ee][-+]?\d+)?')
-            self._error('expecting one of: [-+]?\\d*\\.\\d+(?:[Ee][-+]?\\d+)? [-+]?\\d+\\.(?:\\d*)?(?:[Ee][-+]?\\d+)?')
+        self._pattern(r'[-+]?(?:\d+\.\d*|\d*\.\d+)(?:[Ee][-+]?\d+)?')
 
     @graken()
     def _int_(self):
