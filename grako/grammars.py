@@ -869,22 +869,18 @@ class Grammar(Model):
         return 1 + sum(r.nodecount() for r in self.rules)
 
     def __str__(self):
+        regex_directives = {'comments', 'eol_comments', 'whitespace'}
+        ustr_directives = {'comments', 'grammar'}
+
         directives = ''
-        if 'grammar' in self.directives:
-            directives += '@@grammar :: %s\n' % ustr(self.directives['grammar'])
-        if 'comments' in self.directives:
-            directives += '@@comments :: /%s/\n' % ustr(self.directives['comments'])
-        if 'ignorecase' in self.directives:
-            directives += '@@ignorecase :: %s\n' % self.directives['ignorecase']
-        if 'left_recursion' in self.directives:
-            directives += '@@left_recursion :: %s\n' % self.directives['left_recursion']
-        if 'nameguard' in self.directives:
-            directives += '@@nameguard :: %s\n' % self.directives['nameguard']
-        if 'eol_comments' in self.directives:
-            directives += '@@eol_comments :: /%s/\n' % self.directives['eol_comments']
-        if 'whitespace' in self.directives:
-            directives += '@@whitespace :: /%s/\n' % self.directives['whitespace']
-        directives = directives + '\n' if directives else ''
+        for directive, value in self.directives.items():
+            fmt = {}
+            fmt['name'] = directive
+            fmt['frame'] = '/' if directive in regex_directives else ''
+            fmt['value'] = ustr(value) if directive in ustr_directives else value
+            directives += '@@{name} :: {frame}{value}{frame}\n'.format(**fmt)
+        if directives:
+            directives += '\n'
 
         keywords = '\n'.join(
             '@@keyword :: ' + ' '.join(urepr(k) for k in c if k is not None)
