@@ -874,6 +874,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _drothlis: https://bitbucket.org/drothlis/
 .. _`David Röthlisberger`: https://bitbucket.org/drothlis/
 .. _gkimbar: https://bitbucket.org/gkimbar/
+.. _neumond: https://bitbucket.org/neumond/
 
 
 Changes
@@ -882,6 +883,11 @@ Changes
 **Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
+
+3.9.1-rc.1
+----------
+
+* **BUG** Several important bug fixes to the object model generator (neumond_)
 
 3.9.0
 -----
