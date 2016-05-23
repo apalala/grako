@@ -42,7 +42,7 @@ class Rule(ModelRenderer):
             params = indent(params, 3)
             params = params + '\n' + indent(')', 2)
 
-            kwargs = '\n' + indent(kwargs + '\n**kwargs', 4)
+            kwargs = '\n' + indent(kwargs + '\n**kwargs', indent=17, multiplier=1)
         else:
             kwargs = '**kwargs'
             params = '*args, **kwargs)'
@@ -56,7 +56,7 @@ class Rule(ModelRenderer):
     template = '''
             class {class_name}(ModelBase):
                 def __init__(self, *args, {kwargs}):
-                    super({class_name}, self).__init_({params}\
+                    super({class_name}, self).__init__({params}\
             '''
 
 
@@ -105,6 +105,7 @@ class Grammar(ModelRenderer):
                 # the file is generated.
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
+                import inspect
 
                 from grako.model import Node
                 from grako.model import ModelBuilderSemantics
@@ -117,7 +118,7 @@ class Grammar(ModelRenderer):
                     def __init__(self):
                         types = [
                             t for t in globals().values()
-                            if issubclass(t, ModelBase)
+                            if inspect.isclass(t) and issubclass(t, ModelBase)
                         ]
                         super({name}ModelBuilderSemantics, self).__init__(types=types)
 
