@@ -105,7 +105,6 @@ class Grammar(ModelRenderer):
                 # the file is generated.
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
-                import inspect
 
                 from grako.model import Node
                 from grako.model import ModelBuilderSemantics
@@ -118,7 +117,7 @@ class Grammar(ModelRenderer):
                     def __init__(self):
                         types = [
                             t for t in globals().values()
-                            if inspect.isclass(t) and issubclass(t, ModelBase)
+                            if type(t) is type and issubclass(t, ModelBase)
                         ]
                         super({name}ModelBuilderSemantics, self).__init__(types=types)
 
