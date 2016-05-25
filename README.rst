@@ -152,18 +152,18 @@ The *-h* and *--help* parameters provide full usage information::
         -h, --help            show this help message and exit
         -c, --color           use color in traces (requires the colorama library)
         -d, --draw            generate a diagram of the grammar (requires --output)
-        -g, --object-model     generate object model from the class names given as
-                                rule arguments
+        -g, --object-model    generate object model from the class names given as
+                              rule arguments
         -l, --no-left-recursion
-                                turns left-recusion support off
+                              turns left-recusion support off
         -m NAME, --name NAME  Name for the grammar (defaults to GRAMMAR base name)
         -n, --no-nameguard    allow tokens that are prefixes of others
         -o FILE, --output FILE
-                                output file (default is stdout)
+                              output file (default is stdout)
         -p, --pretty          prettify the input grammar
         -t, --trace           produce verbose parsing output
         -w CHARACTERS, --whitespace CHARACTERS
-                                characters to skip during parsing (use "" to disable)
+                              characters to skip during parsing (use "" to disable)
         -v, --version         provide version information and exit
         $
 
@@ -887,7 +887,7 @@ Changes
 3.9.1-rc.1
 ----------
 
-* **BUG** Several important bug fixes to the object model generator (neumond_)
+* *BUG!* Several important bug fixes to the object model generator (neumond_)
 
 3.9.0
 -----
@@ -896,9 +896,9 @@ Changes
 * Added ``@@grammar`` directive to grammars as to avoid having to pass a ``-m NAME`` through the command line.
 * Now ``STARTRULE`` defaults to ``start`` in generated parsers.
 * Now the AST_ for a ``grako.model.Node`` is saved as ``Node.ast``.
-* The ``--object-model`` command-line option will generate a python module with definitions for the class names specified as grammar-rule parameters (untested).
-* Removed outdated information form the *README*.
-* **BUG** Both ``grako.grammars`` and ``grako.codegen.python`` were manipulating the names defined in a grammar rule.
+* The ``--object-model`` command-line option will generate a python module with definitions for the class names specified as rule parameters (untested).
+* Removed outdated information from the *README*.
+* *BUG!* Both ``grako.grammars`` and ``grako.codegen.python`` were manipulating the names defined in a grammar rule.
 * Cleaned up the grammar in ``examples/python``; still untested.
 * 74_ ``grako.model.Node.children()`` returned an empty list even when traversing attributes that with names starting in ``'_'``.
 * 57_ Still bugs in handling of ``@@whitespace`` in the generated parser's (gkimbar_).
