@@ -544,7 +544,7 @@ Some languages must reserve the use of certain tokens as valid identifiers becau
 .. _`Keywords`: https://en.wikipedia.org/wiki/Reserved_word
 .. _`Reserved Words`: https://en.wikipedia.org/wiki/Reserved_word
 
-**Grako** provides support for preventing the use of keywords_ as identifiers though the ``@@keyword`` directive,and the `@name` decorator.
+**Grako** provides support for preventing the use of keywords_ as identifiers though the ``@@keyword`` directive,and the ``@name`` decorator.
 
 A grammar may specify reserved tokens providing a list of them in one or more ``@@keyword`` directives::
 
@@ -875,6 +875,8 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _`David Röthlisberger`: https://bitbucket.org/drothlis/
 .. _gkimbar: https://bitbucket.org/gkimbar/
 .. _neumond: https://bitbucket.org/neumond/
+.. _siemer: https://bitbucket.org/siemer/
+
 
 
 Changes
@@ -888,6 +890,9 @@ Changes
 ----------
 
 * *BUG!* Several important bug fixes to the object model generator (neumond_)
+* Simplified the regular expression for floats in the **Grako** grammar (siemer_)
+* Set all flake8_ options in ``tox.ini`` (siemer_).
+* Simplfied ``__str__()`` for directives (siemer_).
 
 3.9.0
 -----
@@ -974,7 +979,7 @@ Changes
 
 * 52_ Build with Cython failed on Windows.
 
-* Applied Flake8_ suggestions.
+* Applied flake8_ suggestions.
 
 * Upgraded development libraries to their latest versions (see ``requirements.txt``).
 
@@ -1151,9 +1156,8 @@ Changes
 
 * Added ``--whitespace`` parameter to generated ``main()``.
 
-* Applied Flake8_ to project and to generated parsers.
+* Applied flake8_ to project and to generated parsers.
 
-.. _Flake8: https://pypi.python.org/pypi/flake8
 .. _tox: https://testrun.org/tox/latest/
 
 
