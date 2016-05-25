@@ -544,14 +544,14 @@ Some languages must reserve the use of certain tokens as valid identifiers becau
 .. _`Keywords`: https://en.wikipedia.org/wiki/Reserved_word
 .. _`Reserved Words`: https://en.wikipedia.org/wiki/Reserved_word
 
-**Grako** provides support for preventing the use of keywords_ as identifiers though the ``@@ |space| keyword`` directive,and the ``@ |space| name`` decorator.
+**Grako** provides support for preventing the use of keywords_ as identifiers though the ``@@keyword`` directive,and the ``\@name`` decorator.
 
-A grammar may specify reserved tokens providing a list of them in one or more ``@@ |space| keyword`` directives::
+A grammar may specify reserved tokens providing a list of them in one or more ``@@keyword`` directives::
 
     @@keyword :: if endif
     @@keyword :: else elseif
 
-The ``@ |space| name`` decorator checks that the result of a grammar rule does not match a token defined as a keyword_::
+The ``\@name`` decorator checks that the result of a grammar rule does not match a token defined as a keyword_::
 
     @name
     identifier = /(?!\d)\w+/ ;
@@ -559,9 +559,6 @@ The ``@ |space| name`` decorator checks that the result of a grammar rule does n
 There are situations in which a token is reserved only in a very specific context. In those cases, a negative lookahead will prevent the use of the token::
 
     statements = {!'END' statement}+ ;
-
-
-.. |space| unicode :: U+0020
 
 Left Recursion
 ==============
