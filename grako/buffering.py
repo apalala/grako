@@ -98,8 +98,7 @@ class Buffer(object):
                 # a list or a set?
                 whitespace = ''.join(c for c in whitespace)
             return regexp.compile(
-                '[%s]+' % regexp.escape(whitespace),
-                RE_FLAGS | regexp.DOTALL
+                '[%s]+' % regexp.escape(whitespace), RE_FLAGS
             )
         else:
             return None
