@@ -44,6 +44,7 @@ class Buffer(object):
                  trace=False,
                  nameguard=None,
                  comment_recovery=False,
+                 namechars='',
                  **kwargs):
         self.original_text = text
         self.text = ustr(text)
@@ -60,6 +61,10 @@ class Buffer(object):
                           if nameguard is not None
                           else bool(self.whitespace_re))
         self.comment_recovery = comment_recovery
+        self.namechars = namechars
+        self._namechar_set = set(namechars)
+        if namechars:
+            self.nameguard = True
 
         self._pos = 0
         self._len = 0
@@ -278,7 +283,7 @@ class Buffer(object):
         return self.scan_space()
 
     def is_name_char(self, c):
-        return c is not None and c.isalnum()
+        return c is not None and c.isalnum() or c in self._namechar_set
 
     def match(self, token, ignorecase=None):
         ignorecase = ignorecase if ignorecase is not None else self.ignorecase

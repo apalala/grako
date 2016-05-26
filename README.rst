@@ -290,9 +290,13 @@ The expressions, in reverse order of operator precedence, can be:
         Match the token *text* within the quotation marks.
 
         Note that if *text* is alphanumeric, then **Grako** will check that the character following the token is not alphanumeric. This is done to prevent tokens like *IN* matching when the text ahead is *INITIALIZE*. This feature can be turned off by passing ``nameguard=False`` to the ``Parser`` or the ``Buffer``, or by using a pattern expression (see below) instead of a token expression.
-        Alternatively, the ``@@nameguard`` directive may be specified in the grammar::
+        Alternatively, the ``@@nameguard``  or ``@@namechars`` directives may be specified in the grammar::
 
             @@nameguard :: False
+
+        or to specify additional characters that should also be considered part of names::
+
+            @@namechars :: '$-.'
 
     ``/regexp/``
         The pattern expression. Match the Python_ regular expression ``regexp`` at the current text position. Unlike other expressions, this one does not advance over whitespace or comments. For that, place the ``regexp`` as the only term in its own rule.
@@ -893,6 +897,8 @@ Changes
 * Simplified the regular expression for floats in the **Grako** grammar (siemer_)
 * Set all flake8_ options in ``tox.ini`` (siemer_).
 * Simplfied ``__str__()`` for directives (siemer_).
+* Added the ``@@namechars`` directive to allow specifying additional characters that may be part of
+  tokens considerd names by ``@@nameguard :: True``.
 
 3.9.0
 -----

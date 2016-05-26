@@ -871,13 +871,18 @@ class Grammar(Model):
     def __str__(self):
         regex_directives = {'comments', 'eol_comments', 'whitespace'}
         ustr_directives = {'comments', 'grammar'}
+        string_directives = {'namechars'}
 
         directives = ''
         for directive, value in self.directives.items():
             fmt = dict(
                 name=directive,
                 frame='/' if directive in regex_directives else '',
-                value=ustr(value) if directive in ustr_directives else value,
+                value=(
+                    urepr(value) if directive in string_directives
+                    else ustr(value) if directive in ustr_directives
+                    else value
+                ),
             )
             directives += '@@{name} :: {frame}{value}{frame}\n'.format(**fmt)
         if directives:

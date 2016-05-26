@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 4, 25, 13, 48, 23, 0)
+__version__ = (2016, 5, 26, 13, 16, 18, 3)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -132,6 +132,15 @@ class GrakoBootstrapParser(Parser):
                     self._token('::')
                     self._cut()
                     self._word_()
+                    self.name_last_node('value')
+                with self._option():
+                    with self._group():
+                        self._token('namechars')
+                    self.name_last_node('name')
+                    self._cut()
+                    self._token('::')
+                    self._cut()
+                    self._string_()
                     self.name_last_node('value')
                 self._error('no available options')
 

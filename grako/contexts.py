@@ -75,6 +75,7 @@ class ParseContext(object):
                  trace_filename=False,
                  colorize=False,
                  keywords=None,
+                 namechars='',
                  **kwargs):
         super(ParseContext, self).__init__()
 
@@ -94,6 +95,7 @@ class ParseContext(object):
         self.nameguard = nameguard
         self.memoize_lookaheads = memoize_lookaheads
         self.left_recursion = left_recursion
+        self.namechars = namechars
 
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
@@ -125,6 +127,7 @@ class ParseContext(object):
                memoize_lookaheads=None,
                left_recursion=None,
                colorize=False,
+               namechars='',
                **kwargs):
         if ignorecase is None:
             ignorecase = self.ignorecase
@@ -157,6 +160,7 @@ class ParseContext(object):
                 whitespace=notnone(whitespace, default=self.whitespace),
                 ignorecase=ignorecase,
                 nameguard=nameguard,
+                namechars=namechars or self.namechars,
                 **kwargs)
         self._buffer = buffer
         self._ast_stack = [AST()]
