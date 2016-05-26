@@ -117,7 +117,7 @@ expre
 
 choice::Choice
     =
-    @+:sequence {'|' ~ @+:sequence}+
+    ['|' ~] @+:sequence {'|' ~ @+:sequence}+
     ;
 
 
@@ -183,7 +183,7 @@ override_single_deprecated::Override
 
 term
     =
-      void
+    | void
     | join
     | group
     | empty_closure

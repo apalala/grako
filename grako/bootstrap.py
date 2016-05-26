@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 5, 26, 13, 16, 18, 3)
+__version__ = (2016, 5, 26, 15, 5, 16, 3)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -37,6 +37,7 @@ class GrakoBootstrapParser(Parser):
                  ignorecase=None,
                  left_recursion=True,
                  keywords=KEYWORDS,
+                 namechars='',
                  **kwargs):
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
@@ -46,6 +47,7 @@ class GrakoBootstrapParser(Parser):
             ignorecase=ignorecase,
             left_recursion=left_recursion,
             keywords=keywords,
+            namechars=namechars,
             **kwargs
         )
 
@@ -329,6 +331,9 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Choice')
     def _choice_(self):
+        with self._optional():
+            self._token('|')
+            self._cut()
         self._sequence_()
         self.add_last_node_to_name('@')
 

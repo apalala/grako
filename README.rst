@@ -899,6 +899,7 @@ Changes
 * Simplfied ``__str__()`` for directives (siemer_).
 * Added the ``@@namechars`` directive to allow specifying additional characters that may be part of
   tokens considerd names by ``@@nameguard :: True``.
+* Now a choice expression may start with a leading ``'|'``.
 
 3.9.0
 -----
