@@ -890,8 +890,8 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.9.1-rc.1
-----------
+3.9.1
+-----
 
 * *BUG!* Several important bug fixes to the object model generator (neumond_)
 * Simplified the regular expression for floats in the **Grako** grammar (siemer_)
