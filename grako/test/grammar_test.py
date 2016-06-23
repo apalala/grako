@@ -925,7 +925,8 @@ class GrammarTests(unittest.TestCase):
             ast = model.parse("hello A world")
             self.assertEqual(['hello', 'A', 'world'], ast)
             self.fail('accepted keyword as name')
-        except FailedSemantics:
+        except FailedParse as e:
+            self.assertTrue('"A" is a reserved word' in str(e))
             pass
 
     def test_builder_semantics(self):
