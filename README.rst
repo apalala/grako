@@ -890,6 +890,13 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
+3.9.2
+-----
+
+* *BUG!* Fix for ``@@keyword`` and ``@name`` by moving check for ``FailedSemantics`` upper in the
+  parsing chain.
+* Several simplifications and refactorings by siemer_.
+
 3.9.1
 -----
 
