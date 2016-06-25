@@ -880,6 +880,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _gkimbar: https://bitbucket.org/gkimbar/
 .. _neumond: https://bitbucket.org/neumond/
 .. _siemer: https://bitbucket.org/siemer/
+.. _gapag: https://bitbucket.org/gapag/
 
 
 
@@ -889,6 +890,11 @@ Changes
 **Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
+
+3.9.3
+-----
+
+* *BUG!* Fixes and improvements to generation of child sets and list in ``model.Node`` (gapag_).
 
 3.9.2
 -----

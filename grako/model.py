@@ -117,21 +117,6 @@ class Node(object):
                 cn(c)
         return list(childset)
 
-    # I propose this function as an alternative to children(),
-    # since a call to children() returns a set and therefore any internal
-    # ordering of nodes is lost.
-    # I guess that the assumption here is that the client does not know
-    # the internal structure of the object it is asking for its children
-    #  (otherwise it would just access the fields directly)
-    #
-    # The orderings that are relevant seem to be:
-    # 1) the one given by lists etc. containing child nodes (e.g. a statement
-    # block object that contains a list of statements; I want to get them from
-    # children() in the same order they are in the AST object)
-    # 2) the one given by vars(self).items() (which can vary as vars(self) 
-    # is a dictionary) 
-    # Other sorts can be performed outside this function.
-
     def children_list(self, vars_sort_key=None):
         child_list = []
 
