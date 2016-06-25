@@ -95,23 +95,53 @@ class Node(object):
             return self.parseinfo.buffer.comments(self.parseinfo.pos)
         return [], []
 
+    def __cn(self, add_child, child_collection, child):
+        if isinstance(child, Node):
+            add_child(child)
+        elif isinstance(child, Mapping):
+            # ordering for the values in mapping
+            for c in child.values():
+                self.__cn(add_child, child_collection, c)
+        elif isinstance(child, list):
+            for c in child:
+                self.__cn(add_child, child_collection, c)
+
     def children(self):
         childset = set()
 
         def cn(child):
-            if isinstance(child, Node):
-                childset.add(child)
-            elif isinstance(child, Mapping):
-                for c in child.values():
-                    cn(c)
-            elif isinstance(child, list):
-                for c in child:
-                    cn(c)
+            self.__cn(lambda x: childset.add(x), childset, child)
 
         for k, c in vars(self).items():
-            if not 'k'.startswith('_'):
+            if not k.startswith('_'):
                 cn(c)
         return list(childset)
+
+    # I propose this function as an alternative to children(),
+    # since a call to children() returns a set and therefore any internal
+    # ordering of nodes is lost.
+    # I guess that the assumption here is that the client does not know
+    # the internal structure of the object it is asking for its children
+    #  (otherwise it would just access the fields directly)
+    #
+    # The orderings that are relevant seem to be:
+    # 1) the one given by lists etc. containing child nodes (e.g. a statement
+    # block object that contains a list of statements; I want to get them from
+    # children() in the same order they are in the AST object)
+    # 2) the one given by vars(self).items() (which can vary as vars(self) 
+    # is a dictionary) 
+    # Other sorts can be performed outside this function.
+
+    def children_list(self, vars_sort_key=None):
+        child_list = []
+
+        def cn(child):
+            self.__cn(lambda x: child_list.append(x), child_list, child)
+
+        for k, c in sorted(vars(self).items(), key=vars_sort_key):
+            if not k.startswith('_'):
+                cn(c)
+        return child_list
 
     def asjson(self):
         return asjson(self)
