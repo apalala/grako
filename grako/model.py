@@ -124,19 +124,19 @@ class Node(object):
     # the internal structure of the object it is asking for its children
     #  (otherwise it would just access the fields directly)
     #
-    # The only orderings that are relevant because not accessible from outside
-    # are:
+    # The orderings that are relevant seem to be:
     # 1) the one given by lists etc. containing child nodes (e.g. a statement
     # block object that contains a list of statements; I want to get them from
     # children() in the same order they are in the AST object)
-    # 2) the one given by vars(self).items()
+    # 2) the one given by vars(self).items() (which can vary as vars(self) 
+    # is a dictionary) 
     # Other sorts can be performed outside this function.
 
     def children_list(self, vars_sort_key=None):
         child_list = []
 
         def cn(child):
-            self.__cn(lambda x: child_list.add(x), child_list, child)
+            self.__cn(lambda x: child_list.append(x), child_list, child)
 
         for k, c in sorted(vars(self).items(), key=vars_sort_key):
             if not k.startswith('_'):
