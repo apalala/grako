@@ -172,7 +172,7 @@ class Buffer(object):
         return self.atend() or self.current() in '\r\n'
 
     def current(self):
-        if self.atend():
+        if self._pos >= self._len:
             return None
         return self.text[self._pos]
 
@@ -185,7 +185,7 @@ class Buffer(object):
         return self.at(self._pos + n)
 
     def next(self):
-        if self.atend():
+        if self._pos >= self._len:
             return None
         c = self.text[self._pos]
         self._pos += 1
@@ -360,7 +360,7 @@ class Buffer(object):
             pos = self._pos
 
         nmax = len(self._linecache) - 1
-        if self.atend():
+        if pos >= self._len:
             return LineInfo(self.filename, nmax, 0, self._len, self._len, '')
 
         n = bisect_left(self._linecache, PosLine(pos, 0))
