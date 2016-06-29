@@ -895,6 +895,7 @@ Changes
 -----
 
 * *BUG!* Fixes and improvements to generation of child sets and list in ``model.Node`` (gapag_).
+* *BUG!* ``@@keyword`` not working correctly with ``@@ignorecase``.
 
 3.9.2
 -----
