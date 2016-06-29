@@ -761,5 +761,7 @@ class ParseContext(object):
 
     def _check_name(self):
         name = self.last_node
-        if (self.ignorecase and name.upper() or name) in self.keywords:
+        if self.ignorecase or self._buffer.ignorecase:
+            name = name.upper()
+        if name in self.keywords:
             raise FailedKeywordSemantics('"%s" is a reserved word' % name)
