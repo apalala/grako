@@ -131,22 +131,17 @@ class Node(object):
     def asjson(self):
         return asjson(self)
 
-    def _adopt_children(self, ast, parent=None):
-        childset = set()
-
-        def adopt(node):
-            if isinstance(node, Node) and node not in childset:
-                if isinstance(parent, Node):
-                    node._parent = parent
-                    childset.add(node)
-            elif isinstance(node, Mapping):
-                for c in node.values():
-                    self._adopt_children(c, parent=node)
-            elif isinstance(node, list):
-                for c in node:
-                    self._adopt_children(c, parent=node)
-
-            adopt(ast)
+    def _adopt_children(self, node, parent=None):
+        if isinstance(node, Node):
+            node._parent = parent
+            for c in node.children():
+                node._adopt_children(c, parent=node)
+        elif isinstance(node, Mapping):
+            for c in node.values():
+                self._adopt_children(c, parent=node)
+        elif isinstance(node, list):
+            for c in node:
+                self._adopt_children(c, parent=node)
 
     def _pubdict(self):
         return {

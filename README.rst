@@ -881,6 +881,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _neumond: https://bitbucket.org/neumond/
 .. _siemer: https://bitbucket.org/siemer/
 .. _gapag: https://bitbucket.org/gapag/
+.. _linkdd: https://bitbucket.org/linkdd/
 
 
 
@@ -890,6 +891,11 @@ Changes
 **Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
+
+3.9.4-rc.1
+----------
+
+* *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
 
 3.9.3
 -----
