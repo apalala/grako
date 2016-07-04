@@ -896,6 +896,7 @@ Changes
 ----------
 
 * *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
+* Enhancements to ``grako.tool`` and the command-line help (siemer_).
 
 3.9.3
 -----
