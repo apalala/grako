@@ -896,7 +896,11 @@ Changes
 ----------
 
 * *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
+* 73_  The ``--draw`` option did not recognize the new object model node types ``Join`` and
+  ``Constant``. Now ``--dra`` works with Python_ 3.x using pygraphviz_ 1.3.1.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).
+
+.. _73: https://bitbucket.org/apalala/grako/issue/73
 
 3.9.3
 -----

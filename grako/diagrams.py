@@ -129,8 +129,10 @@ class GraphvizWalker(NodeWalker):
         return self.walk(d.exp)
 
     def _walk__Decorator(self, d):
-        print('WALKING', type(d))
         return self._walk_decorator(d)
+
+    def walk_default(self, node):
+        raise Exception('No walking for ', type(node).__name__)
 
     def walk_Grammar(self, g):
         self.push_graph(g.name + '0')
@@ -153,7 +155,7 @@ class GraphvizWalker(NodeWalker):
     def walk_Rule(self, r):
         self.push_graph(r.name)
         try:
-            i, e = self._walk_decorator(r)
+            i, e = self.walk(r.exp)
             s = self.rule_node(r.name, id=r.name)
             self.edge(s, i)
             t = self.end_node()
@@ -215,11 +217,19 @@ class GraphvizWalker(NodeWalker):
             self.edge(e, i)
         return (i, e)
 
+    def walk_Join(self, r):
+        i, e = self._walk_decorator(r)
+        n = self.tnode(r.sep)
+        self.edge(i, n)
+        self.edge(n, e)
+        return (i, e)
+
     def walk_Group(self, g):
         return self._walk_decorator(g)
 
     def walk_Choice(self, c):
         vopt = [self.walk(o) for o in c.options]
+        vopt = [o for o in vopt if o is not None]
         ni = self.dot()
         ne = self.dot()
         for i, e in vopt:
@@ -245,7 +255,7 @@ class GraphvizWalker(NodeWalker):
         self.edge(n, e)
         return (n, e)
 
-    def walk_LookaheadNot(self, l):
+    def walk_NegativeLookahead(self, l):
         i, e = self._walk_decorator(l)
         n = self.node('!')
         self.edge(n, e)
@@ -267,6 +277,10 @@ class GraphvizWalker(NodeWalker):
 
     def walk_Void(self, v):
         n = self.dot()
+        return (n, n)
+
+    def walk_Constant(self, t):
+        n = self.tnode('`%s`' % t.ast)
         return (n, n)
 
     def walk_EOF(self, v):
