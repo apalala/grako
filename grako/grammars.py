@@ -12,7 +12,6 @@ computed, but they are not.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import sys
 import os
 import functools
 from collections import defaultdict, Mapping
@@ -158,8 +157,8 @@ class Model(Node):
     def followset(self, k=1):
         return self._follow_set
 
-    def _validate(self, rules):
-        return True
+    def _missing_rules(self, rules):
+        return set()
 
     def _first(self, k, F):
         return set()
@@ -227,8 +226,8 @@ class _Decorator(Model):
     def defines(self):
         return self.exp.defines()
 
-    def _validate(self, rules):
-        return self.exp._validate(rules)
+    def _missing_rules(self, rules):
+        return self.exp._missing_rules(rules)
 
     def _first(self, k, F):
         return self.exp._first(k, F)
@@ -339,8 +338,8 @@ class Sequence(Model):
     def defines(self):
         return [d for s in self.sequence for d in s.defines()]
 
-    def _validate(self, rules):
-        return {True} == {s._validate(rules) for s in self.sequence}
+    def _missing_rules(self, ruleset):
+        return set().union(*[s._missing_rules(ruleset) for s in self.sequence])
 
     def _first(self, k, F):
         result = {()}
@@ -390,8 +389,8 @@ class Choice(Model):
     def defines(self):
         return [d for o in self.options for d in o.defines()]
 
-    def _validate(self, rules):
-        return {True} == {o._validate(rules) for o in self.options}
+    def _missing_rules(self, rules):
+        return set().union(*[o._missing_rules(rules) for o in self.options])
 
     def _first(self, k, F):
         result = set()
@@ -594,11 +593,10 @@ class RuleRef(Model):
         except KeyError:
             ctx._error(self.name, etype=FailedRef)
 
-    def _validate(self, rules):
-        if self.name not in rules:
-            print("Reference to unknown rule '%s'." % self.name, file=sys.stderr)
-            return False
-        return True
+    def _missing_rules(self, ruleset):
+        if self.name not in ruleset:
+            return {self.name}
+        return set()
 
     def _first(self, k, F):
         self._first_set = F.get(self.name, set())
@@ -783,12 +781,14 @@ class Grammar(Model):
         self.keywords = keywords or set()
 
         self._adopt_children(rules)
-        if not self._validate({r.name for r in self.rules}):
+        missing = self._missing_rules({r.name for r in self.rules})
+        if missing:
+            print('\nunknown rule: '.join([''] + list(sorted(missing))))
             raise GrammarError('Unknown rules, no parser generated.')
         self._calc_lookahead_sets()
 
-    def _validate(self, ruleset):
-        return {True} == {rule._validate(ruleset) for rule in self.rules}
+    def _missing_rules(self, ruleset):
+        return set.union(*[rule._missing_rules(ruleset) for rule in self.rules])
 
     @property
     def first_sets(self):
