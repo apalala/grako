@@ -42,6 +42,7 @@ cython:
 clean: clean_cython
 	find -name "__pycache__" | xargs rm -rf
 	find -name "*.pyc" | xargs rm -f
+	find -name "*.pyd" | xargs rm -f
 	find -name "*.pyo" | xargs rm -f
 	find -name "*.orig" | xargs rm -f
 	rm -rf grako.egg-info
