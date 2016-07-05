@@ -949,16 +949,11 @@ Changes
 
 * 73_ Keywords were not being passed to the base class of the generated parser.
 * Wrong version number (RC) in this document.
+* Added grammar support for keywords_ in the source language through the ``@@keyword::`` directive and the ``@name`` decorator for rules.
+* Make ``ModelBuilderSemantics`` support built-in types.
 
 .. _73: https://bitbucket.org/apalala/grako/issue/73
 
-
-3.8.0
------
-
-* Added grammar support for keywords_ in the source language through the ``@@keyword::`` directive and the ``@name`` decorator for rules.
-
-* Make ``ModelBuilderSemantics`` support built-in types.
 
 3.7.0
 -----
