@@ -71,12 +71,12 @@ class Buffer(object):
         self._linecount = 0
         self._line_index = []
         self._comment_index = []
-        self._preprocess()
         self._linecache = []
-        self._build_line_cache()
-        self._comment_index = [[] for _ in self._line_index]
-        self._len = len(self.text)
+        self._comment_index = []
         self._re_cache = {}
+
+        self._preprocess()
+        self._postprocess()
 
     @property
     def whitespace(self):
@@ -108,6 +108,14 @@ class Buffer(object):
         self.text = ''.join(lines)
         self._line_index = index
 
+    def _postprocess(self):
+        self._build_line_cache()
+        self._comment_index.extend(
+            [] for _
+            in range(max(0, len(self._line_index) - len(self._comment_index)))
+        )
+        self._len = len(self.text)
+
     def _preprocess_block(self, name, block, **kwargs):
         if self.tabwidth is not None:
             block = block.replace('\t', ' ' * self.tabwidth)
@@ -120,6 +128,9 @@ class Buffer(object):
 
     def split_block_lines(self, name, block, **kwargs):
         return block.splitlines(True)
+
+    def join_block_lines(self, lines):
+        return ''.join(lines)
 
     def process_block(self, name, lines, index, **kwargs):
         return lines, index
@@ -145,6 +156,15 @@ class Buffer(object):
                 return f.read(), include
         except IOError:
             raise ParseError('include not found: %s' % include)
+
+    def replace_lines(self, i, j, name, block):
+        lines = self.split_block_lines(self.text)
+        index = list(self._line_index)
+        endpos = self.include(lines, index, i, j, block)
+        self.text = self.join_block_lines(lines)
+        self._line_index = index
+        self._postprocess()
+        return endpos
 
     @property
     def pos(self):
