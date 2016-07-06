@@ -125,6 +125,8 @@ def main(codegen=pythoncg):
 
     outfile = args.outfile
     if outfile:
+        if os.path.isfile(outfile):
+            os.unlink(outfile)
         dirname = os.path.dirname(outfile)
         if dirname and not os.path.isdir(dirname):
             os.makedirs(dirname)

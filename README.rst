@@ -899,6 +899,7 @@ Changes
 * 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--dra`` works with Python_ 3.x using pygraphviz_ 1.3.1.
 * 77_ Advance over whitespace before memoization or left recursion.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).
+* Unlink output file before attempting parser generation.
 * Tested with Python_ 3.6.0a1.
 
 .. _73: https://bitbucket.org/apalala/grako/issue/73
