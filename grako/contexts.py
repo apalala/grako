@@ -439,6 +439,8 @@ class ParseContext(object):
 
     def _invoke_rule(self, rule, name, params, kwparams):
         cache = self._memoization_cache
+        if name[0].islower():
+            self._next_token()
         pos = self._pos
 
         key = (pos, rule, self._state)
@@ -452,8 +454,6 @@ class ParseContext(object):
         self._set_left_recursion_guard(name, key)
         self._push_ast()
         try:
-            if name[0].islower():
-                self._next_token()
             try:
                 rule(self)
 
