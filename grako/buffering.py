@@ -158,7 +158,7 @@ class Buffer(object):
             raise ParseError('include not found: %s' % include)
 
     def replace_lines(self, i, j, name, block):
-        lines = self.split_block_lines(self.text)
+        lines = self.split_block_lines(name, self.text)
         index = list(self._line_index)
         endpos = self.include(lines, index, i, j, block)
         self.text = self.join_block_lines(lines)
