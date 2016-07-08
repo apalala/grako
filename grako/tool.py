@@ -48,8 +48,7 @@ def parse_args():
                            action='store_true'
                            )
 
-    ebnf_opts = argparser.add_argument_group('parse-time options',
-                                             'options in effect during ebnf grammar reading')
+    ebnf_opts = argparser.add_argument_group('parse-time options')
     argparser.add_argument('filename',
                            metavar='GRAMMAR',
                            help='the filename of the Grako grammar to parse'
@@ -63,8 +62,7 @@ def parse_args():
                            action='store_true'
                            )
 
-    generation_opts = argparser.add_argument_group('generation options',
-                                                   'options influencing the generated parser')
+    generation_opts = argparser.add_argument_group('generation options')
     generation_opts.add_argument('--no-left-recursion', '-l',
                                  help='turns left-recusion support off',
                                  dest="left_recursion",
@@ -85,12 +83,16 @@ def parse_args():
                                  metavar='FILE',
                                  help='output file (default is stdout)'
                                  )
+    generation_opts.add_argument('--object-model-outfile', '-G',
+                                 metavar='FILE',
+                                 help='generate object model and save to FILE',
+                                )
     generation_opts.add_argument('--whitespace', '-w',
                                  metavar='CHARACTERS',
                                  help='characters to skip during parsing (use "" to disable)',
                                  )
 
-    std_args = argparser.add_argument_group('ordinary options')
+    std_args = argparser.add_argument_group('common options')
     std_args.add_argument('--help', '-h',
                           help='show this help message and exit',
                           action='help')
@@ -117,6 +119,20 @@ def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythonc
     return codegen(model)
 
 
+def prepare_for_output(filename):
+    if filename:
+        if os.path.isfile(filename):
+            os.unlink(filename)
+        dirname = os.path.dirname(filename)
+        if dirname and not os.path.isdir(dirname):
+            os.makedirs(dirname)
+
+
+def save(filename, content):
+    with codecs.open(filename, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+
 def main(codegen=pythoncg):
     args = parse_args()
 
@@ -124,12 +140,8 @@ def main(codegen=pythoncg):
         args.whitespace = eval_escapes(args.whitespace)
 
     outfile = args.outfile
-    if outfile:
-        if os.path.isfile(outfile):
-            os.unlink(outfile)
-        dirname = os.path.dirname(outfile)
-        if dirname and not os.path.isdir(dirname):
-            os.makedirs(dirname)
+    prepare_for_output(outfile)
+    prepare_for_output(args.object_model_outfile)
 
     grammar = codecs.open(args.filename, 'r', encoding='utf-8').read()
 
@@ -157,10 +169,13 @@ def main(codegen=pythoncg):
                 result = codegen(model)
 
             if outfile:
-                with codecs.open(outfile, 'w', encoding='utf-8') as f:
-                    f.write(result)
+                save(outfile, result)
             else:
                 print(result)
+
+        # if requested, always save it
+        if args.object_model_outfile:
+            save(args.object_model_outfile, objectmodel.codegen(model))
 
         print('-' * 72, file=sys.stderr)
         print('{:12,d}  lines in grammar'.format(len(grammar.split())), file=sys.stderr)

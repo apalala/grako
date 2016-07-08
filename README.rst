@@ -138,33 +138,44 @@ if **Grako** was installed using *easy_install* or *pip*.
 The *-h* and *--help* parameters provide full usage information::
 
         $ python -m grako -h
-        usage: grako [-h] [-c] [-d] [-g] [-l] [-m NAME] [-n] [-o FILE] [-p] [-t]
-                    [-w CHARACTERS] [-v]
+        usage: grako [--generate-parser | --draw | --object-model | --pretty]
+                    [--color] [--trace] [--no-left-recursion] [--name NAME]
+                    [--no-nameguard] [--outfile FILE] [--object-model-outfile FILE]
+                    [--whitespace CHARACTERS] [--help] [--version]
                     GRAMMAR
 
         Grako (for "grammar compiler") takes a grammar in a variation of EBNF as
         input, and outputs a memoizing PEG/Packrat parser in Python.
 
         positional arguments:
-        GRAMMAR               The filename of the Grako grammar
+        GRAMMAR               the filename of the Grako grammar to parse
 
         optional arguments:
-        -h, --help            show this help message and exit
-        -c, --color           use color in traces (requires the colorama library)
-        -d, --draw            generate a diagram of the grammar (requires --output)
-        -g, --object-model    generate object model from the class names given as
-                              rule arguments
-        -l, --no-left-recursion
-                              turns left-recusion support off
-        -m NAME, --name NAME  Name for the grammar (defaults to GRAMMAR base name)
-        -n, --no-nameguard    allow tokens that are prefixes of others
-        -o FILE, --output FILE
-                              output file (default is stdout)
-        -p, --pretty          prettify the input grammar
-        -t, --trace           produce verbose parsing output
-        -w CHARACTERS, --whitespace CHARACTERS
-                              characters to skip during parsing (use "" to disable)
-        -v, --version         provide version information and exit
+        --generate-parser     generate parser code from the grammar (default)
+        --draw, -d            generate a diagram of the grammar (requires --outfile)
+        --object-model, -g    generate object model from the class names given as
+                                rule arguments
+        --pretty, -p          generate a prettified version of the input grammar
+
+        parse-time options:
+        --color, -c           use color in traces (requires the colorama library)
+        --trace, -t           produce verbose parsing output
+
+        generation options:
+        --no-left-recursion, -l
+                                turns left-recusion support off
+        --name NAME, -m NAME  Name for the grammar (defaults to GRAMMAR base name)
+        --no-nameguard, -n    allow tokens that are prefixes of others
+        --outfile FILE, --output FILE, -o FILE
+                                output file (default is stdout)
+        --object-model-outfile FILE, -G FILE
+                                generate object model and save to FILE
+        --whitespace CHARACTERS, -w CHARACTERS
+                                characters to skip during parsing (use "" to disable)
+
+        common options:
+        --help, -h            show this help message and exit
+        --version, -v         provide version information and exit
         $
 
 
@@ -900,6 +911,7 @@ Changes
 * 77_ Advance over whitespace before memoization or left recursion.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).
 * Unlink output file before attempting parser generation.
+* A ``-G FILE`` command-line option forces saving of the object model.
 * Tested with Python_ 3.6.0a1.
 
 .. _73: https://bitbucket.org/apalala/grako/issue/73
