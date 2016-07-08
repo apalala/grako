@@ -922,17 +922,9 @@ Changes
 
 * *BUG!* Fixes and improvements to generation of child sets and list in ``model.Node`` (gapag_).
 * *BUG!* ``@@keyword`` not working correctly with ``@@ignorecase``.
-
-3.9.2
------
-
 * *BUG!* Fix for ``@@keyword`` and ``@name`` by moving check for ``FailedSemantics`` upper in the
   parsing chain.
 * Several simplifications and refactorings by siemer_.
-
-3.9.1
------
-
 * *BUG!* Several important bug fixes to the object model generator (neumond_)
 * Simplified the regular expression for floats in the **Grako** grammar (siemer_)
 * Set all flake8_ options in ``tox.ini`` (siemer_).
@@ -940,10 +932,6 @@ Changes
 * Added the ``@@namechars`` directive to allow specifying additional characters that may be part of
   tokens considerd names by ``@@nameguard :: True``.
 * Now a choice expression may start with a leading ``'|'``.
-
-3.9.0
------
-
 * Guard against recursive structures in ``grako.util.asjson()``.
 * Added ``@@grammar`` directive to grammars as to avoid having to pass a ``-m NAME`` through the command line.
 * Now ``STARTRULE`` defaults to ``start`` in generated parsers.
