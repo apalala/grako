@@ -55,7 +55,7 @@ class Rule(ModelRenderer):
 
     template = '''
             class {class_name}(ModelBase):
-                def __init__(self, *args, {kwargs}):
+                def __init__(self, *args,{kwargs}):
                     super({class_name}, self).__init__({params}\
             '''
 
@@ -126,5 +126,5 @@ class Grammar(ModelRenderer):
                     pass
 
 
-                {model_class_declarations}\
+                {model_class_declarations}
                 '''
