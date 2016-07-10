@@ -55,6 +55,10 @@ class ModelRenderer(Renderer):
     def codegen(self):
         return self._codegen
 
+    @property
+    def context(self):
+        return self._codegen
+
     def get_renderer(self, item):
         return self.codegen.get_renderer(item)
 
