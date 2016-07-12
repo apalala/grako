@@ -70,9 +70,9 @@ class Buffer(object):
         self._len = 0
         self._linecount = 0
         self._line_index = []
-        self._comment_index = []
         self._linecache = []
         self._comment_index = []
+        self._eol_comment_index = []
         self._re_cache = {}
 
         self._preprocess()
@@ -110,10 +110,6 @@ class Buffer(object):
 
     def _postprocess(self):
         self._build_line_cache()
-        self._comment_index.extend(
-            [] for _
-            in range(max(0, len(self._line_index) - len(self._comment_index)))
-        )
         self._len = len(self.text)
 
     def _preprocess_block(self, name, block, **kwargs):
@@ -227,12 +223,13 @@ class Buffer(object):
 
         n = self.line_info(p).line
         if n >= len(self._comment_index):
-            n -= 1
+            n = len(self._comment_index) - 1
 
-        eolcmm = self._comment_index[n]
-        if clear:
-            self._comment_index[n] = []
-        n -= 1
+        eolcmm = []
+        if n < len(self._eol_comment_index):
+            eolcmm = self._eol_comment_index[n]
+            if clear:
+                self._eol_comment_index[n] = []
 
         cmm = []
         while n >= 0 and self._comment_index[n]:
@@ -271,10 +268,10 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    while n >= len(self._comment_index):
-                        self._comment_index.append([])
+                    while n >= len(self._eol_comment_index):
+                        self._eol_comment_index.append([])
 
-                    index = self._comment_index[n]
+                    index = self._eol_comment_index[n]
                     if not index or index[-1] != comment:
                         index.append(comment)
 
