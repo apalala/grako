@@ -907,6 +907,7 @@ Changes
 ------
 
 * *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
+* *BUG!* Avoid recovering the same comment against the same line in ``grako.buffering.Buffer``.
 * 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--dra`` works with Python_ 3.x using pygraphviz_ 1.3.1.
 * 77_ Advance over whitespace before memoization or left recursion.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).

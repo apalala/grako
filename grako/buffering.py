@@ -258,7 +258,10 @@ class Buffer(object):
                     n = self.line
                     while n >= len(self._comment_index):
                         self._comment_index.append([])
-                    self._comment_index[n].append(comment)
+
+                    index = self._comment_index[n]
+                    if not index or index[-1] != comment:
+                        index.append(comment)
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
@@ -270,7 +273,10 @@ class Buffer(object):
                     n = self.line
                     while n >= len(self._comment_index):
                         self._comment_index.append([])
-                    self._comment_index[n].append(comment)
+
+                    index = self._comment_index[n]
+                    if not index or index[-1] != comment:
+                        index.append(comment)
 
     def next_token(self):
         p = None
