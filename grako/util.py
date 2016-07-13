@@ -235,6 +235,15 @@ def chunks(iterable, size, fillvalue=None):
     return zip_longest(*[iter(iterable)] * size, fillvalue=fillvalue)
 
 
+def extend_list(x, n, default=None):
+    def _null():
+        pass
+    default = default or _null
+
+    missing = max(0, 1 + n - len(x))
+    x.extend(default() for _ in range(missing))
+
+
 def generic_main(custom_main, ParserClass, name='Unknown'):
     import argparse
     import sys

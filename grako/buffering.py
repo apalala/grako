@@ -13,7 +13,8 @@ import os
 from bisect import bisect_left
 from collections import namedtuple
 
-from grako.util import ustr, strtype, re as regexp, WHITESPACE_RE, RE_FLAGS
+from grako.util import ustr, strtype, extend_list, re as regexp
+from grako.util import WHITESPACE_RE, RE_FLAGS
 from grako.exceptions import ParseError
 
 # TODO: There could be a file buffer using random access
@@ -30,6 +31,13 @@ LineInfo = namedtuple(
     'LineInfo',
     ['filename', 'line', 'col', 'start', 'end', 'text']
 )
+
+
+Comments = namedtuple('Comments', ['inline', 'eol'])
+
+
+def _new_comments():
+    return Comments([], [])
 
 
 class Buffer(object):
@@ -72,7 +80,6 @@ class Buffer(object):
         self._line_index = []
         self._linecache = []
         self._comment_index = []
-        self._eol_comment_index = []
         self._re_cache = {}
 
         self._preprocess()
@@ -217,28 +224,28 @@ class Buffer(object):
     def move(self, n):
         self.goto(self.pos + n)
 
-    def comments(self, p, clear=True):
-        if not self.comment_recovery:
-            return [], []
+    def comments(self, p, clear=False):
+        if not self.comment_recovery or not self._comment_index:
+            return Comments([], [])
 
         n = self.line_info(p).line
         if n >= len(self._comment_index):
-            n = len(self._comment_index) - 1
+            return Comments([], [])
 
         eolcmm = []
-        if n < len(self._eol_comment_index):
-            eolcmm = self._eol_comment_index[n]
+        if n < len(self._comment_index):
+            eolcmm = self._comment_index[n].eol
             if clear:
-                self._eol_comment_index[n] = []
+                self._comment_index[n].eol = []
 
         cmm = []
-        while n >= 0 and self._comment_index[n]:
-            cmm.insert(0, self._comment_index[n])
+        while n >= 0 and self._comment_index[n].inline:
+            cmm.insert(0, self._comment_index[n].inline)
             if clear:
-                self._comment_index[n] = []
+                self._comment_index[n].inline = []
             n -= 1
 
-        return cmm, eolcmm
+        return Comments(cmm, eolcmm)
 
     def eat_whitespace(self):
         if self.whitespace_re is not None:
@@ -253,12 +260,11 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    while n >= len(self._comment_index):
-                        self._comment_index.append([])
+                    extend_list(self._comment_index, n, default=_new_comments)
 
                     index = self._comment_index[n]
-                    if not index or index[-1] != comment:
-                        index.append(comment)
+                    if not index.inline or index.inline[-1] != comment:
+                        index.inline.append(comment)
 
     def eat_eol_comments(self):
         if self.eol_comments_re is not None:
@@ -268,12 +274,11 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    while n >= len(self._eol_comment_index):
-                        self._eol_comment_index.append([])
+                    extend_list(self._comment_index, n, default=_new_comments)
 
-                    index = self._eol_comment_index[n]
-                    if not index or index[-1] != comment:
-                        index.append(comment)
+                    index = self._comment_index[n]
+                    if not index.eol or index.eol[-1] != comment:
+                        index.eol.append(comment)
 
     def next_token(self):
         p = None
