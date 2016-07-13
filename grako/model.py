@@ -9,6 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import collections
 
 from grako.util import asjson, asjsons, Mapping, builtins
+from grako.buffering import Comments
 from grako.exceptions import SemanticError
 from grako.ast import AST
 
@@ -93,7 +94,7 @@ class Node(object):
     def comments(self):
         if self.parseinfo:
             return self.parseinfo.buffer.comments(self.parseinfo.pos)
-        return [], []
+        return Comments([], [])
 
     def __cn(self, add_child, child_collection, child):
         if isinstance(child, Node):
