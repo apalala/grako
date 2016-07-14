@@ -788,7 +788,7 @@ class Grammar(Model):
         self._calc_lookahead_sets()
 
     def _missing_rules(self, ruleset):
-        return set.union(*[rule._missing_rules(ruleset) for rule in self.rules])
+        return set().union(*[rule._missing_rules(ruleset) for rule in self.rules])
 
     @property
     def first_sets(self):
