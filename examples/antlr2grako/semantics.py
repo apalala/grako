@@ -72,8 +72,23 @@ class ANTLRSemantics(object):
     def subexp(self, ast):
         return model.Group(ast)
 
+    def regexp(self, ast):
+        return model.Pattern(''.join(ast))
+
+    def charset_optional(self, ast):
+        return '%s?' % ast
+
+    def charset_closure(self, ast):
+        return '%s*' % ast
+
+    def charset_positive_closure(self, ast):
+        return '%s+' % ast
+
+    def charset_atom(self, ast):
+        return '[%s]' % ''.join(ast)
+
     def range(self, ast):
-        return model.Pattern('[%s-%s]' % (ast.first, ast.last))
+        return '%s-%s' % (ast.first, ast.last)
 
     def newrange(self, ast):
         return model.Pattern('[%s]' % re.escape(ast))

@@ -142,6 +142,7 @@ named
     name:id (force_list:'+='| '=')   exp:atom
     ;
 
+
 predicate_or_action
     =
       gated_predicate
@@ -209,12 +210,11 @@ positive_closure
 atom
     =
     @:(
-      eof
+    | eof
     | negative
     | syntactic_predicate
+    | regexp
     | subexp
-    | newrange
-    | range
     | terminal
     | non_terminal
     )
@@ -232,6 +232,46 @@ eof
     'EOF'
     ;
 
+regexp
+    =
+    {charset}+
+    ;
+
+
+charset
+    =
+    | charset_optional
+    | charset_closure
+    | charset_positive_closure
+    | charset_atom
+    ;
+
+
+charset_optional
+    =
+    @:charset '?' ~
+    ;
+
+
+charset_closure
+    =
+    @:charset '*' ~
+    ;
+
+
+charset_positive_closure
+    =
+    @:charset '+' ~
+    ;
+
+
+charset_atom
+    =
+    | '('  @+: (range|char) {'|' @+:(range|char)}+ ~ ')'
+    | @+:range
+    ;
+
+
 range
     =
     first:char '..'  last:char
@@ -244,7 +284,7 @@ newrange
 
 NEWRANGE
     =
-    '[' @:?/([^\]]|\\])+/? ']'
+    '[' charset ']'
     ;
 
 subexp
@@ -271,14 +311,13 @@ non_terminal
 
 terminal
     =
-      char
     | string
     | any
     ;
 
 any
     =
-    '.' ~
+    !'..' '.' ~
     ;
 
 
@@ -336,7 +375,7 @@ upper_name
 
 char
     =
-    string
+    "'"  @:/[^'\n]|\\./ "'"
     ;
 
 string
