@@ -133,16 +133,18 @@ class Node(object):
         return asjson(self)
 
     def _adopt_children(self, node, parent=None):
+        if parent is None:
+            parent = self
         if isinstance(node, Node):
             node._parent = parent
             for c in node.children():
                 node._adopt_children(c, parent=node)
         elif isinstance(node, Mapping):
             for c in node.values():
-                self._adopt_children(c, parent=node)
+                self._adopt_children(c, parent=parent)
         elif isinstance(node, list):
             for c in node:
-                self._adopt_children(c, parent=node)
+                self._adopt_children(c, parent=parent)
 
     def _pubdict(self):
         return {
