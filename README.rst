@@ -911,14 +911,15 @@ Changes
 * *BUG!* Recovering comments and end-of-line comments together was incorrect.
 * *BUG!* ``model.Node`` parenting still broken. Fixed!
 * 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--dra`` works with Python_ 3.x using pygraphviz_ 1.3.1.
-* 77_ Advance over whitespace before memoization or left recursion.
+* 77_ 81_ Advance over whitespace before memoization or left recursion.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).
 * Unlink output file before attempting parser generation.
 * A ``-G FILE`` command-line option forces saving of the object model.
-* Tested with Python_ 3.6.0a1.
+* Tested with Python_ 3.6.0a3.
 
 .. _73: https://bitbucket.org/apalala/grako/issue/73
 .. _77: https://bitbucket.org/apalala/grako/issue/77
+.. _81: https://bitbucket.org/apalala/grako/issue/81
 
 3.9.3
 -----
