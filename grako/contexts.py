@@ -442,7 +442,7 @@ class ParseContext(object):
         finally:
             self._rule_stack.pop()
 
-    def _choice_key(self):
+    def _memo_trace(self):
         # WARNING: magic number, MUST BE Odd
         n = 3
         return tuple(reversed(self._choice_stack[-n:]))
@@ -453,13 +453,14 @@ class ParseContext(object):
             self._next_token()
         pos = self._pos
 
-        key = CacheKey(pos, name, self._choice_key(), self._state)
+        key = CacheKey(pos, name, self._memo_trace(), self._state)
         if key in cache:
             memo = cache[key]
             memo = self._left_recursion_check(name, key, memo)
             if isinstance(memo, Exception):
                 raise memo
-            return memo
+            if memo is not None:
+                return memo
 
         self._set_left_recursion_guard(name, key)
         self._push_ast()
@@ -609,6 +610,9 @@ class ParseContext(object):
         self._next_token()
         if not self._buffer.atend():
             self._error('Expecting end of text.')
+
+    def _last_choice_option(self):
+        return self._choice_stack[-1]
 
     def _new_choice_option(self):
         self._choice_stack[-1] += 1
