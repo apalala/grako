@@ -28,6 +28,9 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
+CacheKey = namedtuple('CacheKey', ['pos', 'rule', 'trace', 'state'])
+
+
 ParseInfo = namedtuple(
     'ParseInfo',
     [
@@ -101,6 +104,7 @@ class ParseContext(object):
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
+        self._choice_stack = [0]
         self._memoization_cache = dict()
 
         self._last_node = None
@@ -167,6 +171,7 @@ class ParseContext(object):
         self._concrete_stack = [None]
         self._rule_stack = []
         self._cut_stack = [False]
+        self._choice_stack = [0]
         self._memoization_cache = dict()
 
         self._last_node = None
@@ -437,13 +442,18 @@ class ParseContext(object):
         finally:
             self._rule_stack.pop()
 
+    def _choice_key(self):
+        # WARNING: magic number, MUST BE Odd
+        n = 3
+        return tuple(reversed(self._choice_stack[-n:]))
+
     def _invoke_rule(self, rule, name, params, kwparams):
         cache = self._memoization_cache
         if name[0].islower():
             self._next_token()
         pos = self._pos
 
-        key = (pos, rule, self._state)
+        key = CacheKey(pos, name, self._choice_key(), self._state)
         if key in cache:
             memo = cache[key]
             memo = self._left_recursion_check(name, key, memo)
@@ -600,6 +610,15 @@ class ParseContext(object):
         if not self._buffer.atend():
             self._error('Expecting end of text.')
 
+    def _new_choice_option(self):
+        self._choice_stack[-1] += 1
+
+    def _new_choice(self):
+        self._choice_stack.append(0)
+
+    def _close_choice(self):
+        self._choice_stack.pop()
+
     @contextmanager
     def _try(self):
         p = self._pos
@@ -626,6 +645,7 @@ class ParseContext(object):
     def _option(self):
         self.last_node = None
         self._push_cut()
+        self._new_choice_option()
         try:
             with self._try():
                 yield
@@ -641,11 +661,15 @@ class ParseContext(object):
     @contextmanager
     def _choice(self):
         self.last_node = None
-        with self._try():
-            try:
-                yield
-            except OptionSucceeded:
-                pass
+        self._new_choice()
+        try:
+            with self._try():
+                try:
+                    yield
+                except OptionSucceeded:
+                    pass
+        finally:
+            self._close_choice()
 
     @contextmanager
     def _optional(self):
