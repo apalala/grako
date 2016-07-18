@@ -156,7 +156,7 @@ def trim(text, tabwidth=4):
         stripped = line.lstrip()
         if stripped:
             indent = min(indent, len(line) - len(stripped))
-    trimmed = [lines[0].strip()] + [line[indent:].rstrip() for line in lines[1:]]
+    trimmed = [line[indent:].rstrip() for line in lines]
     i = 0
     while i < len(trimmed) and not trimmed[i]:
         i += 1
