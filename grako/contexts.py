@@ -34,7 +34,9 @@ ParseInfo = namedtuple(
         'buffer',
         'rule',
         'pos',
-        'endpos'
+        'endpos',
+        'line',
+        'endline',
     ]
 )
 
@@ -407,12 +409,15 @@ class ParseContext(object):
     def _fail(self):
         self._error('fail')
 
-    def _get_parseinfo(self, node, name, start):
+    def _get_parseinfo(self, node, name, pos):
+        endpos = self._pos
         return ParseInfo(
             self._buffer,
             name,
-            start,
-            self._pos
+            pos,
+            endpos,
+            self._buffer.line_info(pos).line,
+            self._buffer.line_info(endpos).line,
         )
 
     def _call(self, rule, name, params, kwparams):

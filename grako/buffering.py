@@ -24,7 +24,8 @@ __all__ = ['Buffer']
 RETYPE = type(regexp.compile('.'))
 
 
-PosLine = namedtuple('PosLine', ['pos', 'line'])
+class PosLine(namedtuple('PosLine', ['pos', 'line'])):
+    pass
 
 
 LineInfo = namedtuple(
@@ -33,7 +34,8 @@ LineInfo = namedtuple(
 )
 
 
-Comments = namedtuple('Comments', ['inline', 'eol'])
+class Comments(namedtuple('Comments', ['inline', 'eol'])):
+    pass
 
 
 def _new_comments():
@@ -54,8 +56,8 @@ class Buffer(object):
                  comment_recovery=False,
                  namechars='',
                  **kwargs):
-        self.original_text = text
-        self.text = ustr(text)
+        text = ustr(text)
+        self.text = self.original_text = text
         self.filename = filename or ''
 
         self.whitespace = whitespace
@@ -77,6 +79,7 @@ class Buffer(object):
         self._pos = 0
         self._len = 0
         self._linecount = 0
+        self._lines = []
         self._line_index = []
         self._linecache = []
         self._comment_index = []
@@ -112,8 +115,9 @@ class Buffer(object):
 
     def _preprocess(self, *args, **kwargs):
         lines, index = self._preprocess_block(self.filename, self.text)
-        self.text = ''.join(lines)
+        self._lines = lines
         self._line_index = index
+        self.text = self.join_block_lines(lines)
 
     def _postprocess(self):
         self._build_line_cache()
@@ -189,7 +193,7 @@ class Buffer(object):
     @property
     def col(self):
         n = bisect_left(self._linecache, PosLine(self._pos, 0))
-        start = self._linecache[n - 1][0]
+        start = self._linecache[n - 1].pos
         return self._pos - start - 1
 
     def atend(self):
@@ -418,7 +422,16 @@ class Buffer(object):
     def get_line(self, n=None):
         if n is None:
             n = self.line
+        return self._lines[n]
+
         start, line = self._linecache[n][:2]
         assert line == n
         end, _ = self._linecache[n + 1]
         return self.text[start + 1:end]
+
+    def get_lines(self, start=None, end=None):
+        if start is None:
+            start = 0
+        if end is None:
+            end = len(self._lines)
+        return self._lines[start:end + 1]
