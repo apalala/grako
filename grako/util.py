@@ -152,7 +152,7 @@ def trim(text, tabwidth=4):
     lines = text.expandtabs(tabwidth).splitlines()
     maxindent = len(text)
     indent = maxindent
-    for line in lines[1:]:
+    for line in lines:
         stripped = line.lstrip()
         if stripped:
             indent = min(indent, len(line) - len(stripped))

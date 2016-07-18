@@ -903,18 +903,19 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.10.0
-------
+3.10.01
+-------
 
 * *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
 * *BUG!* Avoid recovering the same comment against the same line in ``grako.buffering.Buffer``.
 * *BUG!* Recovering comments and end-of-line comments together was incorrect.
 * *BUG!* ``model.Node`` parenting still broken. Fixed!
-* 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--dra`` works with Python_ 3.x using pygraphviz_ 1.3.1.
+* 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--draw`` works with Python_ 3.x using pygraphviz_ 1.3.1.
 * 77_ 81_ Advance over whitespace before memoization or left recursion.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).
 * Unlink output file before attempting parser generation.
 * A ``-G FILE`` command-line option forces saving of the object model.
+* The function ``grako.util.trim()`` now also considers the first text ine.
 * Tested with Python_ 3.6.0a3.
 
 .. _73: https://bitbucket.org/apalala/grako/issue/73
