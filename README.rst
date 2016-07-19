@@ -893,6 +893,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _siemer: https://bitbucket.org/siemer/
 .. _gapag: https://bitbucket.org/gapag/
 .. _linkdd: https://bitbucket.org/linkdd/
+.. _vmuriart: https://bitbucket.org/vmuriart/
 
 
 
@@ -903,7 +904,17 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.10.01
+3.11.0-rc.1
+------------
+
+* *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
+* Syntax file for `Sublime Text`_ (vmuriart_).
+* Added basic support for symbol tables in ``grako.symtables``.
+
+.. _`Sublime Text`: https://www.sublimetext.com
+
+
+3.10.1
 -------
 
 * *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
