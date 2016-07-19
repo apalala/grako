@@ -126,14 +126,14 @@ class Buffer(object):
     def _preprocess_block(self, name, block, **kwargs):
         if self.tabwidth is not None:
             block = block.replace('\t', ' ' * self.tabwidth)
-        lines = self.split_block_lines(name, block)
+        lines = self.split_block_lines(block)
         index = self._block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
 
     def _block_index(self, name, n):
         return list(zip(n * [name], range(n)))
 
-    def split_block_lines(self, name, block, **kwargs):
+    def split_block_lines(self, block):
         return block.splitlines(True)
 
     def join_block_lines(self, lines):
@@ -165,7 +165,7 @@ class Buffer(object):
             raise ParseError('include not found: %s' % include)
 
     def replace_lines(self, i, j, name, block):
-        lines = self.split_block_lines(name, self.text)
+        lines = self.split_block_lines(self.text)
         index = list(self._line_index)
 
         endline = self.include(lines, index, i, j, name, block)
