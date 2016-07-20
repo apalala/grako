@@ -61,15 +61,19 @@ class Namespace():
         if not namelist:
             return None
 
-        symbol = self.entries.get(namelist[0])
-        if symbol:
-            return symbol._lookup_drilldown(namelist[1:])
+        for symbol in self.symbols:
+            result = symbol._lookup_drilldown(namelist)
+            if result:
+                return result
 
     def filter(self, condition):
         result = []
         for symbol in self.symbols:
             result.extend(symbol.filter(condition))
         return result
+
+    def all(self):
+        return self.filter(lambda : True)
 
     def asjson(self):
         return asjson(self)
@@ -79,7 +83,9 @@ class Namespace():
 
 
 class SymbolTable(Namespace):
-    pass
+    def add_reference(self, qualname, from_node):
+        symbol = self.lookup(qualname)
+        symbol.add_reference(qualname, from_node)
 
 
 class Symbol(Namespace):
@@ -90,10 +96,15 @@ class Symbol(Namespace):
         self.name = name
         self.node = node
         self._parent = None
+        self._references = []
 
     @property
     def parent(self):
         return self._parent
+
+    @property
+    def references(self):
+        return self._references
 
     def insert(self, symbol):
         super(Symbol, self).insert(symbol)
@@ -108,15 +119,20 @@ class Symbol(Namespace):
         return sep.join(self.qualpath())
 
     def _lookup_drilldown(self, namelist):
-        if not namelist:
+        if [self.name] == namelist:
             return self
+        elif self.name == namelist[0]:
+            return super(Symbol, self)._lookup_drilldown(namelist[1:])
         return super(Symbol, self)._lookup_drilldown(namelist)
 
+
     def filter(self, condition):
-        result = super(Symbol, self).filter(condition)
-        if condition(self):
-            result.insert(0, self)
-        return result
+        this_case = [self] if condition(self) else []
+        return this_case + super(Symbol, self).filter(condition)
+
+    def add_reference(self, qualname, node):
+        reference = SymbolReference(self, qualname, node)
+        self._references.append(reference)
 
     def __json__(self):
         result = odict()
@@ -126,3 +142,11 @@ class Symbol(Namespace):
         result['entries'] = super(Symbol, self).__json__()
 
         return result
+
+
+class SymbolReference():
+    def __init__(self, symbol, qualname, node):
+        super(SymbolReference, self).__init__()
+        self.symbol = symbol
+        self.qualname = qualname
+        self.node = node
