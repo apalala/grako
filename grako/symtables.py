@@ -69,6 +69,12 @@ class Namespace():
     def filter(self, condition):
         return sum((symbol.filter(condition) for symbol in self.symbols), [])
 
+    def filter_first(self, condition):
+        for symbol in self.symbols:
+            result = symbol.filter_first(condition)
+            if result:
+                return result
+
     def all(self):
         return self.filter(lambda : True)
 
@@ -126,6 +132,11 @@ class Symbol(Namespace):
     def filter(self, condition):
         this_case = [self] if condition(self) else []
         return this_case + super(Symbol, self).filter(condition)
+
+    def filter_first(self, condition):
+        if condition(self):
+            return self
+        return super(Symbol, self).filter(condition)
 
     def add_reference(self, qualname, node):
         reference = SymbolReference(self, qualname, node)
