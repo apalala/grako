@@ -66,6 +66,11 @@ class Node(object):
         if pi:
             return pi.buffer.get_lines(pi.line, pi.endline)
 
+    def line_index(self):
+        pi = self._parseinfo
+        if pi:
+            pi.buffer.line_index(pi.line, pi.endline)
+
     @property
     def col(self):
         info = self.line_info

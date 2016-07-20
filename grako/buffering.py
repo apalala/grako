@@ -28,18 +28,20 @@ class PosLine(namedtuple('PosLine', ['pos', 'line'])):
     pass
 
 
+class Comments(namedtuple('Comments', ['inline', 'eol'])):
+    @staticmethod
+    def new():
+        return Comments([], [])
+
 LineInfo = namedtuple(
     'LineInfo',
     ['filename', 'line', 'col', 'start', 'end', 'text']
 )
 
-
-class Comments(namedtuple('Comments', ['inline', 'eol'])):
-    pass
-
-
-def _new_comments():
-    return Comments([], [])
+LineIndexEntry = namedtuple(
+    'LineIndexEntry',
+    ['filename', 'line']
+)
 
 
 class Buffer(object):
@@ -131,7 +133,7 @@ class Buffer(object):
         return self.process_block(name, lines, index, **kwargs)
 
     def _block_index(self, name, n):
-        return list(zip(n * [name], range(n)))
+        return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
 
     def split_block_lines(self, block):
         return block.splitlines(True)
@@ -264,7 +266,7 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    extend_list(self._comment_index, n, default=_new_comments)
+                    extend_list(self._comment_index, n, default=Comments.new)
 
                     index = self._comment_index[n]
                     if not index.inline or index.inline[-1] != comment:
@@ -278,7 +280,7 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    extend_list(self._comment_index, n, default=_new_comments)
+                    extend_list(self._comment_index, n, default=Comments.new)
 
                     index = self._comment_index[n]
                     if not index.eol or index.eol[-1] != comment:
@@ -435,3 +437,8 @@ class Buffer(object):
         if end is None:
             end = len(self._lines)
         return self._lines[start:end + 1]
+
+    def line_index(self, start=0, end=None):
+        if end is None:
+            end = len(self._line_index)
+        return self._line_index[start:end]

@@ -76,7 +76,7 @@ class Namespace():
                 return result
 
     def all(self):
-        return self.filter(lambda : True)
+        return self.filter(lambda: True)
 
     def asjson(self):
         return asjson(self)
@@ -127,7 +127,6 @@ class Symbol(Namespace):
         elif self.name == namelist[0]:
             return super(Symbol, self)._lookup_drilldown(namelist[1:])
         return super(Symbol, self)._lookup_drilldown(namelist)
-
 
     def filter(self, condition):
         this_case = [self] if condition(self) else []
