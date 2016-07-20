@@ -67,10 +67,7 @@ class Namespace():
                 return result
 
     def filter(self, condition):
-        result = []
-        for symbol in self.symbols:
-            result.extend(symbol.filter(condition))
-        return result
+        return sum((symbol.filter(condition) for symbol in self.symbols), [])
 
     def all(self):
         return self.filter(lambda : True)
