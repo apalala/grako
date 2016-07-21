@@ -28,11 +28,11 @@ class Namespace():
 
     @property
     def symbols(self):
-        return self._entries.values()
+        return list(self._entries.values())
 
     @property
     def names(self):
-        return self._entries.keys()
+        return list(self._entries.keys())
 
     def all_symbols(self):
         result = []
