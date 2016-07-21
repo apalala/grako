@@ -61,6 +61,11 @@ class Node(object):
         if pi:
             return pi.line
 
+    @property
+    def endline(self):
+        pi = self._parseinfo
+        if pi:
+            return pi.line
     def text_lines(self):
         pi = self._parseinfo
         if pi:
@@ -69,7 +74,7 @@ class Node(object):
     def line_index(self):
         pi = self._parseinfo
         if pi:
-            pi.buffer.line_index(pi.line, pi.endline)
+            return pi.buffer.line_index(pi.line, pi.endline)
 
     @property
     def col(self):

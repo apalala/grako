@@ -441,4 +441,4 @@ class Buffer(object):
     def line_index(self, start=0, end=None):
         if end is None:
             end = len(self._line_index)
-        return self._line_index[start:end]
+        return self._line_index[start:1 + end]

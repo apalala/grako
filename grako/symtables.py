@@ -2,9 +2,11 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from collections import OrderedDict as odict
+from itertools import chain
 
 from .util import asjson
 from .exceptions import GrakoException
+from .buffering import LineIndexEntry
 
 
 DEFAULT_SEPARATOR = '.'
@@ -102,6 +104,14 @@ class Symbol(Namespace):
         self._references = []
 
     @property
+    def line(self):
+        return self.node.line
+
+    @property
+    def endline(self):
+        return self.node.endline
+
+    @property
     def parent(self):
         return self._parent
 
@@ -139,7 +149,33 @@ class Symbol(Namespace):
 
     def add_reference(self, qualname, node):
         reference = SymbolReference(self, qualname, node)
-        self._references.append(reference)
+        if reference not in self.references:
+            self._references.append(reference)
+
+    def line_index(self, include_entries=False, include_references=False):
+        result = set(self.node.line_index())
+
+        if include_references:
+            result.update(self.reference_line_index())
+
+        if include_entries:
+            for s in self.symbols:
+                index = s.line_index(
+                    include_entries=include_entries,
+                    include_references=include_references,
+                )
+                result.update(index)
+        assert isinstance(result, set)
+        assert all(isinstance(i, LineIndexEntry) for i in result)
+        return list(sorted(result))
+
+    def reference_line_index(self):
+        result = set()
+        for r in self.references:
+            result.update(r.line_index())
+        assert isinstance(result, set)
+        assert all(isinstance(i, LineIndexEntry) for i in result)
+        return result
 
     def __json__(self):
         result = odict()
@@ -157,3 +193,18 @@ class SymbolReference():
         self.symbol = symbol
         self.qualname = qualname
         self.node = node
+
+    def line_index(self):
+        result = set(self.node.line_index())
+        assert isinstance(result, set)
+        assert all(isinstance(i, LineIndexEntry) for i in result)
+        return result
+
+    def __hash__(self):
+        return hash(self.symbol) ^ hash(self.node)
+
+    def __eq__(self, other):
+        return (
+            self.symbol == other.symbol
+            and self.node == other.node
+        )
