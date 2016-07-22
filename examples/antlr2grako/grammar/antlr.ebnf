@@ -131,6 +131,7 @@ element
     =
       named
     | predicate_or_action
+    | regexp
     | optional
     | closure
     | positive_closure
@@ -190,9 +191,8 @@ optional
 closure
     =
     (
-        '(' @:alternatives ')'
-    |
-        @:atom
+    | '(' @:alternatives ')'
+    | @:atom
     )
     '*' ~
     ;
@@ -213,7 +213,6 @@ atom
     | eof
     | negative
     | syntactic_predicate
-    | regexp
     | subexp
     | terminal
     | non_terminal
@@ -243,38 +242,58 @@ charset
     | charset_optional
     | charset_closure
     | charset_positive_closure
-    | charset_atom
+    | charset_term
     ;
 
 
 charset_optional
     =
-    @:charset '?' ~
+    '(' @:charset ')' '?' ~
     ;
 
 
 charset_closure
     =
-    @:charset '*' ~
+    '(' @:charset ')' '*' ~
     ;
 
 
 charset_positive_closure
     =
-    @:charset '+' ~
+    '(' @:charset ')' '+' ~
+    ;
+
+
+charset_term
+    =
+    | '(' @:charset ')'
+    | charset_or
+    ;
+
+
+charset_or
+    =
+    | @+:charset_range {'|' @+:charset_atom }
+    | @+:charset_char {'|' @+:charset_atom }+
     ;
 
 
 charset_atom
     =
-    | '('  @+: (range|char) {'|' @+:(range|char)}+ ~ ')'
-    | @+:range
+    | charset_range
+    | char
     ;
 
 
-range
+charset_char
     =
-    first:char '..'  last:char
+    char
+    ;
+
+
+charset_range
+    =
+    first:charset_char '..'  last:charset_char
     ;
 
 newrange
@@ -375,7 +394,7 @@ upper_name
 
 char
     =
-    "'"  @:/[^'\n]|\\./ "'"
+    "'"  @:/[^'\n\\]|\\'|\\u[a-fA-F0-9]{4}|\\./ "'"
     ;
 
 string
@@ -385,16 +404,14 @@ string
 
 STRING
     =
-    '"'  @:{?/[^"\n\\]/?|ESC} '"'
+    '"'  @:/([^"\n\\]|\\u[a-fA-F0-9]{4}|\\['"\\nrtbfv])+/ '"'
     |
-    "'"  @:{?/[^'\n\\]/?|ESC} "'"
-    |
-    '<<' @:?/(?:(?!'^').)*/? '>>'
+    "'"  @:/([^'\n\\]|\\u[a-fA-F0-9]{4}|\\['"\\nrtbfv])+/ "'"
     ;
 
 int
     =
-    ?/[0-9]+/?
+    /[0-9]+/
     ;
 
 ESC

@@ -84,10 +84,20 @@ class ANTLRSemantics(object):
     def charset_positive_closure(self, ast):
         return '%s+' % ast
 
-    def charset_atom(self, ast):
+    def charset_or(self, ast):
         return '[%s]' % ''.join(ast)
 
-    def range(self, ast):
+    @staticmethod
+    def escape(s):
+        return ''.join('\\' + c if c in '[]().*+{}^$' else c for c in s)
+
+    def charset_atom(self, ast):
+        return self.escape(ast)
+
+    def charset_char(self, ast):
+        return self.escape(ast)
+
+    def charset_range(self, ast):
         return '%s-%s' % (ast.first, ast.last)
 
     def newrange(self, ast):
