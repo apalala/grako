@@ -148,11 +148,8 @@ class ANTLRSemantics(object):
         name = ast
 
         value = self.tokens.get(name)
-        if value:
-            if isinstance(value, model.Model):
-                return value
-            else:
-                return model.Token(value)
+        if value and isinstance(value, model.Model):
+            return value
 
         if name in self.token_rules:
             exp = self.token_rules[name]
