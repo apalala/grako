@@ -105,6 +105,9 @@ class ANTLRSemantics(object):
     def charset_or(self, ast):
         return '[%s]' % ''.join(ast)
 
+    def charset_negative_or(self, ast):
+        return '[^%s]' % ''.join(ast)
+
     @staticmethod
     def escape(s):
         return ''.join('\\' + c if c in '[]().*+{}^$' else c for c in s)
