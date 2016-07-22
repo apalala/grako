@@ -56,7 +56,7 @@ class BufferingTests(unittest.TestCase):
             self.assertEqual(bc, self.buf.col)
 
     def test_line_consistency(self):
-        lines = self.text.splitlines()
+        lines = self.buf.split_block_lines(self.text)
         for n, line in enumerate(lines):
             self.assertEqual(line, self.buf.get_line(n))
 

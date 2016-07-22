@@ -893,6 +893,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 .. _siemer: https://bitbucket.org/siemer/
 .. _gapag: https://bitbucket.org/gapag/
 .. _linkdd: https://bitbucket.org/linkdd/
+.. _vmuriart: https://bitbucket.org/vmuriart/
 
 
 
@@ -903,21 +904,34 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.10.0
-------
+3.11.0-rc.1
+------------
+
+* *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
+* Syntax file for `Sublime Text`_ (vmuriart_).
+* Added basic support for symbol tables in ``grako.symtables``.
+
+.. _`Sublime Text`: https://www.sublimetext.com
+
+
+3.10.1
+-------
 
 * *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
 * *BUG!* Avoid recovering the same comment against the same line in ``grako.buffering.Buffer``.
 * *BUG!* Recovering comments and end-of-line comments together was incorrect.
-* 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--dra`` works with Python_ 3.x using pygraphviz_ 1.3.1.
-* 77_ Advance over whitespace before memoization or left recursion.
+* *BUG!* ``model.Node`` parenting still broken. Fixed!
+* 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--draw`` works with Python_ 3.x using pygraphviz_ 1.3.1.
+* 77_ 81_ Advance over whitespace before memoization or left recursion.
 * Enhancements to ``grako.tool`` and the command-line help (siemer_).
 * Unlink output file before attempting parser generation.
 * A ``-G FILE`` command-line option forces saving of the object model.
-* Tested with Python_ 3.6.0a1.
+* The function ``grako.util.trim()`` now also considers the first text ine.
+* Tested with Python_ 3.6.0a3.
 
 .. _73: https://bitbucket.org/apalala/grako/issue/73
 .. _77: https://bitbucket.org/apalala/grako/issue/77
+.. _81: https://bitbucket.org/apalala/grako/issue/81
 
 3.9.3
 -----

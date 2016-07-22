@@ -24,20 +24,24 @@ __all__ = ['Buffer']
 RETYPE = type(regexp.compile('.'))
 
 
-PosLine = namedtuple('PosLine', ['pos', 'line'])
+class PosLine(namedtuple('PosLine', ['pos', 'line'])):
+    pass
 
+
+class Comments(namedtuple('Comments', ['inline', 'eol'])):
+    @staticmethod
+    def new():
+        return Comments([], [])
 
 LineInfo = namedtuple(
     'LineInfo',
     ['filename', 'line', 'col', 'start', 'end', 'text']
 )
 
-
-Comments = namedtuple('Comments', ['inline', 'eol'])
-
-
-def _new_comments():
-    return Comments([], [])
+LineIndexEntry = namedtuple(
+    'LineIndexEntry',
+    ['filename', 'line']
+)
 
 
 class Buffer(object):
@@ -54,8 +58,8 @@ class Buffer(object):
                  comment_recovery=False,
                  namechars='',
                  **kwargs):
-        self.original_text = text
-        self.text = ustr(text)
+        text = ustr(text)
+        self.text = self.original_text = text
         self.filename = filename or ''
 
         self.whitespace = whitespace
@@ -77,6 +81,7 @@ class Buffer(object):
         self._pos = 0
         self._len = 0
         self._linecount = 0
+        self._lines = []
         self._line_index = []
         self._linecache = []
         self._comment_index = []
@@ -112,8 +117,9 @@ class Buffer(object):
 
     def _preprocess(self, *args, **kwargs):
         lines, index = self._preprocess_block(self.filename, self.text)
-        self.text = ''.join(lines)
+        self._lines = lines
         self._line_index = index
+        self.text = self.join_block_lines(lines)
 
     def _postprocess(self):
         self._build_line_cache()
@@ -122,14 +128,14 @@ class Buffer(object):
     def _preprocess_block(self, name, block, **kwargs):
         if self.tabwidth is not None:
             block = block.replace('\t', ' ' * self.tabwidth)
-        lines = self.split_block_lines(name, block)
+        lines = self.split_block_lines(block)
         index = self._block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
 
     def _block_index(self, name, n):
-        return list(zip(n * [name], range(n)))
+        return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
 
-    def split_block_lines(self, name, block, **kwargs):
+    def split_block_lines(self, block):
         return block.splitlines(True)
 
     def join_block_lines(self, lines):
@@ -161,7 +167,7 @@ class Buffer(object):
             raise ParseError('include not found: %s' % include)
 
     def replace_lines(self, i, j, name, block):
-        lines = self.split_block_lines(name, self.text)
+        lines = self.split_block_lines(self.text)
         index = list(self._line_index)
 
         endline = self.include(lines, index, i, j, name, block)
@@ -189,7 +195,7 @@ class Buffer(object):
     @property
     def col(self):
         n = bisect_left(self._linecache, PosLine(self._pos, 0))
-        start = self._linecache[n - 1][0]
+        start = self._linecache[n - 1].pos
         return self._pos - start - 1
 
     def atend(self):
@@ -260,7 +266,7 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    extend_list(self._comment_index, n, default=_new_comments)
+                    extend_list(self._comment_index, n, default=Comments.new)
 
                     index = self._comment_index[n]
                     if not index.inline or index.inline[-1] != comment:
@@ -274,7 +280,7 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    extend_list(self._comment_index, n, default=_new_comments)
+                    extend_list(self._comment_index, n, default=Comments.new)
 
                     index = self._comment_index[n]
                     if not index.eol or index.eol[-1] != comment:
@@ -418,7 +424,21 @@ class Buffer(object):
     def get_line(self, n=None):
         if n is None:
             n = self.line
+        return self._lines[n]
+
         start, line = self._linecache[n][:2]
         assert line == n
         end, _ = self._linecache[n + 1]
         return self.text[start + 1:end]
+
+    def get_lines(self, start=None, end=None):
+        if start is None:
+            start = 0
+        if end is None:
+            end = len(self._lines)
+        return self._lines[start:end + 1]
+
+    def line_index(self, start=0, end=None):
+        if end is None:
+            end = len(self._line_index)
+        return self._line_index[start:1 + end]
