@@ -66,6 +66,7 @@ class Node(object):
         pi = self._parseinfo
         if pi:
             return pi.line
+
     def text_lines(self):
         pi = self._parseinfo
         if pi:

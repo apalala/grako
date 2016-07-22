@@ -2,7 +2,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from collections import OrderedDict as odict
-from itertools import chain
 
 from .util import asjson
 from .exceptions import GrakoException
@@ -204,7 +203,4 @@ class SymbolReference():
         return hash(self.symbol) ^ hash(self.node)
 
     def __eq__(self, other):
-        return (
-            self.symbol == other.symbol
-            and self.node == other.node
-        )
+        return self.symbol == other.symbol and self.node == other.node
