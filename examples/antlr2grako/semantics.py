@@ -25,10 +25,17 @@ class ANTLRSemantics(object):
         exp = ast.exp
         if isinstance(exp, model.Token) and name[0].isupper():
             if name in self.token_rules:
-                self.token_rules[name].exp = exp
+                self.token_rules[name].exp = exp  # it is a model._Decorator
             else:
                 self.token_rules[name] = exp
             return None
+        elif not ast.fragment and not isinstance(exp, model.Sequence):
+            ref = model.RuleRef(name.lower())
+            if name in self.token_rules:
+                self.token_rules[name].exp = ref
+            else:
+                self.token_rules[name] = ref
+            name = name.lower()
 
         return model.Rule(ast, name, exp, ast.params, ast.kwparams)
 
@@ -149,6 +156,6 @@ class ANTLRSemantics(object):
         if name in self.token_rules:
             exp = self.token_rules[name]
         else:
-            exp = model._Decorator(model.RuleRef(ast))
+            exp = model._Decorator(model.RuleRef(name))
             self.token_rules[name] = exp
         return exp

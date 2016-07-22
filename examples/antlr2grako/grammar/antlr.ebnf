@@ -84,7 +84,7 @@ block
 
 rule
     =
-    ['protected'|'public'|'private'|'fragment']
+    ['protected'|'public'|'private'|fragment:'fragment']
     name:id ['!'] [arg]
     ['returns' arg]
     ['trhows' id {',' id}* ]
