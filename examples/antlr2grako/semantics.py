@@ -12,12 +12,25 @@ class ANTLRSemantics(object):
     def __init__(self, name):
         self.name = name
         self.tokens = {}
+        self.token_rules = {}
 
     def grammar(self, ast):
-        return model.Grammar(self.name, ast.rules)
+        return model.Grammar(
+            self.name,
+            [r for r in ast.rules if r is not None]
+        )
 
     def rule(self, ast):
-        return model.Rule(ast, ast.name, ast.exp, ast.params, ast.kwparams)
+        name = ast.name
+        exp = ast.exp
+        if isinstance(exp, model.Token) and name[0].isupper():
+            if name in self.token_rules:
+                self.token_rules[name].exp = exp
+            else:
+                self.token_rules[name] = exp
+            return None
+
+        return model.Rule(ast, name, exp, ast.params, ast.kwparams)
 
     def alternatives(self, ast):
         options = [o for o in ast.options if o is not None]
@@ -124,10 +137,18 @@ class ANTLRSemantics(object):
         return value
 
     def token_ref(self, ast):
-        value = self.tokens.get(ast)
-        if not value:
-            return model.RuleRef(ast)
-        elif isinstance(value, model.Model):
-            return value
+        name = ast
+
+        value = self.tokens.get(name)
+        if value:
+            if isinstance(value, model.Model):
+                return value
+            else:
+                return model.Token(value)
+
+        if name in self.token_rules:
+            exp = self.token_rules[name]
         else:
-            return model.Token(value)
+            exp = model._Decorator(model.RuleRef(ast))
+            self.token_rules[name] = exp
+        return exp
