@@ -56,15 +56,7 @@ class ANTLRSemantics(object):
             return model.Sequence(AST(sequence=elements))
 
     def predicate_or_action(self, ast):
-        def flatten(s):
-            if s is None:
-                return ''
-            elif isinstance(s, list):
-                return ''.join(flatten(e) for e in s if e is not None)
-            else:
-                return s
-        text = flatten(ast)
-        return model.Comment(text)
+        return None
 
     def named(self, ast):
         if ast.force_list:
