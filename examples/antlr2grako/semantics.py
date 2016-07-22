@@ -65,7 +65,7 @@ class ANTLRSemantics(object):
             return model.Named(ast)
 
     def syntactic_predicate(self, ast):
-        return model.Lookahead(ast)
+        return None
 
     def optional(self, ast):
         if isinstance(ast, (model.Group, model.Optional, model.Closure)):
