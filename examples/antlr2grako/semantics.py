@@ -68,12 +68,18 @@ class ANTLRSemantics(object):
         return model.Lookahead(ast)
 
     def optional(self, ast):
+        if isinstance(ast, (model.Group, model.Optional, model.Closure)):
+            ast = ast.exp
         return model.Optional(ast)
 
     def closure(self, ast):
+        if isinstance(ast, (model.Group, model.Optional)):
+            ast = ast.exp
         return model.Closure(ast)
 
     def positive_closure(self, ast):
+        if isinstance(ast, model.Group):
+            ast = ast.exp
         return model.PositiveClosure(ast)
 
     def negative(self, ast):
