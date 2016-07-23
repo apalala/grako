@@ -45,4 +45,4 @@ if __name__ == '__main__':
         print('Usage:')
         print('\t', thisprog, 'FILENAME.g [--trace]')
         sys.exit(1)
-    main(sys.argv[1], '--trace' in sys.argv)
+    main(sys.argv[1], '--trace' in sys.argv or '-t' in sys.argv)

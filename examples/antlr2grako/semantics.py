@@ -12,12 +12,32 @@ class ANTLRSemantics(object):
     def __init__(self, name):
         self.name = name
         self.tokens = {}
+        self.token_rules = {}
 
     def grammar(self, ast):
-        return model.Grammar(self.name, ast.rules)
+        return model.Grammar(
+            self.name,
+            [r for r in ast.rules if r is not None]
+        )
 
     def rule(self, ast):
-        return model.Rule(ast, ast.name, ast.exp, ast.params, ast.kwparams)
+        name = ast.name
+        exp = ast.exp
+        if isinstance(exp, model.Token) and name[0].isupper():
+            if name in self.token_rules:
+                self.token_rules[name].exp = exp  # it is a model._Decorator
+            else:
+                self.token_rules[name] = exp
+            return None
+        elif not ast.fragment and not isinstance(exp, model.Sequence):
+            ref = model.RuleRef(name.lower())
+            if name in self.token_rules:
+                self.token_rules[name].exp = ref
+            else:
+                self.token_rules[name] = ref
+            name = name.lower()
+
+        return model.Rule(ast, name, exp, ast.params, ast.kwparams)
 
     def alternatives(self, ast):
         options = [o for o in ast.options if o is not None]
@@ -36,15 +56,7 @@ class ANTLRSemantics(object):
             return model.Sequence(AST(sequence=elements))
 
     def predicate_or_action(self, ast):
-        def flatten(s):
-            if s is None:
-                return ''
-            elif isinstance(s, list):
-                return ''.join(flatten(e) for e in s if e is not None)
-            else:
-                return s
-        text = flatten(ast)
-        return model.Comment(text)
+        return None
 
     def named(self, ast):
         if ast.force_list:
@@ -53,15 +65,21 @@ class ANTLRSemantics(object):
             return model.Named(ast)
 
     def syntactic_predicate(self, ast):
-        return model.Lookahead(ast)
+        return None
 
     def optional(self, ast):
+        if isinstance(ast, (model.Group, model.Optional, model.Closure)):
+            ast = ast.exp
         return model.Optional(ast)
 
     def closure(self, ast):
+        if isinstance(ast, (model.Group, model.Optional)):
+            ast = ast.exp
         return model.Closure(ast)
 
     def positive_closure(self, ast):
+        if isinstance(ast, model.Group):
+            ast = ast.exp
         return model.PositiveClosure(ast)
 
     def negative(self, ast):
@@ -72,8 +90,36 @@ class ANTLRSemantics(object):
     def subexp(self, ast):
         return model.Group(ast)
 
-    def range(self, ast):
-        return model.Pattern('[%s-%s]' % (ast.first, ast.last))
+    def regexp(self, ast):
+        return model.Pattern(''.join(ast))
+
+    def charset_optional(self, ast):
+        return '%s?' % ast
+
+    def charset_closure(self, ast):
+        return '%s*' % ast
+
+    def charset_positive_closure(self, ast):
+        return '%s+' % ast
+
+    def charset_or(self, ast):
+        return '[%s]' % ''.join(ast)
+
+    def charset_negative_or(self, ast):
+        return '[^%s]' % ''.join(ast)
+
+    @staticmethod
+    def escape(s):
+        return ''.join('\\' + c if c in '[]().*+{}^$' else c for c in s)
+
+    def charset_atom(self, ast):
+        return self.escape(ast)
+
+    def charset_char(self, ast):
+        return self.escape(ast)
+
+    def charset_range(self, ast):
+        return '%s-%s' % (ast.first, ast.last)
 
     def newrange(self, ast):
         return model.Pattern('[%s]' % re.escape(ast))
@@ -99,10 +145,15 @@ class ANTLRSemantics(object):
         return value
 
     def token_ref(self, ast):
-        value = self.tokens.get(ast)
-        if not value:
-            return model.RuleRef(ast)
-        elif isinstance(value, model.Model):
+        name = ast
+
+        value = self.tokens.get(name)
+        if value and isinstance(value, model.Model):
             return value
+
+        if name in self.token_rules:
+            exp = self.token_rules[name]
         else:
-            return model.Token(value)
+            exp = model._Decorator(model.RuleRef(name))
+            self.token_rules[name] = exp
+        return exp

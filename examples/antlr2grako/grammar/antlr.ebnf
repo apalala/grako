@@ -84,7 +84,7 @@ block
 
 rule
     =
-    ['protected'|'public'|'private'|'fragment']
+    ['protected'|'public'|'private'|fragment:'fragment']
     name:id ['!'] [arg]
     ['returns' arg]
     ['trhows' id {',' id}* ]
@@ -131,6 +131,7 @@ element
     =
       named
     | predicate_or_action
+    | regexp
     | optional
     | closure
     | positive_closure
@@ -141,6 +142,7 @@ named
     =
     name:id (force_list:'+='| '=')   exp:atom
     ;
+
 
 predicate_or_action
     =
@@ -189,9 +191,8 @@ optional
 closure
     =
     (
-        '(' @:alternatives ')'
-    |
-        @:atom
+    | '(' @:alternatives ')'
+    | @:atom
     )
     '*' ~
     ;
@@ -209,12 +210,10 @@ positive_closure
 atom
     =
     @:(
-      eof
+    | eof
     | negative
     | syntactic_predicate
     | subexp
-    | newrange
-    | range
     | terminal
     | non_terminal
     )
@@ -232,9 +231,81 @@ eof
     'EOF'
     ;
 
-range
+regexp
     =
-    first:char '..'  last:char
+    {charset}+
+    ;
+
+
+charset
+    =
+    | charset_optional
+    | charset_closure
+    | charset_positive_closure
+    | charset_term
+    ;
+
+
+charset_optional
+    =
+    '(' @:charset ')' '?' ~
+    ;
+
+
+charset_closure
+    =
+    '(' @:charset ')' '*' ~
+    ;
+
+
+charset_positive_closure
+    =
+    '(' @:charset ')' '+' ~
+    ;
+
+
+charset_term
+    =
+    | '(' @:charset ')'
+    | charset_negative_or
+    | charset_or
+    ;
+
+
+charset_or
+    =
+    | @+:charset_range {'|' @+:charset_atom }
+    | @+:charset_char {'|' @+:charset_atom }+
+    ;
+
+
+charset_negative_or
+    =
+    '~' '('
+        (
+        | @+:charset_range {'|' @+:charset_atom }
+        | @+:charset_char {'|' @+:charset_atom }+
+        )
+    ')'
+    ;
+
+
+charset_atom
+    =
+    | charset_range
+    | char
+    ;
+
+
+charset_char
+    =
+    char
+    ;
+
+
+charset_range
+    =
+    first:charset_char '..'  last:charset_char
     ;
 
 newrange
@@ -244,7 +315,7 @@ newrange
 
 NEWRANGE
     =
-    '[' @:?/([^\]]|\\])+/? ']'
+    '[' charset ']'
     ;
 
 subexp
@@ -271,14 +342,13 @@ non_terminal
 
 terminal
     =
-      char
     | string
     | any
     ;
 
 any
     =
-    '.' ~
+    !'..' '.' ~
     ;
 
 
@@ -336,7 +406,7 @@ upper_name
 
 char
     =
-    string
+    "'"  @:/[^'\n\\]|\\'|\\u[a-fA-F0-9]{4}|\\./ "'"
     ;
 
 string
@@ -346,16 +416,14 @@ string
 
 STRING
     =
-    '"'  @:{?/[^"\n\\]/?|ESC} '"'
+    '"'  @:/([^"\n\\]|\\u[a-fA-F0-9]{4}|\\['"\\nrtbfv])+/ '"'
     |
-    "'"  @:{?/[^'\n\\]/?|ESC} "'"
-    |
-    '<<' @:?/(?:(?!'^').)*/? '>>'
+    "'"  @:/([^'\n\\]|\\u[a-fA-F0-9]{4}|\\['"\\nrtbfv])+/ "'"
     ;
 
 int
     =
-    ?/[0-9]+/?
+    /[0-9]+/
     ;
 
 ESC
