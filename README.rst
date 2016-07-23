@@ -910,6 +910,7 @@ Changes
 * *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
 * Syntax file for `Sublime Text`_ (vmuriart_).
 * Added basic support for symbol tables in ``grako.symtables``.
+* Improved ``examples/antlr2grako`` to produce much more usable grammars.
 
 .. _`Sublime Text`: https://www.sublimetext.com
 
