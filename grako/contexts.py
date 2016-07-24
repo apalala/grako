@@ -97,8 +97,14 @@ class ParseContext(object):
         self.nameguard = nameguard
         self.memoize_lookaheads = memoize_lookaheads
         self.left_recursion = left_recursion
+        self.colorize = colorize
+        self.keywords = set(keywords or [])
         self.namechars = namechars
 
+        self._initialize_caches()
+
+
+    def _initialize_caches(self):
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
         self._rule_stack = []
@@ -113,8 +119,6 @@ class ParseContext(object):
         self._recursive_eval = []
         self._recursive_head = []
 
-        self.colorize = colorize
-        self.keywords = set(keywords or [])
 
     def _reset(self,
                text=None,
@@ -129,6 +133,7 @@ class ParseContext(object):
                memoize_lookaheads=None,
                left_recursion=None,
                colorize=False,
+               keywords=None,
                namechars='',
                **kwargs):
         if ignorecase is None:
@@ -139,17 +144,20 @@ class ParseContext(object):
             self.memoize_lookaheads = memoize_lookaheads
         if left_recursion is not None:
             self.left_recursion = left_recursion
-
         if trace is not None:
             self.trace = trace
         if semantics is not None:
             self.semantics = semantics
-
         if colorize is not None:
             self.colorize = colorize
-
+        if keywords is not None:
+            self.keywords = keywords
         if self.colorize:
             color.init()
+        if namechars is not None:
+            namechars = self.namechars
+
+        self._initialize_caches()
 
         if isinstance(text, buffering.Buffer):
             buffer = text
@@ -162,22 +170,9 @@ class ParseContext(object):
                 whitespace=notnone(whitespace, default=self.whitespace),
                 ignorecase=ignorecase,
                 nameguard=nameguard,
-                namechars=namechars or self.namechars,
+                namechars=namechars,
                 **kwargs)
         self._buffer = buffer
-        self._ast_stack = [AST()]
-        self._concrete_stack = [None]
-        self._rule_stack = []
-        self._cut_stack = [False]
-        self._memoization_cache = dict()
-
-        self._last_node = None
-        self._state = None
-        self._lookahead = 0
-
-        self._recursive_results = dict()
-        self._recursive_eval = []
-        self._recursive_head = []
 
     def parse(self,
               text,
