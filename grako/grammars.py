@@ -78,7 +78,7 @@ class GrakoBuffer(Buffer):
         # we only recognize the 'include' pragama
         if name == 'include':
             filename = arg.strip('\'"')
-            return self.include_file(source, filename, lines, index, i, i)
+            return self.include_file(source, filename, lines, index, i, i + 1)
         else:
             return i + 1  # will be treated as a directive by the parser
 

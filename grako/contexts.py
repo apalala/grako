@@ -103,7 +103,6 @@ class ParseContext(object):
 
         self._initialize_caches()
 
-
     def _initialize_caches(self):
         self._ast_stack = [AST()]
         self._concrete_stack = [None]
@@ -118,7 +117,6 @@ class ParseContext(object):
         self._recursive_results = dict()
         self._recursive_eval = []
         self._recursive_head = []
-
 
     def _reset(self,
                text=None,
@@ -413,8 +411,8 @@ class ParseContext(object):
             name,
             pos,
             endpos,
-            self._buffer.line_info(pos).line,
-            self._buffer.line_info(endpos).line,
+            self._buffer.posline(pos),
+            self._buffer.posline(endpos),
         )
 
     def _call(self, rule, name, params, kwparams):
