@@ -125,6 +125,18 @@ class Buffer(object):
         self._build_line_cache()
         self._len = len(self.text)
 
+        lines = self.text.splitlines()
+        for i, line in enumerate(lines):
+            from pathlib import Path
+            print('%4.4d %3.3d %20s(%3.3d) : %s' % (
+                id(self),
+                i + 1,
+                Path(self._line_index[i].filename).name,
+                self._line_index[i].line,
+                line,
+            )
+            )
+
     def _preprocess_block(self, name, block, **kwargs):
         if self.tabwidth is not None:
             block = block.replace('\t', ' ' * self.tabwidth)
@@ -147,8 +159,8 @@ class Buffer(object):
     def include(self, lines, index, i, j, name, block, **kwargs):
         blines, bindex = self._preprocess_block(name, block, **kwargs)
         assert len(blines) == len(bindex)
-        lines[i:j + 1] = blines
-        index[i:j + 1] = bindex
+        lines[i:j] = blines
+        index[i:j] = bindex
         assert len(lines) == len(index)
         return j + len(blines)
 
@@ -425,11 +437,6 @@ class Buffer(object):
         if n is None:
             n = self.line
         return self._lines[n]
-
-        start, line = self._linecache[n][:2]
-        assert line == n
-        end, _ = self._linecache[n + 1]
-        return self.text[start + 1:end]
 
     def get_lines(self, start=None, end=None):
         if start is None:
