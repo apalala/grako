@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 5, 26, 15, 5, 16, 3)
+__version__ = (2016, 7, 24, 0, 51, 4, 6)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -35,7 +35,7 @@ class GrakoBootstrapParser(Parser):
                  comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
                  eol_comments_re='#([^\\n]*?)$',
                  ignorecase=None,
-                 left_recursion=True,
+                 left_recursion=False,
                  keywords=KEYWORDS,
                  namechars='',
                  **kwargs):
@@ -902,7 +902,7 @@ def main(
         comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
         eol_comments_re='#([^\\n]*?)$',
         ignorecase=None,
-        left_recursion=True,
+        left_recursion=False,
         **kwargs):
 
     with open(filename) as f:

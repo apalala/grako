@@ -1,6 +1,7 @@
 @@grammar :: Grako
 @@comments :: /\(\*((?:.|\n)*?)\*\)/
 @@eol_comments :: /#([^\n]*?)$/
+@@left_recursion :: False
 
 
 start
