@@ -376,7 +376,8 @@ class ParseContext(object):
             self._trace('%s   \n%s%s \n',
                         event + ' ' + self._rulestack(),
                         color.Style.DIM + fname,
-                        color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
+                        color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n') +
+                        color.Style.RESET_ALL
                         )
 
     def _trace_match(self, token, name=None, failed=False):
@@ -391,7 +392,8 @@ class ParseContext(object):
                 token,
                 name,
                 color.Style.DIM + fname,
-                color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n')
+                color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n') +
+                color.Style.RESET_ALL
             )
 
     def _error(self, item, etype=FailedParse):
