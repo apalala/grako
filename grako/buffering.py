@@ -10,7 +10,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
-from bisect import bisect_left
 from collections import namedtuple
 
 from grako.util import ustr, strtype, extend_list, re as regexp
@@ -26,7 +25,7 @@ RETYPE = type(regexp.compile('.'))
 
 PosLine = namedtuple(
     'PosLine',
-    ['pos', 'line']
+    ['start', 'line', 'length']
 )
 
 
@@ -211,8 +210,7 @@ class Buffer(object):
     def posline(self, pos=None):
         if pos is None:
             pos = self._pos
-        n = bisect_left(self._linecache, PosLine(pos, 0))
-        return self._linecache[n - 1].line
+        return self._linecache[pos].line
 
     @property
     def line(self):
@@ -221,9 +219,8 @@ class Buffer(object):
     def poscol(self, pos=None):
         if pos is None:
             pos = self._pos
-        n = bisect_left(self._linecache, PosLine(pos, 0))
-        start = self._linecache[n - 1].pos
-        return pos - start - 1
+        start = self._linecache[pos].start
+        return pos - start
 
     @property
     def col(self):
@@ -404,16 +401,18 @@ class Buffer(object):
 
     def _build_line_cache(self):
         lines = self._lines
-        n = 0
-        i = -1
         cache = []
-        for n, s in enumerate(lines):
-            cache.append(PosLine(i, n))
-            i += len(s)
+        n = 0
+        i = 0
+        for n, line in enumerate(lines):
+            pl = PosLine(i, n, len(line))
+            for c in line:
+                cache.append(pl)
+            i += len(line)
         n += 1
         if lines and lines[-1][-1] in '\r\n':
             n += 1
-        cache.append(PosLine(i, n))
+        cache.append(PosLine(i, n, 0))
         self._linecache = cache
         self._linecount = n
 
@@ -425,14 +424,11 @@ class Buffer(object):
         if pos is None:
             pos = self._pos
 
-        nmax = len(self._linecache) - 1
-        if pos >= self._len:
-            return LineInfo(self.filename, nmax, 0, self._len, self._len, '')
+        if pos >= len(self._linecache):
+            return LineInfo(self.filename, self.linecount, 0, self._len, self._len, '')
 
-        n = bisect_left(self._linecache, PosLine(pos, 0))
-        start, line = self._linecache[n - 1]
-        start = start + 1
-        end = self._linecache[n].pos + 1
+        start, line, length = self._linecache[pos]
+        end = start + length
         col = pos - start
 
         text = self.text[start:end]
@@ -446,7 +442,7 @@ class Buffer(object):
             return ''
         info = self.line_info()
         text = info.text[info.col:info.col + 1 + 80]
-        text = self.split_block_lines(text)[0]
+        text = self.split_block_lines(text)[0].rstrip()
         return '<%d:%d>%s' % (info.line + 1, info.col + 1, text)
 
     def get_line(self, n=None):
