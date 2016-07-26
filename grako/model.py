@@ -112,9 +112,12 @@ class Node(object):
             return self.parseinfo.buffer.comments(self.parseinfo.pos)
         return Comments([], [])
 
-    def __cn(self, add_child, child_collection, child):
-        if isinstance(child, Node):
+    def __cn(self, add_child, child_collection, child, seen=None):
+        if seen is None:
+            seen = set()
+        if isinstance(child, Node) and id(child) not in seen:
             add_child(child)
+            seen.add(id(child))
         elif isinstance(child, Mapping):
             # ordering for the values in mapping
             for c in child.values():
