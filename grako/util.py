@@ -8,6 +8,8 @@ import datetime
 import codecs
 import itertools
 import keyword
+import functools
+import warnings
 
 try:
     import regex as re
@@ -293,3 +295,21 @@ def generic_main(custom_main, ParserClass, name='Unknown'):
         )
     except KeyboardInterrupt:
         pass
+
+
+warnings.filterwarnings('default', category=DeprecationWarning)
+
+
+# decorator
+def deprecated(fun):
+    @functools.wraps(fun)
+    def wrapper(*args, **kwargs):
+        msg = "Call to deprecated function {}."
+        warnings.warn(
+            msg.format(fun.__name__),
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return fun(*args, **kwargs)
+
+    return wrapper
