@@ -911,7 +911,8 @@ Changes
 * *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
 * Traded memory for simplicity and replaced the line-based line cache in ``buffering.Buffer`` for a position-based cache. Buffering needs to continue being ``str``-based for complex ``re`` patterns to work as expected.
 * Added basic support for symbol tables in ``grako.symtables``.
-* Improved ``examples/antlr2grako`` to produce a much more usable grammars.
+* Now ``model.ParseModel`` is an alias for ``model.Node``.
+* Improved ``examples/antlr2grako`` so it generates more usable **Grako** grammars.
 * Syntax file for `Sublime Text`_ (vmuriart_).
 
 .. _`Sublime Text`: https://www.sublimetext.com

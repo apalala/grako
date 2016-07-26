@@ -180,6 +180,10 @@ class Node(object):
         return asjsons(self)
 
 
+class ParseModel(Node):
+    pass
+
+
 class NodeWalker(object):
     def _find_walker(self, node, prefix='walk_'):
         classes = [node.__class__]
