@@ -121,10 +121,10 @@ class Node(object):
         elif isinstance(child, Mapping):
             # ordering for the values in mapping
             for c in child.values():
-                self.__cn(add_child, child_collection, c)
+                self.__cn(add_child, child_collection, c, seen=seen)
         elif isinstance(child, list):
             for c in child:
-                self.__cn(add_child, child_collection, c)
+                self.__cn(add_child, child_collection, c, seen=seen)
 
     def children(self):
         childset = set()
