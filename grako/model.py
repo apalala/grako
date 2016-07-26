@@ -12,6 +12,7 @@ from grako.util import asjson, asjsons, Mapping, builtins
 from grako.buffering import Comments
 from grako.exceptions import SemanticError
 from grako.ast import AST
+from grako.synth import synthesize
 
 EOLCOL = 50
 
@@ -260,7 +261,7 @@ class ModelBuilderSemantics(object):
             return constructor
 
         # synthethize a new type
-        constructor = type(typename, (self.baseType,), {})
+        constructor = synthesize(typename, self.baseType)
         self._register_constructor(constructor)
         return constructor
 
