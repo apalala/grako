@@ -184,8 +184,7 @@ class Node(object):
         return asjsons(self)
 
 
-class ParseModel(Node):
-    pass
+ParseModel = Node
 
 
 class NodeWalker(object):
