@@ -44,7 +44,7 @@ class Rule(ModelRenderer):
 
             kwargs = '\n' + indent(kwargs + '\n**kwargs', indent=17, multiplier=1)
         else:
-            kwargs = '**kwargs'
+            kwargs = ' **kwargs'
             params = '*args, **kwargs)'
 
         fields.update(

@@ -116,9 +116,7 @@ class Sequence(Base):
     def render_fields(self, fields):
         fields.update(seq='\n'.join(self.rend(s) for s in self.node.sequence))
 
-    template = '''
-                {seq}\
-                '''
+    template = '{seq}'
 
 
 class Choice(Base):
@@ -174,7 +172,7 @@ class Closure(_Decorator):
 
 
 class PositiveClosure(Closure):
-    template = '''
+    template = '''\
                 def block{n}():
                 {exp:1::}
                 self._positive_closure(block{n})\
@@ -317,12 +315,12 @@ class Rule(_Decorator):
             if not ldefs:
                 sdefines = '\n\n    self.ast._define(%s, %s)' % (sdefs, ldefs)
             else:
-                sdefines = indent('\n\n' + trim('''\
+                sdefines = indent('\n' + trim('''\
                                                 self.ast._define(
                                                     %s,
                                                     %s
                                                 )''' % (sdefs, ldefs)
-                                                )
+                                            )
                                   )
 
         fields.update(defines=sdefines)
