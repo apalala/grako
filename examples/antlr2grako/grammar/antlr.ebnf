@@ -131,7 +131,6 @@ element
     =
       named
     | predicate_or_action
-    | regexp
     | optional
     | closure
     | positive_closure
@@ -190,28 +189,22 @@ optional
 
 closure
     =
-    (
-    | '(' @:alternatives ')'
-    | @:atom
-    )
-    '*' ~
+    @:atom '*' ~
     ;
 
 positive_closure
     =
-    (
-        '(' @:alternatives ')'
-    |
-        @:atom
-    )
-    '+' ~
+    @:atom '+' ~
     ;
 
 atom
     =
     @:(
     | eof
+    | negative_newrange
     | negative
+    | newrange
+    | regexp
     | syntactic_predicate
     | subexp
     | terminal
@@ -269,6 +262,7 @@ charset_term
     | '(' @:charset ')'
     | charset_negative_or
     | charset_or
+    | newrange
     ;
 
 
@@ -310,13 +304,14 @@ charset_range
 
 newrange
     =
-    NEWRANGE
+    /\[([^\]]|\\.)+\][\*\+\?]?/
     ;
 
-NEWRANGE
+negative_newrange
     =
-    '[' charset ']'
+    '~' '['  @:/([^\]]|\\.)+/ ']'
     ;
+
 
 subexp
     =

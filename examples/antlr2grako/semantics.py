@@ -23,19 +23,20 @@ class ANTLRSemantics(object):
     def rule(self, ast):
         name = ast.name
         exp = ast.exp
-        if isinstance(exp, model.Token) and name[0].isupper():
-            if name in self.token_rules:
-                self.token_rules[name].exp = exp  # it is a model._Decorator
-            else:
-                self.token_rules[name] = exp
-            return None
-        elif not ast.fragment and not isinstance(exp, model.Sequence):
-            ref = model.RuleRef(name.lower())
-            if name in self.token_rules:
-                self.token_rules[name].exp = ref
-            else:
-                self.token_rules[name] = ref
-            name = name.lower()
+        if name[0].isupper():
+            if isinstance(exp, model.Token):
+                if name in self.token_rules:
+                    self.token_rules[name].exp = exp  # it is a model._Decorator
+                else:
+                    self.token_rules[name] = exp
+                return None
+            elif not ast.fragment and not isinstance(exp, model.Sequence):
+                ref = model.RuleRef(name.lower())
+                if name in self.token_rules:
+                    self.token_rules[name].exp = ref
+                else:
+                    self.token_rules[name] = ref
+                name = name.lower()
 
         return model.Rule(ast, name, exp, ast.params, ast.kwparams)
 
@@ -91,7 +92,9 @@ class ANTLRSemantics(object):
         return model.Group(ast)
 
     def regexp(self, ast):
-        return model.Pattern(''.join(ast))
+        pattern = ''.join(ast)
+        re.compile(pattern)
+        return model.Pattern(pattern)
 
     def charset_optional(self, ast):
         return '%s?' % ast
@@ -122,7 +125,14 @@ class ANTLRSemantics(object):
         return '%s-%s' % (ast.first, ast.last)
 
     def newrange(self, ast):
-        return model.Pattern('[%s]' % re.escape(ast))
+        pattern = '%s' % re.escape(ast)
+        re.compile(pattern)
+        return model.Pattern(pattern)
+
+    def negative_newrange(self, ast):
+        pattern = '[^%s]' % re.escape(ast)
+        re.compile(pattern)
+        return model.Pattern(pattern)
 
     def rule_ref(self, ast):
         return model.RuleRef(ast)
