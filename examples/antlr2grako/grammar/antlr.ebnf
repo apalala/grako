@@ -114,7 +114,7 @@ exceptions
 
 alternatives
     =
-    options+:alternative {'|'  options+:alternative}
+    '|'.{[annotation] options+:alternative}+
     ;
 
 alternative
@@ -216,7 +216,7 @@ atom
 
 annotation
     =
-    '<' id '=' id '>'
+    '<' ','.{id ['=' id]}+ '>'
     ;
 
 eof
@@ -304,12 +304,12 @@ charset_range
 
 newrange
     =
-    /\[([^\]]|\\.)+\][\*\+\?]?/
+    /\[([^\]]|\\u[a-fA-F0-9]{4}|\\.)+\][\*\+\?]?/
     ;
 
 negative_newrange
     =
-    '~' '['  @:/([^\]]|\\.)+/ ']'
+    '~' '['  @:/([^\]]|\\u[a-fA-F0-9]{4}|\\.)+/ ']'
     ;
 
 
@@ -360,7 +360,7 @@ rewrite_term
 
 rule_ref
     =
-    lower_name
+    lower_name [annotation]
     ;
 
 token_ref
