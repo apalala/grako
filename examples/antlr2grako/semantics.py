@@ -133,15 +133,20 @@ class ANTLRSemantics(object):
     def charset_range(self, ast):
         return '%s-%s' % (ast.first, ast.last)
 
-    def newrange(self, ast):
-        pattern = ast
+    def newranges(self, ast):
+        pattern = ''.join(ast)
         re.compile(pattern)
         return model.Pattern(pattern)
 
-    def negative_newrange(self, ast):
-        pattern = ast
+    def newrange(self, ast):
+        pattern = '[%s]' % ast
         re.compile(pattern)
-        return model.Pattern(pattern)
+        return pattern
+
+    def negative_newrange(self, ast):
+        pattern = '[^%s]' % ast
+        re.compile(pattern)
+        return pattern
 
     def rule_ref(self, ast):
         return model.RuleRef(camel2py(ast))

@@ -201,9 +201,8 @@ atom
     =
     @:(
     | eof
-    | negative_newrange
+    | newranges
     | negative
-    | newrange
     | regexp
     | syntactic_predicate
     | subexp
@@ -262,7 +261,6 @@ charset_term
     | '(' @:charset ')'
     | charset_negative_or
     | charset_or
-    | newrange
     ;
 
 
@@ -302,9 +300,15 @@ charset_range
     first:charset_char '..'  last:charset_char
     ;
 
+
+newranges
+    =
+    {negative_newrange|newrange}+
+    ;
+
 newrange
     =
-    /\[([^\]]|\\u[a-fA-F0-9]{4}|\\.)+\][\*\+\?]?/
+    '['  @:/([^\]]|\\u[a-fA-F0-9]{4}|\\.)+/ ']'
     ;
 
 negative_newrange
