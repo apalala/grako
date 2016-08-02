@@ -134,12 +134,12 @@ class ANTLRSemantics(object):
         return '%s-%s' % (ast.first, ast.last)
 
     def newrange(self, ast):
-        pattern = '%s' % re.escape(ast)
+        pattern = ast
         re.compile(pattern)
         return model.Pattern(pattern)
 
     def negative_newrange(self, ast):
-        pattern = '[^%s]' % re.escape(ast)
+        pattern = ast
         re.compile(pattern)
         return model.Pattern(pattern)
 
