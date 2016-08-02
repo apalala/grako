@@ -61,7 +61,6 @@ class Buffer(object):
                  comments_re=None,
                  eol_comments_re=None,
                  ignorecase=False,
-                 trace=False,
                  nameguard=None,
                  comment_recovery=False,
                  namechars='',
@@ -76,7 +75,6 @@ class Buffer(object):
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
         self.ignorecase = ignorecase
-        self.trace = True
         self.nameguard = (nameguard
                           if nameguard is not None
                           else bool(self.whitespace_re))
