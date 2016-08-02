@@ -8,6 +8,14 @@ from grako.ast import AST
 from grako import grammars as model
 
 
+def camel2py(name):
+    return re.sub(
+        '([a-z0-9])([A-Z])',
+        lambda m: m.group(1) + '_' + m.group(2).lower(),
+        name,
+    )
+
+
 class ANTLRSemantics(object):
     def __init__(self, name):
         self.name = name
@@ -21,9 +29,10 @@ class ANTLRSemantics(object):
         )
 
     def rule(self, ast):
-        name = ast.name
+        name = camel2py(ast.name)
         exp = ast.exp
         if name[0].isupper():
+            name = name.upper()
             if isinstance(exp, model.Token):
                 if name in self.token_rules:
                     self.token_rules[name].exp = exp  # it is a model._Decorator
@@ -135,7 +144,7 @@ class ANTLRSemantics(object):
         return model.Pattern(pattern)
 
     def rule_ref(self, ast):
-        return model.RuleRef(ast)
+        return model.RuleRef(camel2py(ast))
 
     def any(self, ast):
         return model.Pattern('\w+|\S+')
@@ -155,7 +164,7 @@ class ANTLRSemantics(object):
         return value
 
     def token_ref(self, ast):
-        name = ast
+        name = camel2py(ast).upper()
 
         value = self.tokens.get(name)
         if value and isinstance(value, model.Model):
