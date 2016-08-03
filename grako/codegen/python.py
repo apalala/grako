@@ -418,6 +418,7 @@ class Grammar(Base):
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
 
+                from grako.buffering import Buffer
                 from grako.parsing import graken, Parser
                 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
@@ -431,6 +432,28 @@ class Grammar(Base):
                 ]
 
                 KEYWORDS = set([{keywords}])
+
+
+                class {name}Buffer(Buffer):
+                    def __init__(self,
+                                 text,
+                                 whitespace={whitespace},
+                                 nameguard={nameguard},
+                                 comments_re={comments_re},
+                                 eol_comments_re={eol_comments_re},
+                                 ignorecase={ignorecase},
+                                 namechars={namechars},
+                                 **kwargs):
+                        super({name}Buffer, self).__init__(
+                            text,
+                            whitespace=whitespace,
+                            nameguard=nameguard,
+                            comments_re=comments_re,
+                            eol_comments_re=eol_comments_re,
+                            ignorecase=ignorecase,
+                            namechars=namechars,
+                            **kwargs
+                        )
 
 
                 class {name}Parser(Parser):
@@ -455,6 +478,12 @@ class Grammar(Base):
                             namechars=namechars,
                             **kwargs
                         )
+
+                    def parse(self, text, *args, **kwargs):
+                        if not isinstance(text, Buffer):
+                            text = {name}Buffer(text, **kwargs)
+                        return super({name}Parser, self).parse(text, *args, **kwargs)
+
 
                 {rules}
 

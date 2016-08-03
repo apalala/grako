@@ -912,6 +912,8 @@ Changes
 
 * *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
 * *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
+* Also generate a ``buffering.Buffer`` descendant specific to the grammar for parsers that need to
+  customize the ``parsing.Parser.parse()`` method.
 * Added the ``grako.synth`` module which makes synthetic ``grako.model.Node`` classes pickable.
 * Traded memory for simplicity and replaced the line-based line cache in ``buffering.Buffer`` for a position-based cache. Buffering needs to continue being ``str``-based for complex ``re`` patterns to work as expected.
 * Now patterns may be concatenated to split a complex pattern into parts, possibly accross several
