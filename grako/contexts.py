@@ -760,7 +760,7 @@ class ParseContext(object):
         return cst
 
     def _check_name(self):
-        name = self.last_node
+        name = str(self.last_node)
         if self.ignorecase or self._buffer.ignorecase:
             name = name.upper()
         if name in self.keywords:
