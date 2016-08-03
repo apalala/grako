@@ -75,7 +75,7 @@ class ParseContext(object):
                  trace_length=72,
                  trace_separator=':',
                  trace_filename=False,
-                 colorize=False,
+                 colorize=None,
                  keywords=None,
                  namechars='',
                  **kwargs):
@@ -130,7 +130,7 @@ class ParseContext(object):
                nameguard=None,
                memoize_lookaheads=None,
                left_recursion=None,
-               colorize=False,
+               colorize=None,
                keywords=None,
                namechars='',
                **kwargs):
