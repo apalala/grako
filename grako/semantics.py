@@ -49,6 +49,22 @@ class GrakoSemantics(ModelBuilderSemantics):
             raise FailedSemantics('regexp error: ' + str(e))
         return grammars.Pattern(pattern)
 
+    def regexes(self, ast, *args):
+        pattern = ''.join(ast)
+        try:
+            re.compile(pattern, RE_FLAGS)
+        except (TypeError, re.error) as e:
+            raise FailedSemantics('regexp error: ' + str(e))
+        return pattern
+
+    def regex(self, ast, *args):
+        pattern = ast
+        try:
+            re.compile(pattern, RE_FLAGS)
+        except (TypeError, re.error) as e:
+            raise FailedSemantics('regexp error: ' + str(e))
+        return pattern
+
     def hext(self, ast):
         return int(ast, 16)
 

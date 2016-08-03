@@ -971,6 +971,19 @@ class GrammarTests(unittest.TestCase):
 
         assert 'TestParser' in module.co_names
 
+    def test_pattern_concatenation(self):
+        grammar = '''
+            start = {letters_digits}+ ;
+
+            letters_digits
+                =
+                /[a-z]+/ + /[0-9]+/
+                ;
+        '''
+        model = genmodel(grammar=grammar)
+        ast = model.parse('abc123 def456')
+        self.assertEqual(['abc123', 'def456'], ast)
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(GrammarTests)

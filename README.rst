@@ -317,6 +317,9 @@ The expressions, in reverse order of operator precedence, can be:
     ``?/regexp/?``
         Another form of the pattern expression that can be used when there are slashes (``/``) in the pattern.
 
+    ``+/regexp/``
+
+        Concatenate the given pattern with the preceding one.
 
     ```constant```
         Match nothing, but behave as if ``constant`` had been parsed.
@@ -911,6 +914,8 @@ Changes
 * *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
 * Added the ``grako.synth`` module which makes synthetic ``grako.model.Node`` classes pickable.
 * Traded memory for simplicity and replaced the line-based line cache in ``buffering.Buffer`` for a position-based cache. Buffering needs to continue being ``str``-based for complex ``re`` patterns to work as expected.
+* Now patterns may be concatenated to split a complex pattern into parts, possibly accross several
+  lines: ``/regexp/ + /regexp/``.
 * Added basic support for symbol tables in ``grako.symtables``.
 * Now ``model.ParseModel`` is an alias for ``model.Node``.
 * Improved ``examples/antlr2grako`` so it generates more usable **Grako** grammars.
