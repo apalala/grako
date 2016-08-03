@@ -352,7 +352,13 @@ word
 
 pattern::Pattern
     =
-    regex
+    regexes
+    ;
+
+
+regexes
+    =
+    @+:regex {'+' ~ @+:regex}*
     ;
 
 
