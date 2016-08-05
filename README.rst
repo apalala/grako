@@ -907,11 +907,12 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.11.0-rc.1
-------------
+3.11.0-rc.4
+-----------
 
 * *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
 * *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
+* *BUG!* Repeated parameters to object model constructors.
 * Also generate a ``buffering.Buffer`` descendant specific to the grammar for parsers that need to
   customize the ``parsing.Parser.parse()`` method.
 * Added the ``grako.synth`` module which makes synthetic ``grako.model.Node`` classes pickable.

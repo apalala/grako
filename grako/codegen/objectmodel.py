@@ -34,6 +34,7 @@ class ObjectModelCodeGenerator(CodeGenerator):
 class Rule(ModelRenderer):
     def render_fields(self, fields):
         defs = [safe_name(d) for d, l in compress_seq(self.defines())]
+        defs = list(sorted(set(defs)))
 
         kwargs = '\n'.join('%s=None, ' % d for d in defs)
         params = '\n'.join('%s=%s,' % (d, d) for d in defs)
