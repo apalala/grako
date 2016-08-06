@@ -906,17 +906,10 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.12.0.rc.1
------------
-
-* Distinguish between positive and normal joins: ``s.{e}+`` and ``s.{e}``. Having ``s.{e}`` use a positive closure was too unexpected.
-
-3.11.0
+3.12.0
 ------
 
-* *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
-* *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
-* *BUG!* Repeated parameters to object model constructors.
+* Distinguish between positive and normal joins: ``s.{e}+`` and ``s.{e}``. Having ``s.{e}`` use a positive closure was too unexpected.
 * Also generate a ``buffering.Buffer`` descendant specific to the grammar for parsers that need to
   customize the ``parsing.Parser.parse()`` method.
 * Added the ``grako.synth`` module which makes synthetic ``grako.model.Node`` classes pickable.
@@ -927,6 +920,9 @@ Changes
 * Now ``model.ParseModel`` is an alias for ``model.Node``.
 * Improved ``examples/antlr2grako`` so it generates more usable **Grako** grammars.
 * Syntax file for `Sublime Text`_ (vmuriart_).
+* *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
+* *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
+* *BUG!* Repeated parameters to object model constructors.
 
 .. _`Sublime Text`: https://www.sublimetext.com
 
