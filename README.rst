@@ -324,7 +324,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         Constants can be used to inject elements into the concrete and abstract syntax trees, perhaps avoiding having to write a semantic action. For example::
 
-            boolean_option = name ['=' boolean|`true`] ;
+            boolean_option = name ['=' (boolean|`true`) ] ;
 
     ``rulename``
         Invoke the rule named ``rulename``. To help with lexical aspects of grammars, rules with names that begin with an uppercase letter will not advance the input over whitespace or comments.
@@ -355,9 +355,6 @@ The expressions, in reverse order of operator precedence, can be:
             subexp = '(' @:expre ')' ;
 
         The AST_ returned for the ``subexp`` rule will be the AST_ recovered from invoking ``expre``.
-
-    ``@e``
-        Another form of the override operator. *Deprecated*.
 
     ``@+:e``
         Like ``@:e``, but make the AST_ always be a list.
