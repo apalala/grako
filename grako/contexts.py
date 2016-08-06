@@ -726,11 +726,15 @@ class ParseContext(object):
                 self._pop_cut()
             self._add_cst_node(cst)
 
-    def _closure(self, block):
+    def _closure(self, block, sep=None):
         self._push_cst()
         try:
             self.cst = []
-            self._repeater(block)
+            with self._optional():
+                with self._try():
+                    block()
+                self.cst = [self.cst]
+                self._repeater(block, prefix=sep)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()
@@ -738,14 +742,14 @@ class ParseContext(object):
         self.last_node = cst
         return cst
 
-    def _positive_closure(self, block, prefix=None):
+    def _positive_closure(self, block, sep=None):
         self._push_cst()
         try:
             self.cst = None
             with self._try():
                 block()
             self.cst = [self.cst]
-            self._repeater(block, prefix=prefix)
+            self._repeater(block, prefix=sep)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()

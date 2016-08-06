@@ -13,11 +13,12 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from grako.buffering import Buffer
 from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 8, 3, 13, 29, 40, 2)
+__version__ = (2016, 8, 6, 10, 44, 50, 5)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -26,6 +27,28 @@ __all__ = [
 ]
 
 KEYWORDS = set([])
+
+
+class GrakoBootstrapBuffer(Buffer):
+    def __init__(self,
+                 text,
+                 whitespace=None,
+                 nameguard=None,
+                 comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+                 eol_comments_re='#([^\\n]*?)$',
+                 ignorecase=None,
+                 namechars='',
+                 **kwargs):
+        super(GrakoBootstrapBuffer, self).__init__(
+            text,
+            whitespace=whitespace,
+            nameguard=nameguard,
+            comments_re=comments_re,
+            eol_comments_re=eol_comments_re,
+            ignorecase=ignorecase,
+            namechars=namechars,
+            **kwargs
+        )
 
 
 class GrakoBootstrapParser(Parser):
@@ -50,6 +73,11 @@ class GrakoBootstrapParser(Parser):
             namechars=namechars,
             **kwargs
         )
+
+    def parse(self, text, *args, **kwargs):
+        if not isinstance(text, Buffer):
+            text = GrakoBootstrapBuffer(text, **kwargs)
+        return super(GrakoBootstrapParser, self).parse(text, *args, **kwargs)
 
     @graken()
     def _start_(self):
@@ -295,7 +323,7 @@ class GrakoBootstrapParser(Parser):
 
         def block0():
             self._literal_()
-        self._positive_closure(block0, prefix=sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _kwparams_(self):
@@ -305,7 +333,7 @@ class GrakoBootstrapParser(Parser):
 
         def block0():
             self._pair_()
-        self._positive_closure(block0, prefix=sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _pair_(self):
@@ -479,8 +507,46 @@ class GrakoBootstrapParser(Parser):
             []
         )
 
-    @graken('Join')
+    @graken()
     def _join_(self):
+        with self._if():
+            with self._group():
+                self._separator_()
+                self._token('.')
+                self._token('{')
+        self._cut()
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._positive_join_()
+                with self._option():
+                    self._normal_join_()
+                self._error('no available options')
+
+    @graken('PositiveJoin')
+    def _positive_join_(self):
+        self._separator_()
+        self.name_last_node('sep')
+        self._token('.')
+        self._token('{')
+        self._expre_()
+        self.name_last_node('exp')
+        self._token('}')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('+')
+                with self._option():
+                    self._token('-')
+                self._error('expecting one of: + -')
+        self._cut()
+        self.ast._define(
+            ['sep', 'exp'],
+            []
+        )
+
+    @graken('Join')
+    def _normal_join_(self):
         self._separator_()
         self.name_last_node('sep')
         self._token('.')
@@ -490,10 +556,10 @@ class GrakoBootstrapParser(Parser):
         self._expre_()
         self.name_last_node('exp')
         self._token('}')
-        self._cut()
         with self._optional():
-            self._token('+')
+            self._token('*')
             self._cut()
+        self._cut()
         self.ast._define(
             ['sep', 'exp'],
             []
@@ -812,6 +878,12 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def join(self, ast):
+        return ast
+
+    def positive_join(self, ast):
+        return ast
+
+    def normal_join(self, ast):
         return ast
 
     def separator(self, ast):
