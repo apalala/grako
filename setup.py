@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import io
 import setuptools
 import grako
@@ -8,7 +9,7 @@ try:
 except ImportError:
     CYTHON = False
 else:
-    CYTHON = True
+    CYTHON = 'bdist_wheel' not in sys.argv
 
 setuptools.setup(
     zip_safe=False,
