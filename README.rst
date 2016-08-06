@@ -906,7 +906,7 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.12.0
+3.12.1
 ------
 
 * Distinguish between positive and normal joins: ``s.{e}+`` and ``s.{e}``. Having ``s.{e}`` use a positive closure was too unexpected.
