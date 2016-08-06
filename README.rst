@@ -319,7 +319,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``+/regexp/``
         Concatenate the given pattern with the preceding one.
 
-    ``\`constant\```
+    ```constant```
         Match nothing, but behave as if ``constant`` had been parsed.
 
         Constants can be used to inject elements into the concrete and abstract syntax trees, perhaps avoiding having to write a semantic action. For example::
@@ -338,9 +338,6 @@ The expressions, in reverse order of operator precedence, can be:
 
     ``~``
         The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
-
-    ``>>``
-        Another form of the cut operator. *Deprecated*.
 
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, or is a Python_ keyword, an underscore (``_``) will be appended to the name.
