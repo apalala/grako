@@ -257,8 +257,8 @@ The expressions, in reverse order of operator precedence, can be:
     ``{}``
         Empty closure. Match nothing and produce an empty list as AST_.
 
-    ``s.{ e }``
-        Inspired by Python_'s ``str.join()``, is equivalent to::
+    ``s.{ e }+``
+        Positive join. Inspired by Python_'s ``str.join()``, is equivalent to::
 
            e {s ~ e}
 
@@ -266,15 +266,15 @@ The expressions, in reverse order of operator precedence, can be:
 
         Use grouping if ``s`` is more complex than a *token* or a *pattern*::
 
-            (s t).{ e }
+            (s t).{ e }+
 
-        Use an *optional* if empty sequences are allowed::
+    ``s.{ e }``
+    ``s.{ e }*``
+        Join. Parses the list of ``s``-separated expressions, or nothing.
 
-           [ s.{ e } ]
+        It is equivalent to::
 
-        To return an empty list as AST_ if there is no sequence::
-
-            ( s.{e}|{} )
+            ( s.{e}+|{} )
 
     ``&e``
         Positive lookahead. Try parsing ``e``, but do not consume any input.
@@ -906,6 +906,11 @@ Changes
 **Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 .. _`Semantic Versioning`: http://semver.org/
+
+3.12.0.rc.1
+-----------
+
+* Distinguish between positive and normal joins: ``s.{e}+`` and ``s.{e}``. Having ``s.{e}`` use a positive closure was too unexpected.
 
 3.11.0
 ------
