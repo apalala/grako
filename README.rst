@@ -268,8 +268,7 @@ The expressions, in reverse order of operator precedence, can be:
 
             (s t).{ e }+
 
-    ``s.{ e }``
-    ``s.{ e }*``
+    ``s.{ e }`` or ``s.{ e }*``
         Join. Parses the list of ``s``-separated expressions, or nothing.
 
         It is equivalent to::
