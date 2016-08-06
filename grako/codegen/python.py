@@ -484,7 +484,6 @@ class Grammar(Base):
                             text = {name}Buffer(text, **kwargs)
                         return super({name}Parser, self).parse(text, *args, **kwargs)
 
-
                 {rules}
 
 
