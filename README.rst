@@ -251,7 +251,7 @@ The expressions, in reverse order of operator precedence, can be:
     ``{ e }`` or ``{ e }*``
         Closure. Match ``e`` zero or more times. Note that the AST_ returned for a closure is always a list.
 
-    ``{ e }+`` or ``{ e }-``
+    ``{ e }+``
         Positive closure. Match ``e`` one or more times. The AST_ is always a list.
 
     ``{}``
@@ -317,10 +317,9 @@ The expressions, in reverse order of operator precedence, can be:
         Another form of the pattern expression that can be used when there are slashes (``/``) in the pattern.
 
     ``+/regexp/``
-
         Concatenate the given pattern with the preceding one.
 
-    ```constant```
+    ``\`constant\```
         Match nothing, but behave as if ``constant`` had been parsed.
 
         Constants can be used to inject elements into the concrete and abstract syntax trees, perhaps avoiding having to write a semantic action. For example::
