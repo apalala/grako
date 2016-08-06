@@ -409,7 +409,7 @@ class Buffer(object):
             cache.append(PosLine(i, n))
             i += len(s)
         n += 1
-        if lines and lines[-1][-1] in '\r\n':
+        if lines and lines[-1] and lines[-1][-1] in '\r\n':
             n += 1
         cache.append(PosLine(i, n))
         self._linecache = cache
