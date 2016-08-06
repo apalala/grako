@@ -907,8 +907,8 @@ Changes
 
 .. _`Semantic Versioning`: http://semver.org/
 
-3.11.0-rc.4
------------
+3.11.0
+------
 
 * *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
 * *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
