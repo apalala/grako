@@ -295,7 +295,7 @@ class GrakoBootstrapParser(Parser):
 
         def block0():
             self._literal_()
-        self._positive_closure(block0, prefix=sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _kwparams_(self):
@@ -305,7 +305,7 @@ class GrakoBootstrapParser(Parser):
 
         def block0():
             self._pair_()
-        self._positive_closure(block0, prefix=sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _pair_(self):
