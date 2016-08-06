@@ -595,9 +595,6 @@ There are no constructs for semantic actions in **Grako** grammars. This is on p
 
 Semantic actions are defined in a class, and applied by passing an object of the class to the ``parse()`` method of the parser as the ``semantics=`` parameter. **Grako** will invoke the method that matches the name of the grammar rule every time the rule parses. The argument to the method will be the AST_ constructed from the right-hand-side of the rule::
 
-.. code-block:: python
-    :linenos:
-
     class MySemantics(object):
         def some_rule_name(self, ast):
             return ''.join(ast)
