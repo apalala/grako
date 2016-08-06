@@ -94,13 +94,13 @@ params
 
 params_only
     =
-    ','.{literal}
+    ','.{literal}+
     ;
 
 
 kwparams
     =
-    ','.{pair}
+    ','.{pair}+
     ;
 
 
@@ -204,9 +204,25 @@ group::Group
     ;
 
 
-join::Join
+join
     =
-    sep:separator '.' ~ '{' ~ exp:expre '}' ~ ['+' ~]
+    &(separator '.' '{') ~
+    (
+    | positive_join
+    | normal_join
+    )
+    ;
+
+
+positive_join::PositiveJoin
+    =
+    sep:separator '.' '{' exp:expre '}' ('+'|'-') ~
+    ;
+
+
+normal_join::Join
+    =
+    sep:separator '.' ~ '{' ~ exp:expre '}' ['*' ~] ~
     ;
 
 
