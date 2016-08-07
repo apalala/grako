@@ -305,13 +305,14 @@ class Rule(_Decorator):
         fields.update(params=params)
 
         defines = compress_seq(self.defines())
-        sdefs = [safe_name(d) for d, l in defines if not l]
-        ldefs = [safe_name(d) for d, l in defines if l]
+        ldefs = set(safe_name(d) for d, l in defines if l)
+        sdefs = set(safe_name(d) for d, l in defines if not l and d not in ldefs)
+
         if not (sdefs or ldefs):
             sdefines = ''
         else:
-            sdefs = '[%s]' % ', '.join(urepr(d) for d in sdefs)
-            ldefs = '[%s]' % ', '.join(urepr(d) for d in ldefs)
+            sdefs = '[%s]' % ', '.join(urepr(d) for d in sorted(sdefs))
+            ldefs = '[%s]' % ', '.join(urepr(d) for d in sorted(ldefs))
             if not ldefs:
                 sdefines = '\n\n    self.ast._define(%s, %s)' % (sdefs, ldefs)
             else:
