@@ -28,6 +28,19 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
+U_LARROW = '\u21D0'
+U_UARROW = '\u21D1'
+U_RARROW = '\u21D2'
+U_DARROW = '\u21D3'
+
+U_WARNING = '\u26A0'
+U_NOT_EQUAL_TO = '\u2260'
+U_CHECK_MARK = '\u2713'
+
+C_ENTRY = U_LARROW
+C_SUCCESS = U_CHECK_MARK
+C_FAILURE = U_NOT_EQUAL_TO
+
 ParseInfo = namedtuple(
     'ParseInfo',
     [
@@ -73,7 +86,7 @@ class ParseContext(object):
                  memoize_lookaheads=True,
                  left_recursion=True,
                  trace_length=72,
-                 trace_separator='<',
+                 trace_separator=C_ENTRY,
                  trace_filename=False,
                  colorize=None,
                  keywords=None,
@@ -337,8 +350,9 @@ class ParseContext(object):
     def _rulestack(self):
         stack = self.trace_separator.join(reversed(self._rule_stack))
         if max(len(s) for s in stack.splitlines()) > self.trace_length:
-            stack = stack[:self.trace_length].lstrip(self.trace_separator)
-            stack += '...'
+            stack = stack[:self.trace_length]
+            stack = stack.rsplit(self.trace_separator, maxsplit=1)[0]
+            stack += self.trace_separator + '...'
         return stack
 
     def _find_rule(self, name):
@@ -380,13 +394,13 @@ class ParseContext(object):
                         )
 
     def _trace_entry(self):
-        self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + '<')
+        self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + C_ENTRY)
 
     def _trace_success(self):
-        self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + '>')
+        self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + C_SUCCESS)
 
     def _trace_failure(self):
-        self._trace_event(color.Fore.RED + color.Style.BRIGHT + '!')
+        self._trace_event(color.Fore.RED + color.Style.BRIGHT + C_FAILURE)
 
     def _trace_match(self, token, name=None, failed=False):
         if self.trace:
@@ -394,9 +408,14 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
-            fgcolor = color.Fore.GREEN + '=='if not failed else color.Fore.RED + '!='
+
+            if not failed:
+                fgcolor = color.Fore.GREEN + C_SUCCESS
+            else:
+                fgcolor = color.Fore.RED + C_FAILURE
+
             self._trace(
-                color.Style.BRIGHT + fgcolor + '"%s" %s\n%s%s\n',
+                color.Style.BRIGHT + fgcolor + "'%s' %s\n%s%s\n",
                 token,
                 name,
                 color.Style.DIM + fname,
