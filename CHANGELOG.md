@@ -9,9 +9,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 [keeapachangelog.org]: http://keepachangelog.com/
 
-[TOC]
-
 ## [3.12.1]
+
 
 ### Added
 
@@ -29,6 +28,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Now `model.ParseModel` is an alias for `model.Node`.
 -   Improved `examples/antlr2grako` so it generates more usable **Grako** grammars.
 
+
 ### Fixed
 
 -   The latest changes to `grako.util.trim()` were incomplete.
@@ -37,67 +37,69 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [3.10.1]
 
--   *BUG!* `grako.model.Node._adopt_children()` was incorrect, so
-    `Node.parent` was not being set. Adopted a simple-approach solution
-    based on suggestions by linkdd\_.
--   *BUG!* Avoid recovering the same comment against the same line in
-    `grako.buffering.Buffer`.
--   *BUG!* Recovering comments and end-of-line comments together
-    was incorrect.
--   *BUG!* `model.Node` parenting still broken. Fixed!
--   [73] The `--draw` option did not recognize the new object model node
-    types `Join` and `Constant`. Now `--draw` works with Python\_ 3.x
-    using pygraphviz\_ 1.3.1.
--   [77][] [81] Advance over whitespace before memoization or
-    left recursion.
--   Enhancements to `grako.tool` and the command-line help (siemer\_).
+
+### Added
+
+-   Enhancements to `grako.tool` and the command-line help [siemer].
+
+
+### Changed
+
 -   Unlink output file before attempting parser generation.
 -   A `-G FILE` command-line option forces saving of the object model.
--   The function `grako.util.trim()` now also considers the first
-    text ine.
--   Tested with Python\_ 3.6.0a3.
+-   The function `grako.util.trim()` now also considers the first text ine.
+-   Tested with [Python] 3.6.0a3.
+
+
+### Fixed
+
+-   `grako.model.Node._adopt_children()` was incorrect, so `Node.parent` was not being set. Adopted a simple-approach solution based on suggestions by [linkdd].
+-   Avoid recovering the same comment against the same line in `grako.buffering.Buffer`.
+-   Recovering comments and end-of-line comments together was incorrect.
+-   `model.Node` parenting still broken.
+-   [73] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python] 3.x
+    using [pygraphviz] 1.3.1.
+-   [77][] [81] Advance over whitespace before memoization or left recursion.
 
 ## [3.9.3]
 
--   *BUG!* Fixes and improvements to generation of child sets and list
-    in `model.Node` (gapag\_).
--   *BUG!* `@@keyword` not working correctly with `@@ignorecase`.
--   *BUG!* Fix for `@@keyword` and `@name` by moving check for
-    `FailedSemantics` upper in the parsing chain.
--   Several simplifications and refactorings by siemer\_.
--   *BUG!* Several important bug fixes to the object model
-    generator (neumond\_)
--   Simplified the regular expression for floats in the **Grako**
-    grammar (siemer\_)
--   Set all [flake8] options in `tox.ini` (siemer\_).
--   Simplfied `__str__()` for directives (siemer\_).
--   Added the `@@namechars` directive to allow specifying additional
-    characters that may be part of tokens considerd names by
-    `@@nameguard :: True`.
+
+### Added
+
+-   Added `@@grammar` directive to grammars as to avoid having to pass a `-m NAME` through the command line.
+-   Added the `@@namechars` directive to allow specifying additional characters that may be part of tokens considerd names by `@@nameguard :: True`.
 -   Now a choice expression may start with a leading `'|'`.
--   Guard against recursive structures in `grako.util.asjson()`.
--   Added `@@grammar` directive to grammars as to avoid having to pass a
-    `-m NAME` through the command line.
+-   The `--object-model` command-line option will generate a python module with definitions for the class names specified as rule parameters (untested).
+
+
+### Changed
+
+-   Simplified the regular expression for floats in the **Grako** grammar [siemer]
+-   Set all [flake8] options in `tox.ini` [siemer].
+-   Simplfied `__str__()` for directives [siemer].
 -   Now `STARTRULE` defaults to `start` in generated parsers.
--   Now the AST\_ for a `grako.model.Node` is saved as `Node.ast`.
--   The `--object-model` command-line option will generate a python
-    module with definitions for the class names specified as rule
-    parameters (untested).
--   Removed outdated information from the *README*.
--   *BUG!* Both `grako.grammars` and `grako.codegen.python` were
-    manipulating the names defined in a grammar rule.
+-   Now the [AST] for a `grako.model.Node` is saved as `Node.ast`.
+-   Several simplifications and refactorings by [siemer].
+
+### Fixed
+
+-   Fixes and improvements to generation of child sets and list in `model.Node` [gapag].
+-   `@@keyword` not working correctly with `@@ignorecase`.
+-   Fix for `@@keyword` and `@name` by moving check for `FailedSemantics` upper in the parsing chain.
+-   Several important bug fixes to the object model generator [neumond]
+-   Both `grako.grammars` and `grako.codegen.python` were manipulating the names defined in a grammar rule.
+-   [74] `grako.model.Node.children()` returned an empty list even when traversing attributes that with names starting in `'_'`.
+-   [57] Still bugs in handling of `@@whitespace` in the generated parser's [gkimbar].
+-   Guard against recursive structures in `grako.util.asjson()`.
 -   Cleaned up the grammar in `examples/python`; still untested.
--   [74] `grako.model.Node.children()` returned an empty list even when
-    traversing attributes that with names starting in `'_'`.
--   [57] Still bugs in handling of `@@whitespace` in the generated
-    parser's (gkimbar\_).
+-   Removed outdated information from the *README*.
 
 ## [3.8.2]
 
 -   [73] Keywords were not being passed to the base class of the
     generated parser.
 -   Wrong version number (RC) in this document.
--   Added grammar support for keywords\_ in the source language through
+-   Added grammar support for [keywords] in the source language through
     the `@@keyword::` directive and the `@name` decorator for rules.
 -   Make `ModelBuilderSemantics` support built-in types.
 
@@ -106,7 +108,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added suport for `` `constant ``\` expressions which don't consume
     any input yet return the specified constant.
 -   Now an empty closure (`{}`) consumes no input and generates an empty
-    list as AST\_.
+    list as [AST].
 -   Removed the `--binary` command-line option. It went unused, it was
     untested, and it was incorrectly implemented.
 -   Generated parsers `pass` on `KeyboardInterrupt`.
@@ -114,35 +116,35 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     `util.generic_main()`. This allows for the verbose code to be
     verified by the usual tools.
 -   Deprecate `{e}*` and `{e}-` by removing them from the documentation.
--   Added the Python\_-inspired *join* operator, `s.{e}`, as a
+-   Added the [Python]-inspired *join* operator, `s.{e}`, as a
     convenient syntax for parsing sequences with separators.
 
 ## [3.6.7]
 
 -   Several minor **bug** fixes. See the [commit log] for details.
--   **BUG** Detect and fail promptly on empty tokens in grammars.
--   More reasonable treatment for ANTLR\_ `token` definitions in the
+-   Detect and fail promptly on empty tokens in grammars.
+-   More reasonable treatment for [ANTLR] `token` definitions in the
     `antlr2grako` example.
--   All tests pass with Python\_ 3.5.
--   [59] Python\_ keywords can now actually be used as rule names in
-    grammars (drothlis\_).
+-   All tests pass with [Python] 3.5.
+-   [59] [Python] keywords can now actually be used as rule names in
+    grammars [drothlis].
 -   [60] `@@` directives were not pressent in the output of the
     `--pretty` option.
 -   [58] The parameters to the constructor of generated parsers were
     being ignored (pgebhard).
--   **BUG** `grammars.py` would call `ctx.error()` instead of
+-   `grammars.py` would call `ctx.error()` instead of
     `ctx._error()` on failed rule references.
 -   Overall cleanup of the code and of the development requirements.
 -   [56] Using @@whitespace generated invalid python programs
 -   The `@@whitespace` directive was not working for regular
-    expressions (nehz\_).
+    expressions [nehz].
 -   BUG: Left recursion in the grammar was checked for in the wrong
     place when disabled.
--   Added basic support for output of an AST\_ in [YAML] format.
+-   Added basic support for output of an [AST] in [YAML] format.
 -   Added `@@whitespace` directive to specify whitespace regular
-    expression within the grammar (starkat\_).
+    expression within the grammar [starkat].
 -   Added `@@nameguard` and `@@ignorecase` directives to toggle the
-    respective boolean parameters within the grammar (starkat\_).
+    respective boolean parameters within the grammar [starkat].
 -   [52] Build with Cython failed on Windows.
 -   Applied [flake8] suggestions.
 -   Upgraded development libraries to their latest versions (see
@@ -165,18 +167,18 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [3.4.3]
 
 -   Minor improvements to `buffering.Buffer`.
--   *BUG* [42] `setup.py` might give errors under some locales because
+-   [42] `setup.py` might give errors under some locales because
     of the non-ASCII characters in `README.rst`.
 -   Added a `--no-nameguard` command-line option to generated parsers.
 -   Allow *Buffer* descendants to customize how text is split into
-    lines (starkat\_).
+    lines [starkat].
 -   Now the `re.UNICODE` flag is consistently used in pattern, comment,
-    and whitespace matching. A re\_ regular expression is now accepted
+    and whitespace matching. A [re] regular expression is now accepted
     for whitespace matching. Character sets provided as `str`, `list`,
     or `set` are converted to the corresponding regular
-    expression (starkat\_).
--   If installed, the regex\_ module will be used instead of re\_ in all
-    pattern matching (starkat\_). See the section about
+    expression [starkat].
+-   If installed, the [regex] module will be used instead of [re] in all
+    pattern matching [starkat]. See the section about
     *whitespace* above.
 -   Added a `--version` option to the commandline tool. A
     `grako.__version__` variable is now available.
@@ -197,14 +199,14 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Now rule parameters and `model.ModelBuilderSemantics` are used to
     produce grammar models with a minimal set of semantic methods.
 -   Code generation is now separtate from the grammar model, so
-    translation targets differen from Python\_ are easier to implement.
+    translation targets differen from [Python] are easier to implement.
 -   Removed attribute assignment to the underlying `dict` in `AST`. It
     was the source of obscure bugs for **Grako** users.
 -   Now an `eol_comments_re=` parameter can be passed to `Parser` and
     `Buffer`.
--   *BUG* Need to allow newline (`\n`) characters within
+-   Need to allow newline (`\n`) characters within
     grammar patterns.
--   *BUG* [36] Keyword arguments in rules were not being parsed
+-   [36] Keyword arguments in rules were not being parsed
     correctly ([Franz\_G]).
 -   Several *BUGs* in the advanced features were fixed. See the
     [Bitbucket commits][commit log] for details.
@@ -212,20 +214,20 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [3.1.2]
 
 -   **Grako** now supports direct and indirect left recursion thanks to
-    the implementation done by Paul Sargent\_ of the work
-    by Warth et al\_. Performance for non-left-recursive grammars
+    the implementation done by Paul [Sargent] of the work
+    by Warth et [al]. Performance for non-left-recursive grammars
     is unaffected.
 -   The old grammar syntax is now supported with deprecation warnings.
     Use the `--pretty` option to upgrade a grammar.
 -   If there are no slashes in a pattern, they can now be specified
     without the opening and closing question marks.
--   *BUG* [33] Closures were sometimes being treated as plain lists, and
-    that produced inconsistent results for named elements (lambdafu\_).
--   *BUG* The bootstrap parser contained errors due to the previous bug
+-   [33] Closures were sometimes being treated as plain lists, and
+    that produced inconsistent results for named elements [lambdafu].
+-   The bootstrap parser contained errors due to the previous bug
     in `util.ustr()`.
--   *BUG* [30] Make sure that escapes in `--whitespace` are evaluated
+-   [30] Make sure that escapes in `--whitespace` are evaluated
     before being passed to the model.
--   *BUG* [30] Make sure that `--whitespace` and `--no-nameguard` indeed
+-   [30] Make sure that `--whitespace` and `--no-nameguard` indeed
     affect the behavior of the generated parser as expected.
 
 ## [3.0.4]
@@ -236,7 +238,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     advanced features (*Walker*) should impact only complex projects.
 -   The *cut* operator is now `~`, the tilde.
 -   Now name overrides must always be specified with a colon, `@:e`.
--   Grammar rules may declare Python\_-style arguments that get passed
+-   Grammar rules may declare [Python]-style arguments that get passed
     to their corresponding semantic methods.
 -   Grammar rules may now *inherit* the contents of other rules using
     the `<` operator.
@@ -261,21 +263,21 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     `grako.ast.AST.__json__()`, `grako.model.Node.__json__()` and
     `grako.util.asjon()`.
 -   Added compatibility with [Cython].
--   Removed checking for compatibility with Python\_ 3.3 (use
+-   Removed checking for compatibility with [Python] 3.3 (use
     3.4 instead).
--   Incorporated Robert Speer\_'s solution to honoring escape sequences
+-   Incorporated Robert [Speer]'s solution to honoring escape sequences
     without messing up the encoding.
--   *BUG* Honor simple escape sequences in tokens while trying not to
+-   Honor simple escape sequences in tokens while trying not to
     corrupt unicode input. Projects using non-ASCII characters in
     grammars should prefer to use unicode character literals instead of
-    Python\_ `\x` or `\o` escape sequences. There is no standard/stable
-    way to unscape a Python\_ string with escaped escape sequences.
-    Unicode is broken in Python\_ 2.x.
--   *BUG* The `--list` option was not working in Python\_ 3.4.1.
--   *BUG* [22] Always exit with non-zero exit code on failure.
--   *BUG* [23] Incorrect encoding of Python\_ escape sequences in
+    [Python] `\x` or `\o` escape sequences. There is no standard/stable
+    way to unscape a [Python] string with escaped escape sequences.
+    Unicode is broken in [Python] 2.x.
+-   The `--list` option was not working in [Python] 3.4.1.
+-   [22] Always exit with non-zero exit code on failure.
+-   [23] Incorrect encoding of [Python] escape sequences in
     grammar tokens.
--   *BUG* [24] Incorrect template for *--pretty* of
+-   [24] Incorrect template for *--pretty* of
     multi-line optionals.
 
 ## [2.4.3]
@@ -294,7 +296,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     no specific method is found. This allows, for example, generating
     meaningful errors when something in the semantics is missing.
 -   Added compatibility with [tox]. Now tests are performed against the
-    latest releases of Python\_ 2.7.x and 3.x, and PyPy\_ 2.x.
+    latest releases of [Python] 2.7.x and 3.x, and [PyPy] 2.x.
 -   Added `--whitespace` parameter to generated `main()`.
 -   Applied [flake8] to project and to generated parsers.
 
@@ -306,9 +308,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     such as `@+:e`, with the expected semantics.
 -   *Refactoring* The functionality that was almost identical in
     generated parsers and in models was refactored into `Context`.
--   *BUG!* Improve consistency of use Unicode between Python\_ 2.7
+-   Improve consistency of use Unicode between [Python] 2.7
     and 3.x.
--   *BUG!* Compatibility between Python\_ 2.7/3.x print() statements.
+-   Compatibility between [Python] 2.7/3.x print() statements.
 
 ## [2.2.2]
 
@@ -316,10 +318,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     This allows lookaheads to fail semantically without committing to
     the fail.
 -   Fixed the implementation of the *optional* operator so the
-    AST\_/CST\_ generated when the *optional* succeeds is exactly the
+    [AST]/CST\_ generated when the *optional* succeeds is exactly the
     same as if the expression had been mandatory.
--   Grouping expressions no longer produce a list as CST\_.
--   *BUG*! Again, make sure closures always return a list.
+-   Grouping expressions no longer produce a list as [CST].
+-   ! Again, make sure closures always return a list.
 -   Added infrastructure for stateful rules (lambdafu\_, see the [pull
     request] ).
 -   Again, protect the names of methods for rules with a leading and
@@ -327,15 +329,15 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     name clashes.
 -   The bootstrap parser is now the one generated by **Grako** from the
     bootstrap grammar.
--   Several minor bug fixes (lambdafu\_).
--   *BUG!* The choice operator must restore context even when some of
+-   Several minor bug fixes [lambdafu].
+-   The choice operator must restore context even when some of
     the choices match partially and then fail.
--   *BUG!* `Grammar.parse()` needs to initialize the AST\_ stack.
--   *BUG!* `AST.copy()` was too shallow, so an AST\_ could be modified
+-   `Grammar.parse()` needs to initialize the [AST] stack.
+-   `AST.copy()` was too shallow, so an [AST] could be modified
     by a closure iteration that matched partially and eventually failed.
-    Now `AST.copy()` clones AST\_ values of type `list` to avoid
+    Now `AST.copy()` clones [AST] values of type `list` to avoid
     that situation.
--   *BUG!* A failed `cut` must trickle up the rule-call hierarchy so
+-   A failed `cut` must trickle up the rule-call hierarchy so
     parsing errors are reported as close to their source as possible.
 
 ## [2.0.4]
@@ -346,38 +348,38 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   A `last_node` protocol allowed the removal of all mentions of
     variable `_e` from generated parsers, which are thus more readable.
 -   Refactored *closures* to be more pythonic (there are **no**
-    anonymous blocks in Python\_!).
+    anonymous blocks in [Python]!).
 -   Fixes to the *antlr2grako* example to let it convert over 6000 lines
-    of an ANTLR\_ grammar to **Grako**.
+    of an [ANTLR] grammar to **Grako**.
 -   Improved rendering of grammars by grammar models.
--   Now *tokens* accept Python\_ escape sequences.
+-   Now *tokens* accept [Python] escape sequences.
 -   Added a simple [Visitor Pattern] for `Renderer` nodes. Used it to
     implement diagramming.
--   Create a basic diagram of a grammar if pygraphviz\_ is available.
+-   Create a basic diagram of a grammar if [pygraphviz] is available.
     Added the `--draw` option to the command-line tool.
--   *BUG!* Trace information off by one character (thanks
-    to lambdafu\_).
--   *BUG!* The AST\_ for a closure might fold repeated symbols (thanks
-    to lambdafu\_).
--   *BUG!* It was not possible to pass buffering parameters such as
-    `whitespace` to the parser's constructor (thanks to lambdafu\_).
+-   Trace information off by one character (thanks
+    to [lambdafu]).
+-   The [AST] for a closure might fold repeated symbols (thanks
+    to [lambdafu]).
+-   It was not possible to pass buffering parameters such as
+    `whitespace` to the parser's constructor [thanks to lambdafu].
 -   Added command-line and parser options to specify the buffering
-    treatment of `whitespace` and `nameguard` (lambdafu\_).
--   Several improvements and bug fixes (mostly by lambdafu\_).
+    treatment of `whitespace` and `nameguard` [lambdafu].
+-   Several improvements and bug fixes mostly by [lambdafu].
 
 ## [1.4.0]
 
--   *BUG!* Sometimes the AST\_ for a closure (`{}`) was not a list.
+-   Sometimes the [AST] for a closure (`{}`) was not a list.
 -   Semantic actions can now be implemented by a delegate.
 -   Reset synthetic method count and use decorators to increase
     readability of generated parsers.
--   The **Grako** EBNF\_ grammar and the bootstrap parser now align, so
+-   The **Grako** [EBNF] grammar and the bootstrap parser now align, so
     the grammar can be used to bootstrap **Grako**.
 -   The bootstrap parser was refactored to use semantic delegates.
 -   Proved that grammar models can be pickled, unpickled, and reused.
--   Added the *antlr* example with an ANTLR\_-to-**Grako**
+-   Added the *antlr* example with an [ANTLR]-to-**Grako**
     grammar translator.
--   Changed the licensing to simplified BSD\_.
+-   Changed the licensing to simplified [BSD].
 
 ## [1.3.0]
 
@@ -388,7 +390,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Report all the rules missing in a grammar before aborting.
 -   Align the sample *etc/grako.ebnf* grammar to the language parsed by
     the bootstrap parser.
--   Ensure compatibility with Python\_ 2.7.4 and 3.3.1.
+-   Ensure compatibility with [Python] 2.7.4 and 3.3.1.
 -   Update credits.
 
 ## [1.2.1]
@@ -402,7 +404,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Align bootstrap parser with generated parser framework.
 -   Add *cuts* to bootstrap parser so errors are reported closer to
     their origin.
--   *(minor) BUG!* `FailedCut` exceptions must translate to their nested
+-   `FailedCut` exceptions must translate to their nested
     exception so the reported line and column make sense.
 -   Prettify the sample **Grako** grammar.
 -   Remove or comment-out code for tagged/named rule names (they don't
@@ -412,21 +414,37 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [1.1.0]
 
--   *BUG!* Need to preserve state when closure iterations
-    match partially.
--   Improved performance by also memoizing exception results and
-    advancement over whitespace and comments.
--   Work with Unicode while rendering.
--   Improved consistency between the way generated parsers and
-    models parse.
+### Changed
+
+-   Improved performance by also memoizing exception results and advancement over whitespace and comments.
+-   Improved consistency between the way generated parsers and models parse.
 -   Added a table of contents to this *README*.
 -   Document `parseinfo` and default it to *False*.
 -   Mention the use of *context managers*.
+
+### Fixed
+
+-   Need to preserve state when closure iterations match partially.
+-   Work with Unicode while rendering.
 
 ## [1.0.0]
 
 -   First public release.
 
+[Cyclomatic complexity]: http://en.wikipedia.org/wiki/Cyclomatic_complexity
+[KLOC]: http://en.wikipedia.org/wiki/KLOC
+[legacy]: http://en.wikipedia.org/wiki/Legacy_code
+[legacy code]: http://en.wikipedia.org/wiki/Legacy_code
+[PyPy]: http://pypy.org/
+[context managers]: http://docs.python.org/2/library/contextlib.html
+[Perl]: http://www.perl.org/
+[NATURAL]: http://en.wikipedia.org/wiki/NATURAL
+[COBOL]: http://en.wikipedia.org/wiki/Cobol
+[Java]:  http://en.wikipedia.org/wiki/Java_(programming_language)
+[VB6]: http://en.wikipedia.org/wiki/Visual_basic_6
+[regex]: https://pypi.python.org/pypi/regex
+[re]: https://docs.python.org/3.4/library/re.html
+[pygraphviz]: https://pypi.python.org/pypi/pygraphviz
 [Cython]: http://cython.org/
 [Franz\_G]: https://bitbucket.org/Franz_G
 [JSON]: http://www.json.org/
