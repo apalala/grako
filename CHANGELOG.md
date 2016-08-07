@@ -14,24 +14,17 @@ The format of this *Change Log* is inspired by [Keep a CHANGELOG]
 ### Added
 
 -   Also generate a `buffering.Buffer` descendant specific to the grammar for parsers that need to customize the `parsing.Parser.parse()` method.
-
 -   Added the `grako.synth` module which makes synthetic `grako.model.Node` classes pickable.
-
 -   Now patterns may be concatenated to split a complex pattern into parts, possibly accross several lines: `/regexp/ + /regexp/`.
-
 -   Added basic support for symbol tables in `grako.symtables`.
-
 -   Syntax file for [Sublime Text] [vmuriart]
 
 
 ### Changed
 
 -   Distinguish between positive and normal joins: `s.{e}+` and `s.{e}`.  Having `s.{e}` use a positive closure was too unexpected.
-
 -   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache. Buffering needs to continue being `str`-based for complex `re` patterns to work as expected.
-
 -   Now `model.ParseModel` is an alias for `model.Node`.
-
 -   Improved `examples/antlr2grako` so it generates more usable **Grako** grammars.
 
 ### Fixed
