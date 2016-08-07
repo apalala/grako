@@ -787,10 +787,12 @@ class Grammar(Model):
         self.keywords = keywords or set()
 
         self._adopt_children(rules)
+
         missing = self._missing_rules({r.name for r in self.rules})
         if missing:
-            print('\nunknown rule: '.join([''] + list(sorted(missing))))
-            raise GrammarError('Unknown rules, no parser generated.')
+            msg = '\n'.join([''] + list(sorted(missing)))
+            raise GrammarError('Unknown rules, no parser generated:' + msg)
+
         self._calc_lookahead_sets()
 
     def _missing_rules(self, ruleset):
