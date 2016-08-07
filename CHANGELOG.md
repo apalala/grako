@@ -5,9 +5,11 @@
 [Semantic Versioning]: http://semver.org/
 
 
-The format of this *Change Log* is inspired by [Keep a CHANGELOG]
+The format of this *Change Log* is inspired by [keeapachangelog.org].
 
-[Keep a CHANGELOG]: http://keepachangelog.com/
+[keeapachangelog.org]: http://keepachangelog.com/
+
+[TOC]
 
 ## [3.12.1]
 
