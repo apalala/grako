@@ -905,6 +905,6 @@ Changes
 =======
 
 
-See the file CHANGELOG_ file for details.
+See the CHANGELOG_ file for details.
 
 .. _CHANGELOG: https://bitbucket.org/apalala/grako/src/default/CHANGELOG.md
