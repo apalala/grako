@@ -201,137 +201,135 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [3.3.0] @ 2014-07-22
 
--   Refactorings to enhance consistency in parsing between models and
-    and generated parsers.
--   [37] Block comments are preserved when using the `--pretty` option.
+### Added
+
+-   [40] The widtn and the separator used in parse traces are now configurable with keyword arguments.
 -   [38] Trace output uses color if the [colorama] package is installed.
-    Also, the vertical size of trace logs was reduced to three lines
-    per entry.
--   [40] The widtn and the separator used in parse traces are now
-    configurable with keyword arguments.
+
+### Changed
+
+-   Refactorings to enhance consistency in parsing between models and and generated parsers.
+-   The vertical size of trace logs was reduced to three lines per entry.
+
+
+### Fixed
+
+-   [37] Block comments are preserved when using the `--pretty` option.
+
 
 ## [3.2.1] @ 2014-07-21
 
--   Now rule parameters and `model.ModelBuilderSemantics` are used to
-    produce grammar models with a minimal set of semantic methods.
--   Code generation is now separtate from the grammar model, so
-    translation targets differen from [Python] are easier to implement.
--   Removed attribute assignment to the underlying `dict` in `AST`. It
-    was the source of obscure bugs for **Grako** users.
--   Now an `eol_comments_re=` parameter can be passed to `Parser` and
-    `Buffer`.
--   Need to allow newline (`\n`) characters within
-    grammar patterns.
--   [36] Keyword arguments in rules were not being parsed
-    correctly ([Franz\_G]).
--   Several *BUGs* in the advanced features were fixed. See the
-    [Bitbucket commits][commit log] for details.
+
+### Added
+-   Now an `eol_comments_re=` parameter can be passed to `Parser` and `Buffer`.
+
+
+### Changed
+
+-   Now rule parameters and `model.ModelBuilderSemantics` are used to produce grammar models with a minimal set of semantic methods.
+-   Code generation is now separtate from the grammar model, so translation targets different from [Python] are easier to implement.
+
+
+### Fixed
+
+-   Need to allow newline (`\n`) characters within grammar patterns.
+-   [36] Keyword arguments in rules were not being parsed correctly ([franz_g]).
+-   Removed attribute assignment to the underlying `dict` in `AST`. It was the source of obscure bugs for **Grako** users.
 
 ## [3.1.2] @ 2014-07-14
 
--   **Grako** now supports direct and indirect left recursion thanks to
-    the implementation done by Paul [Sargent] of the work
-    by Warth et [al]. Performance for non-left-recursive grammars
-    is unaffected.
--   The old grammar syntax is now supported with deprecation warnings.
-    Use the `--pretty` option to upgrade a grammar.
--   If there are no slashes in a pattern, they can now be specified
-    without the opening and closing question marks.
--   [33] Closures were sometimes being treated as plain lists, and
-    that produced inconsistent results for named elements [lambdafu].
--   The bootstrap parser contained errors due to the previous bug
-    in `util.ustr()`.
--   [30] Make sure that escapes in `--whitespace` are evaluated
-    before being passed to the model.
--   [30] Make sure that `--whitespace` and `--no-nameguard` indeed
-    affect the behavior of the generated parser as expected.
+
+### Added
+
+-   **Grako** now supports direct and indirect left recursion thanks to the implementation done by Paul [Sargent] of the work by Warth et [al]. Performance for non-left-recursive grammars is unaffected.
+-   The old grammar syntax is now supported with deprecation warnings.  Use the `--pretty` option to upgrade a grammar.
+-   If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
+
+
+### Fixed
+
+-   [33] Closures were sometimes being treated as plain lists, and that produced inconsistent results for named elements [lambdafu].
+-   The bootstrap parser contained errors due to the previous bug in `util.ustr()`.
+-   [30] Make sure that escapes in `--whitespace` are evaluated before being passed to the model.
+-   [30] Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
+
 
 ## [3.0.4] @ 2014-07-01
 
--   The bump in the major version number is because the grammar syntax
-    changed to accomodate new features better, and to remove sources of
-    ambituity and hard-to-find bugs. The naming changes in some of the
-    advanced features (*Walker*) should impact only complex projects.
--   The *cut* operator is now `~`, the tilde.
--   Now name overrides must always be specified with a colon, `@:e`.
--   Grammar rules may declare [Python]-style arguments that get passed
-    to their corresponding semantic methods.
--   Grammar rules may now *inherit* the contents of other rules using
-    the `<` operator.
--   The *right hand side* of a rule may be included in another rule
-    using the `>` operator.
+
+### Added
+
+-   The bump in the major version number is because the grammar syntax changed to accomodate new features better, and to remove sources of ambituity and hard-to-find bugs. The naming changes in some of the advanced features (*Walker*) should impact only complex projects.
 -   Grammars may include other files using the `#include ::` directive.
--   Multiple definitions of grammar rules with the same name are
-    now disallowed. They created ambiguity with new features such as
-    rule parameters, based rules, and rule inclusion, and they were an
-    opportunity for hard-to-find bugs (*import this*).
--   Added a `--pretty` option to the command-line tool, and refactored
-    pretty-printing (`__str__()` in grammar models) enough to make its
-    output a norm for grammar format.
--   Internals and examples were upgraded to use the latest
-    **Grako** features.
--   Parsing exceptions will now show the sequence of rule invocations
-    that led to the failure.
--   Renamed `Traverser` and `traverse` to `Walker` and `walk`.
--   Now the keys in `grako.ast.AST` are ordered like in
-    `collections.OrderedDict`.
--   **Grako** models are now more [JSON]-friendly with the help of
-    `grako.ast.AST.__json__()`, `grako.model.Node.__json__()` and
-    `grako.util.asjon()`.
+-   Grammar rules may now *inherit* the contents of other rules using the `<` operator.
+-   The *right hand side* of a rule may be included in another rule using the `>` operator.
+-   Added a `--pretty` option to the command-line tool, and refactored pretty-printing (`__str__()` in grammar models) enough to make its output a norm for grammar format.
 -   Added compatibility with [Cython].
--   Removed checking for compatibility with [Python] 3.3 (use
-    3.4 instead).
--   Incorporated Robert [Speer]'s solution to honoring escape sequences
-    without messing up the encoding.
--   Honor simple escape sequences in tokens while trying not to
-    corrupt unicode input. Projects using non-ASCII characters in
-    grammars should prefer to use unicode character literals instead of
-    [Python] `\x` or `\o` escape sequences. There is no standard/stable
-    way to unscape a [Python] string with escaped escape sequences.
-    Unicode is broken in [Python] 2.x.
+
+
+### Changed
+
+-   The *cut* operator is now `~`, the tilde.
+-   Now name overrides must always be specified with a colon, `@:e`.  -   Grammar rules may declare [Python]-style arguments that get passed to their corresponding semantic methods.
+-   Multiple definitions of grammar rules with the same name are now disallowed. They created ambiguity with new features such as rule parameters, based rules, and rule inclusion, and they were an opportunity for hard-to-find bugs (*import this*).
+-   Internals and examples were upgraded to use the latest **Grako** features.
+-   Parsing exceptions will now show the sequence of rule invocations that led to the failure.
+-   Renamed `Traverser` and `traverse` to `Walker` and `walk`.
+-   Now the keys in `grako.ast.AST` are ordered like in `collections.OrderedDict`.
+-   **Grako** models are now more [JSON]-friendly with the help of `grako.ast.AST.__json__()`, `grako.model.Node.__json__()` and `grako.util.asjon()`.
+-   Removed checking for compatibility with [Python] 3.3 (use 3.4 instead).
+-   Incorporated Robert [Speer]'s solution to honoring escape sequences without messing up the encoding.
+-   Honor simple escape sequences in tokens while trying not to corrupt unicode input. Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of [Python] `\x` or `\o` escape sequences. There is no standard/stable way to unscape a [Python] string with escaped escape sequences.  Unicode is broken in [Python] 2.x.
+
+
+### Fixed
+
 -   The `--list` option was not working in [Python] 3.4.1.
 -   [22] Always exit with non-zero exit code on failure.
--   [23] Incorrect encoding of [Python] escape sequences in
-    grammar tokens.
--   [24] Incorrect template for *--pretty* of
-    multi-line optionals.
+-   [23] Incorrect encoding of [Python] escape sequences in grammar tokens.
+-   [24] Incorrect template for *--pretty* of multi-line optionals.
+
 
 ## [2.4.3] @ 2014-06-08
 
--   Changes to allow downstream translators to have different target
-    languages with as little code replication as possible. There's new
-    functionality pulled from downstream in `grako.model` and
-    `grako.rendering`. `grako.model` is now a module instead of
-    a package.
--   The [Visitor Pattern] doesn't make much sense in a dynamically typed
-    language, so the functionality was replaced by more flexible
-    `Traverser` classes. The new `_traverse_XX()` methods in Traverser
-    classes carry a leading underscore to remind that they shouldn't be
-    used outside of the protocol.
--   Now a `_default()` method is called in the semantics delegate when
-    no specific method is found. This allows, for example, generating
-    meaningful errors when something in the semantics is missing.
--   Added compatibility with [tox]. Now tests are performed against the
-    latest releases of [Python] 2.7.x and 3.x, and [PyPy] 2.x.
+
+### Added
+
 -   Added `--whitespace` parameter to generated `main()`.
 -   Applied [flake8] to project and to generated parsers.
+-   Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
+-   Changes to allow downstream translators to have different target languages with as little code replication as possible. There's new functionality pulled from downstream in `grako.model` and `grako.rendering`. `grako.model` is now a module instead of a package.
+-   Added compatibility with [tox]. Now tests are performed against the latest releases of [Python] 2.7.x and 3.x, and [PyPy] 2.x.
+
+
+### Changed
+
+-   The [Visitor Pattern] doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible `Traverser` classes. The new `_traverse_XX()` methods in Traverser classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
+
 
 ## [2.3.0] @ 2013-11-27
 
--   Now the `@` operator behaves as a special case of the `name:`
-    operator, allowing for simplification of the grammar, parser,
-    semantics, and **Grako** grammars. It also allows for expressions
-    such as `@+:e`, with the expected semantics.
--   *Refactoring* The functionality that was almost identical in
-    generated parsers and in models was refactored into `Context`.
--   Improve consistency of use Unicode between [Python] 2.7
-    and 3.x.
+
+### Added
+
+-   Now the `@` operator behaves as a special case of the `name:` operator, allowing for simplification of the grammar, parser, semantics, and **Grako** grammars. It also allows for expressions such as `@+:e`, with the expected semantics.
+
+
+### Changed
+
+-   *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into `Context`.
+-   Improve consistency of use Unicode between [Python] 2.7 and 3.x.
+
+
+### Fixed
+
 -   Compatibility between [Python] 2.7/3.x print() statements.
 
 ## [2.2.2] @ 2013-11-06
 
 
 ### Added
+
 -   Optionally, do not memoize during positive or negative lookaheads.  This allows lookaheads to fail semantically without committing to the fail.
 -   Added infrastructure for stateful rules ([lambdafu], see the [pull request] ).
 
