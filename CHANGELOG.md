@@ -11,28 +11,34 @@ The format of this *Change Log* is inspired by [Keep a CHANGELOG]
 
 ## [3.12.1]
 
--   Distinguish between positive and normal joins: `s.{e}+` and `s.{e}`.
-    Having `s.{e}` use a positive closure was too unexpected.
--   Also generate a `buffering.Buffer` descendant specific to the
-    grammar for parsers that need to customize the
-    `parsing.Parser.parse()` method.
--   Added the `grako.synth` module which makes synthetic
-    `grako.model.Node` classes pickable.
--   Traded memory for simplicity and replaced the line-based line cache
-    in `buffering.Buffer` for a position-based cache. Buffering needs to
-    continue being `str`-based for complex `re` patterns to work
-    as expected.
--   Now patterns may be concatenated to split a complex pattern into
-    parts, possibly accross several lines: `/regexp/ + /regexp/`.
+### Added
+
+-   Also generate a `buffering.Buffer` descendant specific to the grammar for parsers that need to customize the `parsing.Parser.parse()` method.
+
+-   Added the `grako.synth` module which makes synthetic `grako.model.Node` classes pickable.
+
+-   Now patterns may be concatenated to split a complex pattern into parts, possibly accross several lines: `/regexp/ + /regexp/`.
+
 -   Added basic support for symbol tables in `grako.symtables`.
+
+-   Syntax file for [Sublime Text] [vmuriart]
+
+
+### Changed
+
+-   Distinguish between positive and normal joins: `s.{e}+` and `s.{e}`.  Having `s.{e}` use a positive closure was too unexpected.
+
+-   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache. Buffering needs to continue being `str`-based for complex `re` patterns to work as expected.
+
 -   Now `model.ParseModel` is an alias for `model.Node`.
--   Improved `examples/antlr2grako` so it generates more usable
-    **Grako** grammars.
--   Syntax file for [Sublime Text] (vmuriart\_).
--   *BUG!* The latest changes to `grako.util.trim()` were incomplete.
--   *BUG!* Fixed several inconsistencies in the implementation and use
-    of `buffering.Buffer` line indexing.
--   *BUG!* Repeated parameters to object model constructors.
+
+-   Improved `examples/antlr2grako` so it generates more usable **Grako** grammars.
+
+### Fixed
+
+-   The latest changes to `grako.util.trim()` were incomplete.
+-   Fixed several inconsistencies in the implementation and use of `buffering.Buffer` line indexing.
+-   Repeated parameters to object model constructors.
 
 ## [3.10.1]
 
@@ -451,7 +457,7 @@ The format of this *Change Log* is inspired by [Keep a CHANGELOG]
 [nehz]: https://bitbucket.org/nehz/grako
 [neumond]: https://bitbucket.org/neumond/
 [pgebhard]: https://github.com/pgebhard?tab=repositories
-[r\_speer]: https://bitbucket.org/r_speer
+[r_speer]: https://bitbucket.org/r_speer
 [siemer]: https://bitbucket.org/siemer/
 [starkat]: https://bitbucket.org/starkat
 [vmuriart]: https://bitbucket.org/vmuriart/
