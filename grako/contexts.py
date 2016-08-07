@@ -73,7 +73,7 @@ class ParseContext(object):
                  memoize_lookaheads=True,
                  left_recursion=True,
                  trace_length=72,
-                 trace_separator=':',
+                 trace_separator='<',
                  trace_filename=False,
                  colorize=None,
                  keywords=None,
@@ -335,9 +335,10 @@ class ParseContext(object):
         return self.memoize_lookaheads or self._lookahead == 0
 
     def _rulestack(self):
-        stack = self.trace_separator.join(self._rule_stack)
-        if len(stack) > self.trace_length:
-            stack = '...' + stack[-self.trace_length:].lstrip(self.trace_separator)
+        stack = self.trace_separator.join(reversed(self._rule_stack))
+        if max(len(s) for s in stack.splitlines()) > self.trace_length:
+            stack = stack[:self.trace_length].lstrip(self.trace_separator)
+            stack += '...'
         return stack
 
     def _find_rule(self, name):
@@ -372,11 +373,20 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             self._trace('%s   \n%s%s \n',
-                        event + ' ' + self._rulestack(),
+                        event + self._rulestack(),
                         color.Style.DIM + fname,
                         color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n') +
                         color.Style.RESET_ALL
                         )
+
+    def _trace_entry(self):
+        self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + '<')
+
+    def _trace_success(self):
+        self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + '>')
+
+    def _trace_failure(self):
+        self._trace_event(color.Fore.RED + color.Style.BRIGHT + '!')
 
     def _trace_match(self, token, name=None, failed=False):
         if self.trace:
@@ -384,7 +394,7 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
-            fgcolor = color.Fore.GREEN + '< 'if not failed else color.Fore.RED + '! '
+            fgcolor = color.Fore.GREEN + '=='if not failed else color.Fore.RED + '!='
             self._trace(
                 color.Style.BRIGHT + fgcolor + '"%s" %s\n%s%s\n',
                 token,
@@ -419,20 +429,24 @@ class ParseContext(object):
         self._rule_stack.append(name)
         pos = self._pos
         try:
-            self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + '>')
+            self._trace_entry()
+
             self._last_node = None
+
             node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
+
             self._goto(newpos)
             self._state = newstate
-            self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + '<')
             self._add_cst_node(node)
             self._last_node = node
+
+            self._trace_success()
             return node
         except FailedPattern:
             self._error('Expecting <%s>' % name)
         except FailedParse:
-            self._trace_event(color.Fore.RED + color.Style.BRIGHT + '!')
             self._goto(pos)
+            self._trace_failure()
             raise
         finally:
             self._rule_stack.pop()
