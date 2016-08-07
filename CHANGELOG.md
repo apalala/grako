@@ -9,7 +9,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 [keeapachangelog.org]: http://keepachangelog.com/
 
-## [3.12.1]
+### [3.12.1] 2016-08-06
 
 
 ### Added
@@ -35,7 +35,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Fixed several inconsistencies in the implementation and use of `buffering.Buffer` line indexing.
 -   Repeated parameters to object model constructors.
 
-## [3.10.1]
+### [3.10.1] 2016-07-17
 
 
 ### Added
@@ -61,7 +61,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     using [pygraphviz] 1.3.1.
 -   [77][] [81] Advance over whitespace before memoization or left recursion.
 
-## [3.9.3]
+### [3.9.3] 2016-07-15
 
 
 ### Added
@@ -94,16 +94,24 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Cleaned up the grammar in `examples/python`; still untested.
 -   Removed outdated information from the *README*.
 
-## [3.8.2]
+### [3.8.2] 2016-04-23
 
--   [73] Keywords were not being passed to the base class of the
-    generated parser.
--   Wrong version number (RC) in this document.
--   Added grammar support for [keywords] in the source language through
-    the `@@keyword::` directive and the `@name` decorator for rules.
+### Added
+
+-   Added grammar support for [keywords] in the source language through the `@@keyword::` directive and the `@name` decorator for rules.
+
+
+### Changed
+
 -   Make `ModelBuilderSemantics` support built-in types.
 
-## [3.7.0]
+
+### Fixed
+
+-   Wrong version number (RC) in this document.
+-   [73] Keywords were not being passed to the base class of the generated parser.
+
+### [3.7.0] 2016-03-05
 
 -   Added suport for `` `constant ``\` expressions which don't consume
     any input yet return the specified constant.
@@ -119,7 +127,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added the [Python]-inspired *join* operator, `s.{e}`, as a
     convenient syntax for parsing sequences with separators.
 
-## [3.6.7]
+### [3.6.7] 2016-01-27
 
 -   Several minor **bug** fixes. See the [commit log] for details.
 -   Detect and fail promptly on empty tokens in grammars.
@@ -150,7 +158,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Upgraded development libraries to their latest versions (see
     `requirements.txt`).
 
-## [3.5.1]
+### [3.5.1] 2015-03-12
 
 -   [45] The `grako` tool now produces basic statistics about the
     processed grammar.
@@ -164,7 +172,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added `AST.asjson()` to not have to import `grako.util.asjson()` for
     the same purpose.
 
-## [3.4.3]
+### [3.4.3] 2014-11-27
 
 -   Minor improvements to `buffering.Buffer`.
 -   [42] `setup.py` might give errors under some locales because
@@ -183,7 +191,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added a `--version` option to the commandline tool. A
     `grako.__version__` variable is now available.
 
-## [3.3.0]
+### [3.3.0] 2014-07-22
 
 -   Refactorings to enhance consistency in parsing between models and
     and generated parsers.
@@ -194,7 +202,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   [40] The widtn and the separator used in parse traces are now
     configurable with keyword arguments.
 
-## [3.2.1]
+### [3.2.1] 2014-07-21
 
 -   Now rule parameters and `model.ModelBuilderSemantics` are used to
     produce grammar models with a minimal set of semantic methods.
@@ -211,7 +219,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Several *BUGs* in the advanced features were fixed. See the
     [Bitbucket commits][commit log] for details.
 
-## [3.1.2]
+### [3.1.2] 2014-07-14
 
 -   **Grako** now supports direct and indirect left recursion thanks to
     the implementation done by Paul [Sargent] of the work
@@ -230,7 +238,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   [30] Make sure that `--whitespace` and `--no-nameguard` indeed
     affect the behavior of the generated parser as expected.
 
-## [3.0.4]
+### [3.0.4] 2014-07-01
 
 -   The bump in the major version number is because the grammar syntax
     changed to accomodate new features better, and to remove sources of
@@ -280,7 +288,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   [24] Incorrect template for *--pretty* of
     multi-line optionals.
 
-## [2.4.3]
+### [2.4.3] 2014-06-08
 
 -   Changes to allow downstream translators to have different target
     languages with as little code replication as possible. There's new
@@ -300,7 +308,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added `--whitespace` parameter to generated `main()`.
 -   Applied [flake8] to project and to generated parsers.
 
-## [2.3.0]
+### [2.3.0] 2013-11-27
 
 -   Now the `@` operator behaves as a special case of the `name:`
     operator, allowing for simplification of the grammar, parser,
@@ -312,7 +320,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     and 3.x.
 -   Compatibility between [Python] 2.7/3.x print() statements.
 
-## [2.2.2]
+### [2.2.2] 2013-11-06
 
 
 ### Added
@@ -338,7 +346,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Several minor bug fixes [lambdafu].
 
 
-## [2.0.4]
+### [2.0.4] 2013-08-15
 
 
 ### Added
@@ -365,7 +373,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Several improvements and bug fixes mostly by [lambdafu].
 
 
-## [1.4.0]
+### [1.4.0] 2013-05-02
 
 
 ### Added
@@ -388,7 +396,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Sometimes the [AST] for a closure (`{}`) was not a list.
 
 
-## [1.3.0]
+### [1.3.0] 2013-04-11
 
 
 ### Added
@@ -408,7 +416,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Update credits.
 
 
-## [1.2.1]
+### [1.2.1] 2013-03-19
 
 
 ### Added
@@ -433,7 +441,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
 -   Spell-check this document with [Vim spell].
 
-## [1.1.0]
+### [1.1.0] 2013-02-22
 
 ### Changed
 
@@ -448,7 +456,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Need to preserve state when closure iterations match partially.
 -   Work with Unicode while rendering.
 
-## [1.0.0]
+### [1.0.0] 2013-02-09
 
 -   First public release.
 
