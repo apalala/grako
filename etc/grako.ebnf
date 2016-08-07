@@ -208,7 +208,7 @@ join
     =
     &(separator '.' '{') ~
     (
-    | positive_joinx
+    | positive_join
     | normal_join
     )
     ;
