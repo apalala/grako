@@ -904,52 +904,7 @@ The following, among others, have contributted to **Grako** with features, bug f
 Changes
 =======
 
-**Grako** uses `Semantic Versioning`_ for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
-.. _`Semantic Versioning`: http://semver.org/
+See the file CHANGELOG_ file for details.
 
-3.12.1
-------
-
-* Distinguish between positive and normal joins: ``s.{e}+`` and ``s.{e}``. Having ``s.{e}`` use a positive closure was too unexpected.
-* Also generate a ``buffering.Buffer`` descendant specific to the grammar for parsers that need to
-  customize the ``parsing.Parser.parse()`` method.
-* Added the ``grako.synth`` module which makes synthetic ``grako.model.Node`` classes pickable.
-* Traded memory for simplicity and replaced the line-based line cache in ``buffering.Buffer`` for a position-based cache. Buffering needs to continue being ``str``-based for complex ``re`` patterns to work as expected.
-* Now patterns may be concatenated to split a complex pattern into parts, possibly accross several
-  lines: ``/regexp/ + /regexp/``.
-* Added basic support for symbol tables in ``grako.symtables``.
-* Now ``model.ParseModel`` is an alias for ``model.Node``.
-* Improved ``examples/antlr2grako`` so it generates more usable **Grako** grammars.
-* Syntax file for `Sublime Text`_ (vmuriart_).
-* *BUG!* The latest changes to ``grako.util.trim()`` were incomplete.
-* *BUG!* Fixed several inconsistencies in the implementation and use of ``buffering.Buffer`` line indexing.
-* *BUG!* Repeated parameters to object model constructors.
-
-.. _`Sublime Text`: https://www.sublimetext.com
-
-
-3.10.1
--------
-
-* *BUG!* ``grako.model.Node._adopt_children()`` was incorrect, so ``Node.parent`` was not being set. Adopted a simple-approach solution based on suggestions by linkdd_.
-* *BUG!* Avoid recovering the same comment against the same line in ``grako.buffering.Buffer``.
-* *BUG!* Recovering comments and end-of-line comments together was incorrect.
-* *BUG!* ``model.Node`` parenting still broken. Fixed!
-* 73_ The ``--draw`` option did not recognize the new object model node types ``Join`` and ``Constant``. Now ``--draw`` works with Python_ 3.x using pygraphviz_ 1.3.1.
-* 77_ 81_ Advance over whitespace before memoization or left recursion.
-* Enhancements to ``grako.tool`` and the command-line help (siemer_).
-* Unlink output file before attempting parser generation.
-* A ``-G FILE`` command-line option forces saving of the object model.
-* The function ``grako.util.trim()`` now also considers the first text ine.
-* Tested with Python_ 3.6.0a3.
-
-.. _`Visitor Pattern`: http://en.wikipedia.org/wiki/Visitor_pattern
-.. _`Vim spell`:  http://vimdoc.sourceforge.net/htmldoc/spell.html
-.. _flake8: https://pypi.python.org/pypi/flake8
-.. _Bitbucket: https://bitbucket.org/apalala/grako
-.. _`Bitbucket commits`: https://bitbucket.org/apalala/grako/commits/
-.. _`commit log`: https://bitbucket.org/apalala/grako/commits/
-.. _PyPi: https://pypi.python.org/pypi/grako
-.. _tox: https://testrun.org/tox/latest/
-
+.. _CHANGELOG: https://bitbucket.org/apalala/grako/src/default/CHANGELOG.md
