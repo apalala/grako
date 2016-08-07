@@ -1,3 +1,4 @@
+from datetime import datetime
 from dateparser import parse as parse_date
 from dateutil.parser import parse as parse_date
 
@@ -140,6 +141,11 @@ def main():
         if tag.split('.')[:2] != prev.split('.')[:2]:
             print('[{prev}]: https://bitbucket.org/apalala/grako/branches/compare/{prev}%0D{tag}'.format(tag=tag, prev=prev))
             prev = tag
+
+    print()
+    for tag in TAGS:
+        if tag['tag'] in tags_by_date:
+            print('### [{tag}] {date}'.format(tag=tag['tag'], date=tag['date'].strftime('%Y-%m-%d')))
 
 
 if __name__ == '__main__':
