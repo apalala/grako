@@ -113,83 +113,91 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [3.7.0] @ 2016-03-05
 
--   Added suport for `` `constant` `` expressions which don't consume
-    any input yet return the specified constant.
--   Now an empty closure (`{}`) consumes no input and generates an empty
-    list as [AST].
--   Removed the `--binary` command-line option. It went unused, it was
-    untested, and it was incorrectly implemented.
+
+### Added
+
+-   Added suport for `` `constant` `` expressions which don't consume any input yet return the specified constant.
+-   Now an empty closure (`{}`) consumes no input and generates an empty list as [AST].
+-   Added the [Python]-inspired *join* operator, `s.{e}`, as a convenient syntax for parsing sequences with separators.
+
+
+### Changed
+
+-   Removed the `--binary` command-line option. It went unused, it was untested, and it was incorrectly implemented.
 -   Generated parsers `pass` on `KeyboardInterrupt`.
--   Moved the bulk of the entry code for generated parsers to
-    `util.generic_main()`. This allows for the verbose code to be
-    verified by the usual tools.
--   Deprecate `{e}*` and `{e}-` by removing them from the documentation.
--   Added the [Python]-inspired *join* operator, `s.{e}`, as a
-    convenient syntax for parsing sequences with separators.
+-   Moved the bulk of the entry code for generated parsers to `util.generic_main()`. This allows for the verbose code to be verified by the usual tools.
+-   Deprecate `{e}-` by removing it from the documentation.
 
 ## [3.6.7] @ 2016-01-27
 
--   Several minor **bug** fixes. See the [commit log] for details.
--   Detect and fail promptly on empty tokens in grammars.
--   More reasonable treatment for [ANTLR] `token` definitions in the
-    `antlr2grako` example.
+
+### Added
+
+-   Added `@@whitespace` directive to specify whitespace regular expression within the grammar [starkat].
+-   Added `@@nameguard` and `@@ignorecase` directives to toggle the respective boolean parameters within the grammar [starkat].
 -   All tests pass with [Python] 3.5.
--   [59] [Python] keywords can now actually be used as rule names in
-    grammars [drothlis].
--   [60] `@@` directives were not pressent in the output of the
-    `--pretty` option.
--   [58] The parameters to the constructor of generated parsers were
-    being ignored (pgebhard).
--   `grammars.py` would call `ctx.error()` instead of
-    `ctx._error()` on failed rule references.
+-   Added basic support for output of an [AST] in [YAML] format.
+-   Applied [flake8] suggestions.
+
+
+### Changed
+-   More reasonable treatment for [ANTLR] `token` definitions in the `antlr2grako` example.
+-   Upgraded development libraries to their latest versions (see `requirements.txt`).
+
+
+### Fixed
+
+-   Detect and fail promptly on empty tokens in grammars.
+-   [52] Build with Cython failed on Windows.
+-   [59] [Python] keywords can now actually be used as rule names in grammars [drothlis].
+-   [60] `@@` directives were not pressent in the output of the `--pretty` option.
+-   [58] The parameters to the constructor of generated parsers were being ignored (pgebhard).
+-   `grammars.py` would call `ctx.error()` instead of `ctx._error()` on failed rule references.
 -   Overall cleanup of the code and of the development requirements.
 -   [56] Using @@whitespace generated invalid python programs
--   The `@@whitespace` directive was not working for regular
-    expressions [nehz].
--   BUG: Left recursion in the grammar was checked for in the wrong
-    place when disabled.
--   Added basic support for output of an [AST] in [YAML] format.
--   Added `@@whitespace` directive to specify whitespace regular
-    expression within the grammar [starkat].
--   Added `@@nameguard` and `@@ignorecase` directives to toggle the
-    respective boolean parameters within the grammar [starkat].
--   [52] Build with Cython failed on Windows.
--   Applied [flake8] suggestions.
--   Upgraded development libraries to their latest versions (see
-    `requirements.txt`).
+-   The `@@whitespace` directive was not working for regular expressions [nehz].
+-   Left recursion in the grammar was checked for in the wrong place when disabled.
+
 
 ## [3.5.1] @ 2015-03-12
 
--   [45] The `grako` tool now produces basic statistics about the
-    processed grammar.
--   [46] Left recursion support can be turned off using the
-    `left_recursion=` parameter to parser constructors.
--   [47] New `@@comments` and `@@eol_comments` can be used within a
-    grammar to specify the respective regular expressions.
--   [48] Rules can now be overriden/redefined using the
-    `@override` decorator.
+
+### Changed
+
 -   Added backwards compatibility with `Buffer.whitespace`.
--   Added `AST.asjson()` to not have to import `grako.util.asjson()` for
-    the same purpose.
+-   Added `AST.asjson()` to not have to import `grako.util.asjson()` for the same purpose.
+
+
+### Fixed
+-   [45] The `grako` tool now produces basic statistics about the processed grammar.
+-   [46] Left recursion support can be turned off using the `left_recursion=` parameter to parser constructors.
+-   [47] New `@@comments` and `@@eol_comments` can be used within a grammar to specify the respective regular expressions.
+-   [48] Rules can now be overriden/redefined using the `@override` decorator.
+
 
 ## [3.4.3] @ 2014-11-27
 
--   Minor improvements to `buffering.Buffer`.
--   [42] `setup.py` might give errors under some locales because
-    of the non-ASCII characters in `README.rst`.
+
+### Added
+
 -   Added a `--no-nameguard` command-line option to generated parsers.
--   Allow *Buffer* descendants to customize how text is split into
-    lines [starkat].
--   Now the `re.UNICODE` flag is consistently used in pattern, comment,
-    and whitespace matching. A [re] regular expression is now accepted
-    for whitespace matching. Character sets provided as `str`, `list`,
-    or `set` are converted to the corresponding regular
-    expression [starkat].
--   If installed, the [regex] module will be used instead of [re] in all
-    pattern matching [starkat]. See the section about
-    *whitespace* above.
--   Added a `--version` option to the commandline tool. A
-    `grako.__version__` variable is now available.
+-   Allow *Buffer* descendants to customize how text is split into lines [starkat].
+-   Added a `--version` option to the commandline tool. A `grako.__version__` variable is now available.
+-   A [re] regular expression is now accepted for whitespace matching. Character sets provided as `str`, `list`, or `set` are converted to the corresponding regular expression [starkat].
+-   If installed, the [regex] module will be used instead of [re] in all pattern matching [starkat]. See the section about *whitespace* above.
+
+
+### Changed
+
+-   Minor improvements to `buffering.Buffer`.
+-   Now the `re.UNICODE` flag is consistently used in pattern, comment, and whitespace matching.
+
+
+### Fixed
+
+-   [42] `setup.py` might give errors under some locales because of the non-ASCII characters in `README.rst`.
+
+
 
 ## [3.3.0] @ 2014-07-22
 
