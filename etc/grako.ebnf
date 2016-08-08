@@ -1,0 +1,398 @@
+@@grammar :: Grako
+@@comments :: /\(\*((?:.|\n)*?)\*\)/
+@@eol_comments :: /#([^\n]*?)$/
+@@left_recursion :: False
+
+
+start
+    =
+    grammar
+    ;
+
+
+grammar::Grammar
+    =
+    title:`GRAKO`
+    directives:{directive}
+    keywords:keywords
+    rules:{rule}+
+    $
+    ;
+
+
+directive
+    =
+    '@@' !'keyword' ~
+    (
+            name:('comments' | 'eol_comments' | 'whitespace') ~
+            ~
+            '::' ~ value:regex
+        |
+            name:('nameguard' | 'ignorecase' | 'left_recursion')
+            ~
+            ('::' ~ value:boolean|value:`True`)
+        |
+            name:('grammar')
+            ~
+            '::' ~ value:word
+        |
+            name:('namechars')
+            ~
+            '::' ~ value:string
+    )
+    ;
+
+
+keywords
+    =
+    {'@@keyword' ~ '::' ~ {@+:literal !(':'|'=')} }
+    ;
+
+
+paramdef
+    =
+        (* no keyword params if ':: *)
+        '::' ~ params:params_only
+    |
+        '('
+        ~
+        (
+              kwparams:kwparams
+            | params:params ',' ~ kwparams:kwparams
+            | params:params
+        )
+        ')'
+    ;
+
+
+rule::Rule
+    =
+    decorators:{decorator}
+    name:name
+    ~
+    [>paramdef]
+    ['<' ~ base:known_name]
+    '='
+    ~
+    exp:expre
+    ';'
+    ~
+    ;
+
+
+decorator
+    =
+    '@' ~ @:('override'|'name')
+    ;
+
+
+params
+    =
+    @+:literal {',' @+:literal !'=' ~ }
+    ;
+
+
+params_only
+    =
+    ','.{literal}+
+    ;
+
+
+kwparams
+    =
+    ','.{pair}+
+    ;
+
+
+pair
+    =
+    @+:word '=' ~ @+:literal
+    ;
+
+
+expre
+    =
+    choice | sequence
+    ;
+
+
+choice::Choice
+    =
+    ['|' ~] @+:sequence {'|' ~ @+:sequence}+
+    ;
+
+
+sequence::Sequence
+    =
+    sequence:{element}+
+    ;
+
+
+element
+    =
+    rule_include | named | override | term
+    ;
+
+
+rule_include::RuleInclude
+    =
+    '>' ~ @:known_name
+    ;
+
+
+named
+    =
+    named_list | named_single
+    ;
+
+
+named_list::NamedList
+    =
+    name:name '+:' ~ exp:element
+    ;
+
+
+named_single::Named
+    =
+    name:name ':' ~ exp:element
+    ;
+
+
+override
+    =
+    override_list | override_single | override_single_deprecated
+    ;
+
+
+override_list::OverrideList
+    =
+    '@+:' ~ @:element
+    ;
+
+
+override_single::Override
+    =
+    '@:' ~ @:element
+    ;
+
+
+override_single_deprecated::Override
+    =
+    '@' ~ @:element
+    ;
+
+
+term
+    =
+    | void
+    | join
+    | group
+    | empty_closure
+    | positive_closure
+    | closure
+    | optional
+    | special
+    | kif
+    | knot
+    | atom
+    ;
+
+
+group::Group
+    =
+    '(' ~ exp:expre ')' ~
+    ;
+
+
+join
+    =
+    &(separator '.' '{') ~
+    (
+    | positive_join
+    | normal_join
+    )
+    ;
+
+
+positive_join::PositiveJoin
+    =
+    sep:separator '.' '{' exp:expre '}' ('+'|'-') ~
+    ;
+
+
+normal_join::Join
+    =
+    sep:separator '.' ~ '{' ~ exp:expre '}' ['*' ~] ~
+    ;
+
+
+separator
+    =
+    group | token | constant |  pattern
+    ;
+
+
+positive_closure::PositiveClosure
+    =
+    '{' @:expre '}' ('-' | '+') ~
+    ;
+
+
+closure::Closure
+    =
+    '{' @:expre '}' ['*'] ~
+    ;
+
+
+empty_closure::EmptyClosure
+    =
+    '{' @:() '}'
+    ;
+
+
+optional::Optional
+    =
+    '[' ~ @:expre ']' ~
+    ;
+
+
+special::Special
+    =
+    '?(' ~ @:/.*?(?!\)\?)/ ')?' ~
+    ;
+
+
+kif::Lookahead
+    =
+    '&' ~ @:term
+    ;
+
+
+knot::NegativeLookahead
+    =
+    '!' ~ @:term
+    ;
+
+
+atom
+    =
+    cut | cut_deprecated | token | constant | call | pattern | eof
+    ;
+
+
+call::RuleRef
+    =
+    word
+    ;
+
+
+void::Void
+    =
+    '()' ~
+    ;
+
+
+cut::Cut
+    =
+    '~' ~
+    ;
+
+
+cut_deprecated::Cut
+    =
+    '>>' ~
+    ;
+
+
+known_name
+    =
+    name ~
+    ;
+
+
+name
+    =
+    word
+    ;
+
+
+
+constant::Constant
+    =
+    /`/ ~ @:literal /`/
+    ;
+
+
+token::Token
+    =
+    string
+    ;
+
+
+literal
+    =
+    string | word | hex | float | int
+    ;
+
+
+string
+    =
+    (* allow single and double quotes *)
+    ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
+    ;
+
+
+hex
+    =
+    /0[xX](\d|[a-fA-F])+/
+    ;
+
+
+float
+    =
+    /[-+]?(?:\d+\.\d*|\d*\.\d+)(?:[Ee][-+]?\d+)?/
+    ;
+
+
+int
+    =
+    /[-+]?\d+/
+    ;
+
+
+word
+    =
+    /(?!\d)\w+/
+    ;
+
+
+pattern::Pattern
+    =
+    regexes
+    ;
+
+
+regexes
+    =
+    @+:regex {'+' ~ @+:regex}*
+    ;
+
+
+regex
+    =
+      '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
+    | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
+    ;
+
+
+boolean
+    =
+    'True' | 'False'
+    ;
+
+
+eof::EOF
+    =
+    '$' ~
+    ;
+
