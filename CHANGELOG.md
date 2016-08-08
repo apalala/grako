@@ -10,7 +10,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [keeapachangelog.org]: http://keepachangelog.com/
 
 
-## [3.13.0.planned.1]
+## [3.13.0.rc.1]
 
 
 ### Added
