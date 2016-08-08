@@ -13,10 +13,18 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [3.13.0.planned.1]
 
 
+### Added
+
+-   Added this new *change log*.
+
+
 ### Changed
 
--   Moved the *change log* to this, separate document.
--   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache. Buffering needs to continue being `str`-based for complex `re` patterns to work as expected.
+-   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache.
+
+### Fixed
+
+- The error column pointer was off when tab characters were involved.
 
 
 ## [3.12.1] @ 2016-08-06
