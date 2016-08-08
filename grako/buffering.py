@@ -56,7 +56,6 @@ class Buffer(object):
                  text,
                  filename=None,
                  whitespace=None,
-                 tabwidth=None,
                  comments_re=None,
                  eol_comments_re=None,
                  ignorecase=False,
@@ -70,7 +69,6 @@ class Buffer(object):
 
         self.whitespace = whitespace
 
-        self.tabwidth = tabwidth
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
         self.ignorecase = ignorecase
@@ -144,8 +142,6 @@ class Buffer(object):
             )
 
     def _preprocess_block(self, name, block, **kwargs):
-        if self.tabwidth is not None:
-            block = block.replace('\t', ' ' * self.tabwidth)
         lines = self.split_block_lines(block)
         index = self._block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
