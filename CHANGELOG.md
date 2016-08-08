@@ -21,6 +21,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Changed
 
 -   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache.
+-   Tab characters are left unchanged by `buffering.Buffer` as to keep references
+    to positions in the original text relevant.
 
 ### Fixed
 
