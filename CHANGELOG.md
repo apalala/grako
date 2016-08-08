@@ -475,31 +475,41 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   First public release.
 
-[Cyclomatic complexity]: http://en.wikipedia.org/wiki/Cyclomatic_complexity
-[KLOC]: http://en.wikipedia.org/wiki/KLOC
-[legacy]: http://en.wikipedia.org/wiki/Legacy_code
-[legacy code]: http://en.wikipedia.org/wiki/Legacy_code
-[PyPy]: http://pypy.org/
-[context managers]: http://docs.python.org/2/library/contextlib.html
-[Perl]: http://www.perl.org/
-[NATURAL]: http://en.wikipedia.org/wiki/NATURAL
+[AST]: http://en.wikipedia.org/wiki/Abstract_syntax_tree
+[ASTs]: http://en.wikipedia.org/wiki/Abstract_syntax_tree
+[Abstract Syntax Tree]: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 [COBOL]: http://en.wikipedia.org/wiki/Cobol
-[Java]:  http://en.wikipedia.org/wiki/Java_(programming_language)
-[VB6]: http://en.wikipedia.org/wiki/Visual_basic_6
-[regex]: https://pypi.python.org/pypi/regex
-[re]: https://docs.python.org/3.4/library/re.html
-[pygraphviz]: https://pypi.python.org/pypi/pygraphviz
+[CST]:  http://en.wikipedia.org/wiki/Concrete_syntax_tree
+[Cyclomatic complexity]: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 [Cython]: http://cython.org/
+[EBNF]: http://en.wikipedia.org/wiki/Ebnf
 [Franz\_G]: https://bitbucket.org/Franz_G
 [JSON]: http://www.json.org/
+[Java]:  http://en.wikipedia.org/wiki/Java_(programming_language)
+[KLOC]: http://en.wikipedia.org/wiki/KLOC
+[NATURAL]: http://en.wikipedia.org/wiki/NATURAL
+[PEG]: http://en.wikipedia.org/wiki/Parsing_expression_grammar
+[Packrat]: http://bford.info/packrat/
+[Perl]: http://www.perl.org/
+[PyPy]: http://pypy.org/
+[Python]: http://python.org
+[Ruby]: http://www.ruby-lang.org/
 [Sublime Text]: https://www.sublimetext.com
+[VB6]: http://en.wikipedia.org/wiki/Visual_basic_6
 [Vim spell]: http://vimdoc.sourceforge.net/htmldoc/spell.html
 [Visitor Pattern]: http://en.wikipedia.org/wiki/Visitor_pattern
 [YAML]: https://en.wikipedia.org/wiki/YAML
 [colorama]: https://pypi.python.org/pypi/colorama/
 [commit log]: https://bitbucket.org/apalala/grako/commits/
+[context managers]: http://docs.python.org/2/library/contextlib.html
 [flake8]: https://pypi.python.org/pypi/flake8
+[legacy code]: http://en.wikipedia.org/wiki/Legacy_code
+[legacy]: http://en.wikipedia.org/wiki/Legacy_code
+[memoizing]: http://en.wikipedia.org/wiki/Memoization
 [pull request]: https://bitbucket.org/apalala/grako/pull-request/13/
+[pygraphviz]: https://pypi.python.org/pypi/pygraphviz
+[re]: https://docs.python.org/3.4/library/re.html
+[regex]: https://pypi.python.org/pypi/regex
 [tox]: https://testrun.org/tox/latest/
 
 [franz\_g]: https://bitbucket.org/Franz_G
