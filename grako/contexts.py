@@ -7,7 +7,7 @@ import functools
 from collections import namedtuple
 from contextlib import contextmanager
 
-from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
+from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name, is_posix
 from grako.ast import AST
 from grako import buffering
 
@@ -28,18 +28,38 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
-U_LARROW = '\u21D0'
-U_UARROW = '\u21D1'
-U_RARROW = '\u21D2'
-U_DARROW = '\u21D3'
+
+U_LARROW = '\u2190'
+U_DLARROW = '\u2199'
+
+U_LDARROW = '\u21D0'
+U_UDARROW = '\u21D1'
+U_RDARROW = '\u21D2'
+U_DDARROW = '\u21D3'
+
+U_L_TRIPPLE_ARROW = '\u21DA'
 
 U_WARNING = '\u26A0'
 U_NOT_EQUAL_TO = '\u2260'
+U_IDENTICAL_TO = '\u2261'
+U_NOT_IDENTICAL_TO = '\u2262'
 U_CHECK_MARK = '\u2713'
 
-C_ENTRY = U_LARROW
-C_SUCCESS = U_CHECK_MARK
-C_FAILURE = U_NOT_EQUAL_TO
+U_POWER_SYMBOL = '\u23FB'
+U_POWER_ON_SYMBOL = '\u23FC'
+U_POWER_OFF_SYMBOL = '\u23FD'
+
+C_ENTRY = '<'
+C_SUCCESS = '>'
+C_FAILURE = '!'
+
+
+if is_posix():
+    C_DERIVE = U_DLARROW
+    C_ENTRY = C_DERIVE
+    C_SUCCESS = U_IDENTICAL_TO
+    C_FAILURE = U_NOT_IDENTICAL_TO
+
 
 ParseInfo = namedtuple(
     'ParseInfo',
@@ -86,7 +106,7 @@ class ParseContext(object):
                  memoize_lookaheads=True,
                  left_recursion=True,
                  trace_length=72,
-                 trace_separator=C_ENTRY,
+                 trace_separator=C_DERIVE,
                  trace_filename=False,
                  colorize=None,
                  keywords=None,
@@ -352,7 +372,7 @@ class ParseContext(object):
         if max(len(s) for s in stack.splitlines()) > self.trace_length:
             stack = stack[:self.trace_length]
             stack = stack.rsplit(self.trace_separator, maxsplit=1)[0]
-            stack += self.trace_separator + '...'
+            stack += self.trace_separator
         return stack
 
     def _find_rule(self, name):

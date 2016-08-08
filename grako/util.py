@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
+import os
 import collections
 import json
 import datetime
@@ -40,6 +41,10 @@ else:
     zip_longest = itertools.izip_longest
     import __builtin__ as builtins
 assert builtins
+
+
+def is_posix():
+    return os.name == 'posix'
 
 
 def info(*args, **kwargs):
