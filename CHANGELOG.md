@@ -26,7 +26,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
-- The error column pointer was off when tab characters were involved.
+- In traces, the error column pointer was off when tab characters were involved.
 
 
 ## [3.12.1] @ 2016-08-06
