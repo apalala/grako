@@ -8,8 +8,9 @@ of the .buffering.Buffer class, and with as little overhead as possible for
 exceptions that will not be parsing errors (remember that Grako uses the
 exception system to backtrack).
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+from grako.util import re
 
 
 class GrakoException(Exception):
@@ -62,11 +63,16 @@ class FailedParseBase(ParseError):
     def __str__(self):
         info = self.buf.line_info(self.pos)
         template = "{}({}:{}) {} :\n{}\n{}^\n{}"
+        text = info.text.rstrip()
+        leading = re.sub(r'[^\t]', ' ', text)[:info.col]
+
+        text = text.expandtabs()
+        leading = leading.expandtabs()
         return template.format(info.filename,
                                info.line + 1, info.col + 1,
-                               self.message,
-                               info.text,
-                               ' ' * info.col,
+                               self.message.rstrip(),
+                               text,
+                               leading,
                                '\n'.join(self.stack)
                                )
 

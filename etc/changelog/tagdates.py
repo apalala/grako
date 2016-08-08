@@ -1,5 +1,3 @@
-from datetime import datetime
-from dateparser import parse as parse_date
 from dateutil.parser import parse as parse_date
 
 
@@ -123,6 +121,7 @@ TAGS = [
     {'date': 'Wed Jan 30 08:08:17 2013 -0430', 'tag': '1.0rc1', 'changeset': 'e84354fbff94'},
     {'date': 'Sun Jan 13 18:07:34 2013 -0430', 'tag': '0.1', 'changeset': '64bab5d7fe96'},
 ]
+
 
 def main():
     for tag in TAGS:

@@ -28,7 +28,6 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
-
 U_LARROW = '\u2190'
 U_DLARROW = '\u2199'
 
