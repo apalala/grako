@@ -60,7 +60,6 @@ class Buffer(object):
                  comments_re=None,
                  eol_comments_re=None,
                  ignorecase=False,
-                 trace=False,
                  nameguard=None,
                  comment_recovery=False,
                  namechars='',
@@ -75,7 +74,6 @@ class Buffer(object):
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
         self.ignorecase = ignorecase
-        self.trace = True
         self.nameguard = (nameguard
                           if nameguard is not None
                           else bool(self.whitespace_re))
@@ -410,7 +408,7 @@ class Buffer(object):
                 cache.append(pl)
             i += len(line)
         n += 1
-        if lines and lines[-1][-1] in '\r\n':
+        if lines and lines[-1] and lines[-1][-1] in '\r\n':
             n += 1
         cache.append(PosLine(i, n, 0))
         self._linecache = cache

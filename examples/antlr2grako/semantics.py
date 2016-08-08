@@ -8,6 +8,14 @@ from grako.ast import AST
 from grako import grammars as model
 
 
+def camel2py(name):
+    return re.sub(
+        '([a-z0-9])([A-Z])',
+        lambda m: m.group(1) + '_' + m.group(2).lower(),
+        name,
+    )
+
+
 class ANTLRSemantics(object):
     def __init__(self, name):
         self.name = name
@@ -21,21 +29,23 @@ class ANTLRSemantics(object):
         )
 
     def rule(self, ast):
-        name = ast.name
+        name = camel2py(ast.name)
         exp = ast.exp
-        if isinstance(exp, model.Token) and name[0].isupper():
-            if name in self.token_rules:
-                self.token_rules[name].exp = exp  # it is a model._Decorator
-            else:
-                self.token_rules[name] = exp
-            return None
-        elif not ast.fragment and not isinstance(exp, model.Sequence):
-            ref = model.RuleRef(name.lower())
-            if name in self.token_rules:
-                self.token_rules[name].exp = ref
-            else:
-                self.token_rules[name] = ref
-            name = name.lower()
+        if name[0].isupper():
+            name = name.upper()
+            if isinstance(exp, model.Token):
+                if name in self.token_rules:
+                    self.token_rules[name].exp = exp  # it is a model._Decorator
+                else:
+                    self.token_rules[name] = exp
+                return None
+            elif not ast.fragment and not isinstance(exp, model.Sequence):
+                ref = model.RuleRef(name.lower())
+                if name in self.token_rules:
+                    self.token_rules[name].exp = ref
+                else:
+                    self.token_rules[name] = ref
+                name = name.lower()
 
         return model.Rule(ast, name, exp, ast.params, ast.kwparams)
 
@@ -91,7 +101,9 @@ class ANTLRSemantics(object):
         return model.Group(ast)
 
     def regexp(self, ast):
-        return model.Pattern(''.join(ast))
+        pattern = ''.join(ast)
+        re.compile(pattern)
+        return model.Pattern(pattern)
 
     def charset_optional(self, ast):
         return '%s?' % ast
@@ -121,11 +133,23 @@ class ANTLRSemantics(object):
     def charset_range(self, ast):
         return '%s-%s' % (ast.first, ast.last)
 
+    def newranges(self, ast):
+        pattern = ''.join(ast)
+        re.compile(pattern)
+        return model.Pattern(pattern)
+
     def newrange(self, ast):
-        return model.Pattern('[%s]' % re.escape(ast))
+        pattern = '[%s]%s' % (ast.range, ast.repeat or '')
+        re.compile(pattern)
+        return pattern
+
+    def negative_newrange(self, ast):
+        pattern = '[^%s]%s' % (ast.range, ast.repeat or '')
+        re.compile(pattern)
+        return pattern
 
     def rule_ref(self, ast):
-        return model.RuleRef(ast)
+        return model.RuleRef(camel2py(ast))
 
     def any(self, ast):
         return model.Pattern('\w+|\S+')
@@ -145,7 +169,7 @@ class ANTLRSemantics(object):
         return value
 
     def token_ref(self, ast):
-        name = ast
+        name = camel2py(ast).upper()
 
         value = self.tokens.get(name)
         if value and isinstance(value, model.Model):

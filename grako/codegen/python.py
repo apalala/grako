@@ -116,9 +116,7 @@ class Sequence(Base):
     def render_fields(self, fields):
         fields.update(seq='\n'.join(self.rend(s) for s in self.node.sequence))
 
-    template = '''
-                {seq}\
-                '''
+    template = '{seq}'
 
 
 class Choice(Base):
@@ -174,7 +172,7 @@ class Closure(_Decorator):
 
 
 class PositiveClosure(Closure):
-    template = '''
+    template = '''\
                 def block{n}():
                 {exp:1::}
                 self._positive_closure(block{n})\
@@ -196,7 +194,7 @@ class Join(_Decorator):
 
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n}, prefix=sep{n})\
+                self._closure(block{n}, sep=sep{n})\
                 '''
 
 
@@ -207,7 +205,7 @@ class PositiveJoin(Join):
 
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n}, prefix=lambda: {sep})\
+                self._positive_closure(block{n}, sep=sep{n})\
                 '''
 
 
@@ -307,22 +305,23 @@ class Rule(_Decorator):
         fields.update(params=params)
 
         defines = compress_seq(self.defines())
-        sdefs = [safe_name(d) for d, l in defines if not l]
-        ldefs = [safe_name(d) for d, l in defines if l]
+        ldefs = set(safe_name(d) for d, l in defines if l)
+        sdefs = set(safe_name(d) for d, l in defines if not l and d not in ldefs)
+
         if not (sdefs or ldefs):
             sdefines = ''
         else:
-            sdefs = '[%s]' % ', '.join(urepr(d) for d in sdefs)
-            ldefs = '[%s]' % ', '.join(urepr(d) for d in ldefs)
+            sdefs = '[%s]' % ', '.join(urepr(d) for d in sorted(sdefs))
+            ldefs = '[%s]' % ', '.join(urepr(d) for d in sorted(ldefs))
             if not ldefs:
                 sdefines = '\n\n    self.ast._define(%s, %s)' % (sdefs, ldefs)
             else:
-                sdefines = indent('\n\n' + trim('''\
+                sdefines = indent('\n' + trim('''\
                                                 self.ast._define(
                                                     %s,
                                                     %s
                                                 )''' % (sdefs, ldefs)
-                                                )
+                                            )
                                   )
 
         fields.update(defines=sdefines)
@@ -420,6 +419,7 @@ class Grammar(Base):
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
 
+                from grako.buffering import Buffer
                 from grako.parsing import graken, Parser
                 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
@@ -433,6 +433,28 @@ class Grammar(Base):
                 ]
 
                 KEYWORDS = set([{keywords}])
+
+
+                class {name}Buffer(Buffer):
+                    def __init__(self,
+                                 text,
+                                 whitespace={whitespace},
+                                 nameguard={nameguard},
+                                 comments_re={comments_re},
+                                 eol_comments_re={eol_comments_re},
+                                 ignorecase={ignorecase},
+                                 namechars={namechars},
+                                 **kwargs):
+                        super({name}Buffer, self).__init__(
+                            text,
+                            whitespace=whitespace,
+                            nameguard=nameguard,
+                            comments_re=comments_re,
+                            eol_comments_re=eol_comments_re,
+                            ignorecase=ignorecase,
+                            namechars=namechars,
+                            **kwargs
+                        )
 
 
                 class {name}Parser(Parser):
@@ -457,6 +479,11 @@ class Grammar(Base):
                             namechars=namechars,
                             **kwargs
                         )
+
+                    def parse(self, text, *args, **kwargs):
+                        if not isinstance(text, Buffer):
+                            text = {name}Buffer(text, **kwargs)
+                        return super({name}Parser, self).parse(text, *args, **kwargs)
 
                 {rules}
 

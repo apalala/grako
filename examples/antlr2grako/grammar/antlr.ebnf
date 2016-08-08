@@ -114,7 +114,7 @@ exceptions
 
 alternatives
     =
-    options+:alternative {'|'  options+:alternative}
+    '|'.{[annotation] options+:alternative}+
     ;
 
 alternative
@@ -131,7 +131,6 @@ element
     =
       named
     | predicate_or_action
-    | regexp
     | optional
     | closure
     | positive_closure
@@ -190,28 +189,21 @@ optional
 
 closure
     =
-    (
-    | '(' @:alternatives ')'
-    | @:atom
-    )
-    '*' ~
+    @:atom '*' ~
     ;
 
 positive_closure
     =
-    (
-        '(' @:alternatives ')'
-    |
-        @:atom
-    )
-    '+' ~
+    @:atom '+' ~
     ;
 
 atom
     =
     @:(
     | eof
+    | newranges
     | negative
+    | regexp
     | syntactic_predicate
     | subexp
     | terminal
@@ -223,7 +215,7 @@ atom
 
 annotation
     =
-    '<' id '=' id '>'
+    '<' ','.{id ['=' id]}+ '>'
     ;
 
 eof
@@ -308,15 +300,22 @@ charset_range
     first:charset_char '..'  last:charset_char
     ;
 
-newrange
+
+newranges
     =
-    NEWRANGE
+    {negative_newrange|newrange}+
     ;
 
-NEWRANGE
+newrange
     =
-    '[' charset ']'
+    '['  range:/([^\]]|\\u[a-fA-F0-9]{4}|\\.)+/ ']' repeat:[/[+*?][?]?/]
     ;
+
+negative_newrange
+    =
+    '~' '['  range:/([^\]]|\\u[a-fA-F0-9]{4}|\\.)+/ ']' repeat:[/[+*?][?]?/]
+    ;
+
 
 subexp
     =
@@ -365,7 +364,7 @@ rewrite_term
 
 rule_ref
     =
-    lower_name
+    lower_name [annotation]
     ;
 
 token_ref

@@ -13,14 +13,10 @@ the .buffering module.
 Parser.parse() will take the text to parse directly, or an instance of the
 .buffeing.Buffer class.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from grako.exceptions import FailedRef
-from grako.contexts import ParseContext, graken
-
-
-graken = graken
+from grako.contexts import ParseContext, graken  # noqa
 
 
 class Parser(ParseContext):

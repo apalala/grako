@@ -12,6 +12,7 @@ from grako.util import asjson, asjsons, Mapping, builtins
 from grako.buffering import Comments
 from grako.exceptions import SemanticError
 from grako.ast import AST
+from grako.synth import synthesize
 
 EOLCOL = 50
 
@@ -112,16 +113,19 @@ class Node(object):
             return self.parseinfo.buffer.comments(self.parseinfo.pos)
         return Comments([], [])
 
-    def __cn(self, add_child, child_collection, child):
-        if isinstance(child, Node):
+    def __cn(self, add_child, child_collection, child, seen=None):
+        if seen is None:
+            seen = set()
+        if isinstance(child, Node) and id(child) not in seen:
             add_child(child)
+            seen.add(id(child))
         elif isinstance(child, Mapping):
             # ordering for the values in mapping
             for c in child.values():
-                self.__cn(add_child, child_collection, c)
+                self.__cn(add_child, child_collection, c, seen=seen)
         elif isinstance(child, list):
             for c in child:
-                self.__cn(add_child, child_collection, c)
+                self.__cn(add_child, child_collection, c, seen=seen)
 
     def children(self):
         childset = set()
@@ -178,6 +182,9 @@ class Node(object):
 
     def __str__(self):
         return asjsons(self)
+
+
+ParseModel = Node
 
 
 class NodeWalker(object):
@@ -253,7 +260,7 @@ class ModelBuilderSemantics(object):
             return constructor
 
         # synthethize a new type
-        constructor = type(typename, (self.baseType,), {})
+        constructor = synthesize(typename, self.baseType)
         self._register_constructor(constructor)
         return constructor
 

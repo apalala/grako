@@ -15,7 +15,7 @@ class SymbolTableError(GrakoException):
     pass
 
 
-class Namespace():
+class Namespace(object):
     def __init__(self, separator=DEFAULT_SEPARATOR):
         super(Namespace, self).__init__()
         self.separator = separator

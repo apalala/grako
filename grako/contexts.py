@@ -7,7 +7,7 @@ import functools
 from collections import namedtuple
 from contextlib import contextmanager
 
-from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
+from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name, is_posix
 from grako.ast import AST
 from grako import buffering
 
@@ -26,6 +26,38 @@ from grako.exceptions import (
 )
 
 __all__ = ['ParseInfo', 'ParseContext']
+
+
+U_LARROW = '\u2190'
+U_DLARROW = '\u2199'
+
+U_LDARROW = '\u21D0'
+U_UDARROW = '\u21D1'
+U_RDARROW = '\u21D2'
+U_DDARROW = '\u21D3'
+
+U_L_TRIPPLE_ARROW = '\u21DA'
+
+U_WARNING = '\u26A0'
+U_NOT_EQUAL_TO = '\u2260'
+U_IDENTICAL_TO = '\u2261'
+U_NOT_IDENTICAL_TO = '\u2262'
+U_CHECK_MARK = '\u2713'
+
+U_POWER_SYMBOL = '\u23FB'
+U_POWER_ON_SYMBOL = '\u23FC'
+U_POWER_OFF_SYMBOL = '\u23FD'
+
+C_ENTRY = '<'
+C_SUCCESS = '>'
+C_FAILURE = '!'
+
+
+if is_posix():
+    C_DERIVE = U_DLARROW
+    C_ENTRY = C_DERIVE
+    C_SUCCESS = U_IDENTICAL_TO
+    C_FAILURE = U_NOT_IDENTICAL_TO
 
 
 ParseInfo = namedtuple(
@@ -73,9 +105,9 @@ class ParseContext(object):
                  memoize_lookaheads=True,
                  left_recursion=True,
                  trace_length=72,
-                 trace_separator=':',
+                 trace_separator=C_DERIVE,
                  trace_filename=False,
-                 colorize=False,
+                 colorize=None,
                  keywords=None,
                  namechars='',
                  **kwargs):
@@ -130,7 +162,7 @@ class ParseContext(object):
                nameguard=None,
                memoize_lookaheads=None,
                left_recursion=None,
-               colorize=False,
+               colorize=None,
                keywords=None,
                namechars='',
                **kwargs):
@@ -335,9 +367,11 @@ class ParseContext(object):
         return self.memoize_lookaheads or self._lookahead == 0
 
     def _rulestack(self):
-        stack = self.trace_separator.join(self._rule_stack)
-        if len(stack) > self.trace_length:
-            stack = '...' + stack[-self.trace_length:].lstrip(self.trace_separator)
+        stack = self.trace_separator.join(reversed(self._rule_stack))
+        if max(len(s) for s in stack.splitlines()) > self.trace_length:
+            stack = stack[:self.trace_length]
+            stack = stack.rsplit(self.trace_separator, maxsplit=1)[0]
+            stack += self.trace_separator
         return stack
 
     def _find_rule(self, name):
@@ -372,11 +406,20 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             self._trace('%s   \n%s%s \n',
-                        event + ' ' + self._rulestack(),
+                        event + self._rulestack(),
                         color.Style.DIM + fname,
                         color.Style.NORMAL + self._buffer.lookahead().rstrip('\r\n') +
                         color.Style.RESET_ALL
                         )
+
+    def _trace_entry(self):
+        self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + C_ENTRY)
+
+    def _trace_success(self):
+        self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + C_SUCCESS)
+
+    def _trace_failure(self):
+        self._trace_event(color.Fore.RED + color.Style.BRIGHT + C_FAILURE)
 
     def _trace_match(self, token, name=None, failed=False):
         if self.trace:
@@ -384,9 +427,14 @@ class ParseContext(object):
             if self.trace_filename:
                 fname = self._buffer.line_info().filename + '\n'
             name = '/%s/' % name if name else ''
-            fgcolor = color.Fore.GREEN + '< 'if not failed else color.Fore.RED + '! '
+
+            if not failed:
+                fgcolor = color.Fore.GREEN + C_SUCCESS
+            else:
+                fgcolor = color.Fore.RED + C_FAILURE
+
             self._trace(
-                color.Style.BRIGHT + fgcolor + '"%s" %s\n%s%s\n',
+                color.Style.BRIGHT + fgcolor + "'%s' %s\n%s%s\n",
                 token,
                 name,
                 color.Style.DIM + fname,
@@ -419,20 +467,24 @@ class ParseContext(object):
         self._rule_stack.append(name)
         pos = self._pos
         try:
-            self._trace_event(color.Fore.YELLOW + color.Style.BRIGHT + '>')
+            self._trace_entry()
+
             self._last_node = None
+
             node, newpos, newstate = self._invoke_rule(rule, name, params, kwparams)
+
             self._goto(newpos)
             self._state = newstate
-            self._trace_event(color.Fore.GREEN + color.Style.BRIGHT + '<')
             self._add_cst_node(node)
             self._last_node = node
+
+            self._trace_success()
             return node
         except FailedPattern:
             self._error('Expecting <%s>' % name)
         except FailedParse:
-            self._trace_event(color.Fore.RED + color.Style.BRIGHT + '!')
             self._goto(pos)
+            self._trace_failure()
             raise
         finally:
             self._rule_stack.pop()
@@ -726,11 +778,15 @@ class ParseContext(object):
                 self._pop_cut()
             self._add_cst_node(cst)
 
-    def _closure(self, block):
+    def _closure(self, block, sep=None):
         self._push_cst()
         try:
             self.cst = []
-            self._repeater(block)
+            with self._optional():
+                with self._try():
+                    block()
+                self.cst = [self.cst]
+                self._repeater(block, prefix=sep)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()
@@ -738,14 +794,14 @@ class ParseContext(object):
         self.last_node = cst
         return cst
 
-    def _positive_closure(self, block, prefix=None):
+    def _positive_closure(self, block, sep=None):
         self._push_cst()
         try:
             self.cst = None
             with self._try():
                 block()
             self.cst = [self.cst]
-            self._repeater(block, prefix=prefix)
+            self._repeater(block, prefix=sep)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()
@@ -760,7 +816,7 @@ class ParseContext(object):
         return cst
 
     def _check_name(self):
-        name = self.last_node
+        name = str(self.last_node)
         if self.ignorecase or self._buffer.ignorecase:
             name = name.upper()
         if name in self.keywords:
