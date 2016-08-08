@@ -250,7 +250,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Added
 
--   **Grako** now supports direct and indirect left recursion thanks to the implementation done by Paul [Sargent] of the work by Warth et [al]. Performance for non-left-recursive grammars is unaffected.
+-   **Grako** now supports direct and indirect left recursion thanks to the implementation done by Paul [Sargent] of the work by [Warth et al]. Performance for non-left-recursive grammars is unaffected.
 -   The old grammar syntax is now supported with deprecation warnings.  Use the `--pretty` option to upgrade a grammar.
 -   If there are no slashes in a pattern, they can now be specified without the opening and closing question marks.
 
@@ -475,9 +475,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   First public release.
 
+[ANTLR]: http://www.antlr.org
 [AST]: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 [ASTs]: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 [Abstract Syntax Tree]: http://en.wikipedia.org/wiki/Abstract_syntax_tree
+[BSD]: http://en.wikipedia.org/wiki/BSD_licenses
 [COBOL]: http://en.wikipedia.org/wiki/Cobol
 [CST]:  http://en.wikipedia.org/wiki/Concrete_syntax_tree
 [Cyclomatic complexity]: http://en.wikipedia.org/wiki/Cyclomatic_complexity
@@ -498,11 +500,14 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [VB6]: http://en.wikipedia.org/wiki/Visual_basic_6
 [Vim spell]: http://vimdoc.sourceforge.net/htmldoc/spell.html
 [Visitor Pattern]: http://en.wikipedia.org/wiki/Visitor_pattern
+[Warth et al]: http://www.vpri.org/pdf/tr2007002_packrat.pdf
 [YAML]: https://en.wikipedia.org/wiki/YAML
 [colorama]: https://pypi.python.org/pypi/colorama/
 [commit log]: https://bitbucket.org/apalala/grako/commits/
 [context managers]: http://docs.python.org/2/library/contextlib.html
+[email]: mailto:apalala@gmail.com
 [flake8]: https://pypi.python.org/pypi/flake8
+[keywords]: https://en.wikipedia.org/wiki/Reserved_word
 [legacy code]: http://en.wikipedia.org/wiki/Legacy_code
 [legacy]: http://en.wikipedia.org/wiki/Legacy_code
 [memoizing]: http://en.wikipedia.org/wiki/Memoization
@@ -512,17 +517,20 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [regex]: https://pypi.python.org/pypi/regex
 [tox]: https://testrun.org/tox/latest/
 
-[franz\_g]: https://bitbucket.org/Franz_G
-[marcus]: http://blog.marcus-brinkmann.de/
-[pauls]: https://bitbucket.org/PaulS/
+[Sargent]: https://bitbucket.org/PaulS/
+[Speer]: https://bitbucket.org/r_speer
 [basel-shishani]: https://bitbucket.org/basel-shishani
 [drothlis]: https://bitbucket.org/drothlis/
+[franz_g]: https://bitbucket.org/Franz_G
 [gapag]: https://bitbucket.org/gapag/
 [gkimbar]: https://bitbucket.org/gkimbar/
 [jimon]: https://bitbucket.org/jimon/
+[lambdafu]: http://blog.marcus-brinkmann.de/
 [linkdd]: https://bitbucket.org/linkdd/
+[marcus]: http://blog.marcus-brinkmann.de/
 [nehz]: https://bitbucket.org/nehz/grako
 [neumond]: https://bitbucket.org/neumond/
+[pauls]: https://bitbucket.org/PaulS/
 [pgebhard]: https://github.com/pgebhard?tab=repositories
 [r_speer]: https://bitbucket.org/r_speer
 [siemer]: https://bitbucket.org/siemer/
