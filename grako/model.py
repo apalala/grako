@@ -194,9 +194,9 @@ class NodeWalker(object):
 
     def _find_walker(self, node, prefix='walk_'):
         classid = id(node.__class__)
-        walker = self._walker_cache.get(classid)
-        if walker:
-            return walker
+
+        if classid in self._walker_cache:
+            return self._walker_cache[classid]
 
         classes = [node.__class__]
         while classes:
