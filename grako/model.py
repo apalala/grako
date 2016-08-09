@@ -214,7 +214,6 @@ class NodeWalker(object):
         self._walker_cache[classid] = walker
         return walker
 
-
     def walk(self, node, *args, **kwargs):
         walker = self._find_walker(node)
         if callable(walker):
