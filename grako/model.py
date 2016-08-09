@@ -188,19 +188,32 @@ ParseModel = Node
 
 
 class NodeWalker(object):
+    def __new__(cls, *args, **kwargs):
+        cls._walker_cache = {}
+        return super(NodeWalker, cls).__new__(cls)
+
     def _find_walker(self, node, prefix='walk_'):
+        classid = id(node.__class__)
+        walker = self._walker_cache.get(classid)
+        if walker:
+            return walker
+
         classes = [node.__class__]
         while classes:
             cls = classes.pop()
             name = prefix + cls.__name__
             walker = getattr(self, name, None)
             if callable(walker):
-                return walker
+                break
             for b in cls.__bases__:
                 if b not in classes:
                     classes.append(b)
+        else:
+            walker = getattr(self, 'walk_default', None)
 
-        return getattr(self, 'walk_default', None)
+        self._walker_cache[classid] = walker
+        return walker
+
 
     def walk(self, node, *args, **kwargs):
         walker = self._find_walker(node)
@@ -210,14 +223,14 @@ class NodeWalker(object):
 
 class DepthFirstWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
-        tv = super(DepthFirstWalker, self).walk
+        supers_walk = super(DepthFirstWalker, self).walk
         if isinstance(node, Node):
             children = [self.walk(c, *args, **kwargs) for c in node.children()]
-            return tv(node, children, *args, **kwargs)
+            return supers_walk(node, children, *args, **kwargs)
         elif isinstance(node, collections.Iterable):
-            return [tv(e, [], *args, **kwargs) for e in node]
+            return [self.walk(e, *args, **kwargs) for e in iter(node)]
         else:
-            return tv(node, [], *args, **kwargs)
+            return supers_walk(node, [], *args, **kwargs)
 
 
 class ModelBuilderSemantics(object):
