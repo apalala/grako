@@ -48,6 +48,7 @@ The only dependencies are on the Python_ or PyPy_ standard libraries (the propos
 .. _regex: https://pypi.python.org/pypi/regex
 .. _re: https://docs.python.org/3.4/library/re.html
 .. _pygraphviz: https://pypi.python.org/pypi/pygraphviz
+.. _colorama: https://pypi.python.org/pypi/colorama/
 
 Table of Contents
 =================
@@ -908,3 +909,14 @@ Changes
 See the CHANGELOG_ for details.
 
 .. _CHANGELOG: https://bitbucket.org/apalala/grako/src/default/CHANGELOG.md
+
+
+.. Google Analytics Script
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-37745872-1', 'auto');
+    ga('send', 'pageview');
+    </script>
