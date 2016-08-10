@@ -12,6 +12,7 @@ from grako.util import asjson, asjsons, Mapping, builtins
 from grako.buffering import Comments
 from grako.exceptions import SemanticError
 from grako.ast import AST
+from grako.synth import synthesize
 
 EOLCOL = 50
 
@@ -57,9 +58,25 @@ class Node(object):
 
     @property
     def line(self):
-        info = self.line_info
-        if info:
-            return info.line
+        pi = self._parseinfo
+        if pi:
+            return pi.line
+
+    @property
+    def endline(self):
+        pi = self._parseinfo
+        if pi:
+            return pi.line
+
+    def text_lines(self):
+        pi = self._parseinfo
+        if pi:
+            return pi.buffer.get_lines(pi.line, pi.endline)
+
+    def line_index(self):
+        pi = self._parseinfo
+        if pi:
+            return pi.buffer.line_index(pi.line, pi.endline)
 
     @property
     def col(self):
@@ -96,16 +113,19 @@ class Node(object):
             return self.parseinfo.buffer.comments(self.parseinfo.pos)
         return Comments([], [])
 
-    def __cn(self, add_child, child_collection, child):
-        if isinstance(child, Node):
+    def __cn(self, add_child, child_collection, child, seen=None):
+        if seen is None:
+            seen = set()
+        if isinstance(child, Node) and id(child) not in seen:
             add_child(child)
+            seen.add(id(child))
         elif isinstance(child, Mapping):
             # ordering for the values in mapping
             for c in child.values():
-                self.__cn(add_child, child_collection, c)
+                self.__cn(add_child, child_collection, c, seen=seen)
         elif isinstance(child, list):
             for c in child:
-                self.__cn(add_child, child_collection, c)
+                self.__cn(add_child, child_collection, c, seen=seen)
 
     def children(self):
         childset = set()
@@ -164,20 +184,35 @@ class Node(object):
         return asjsons(self)
 
 
+ParseModel = Node
+
+
 class NodeWalker(object):
+    def __new__(cls, *args, **kwargs):
+        cls._walker_cache = {}
+        return super(NodeWalker, cls).__new__(cls)
+
     def _find_walker(self, node, prefix='walk_'):
+        classid = id(node.__class__)
+
+        if classid in self._walker_cache:
+            return self._walker_cache[classid]
+
         classes = [node.__class__]
         while classes:
             cls = classes.pop()
             name = prefix + cls.__name__
             walker = getattr(self, name, None)
             if callable(walker):
-                return walker
+                break
             for b in cls.__bases__:
                 if b not in classes:
                     classes.append(b)
+        else:
+            walker = getattr(self, 'walk_default', None)
 
-        return getattr(self, 'walk_default', None)
+        self._walker_cache[classid] = walker
+        return walker
 
     def walk(self, node, *args, **kwargs):
         walker = self._find_walker(node)
@@ -187,14 +222,16 @@ class NodeWalker(object):
 
 class DepthFirstWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
-        tv = super(DepthFirstWalker, self).walk
+        supers_walk = super(DepthFirstWalker, self).walk
         if isinstance(node, Node):
             children = [self.walk(c, *args, **kwargs) for c in node.children()]
-            return tv(node, children, *args, **kwargs)
+            return supers_walk(node, children, *args, **kwargs)
+        elif isinstance(node, collections.Mapping):
+            return {n: self.walk(e, *args, **kwargs) for n, e in node.items()}
         elif isinstance(node, collections.Iterable):
-            return [tv(e, [], *args, **kwargs) for e in node]
+            return [self.walk(e, *args, **kwargs) for e in iter(node)]
         else:
-            return tv(node, [], *args, **kwargs)
+            return supers_walk(node, [], *args, **kwargs)
 
 
 class ModelBuilderSemantics(object):
@@ -237,7 +274,7 @@ class ModelBuilderSemantics(object):
             return constructor
 
         # synthethize a new type
-        constructor = type(typename, (self.baseType,), {})
+        constructor = synthesize(typename, self.baseType)
         self._register_constructor(constructor)
         return constructor
 

@@ -10,7 +10,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
-from bisect import bisect_left
 from collections import namedtuple
 
 from grako.util import ustr, strtype, extend_list, re as regexp
@@ -24,7 +23,10 @@ __all__ = ['Buffer']
 RETYPE = type(regexp.compile('.'))
 
 
-PosLine = namedtuple('PosLine', ['pos', 'line'])
+PosLine = namedtuple(
+    'PosLine',
+    ['start', 'line', 'length']
+)
 
 
 LineInfo = namedtuple(
@@ -33,10 +35,19 @@ LineInfo = namedtuple(
 )
 
 
-Comments = namedtuple('Comments', ['inline', 'eol'])
+LineIndexEntry = namedtuple(
+    'LineIndexEntry',
+    ['filename', 'line']
+)
 
 
-def _new_comments():
+Comments = namedtuple(
+    'Comments',
+    ['inline', 'eol']
+)
+
+
+def new_comment():
     return Comments([], [])
 
 
@@ -45,26 +56,22 @@ class Buffer(object):
                  text,
                  filename=None,
                  whitespace=None,
-                 tabwidth=None,
                  comments_re=None,
                  eol_comments_re=None,
                  ignorecase=False,
-                 trace=False,
                  nameguard=None,
                  comment_recovery=False,
                  namechars='',
                  **kwargs):
-        self.original_text = text
-        self.text = ustr(text)
+        text = ustr(text)
+        self.text = self.original_text = text
         self.filename = filename or ''
 
         self.whitespace = whitespace
 
-        self.tabwidth = tabwidth
         self.comments_re = comments_re
         self.eol_comments_re = eol_comments_re
         self.ignorecase = ignorecase
-        self.trace = True
         self.nameguard = (nameguard
                           if nameguard is not None
                           else bool(self.whitespace_re))
@@ -77,6 +84,7 @@ class Buffer(object):
         self._pos = 0
         self._len = 0
         self._linecount = 0
+        self._lines = []
         self._line_index = []
         self._linecache = []
         self._comment_index = []
@@ -112,24 +120,36 @@ class Buffer(object):
 
     def _preprocess(self, *args, **kwargs):
         lines, index = self._preprocess_block(self.filename, self.text)
-        self.text = ''.join(lines)
+        self._lines = lines
         self._line_index = index
+        self.text = self.join_block_lines(lines)
 
     def _postprocess(self):
         self._build_line_cache()
         self._len = len(self.text)
+        return
+
+        lines = self._lines
+        for i, line in enumerate(lines):
+            from pathlib import Path
+            print('%4.4d %3.3d %20s(%3.3d) : %s' % (
+                id(self),
+                i + 1,
+                Path(self._line_index[i].filename).name,
+                self._line_index[i].line,
+                line,
+            )
+            )
 
     def _preprocess_block(self, name, block, **kwargs):
-        if self.tabwidth is not None:
-            block = block.replace('\t', ' ' * self.tabwidth)
-        lines = self.split_block_lines(name, block)
+        lines = self.split_block_lines(block)
         index = self._block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
 
     def _block_index(self, name, n):
-        return list(zip(n * [name], range(n)))
+        return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
 
-    def split_block_lines(self, name, block, **kwargs):
+    def split_block_lines(self, block):
         return block.splitlines(True)
 
     def join_block_lines(self, lines):
@@ -141,14 +161,14 @@ class Buffer(object):
     def include(self, lines, index, i, j, name, block, **kwargs):
         blines, bindex = self._preprocess_block(name, block, **kwargs)
         assert len(blines) == len(bindex)
-        lines[i:j + 1] = blines
-        index[i:j + 1] = bindex
+        lines[i:j] = blines
+        index[i:j] = bindex
         assert len(lines) == len(index)
         return j + len(blines)
 
     def include_file(self, source, name, lines, index, i, j):
         text, filename = self.get_include(source, name)
-        return self.include(lines, index, i, i, filename, text)
+        return self.include(lines, index, i, j, filename, text)
 
     def get_include(self, source, filename):
         source = os.path.abspath(source)
@@ -161,7 +181,7 @@ class Buffer(object):
             raise ParseError('include not found: %s' % include)
 
     def replace_lines(self, i, j, name, block):
-        lines = self.split_block_lines(name, self.text)
+        lines = self.split_block_lines(self.text)
         index = list(self._line_index)
 
         endline = self.include(lines, index, i, j, name, block)
@@ -181,16 +201,24 @@ class Buffer(object):
     def pos(self, p):
         self.goto(p)
 
+    def posline(self, pos=None):
+        if pos is None:
+            pos = self._pos
+        return self._linecache[pos].line
+
     @property
     def line(self):
-        n = bisect_left(self._linecache, PosLine(self._pos, 0))
-        return self._linecache[n - 1][1]
+        return self.posline(self._pos)
+
+    def poscol(self, pos=None):
+        if pos is None:
+            pos = self._pos
+        start = self._linecache[pos].start
+        return pos - start
 
     @property
     def col(self):
-        n = bisect_left(self._linecache, PosLine(self._pos, 0))
-        start = self._linecache[n - 1][0]
-        return self._pos - start - 1
+        return self.poscol(self._pos)
 
     def atend(self):
         return self._pos >= self._len
@@ -228,7 +256,7 @@ class Buffer(object):
         if not self.comment_recovery or not self._comment_index:
             return Comments([], [])
 
-        n = self.line_info(p).line
+        n = self.posline(p)
         if n >= len(self._comment_index):
             return Comments([], [])
 
@@ -260,7 +288,7 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    extend_list(self._comment_index, n, default=_new_comments)
+                    extend_list(self._comment_index, n, default=new_comment)
 
                     index = self._comment_index[n]
                     if not index.inline or index.inline[-1] != comment:
@@ -274,7 +302,7 @@ class Buffer(object):
                     break
                 if self.comment_recovery:
                     n = self.line
-                    extend_list(self._comment_index, n, default=_new_comments)
+                    extend_list(self._comment_index, n, default=new_comment)
 
                     index = self._comment_index[n]
                     if not index.eol or index.eol[-1] != comment:
@@ -366,20 +394,19 @@ class Buffer(object):
         return re.match(self.text, self.pos + offset)
 
     def _build_line_cache(self):
-        # The line cache holds the position of the last character
-        # (counting from 0) in each line (counting from 1).  At the
-        # head, we have an imaginary line 0 that ends at -1.
-        lines = self.text.splitlines(True)
-        i = -1
-        n = 0
+        lines = self._lines
         cache = []
-        for n, s in enumerate(lines):
-            cache.append(PosLine(i, n))
-            i += len(s)
+        n = 0
+        i = 0
+        for n, line in enumerate(lines):
+            pl = PosLine(i, n, len(line))
+            for c in line:
+                cache.append(pl)
+            i += len(line)
         n += 1
-        if lines and lines[-1][-1] in '\r\n':
+        if lines and lines[-1] and lines[-1][-1] in '\r\n':
             n += 1
-        cache.append(PosLine(i, n))
+        cache.append(PosLine(i, n, 0))
         self._linecache = cache
         self._linecount = n
 
@@ -391,14 +418,11 @@ class Buffer(object):
         if pos is None:
             pos = self._pos
 
-        nmax = len(self._linecache) - 1
-        if pos >= self._len:
-            return LineInfo(self.filename, nmax, 0, self._len, self._len, '')
+        if pos >= len(self._linecache):
+            return LineInfo(self.filename, self.linecount, 0, self._len, self._len, '')
 
-        n = bisect_left(self._linecache, PosLine(pos, 0))
-        start, line = self._linecache[n - 1]
-        start = start + 1
-        end = self._linecache[n].pos + 1
+        start, line, length = self._linecache[pos]
+        end = start + length
         col = pos - start
 
         text = self.text[start:end]
@@ -412,13 +436,22 @@ class Buffer(object):
             return ''
         info = self.line_info()
         text = info.text[info.col:info.col + 1 + 80]
-        text = text.split('\n')[0]
+        text = self.split_block_lines(text)[0].rstrip()
         return '<%d:%d>%s' % (info.line + 1, info.col + 1, text)
 
     def get_line(self, n=None):
         if n is None:
             n = self.line
-        start, line = self._linecache[n][:2]
-        assert line == n
-        end, _ = self._linecache[n + 1]
-        return self.text[start + 1:end]
+        return self._lines[n]
+
+    def get_lines(self, start=None, end=None):
+        if start is None:
+            start = 0
+        if end is None:
+            end = len(self._lines)
+        return self._lines[start:end + 1]
+
+    def line_index(self, start=0, end=None):
+        if end is None:
+            end = len(self._line_index)
+        return self._line_index[start:1 + end]

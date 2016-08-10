@@ -14,6 +14,7 @@ genparser.py$
 parser_base.py$
 docs/_build/
 \.ropeproject/
+^grako\.build/
 
 # IDEs
 \.idea$

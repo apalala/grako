@@ -2,12 +2,15 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
+import os
 import collections
 import json
 import datetime
 import codecs
 import itertools
 import keyword
+import functools
+import warnings
 
 try:
     import regex as re
@@ -38,6 +41,10 @@ else:
     zip_longest = itertools.izip_longest
     import __builtin__ as builtins
 assert builtins
+
+
+def is_posix():
+    return os.name == 'posix'
 
 
 def info(*args, **kwargs):
@@ -152,11 +159,11 @@ def trim(text, tabwidth=4):
     lines = text.expandtabs(tabwidth).splitlines()
     maxindent = len(text)
     indent = maxindent
-    for line in lines[1:]:
+    for line in lines:
         stripped = line.lstrip()
         if stripped:
             indent = min(indent, len(line) - len(stripped))
-    trimmed = [lines[0].strip()] + [line[indent:].rstrip() for line in lines[1:]]
+    trimmed = [line[indent:].rstrip() for line in lines]
     i = 0
     while i < len(trimmed) and not trimmed[i]:
         i += 1
@@ -293,3 +300,21 @@ def generic_main(custom_main, ParserClass, name='Unknown'):
         )
     except KeyboardInterrupt:
         pass
+
+
+warnings.filterwarnings('default', category=DeprecationWarning)
+
+
+# decorator
+def deprecated(fun):
+    @functools.wraps(fun)
+    def wrapper(*args, **kwargs):
+        msg = "Call to deprecated function {}."
+        warnings.warn(
+            msg.format(fun.__name__),
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return fun(*args, **kwargs)
+
+    return wrapper

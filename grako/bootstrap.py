@@ -13,11 +13,12 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from grako.buffering import Buffer
 from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 5, 26, 15, 5, 16, 3)
+__version__ = (2016, 8, 6, 10, 44, 50, 5)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -28,6 +29,28 @@ __all__ = [
 KEYWORDS = set([])
 
 
+class GrakoBootstrapBuffer(Buffer):
+    def __init__(self,
+                 text,
+                 whitespace=None,
+                 nameguard=None,
+                 comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+                 eol_comments_re='#([^\\n]*?)$',
+                 ignorecase=None,
+                 namechars='',
+                 **kwargs):
+        super(GrakoBootstrapBuffer, self).__init__(
+            text,
+            whitespace=whitespace,
+            nameguard=nameguard,
+            comments_re=comments_re,
+            eol_comments_re=eol_comments_re,
+            ignorecase=ignorecase,
+            namechars=namechars,
+            **kwargs
+        )
+
+
 class GrakoBootstrapParser(Parser):
     def __init__(self,
                  whitespace=None,
@@ -35,7 +58,7 @@ class GrakoBootstrapParser(Parser):
                  comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
                  eol_comments_re='#([^\\n]*?)$',
                  ignorecase=None,
-                 left_recursion=True,
+                 left_recursion=False,
                  keywords=KEYWORDS,
                  namechars='',
                  **kwargs):
@@ -50,6 +73,11 @@ class GrakoBootstrapParser(Parser):
             namechars=namechars,
             **kwargs
         )
+
+    def parse(self, text, *args, **kwargs):
+        if not isinstance(text, Buffer):
+            text = GrakoBootstrapBuffer(text, **kwargs)
+        return super(GrakoBootstrapParser, self).parse(text, *args, **kwargs)
 
     @graken()
     def _start_(self):
@@ -72,7 +100,6 @@ class GrakoBootstrapParser(Parser):
         self._positive_closure(block5)
         self.name_last_node('rules')
         self._check_eof()
-
         self.ast._define(
             ['title', 'directives', 'keywords', 'rules'],
             []
@@ -145,7 +172,6 @@ class GrakoBootstrapParser(Parser):
                     self._string_()
                     self.name_last_node('value')
                 self._error('no available options')
-
         self.ast._define(
             ['name', 'value'],
             []
@@ -203,7 +229,6 @@ class GrakoBootstrapParser(Parser):
                         self._error('no available options')
                 self._token(')')
             self._error('no available options')
-
         self.ast._define(
             ['params', 'kwparams'],
             []
@@ -258,7 +283,6 @@ class GrakoBootstrapParser(Parser):
         self.name_last_node('exp')
         self._token(';')
         self._cut()
-
         self.ast._define(
             ['decorators', 'name', 'params', 'kwparams', 'base', 'exp'],
             []
@@ -299,7 +323,7 @@ class GrakoBootstrapParser(Parser):
 
         def block0():
             self._literal_()
-        self._positive_closure(block0, prefix=sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _kwparams_(self):
@@ -309,7 +333,7 @@ class GrakoBootstrapParser(Parser):
 
         def block0():
             self._pair_()
-        self._positive_closure(block0, prefix=sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _pair_(self):
@@ -351,7 +375,6 @@ class GrakoBootstrapParser(Parser):
             self._element_()
         self._positive_closure(block1)
         self.name_last_node('sequence')
-
         self.ast._define(
             ['sequence'],
             []
@@ -394,7 +417,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._element_()
         self.name_last_node('exp')
-
         self.ast._define(
             ['name', 'exp'],
             []
@@ -408,7 +430,6 @@ class GrakoBootstrapParser(Parser):
         self._cut()
         self._element_()
         self.name_last_node('exp')
-
         self.ast._define(
             ['name', 'exp'],
             []
@@ -481,14 +502,51 @@ class GrakoBootstrapParser(Parser):
         self.name_last_node('exp')
         self._token(')')
         self._cut()
-
         self.ast._define(
             ['exp'],
             []
         )
 
-    @graken('Join')
+    @graken()
     def _join_(self):
+        with self._if():
+            with self._group():
+                self._separator_()
+                self._token('.')
+                self._token('{')
+        self._cut()
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._positive_join_()
+                with self._option():
+                    self._normal_join_()
+                self._error('no available options')
+
+    @graken('PositiveJoin')
+    def _positive_join_(self):
+        self._separator_()
+        self.name_last_node('sep')
+        self._token('.')
+        self._token('{')
+        self._expre_()
+        self.name_last_node('exp')
+        self._token('}')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('+')
+                with self._option():
+                    self._token('-')
+                self._error('expecting one of: + -')
+        self._cut()
+        self.ast._define(
+            ['sep', 'exp'],
+            []
+        )
+
+    @graken('Join')
+    def _normal_join_(self):
         self._separator_()
         self.name_last_node('sep')
         self._token('.')
@@ -498,11 +556,10 @@ class GrakoBootstrapParser(Parser):
         self._expre_()
         self.name_last_node('exp')
         self._token('}')
-        self._cut()
         with self._optional():
-            self._token('+')
+            self._token('*')
             self._cut()
-
+        self._cut()
         self.ast._define(
             ['sep', 'exp'],
             []
@@ -696,7 +753,19 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Pattern')
     def _pattern_(self):
+        self._regexes_()
+
+    @graken()
+    def _regexes_(self):
         self._regex_()
+        self.add_last_node_to_name('@')
+
+        def block1():
+            self._token('+')
+            self._cut()
+            self._regex_()
+            self.add_last_node_to_name('@')
+        self._closure(block1)
 
     @graken()
     def _regex_(self):
@@ -811,6 +880,12 @@ class GrakoBootstrapSemantics(object):
     def join(self, ast):
         return ast
 
+    def positive_join(self, ast):
+        return ast
+
+    def normal_join(self, ast):
+        return ast
+
     def separator(self, ast):
         return ast
 
@@ -883,6 +958,9 @@ class GrakoBootstrapSemantics(object):
     def pattern(self, ast):
         return ast
 
+    def regexes(self, ast):
+        return ast
+
     def regex(self, ast):
         return ast
 
@@ -902,7 +980,7 @@ def main(
         comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
         eol_comments_re='#([^\\n]*?)$',
         ignorecase=None,
-        left_recursion=True,
+        left_recursion=False,
         **kwargs):
 
     with open(filename) as f:

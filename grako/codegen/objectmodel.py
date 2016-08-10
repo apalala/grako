@@ -34,6 +34,7 @@ class ObjectModelCodeGenerator(CodeGenerator):
 class Rule(ModelRenderer):
     def render_fields(self, fields):
         defs = [safe_name(d) for d, l in compress_seq(self.defines())]
+        defs = list(sorted(set(defs)))
 
         kwargs = '\n'.join('%s=None, ' % d for d in defs)
         params = '\n'.join('%s=%s,' % (d, d) for d in defs)
@@ -44,7 +45,7 @@ class Rule(ModelRenderer):
 
             kwargs = '\n' + indent(kwargs + '\n**kwargs', indent=17, multiplier=1)
         else:
-            kwargs = '**kwargs'
+            kwargs = ' **kwargs'
             params = '*args, **kwargs)'
 
         fields.update(

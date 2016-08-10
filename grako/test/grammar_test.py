@@ -66,7 +66,7 @@ class GrammarTests(unittest.TestCase):
         '''
         m = genmodel('Update', grammar)
         ast = m.parse("1101110100", nameguard=False)
-        self.assertEquals([['11'], ['111'], ['1'], []], ast.items_)
+        self.assertEqual([['11'], ['111'], ['1'], []], ast.items_)
 
     def test_ast_assignment(self):
         grammar = '''
@@ -166,22 +166,22 @@ class GrammarTests(unittest.TestCase):
         grammar = 'start = foo+:"x" foo:{"y"}* {foo:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
-        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+        self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
         grammar = 'start = foo+:"x" [foo+:{"y"}*] {foo:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
-        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+        self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
         grammar = 'start = foo+:"x" foo:[{"y"}*] {foo:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
-        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+        self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
         grammar = 'start = foo+:"x" [foo:{"y"}*] {foo:"z"}* ;'
         model = genmodel("test", grammar)
         ast = model.parse("xyyzz", nameguard=False)
-        self.assertEquals(['x', ['y', 'y'], 'z', 'z'], ast.foo)
+        self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
     def test_optional_sequence(self):
         grammar = '''
@@ -189,14 +189,14 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("1234", nameguard=False)
-        self.assertEquals(['1', '2', '3', '4'], ast)
+        self.assertEqual(['1', '2', '3', '4'], ast)
 
         grammar = '''
             start = '1' foo:['2' '3'] '4' $ ;
         '''
         model = genmodel("test", grammar)
         ast = model.parse("1234", nameguard=False)
-        self.assertEquals(['2', '3'], ast.foo)
+        self.assertEqual(['2', '3'], ast.foo)
 
     def test_group_ast(self):
         grammar = '''
@@ -204,7 +204,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("1234", nameguard=False)
-        self.assertEquals(['1', '2', '3', '4'], ast)
+        self.assertEqual(['1', '2', '3', '4'], ast)
 
     def test_partial_options(self):
         grammar = '''
@@ -225,7 +225,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("AB", nameguard=False)
-        self.assertEquals(['A', 'B'], ast)
+        self.assertEqual(['A', 'B'], ast)
 
     def test_partial_choice(self):
         grammar = '''
@@ -244,7 +244,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("A", nameguard=False)
-        self.assertEquals({'x': 'A', 'o': None}, ast)
+        self.assertEqual({'x': 'A', 'o': None}, ast)
 
     def test_patterns_with_newlines(self):
         grammar = '''
@@ -282,7 +282,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
-        self.assertEquals(['a', 'b', 'b'], ast)
+        self.assertEqual(['a', 'b', 'b'], ast)
 
     def test_list_override(self):
         grammar = '''
@@ -294,7 +294,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("a", nameguard=False)
-        self.assertEquals(['a'], ast)
+        self.assertEqual(['a'], ast)
 
         grammar = '''
             start
@@ -305,7 +305,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("a", nameguard=False)
-        self.assertEquals('a', ast)
+        self.assertEqual('a', ast)
 
     def test_based_rule(self):
         grammar = '''\
@@ -328,7 +328,7 @@ class GrammarTests(unittest.TestCase):
             '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
-        self.assertEquals(['a', 'b', 'b'], ast)
+        self.assertEqual(['a', 'b', 'b'], ast)
         self.assertEqual(trim(grammar), ustr(model))
 
     def test_rule_include(self):
@@ -340,7 +340,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
-        self.assertEquals(['a', 'b', 'b'], ast)
+        self.assertEqual(['a', 'b', 'b'], ast)
 
     def test_direct_left_recursion(self):
         grammar = '''
@@ -365,7 +365,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("1*2+3*5")
-        self.assertEquals(['1', '*', '2', '+', '3', '*', '5'], ast)
+        self.assertEqual(['1', '*', '2', '+', '3', '*', '5'], ast)
 
     def test_indirect_left_recursion(self):
         grammar = '''
@@ -376,7 +376,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("5-87-32")
-        self.assertEquals(['5', '-', '87', '-', '32'], ast)
+        self.assertEqual(['5', '-', '87', '-', '32'], ast)
 
     def test_indirect_left_recursion_with_cut(self):
         grammar = '''
@@ -387,7 +387,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("5-87-32")
-        self.assertEquals(['5', '-', '87', '-', '32'], ast)
+        self.assertEqual(['5', '-', '87', '-', '32'], ast)
 
     def test_indirect_left_recursion_complex(self):
         grammar = '''
@@ -430,15 +430,15 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("this")
-        self.assertEquals('this', ast)
+        self.assertEqual('this', ast)
         ast = model.parse("this.x")
-        self.assertEquals(['this', '.', 'x'], ast)
+        self.assertEqual(['this', '.', 'x'], ast)
         ast = model.parse("this.x.y")
-        self.assertEquals(['this', '.', 'x', '.', 'y'], ast)
+        self.assertEqual(['this', '.', 'x', '.', 'y'], ast)
         ast = model.parse("this.x.m()")
-        self.assertEquals(['this', '.', 'x', '.', 'm', '()'], ast)
+        self.assertEqual(['this', '.', 'x', '.', 'm', '()'], ast)
         ast = model.parse("x[i][j].y")
-        self.assertEquals(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
+        self.assertEqual(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
 
     def test_no_left_recursion(self):
         grammar = '''
@@ -486,13 +486,13 @@ class GrammarTests(unittest.TestCase):
         model_a = genmodel("test", grammar_a)
         model_b = genmodel("test", grammar_b)
         ast = model_a.parse("1*2+3*4")
-        self.assertEquals(['1', '*', '2', '+', ['3', '*', '4']], ast)
+        self.assertEqual(['1', '*', '2', '+', ['3', '*', '4']], ast)
         ast = model_b.parse("(1+2)+(3+4)")
-        self.assertEquals(['1', '+', '2', '+', ['3', '+', '4']], ast)
+        self.assertEqual(['1', '+', '2', '+', ['3', '+', '4']], ast)
         ast = model_a.parse("1*2*3")
-        self.assertEquals(['1', '*', '2', '*', '3'], ast)
+        self.assertEqual(['1', '*', '2', '*', '3'], ast)
         ast = model_b.parse("(((1+2)))")
-        self.assertEquals(['1', '+', '2'], ast)
+        self.assertEqual(['1', '+', '2'], ast)
 
     def test_keyword_params(self):
         grammar = '''
@@ -504,7 +504,7 @@ class GrammarTests(unittest.TestCase):
         g = GrakoGrammarGenerator('Keywords')
         model = g.parse(grammar, trace=False)
         code = codegen(model)
-        self.assertEquals('#!/usr/bin/env python', code.splitlines()[0])
+        self.assertEqual('#!/usr/bin/env python', code.splitlines()[0])
         pass
 
     def test_35_only_keyword_params(self):
@@ -515,7 +515,7 @@ class GrammarTests(unittest.TestCase):
                 ;
         '''
         model = genmodel("test", grammar)
-        self.assertEquals(trim(grammar), ustr(model))
+        self.assertEqual(trim(grammar), ustr(model))
 
     def test_36_params_and_keyword_params(self):
         grammar = '''
@@ -525,7 +525,7 @@ class GrammarTests(unittest.TestCase):
                 ;
         '''
         model = genmodel("test", grammar)
-        self.assertEquals(trim(grammar), ustr(model))
+        self.assertEqual(trim(grammar), ustr(model))
 
     def test_36_param_combinations(self):
         def assert_equal(target, value):
@@ -700,7 +700,7 @@ class GrammarTests(unittest.TestCase):
             grammar += rule2
 
         model = genmodel("test", grammar)
-        self.assertEquals(trim(grammar), ustr(model))
+        self.assertEqual(trim(grammar), ustr(model))
 
     def test_48_rule_override(self):
         grammar = '''
@@ -713,7 +713,7 @@ class GrammarTests(unittest.TestCase):
         '''
         model = genmodel("test", grammar)
         ast = model.parse("abb", nameguard=False)
-        self.assertEquals(['a', 'b', 'b'], ast)
+        self.assertEqual(['a', 'b', 'b'], ast)
 
     def test_whitespace_directive(self):
         grammar = '''
@@ -832,27 +832,27 @@ class GrammarTests(unittest.TestCase):
         model = genmodel("test", grammar)
         codegen(model)
         ast = model.parse("xxxy", nameguard=False)
-        self.assertEquals([['x', 'x', 'x'], [], 'y'], ast)
+        self.assertEqual([['x', 'x', 'x'], [], 'y'], ast)
 
-    def test_join(self):
+    def test_positive_join(self):
         grammar = '''
-            start = ','.{'x' 'y'} ;
+            start = ','.{'x' 'y'}+ ;
         '''
 
         grammar2 = '''
-            start = (','.{'x'}|{}) ;
+            start = (','.{'x'}+|{}) ;
         '''
 
         grammar3 = '''
-            start = [','.{'x'}] ;
+            start = [','.{'x'}+] ;
         '''
 
         model = genmodel("test", grammar)
         codegen(model)
         ast = model.parse("x y, x y", nameguard=False)
-        self.assertEquals([['x', 'y'], ['x', 'y']], ast)
+        self.assertEqual([['x', 'y'], ['x', 'y']], ast)
         ast = model.parse("x y x y", nameguard=False)
-        self.assertEquals([['x', 'y']], ast)
+        self.assertEqual([['x', 'y']], ast)
         try:
             ast = model.parse("y x", nameguard=False)
             self.fail('closure not positive')
@@ -861,19 +861,36 @@ class GrammarTests(unittest.TestCase):
 
         model = genmodel("test", grammar2)
         ast = model.parse("y x", nameguard=False)
-        self.assertEquals([], ast)
+        self.assertEqual([], ast)
         ast = model.parse("x", nameguard=False)
-        self.assertEquals(['x'], ast)
+        self.assertEqual(['x'], ast)
         ast = model.parse("x,x", nameguard=False)
-        self.assertEquals(['x', 'x'], ast)
+        self.assertEqual(['x', 'x'], ast)
 
         model = genmodel("test", grammar3)
         ast = model.parse("y x", nameguard=False)
-        self.assertEquals(None, ast)
+        self.assertEqual(None, ast)
+
+    def test_normal_join(self):
+        grammar = '''
+            start = ','.{'x' 'y'} 'z' ;
+        '''
+
+        model = genmodel("test", grammar)
+        codegen(model)
+
+        ast = model.parse("x y, x y z", nameguard=False)
+        self.assertEqual([[['x', 'y'], ['x', 'y']], 'z'], ast)
+
+        ast = model.parse("x y z", nameguard=False)
+        self.assertEqual([[['x', 'y']], 'z'], ast)
+
+        ast = model.parse("z", nameguard=False)
+        self.assertEqual([[], 'z'], ast)
 
     def test_group_join(self):
         grammar = '''
-            start = ('a' 'b').{'x'} ;
+            start = ('a' 'b').{'x'}+ ;
         '''
         model = genmodel("test", grammar)
         c = codegen(model)
@@ -881,7 +898,7 @@ class GrammarTests(unittest.TestCase):
         parser.suite(c)
 
         ast = model.parse("x a b x", nameguard=False)
-        self.assertEquals(['x', 'x'], ast)
+        self.assertEqual(['x', 'x'], ast)
 
     def test_define_keywords(self):
         import parser
@@ -890,7 +907,7 @@ class GrammarTests(unittest.TestCase):
             @@keyword :: B C
             @@keyword :: 'A'
 
-            start = ('a' 'b').{'x'} ;
+            start = ('a' 'b').{'x'}+ ;
         '''
         model = genmodel("test", grammar)
         c = codegen(model)
@@ -963,13 +980,26 @@ class GrammarTests(unittest.TestCase):
             test = "test";
         '''
         model = genmodel(grammar=grammar)
-        self.assertEquals('Test', model.directives.get('grammar'))
-        self.assertEquals('Test', model.name)
+        self.assertEqual('Test', model.directives.get('grammar'))
+        self.assertEqual('Test', model.name)
 
         code = codegen(model)
         module = compile(code, 'test.py', 'exec')
 
         assert 'TestParser' in module.co_names
+
+    def test_pattern_concatenation(self):
+        grammar = '''
+            start = {letters_digits}+ ;
+
+            letters_digits
+                =
+                /[a-z]+/ + /[0-9]+/
+                ;
+        '''
+        model = genmodel(grammar=grammar)
+        ast = model.parse('abc123 def456')
+        self.assertEqual(['abc123', 'def456'], ast)
 
 
 def suite():

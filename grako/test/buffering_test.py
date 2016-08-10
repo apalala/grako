@@ -26,8 +26,8 @@ class BufferingTests(unittest.TestCase):
         for p, c in enumerate(self.text):
             bl, bc = self.buf.line_info(p)[1:3]
             d = self.buf.next()
-#            print('tx', line, col, c.encode('string-escape'))
-#            print('bu', bl, bc, d.encode('string-escape'))
+            # print('tx', line, col, repr(c))
+            # print('bu', bl, bc, repr(d))
             self.assertEqual(bl, line)
             self.assertEqual(bc, col)
             self.assertEqual(d, c)
@@ -56,12 +56,12 @@ class BufferingTests(unittest.TestCase):
             self.assertEqual(bc, self.buf.col)
 
     def test_line_consistency(self):
-        lines = self.text.splitlines()
+        lines = self.buf.split_block_lines(self.text)
         for n, line in enumerate(lines):
             self.assertEqual(line, self.buf.get_line(n))
 
     def test_line_info_consistency(self):
-        lines = self.text.splitlines(True)
+        lines = self.buf.split_block_lines(self.text)
         line = 0
         col = 0
         start = 0
@@ -77,8 +77,8 @@ class BufferingTests(unittest.TestCase):
                 col = 0
                 start = n + 1
         text_len = len(self.text)
-        info = self.buf.line_info(text_len)
-        self.assertEqual(info.line, len(self.text.splitlines()))
+        info = self.buf.line_info(1 + text_len)
+        self.assertEqual(info.line, 1 + len(self.text.splitlines()))
         self.assertEqual(info.start, text_len)
 
     def test_linecount(self):

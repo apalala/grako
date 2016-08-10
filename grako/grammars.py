@@ -78,7 +78,7 @@ class GrakoBuffer(Buffer):
         # we only recognize the 'include' pragama
         if name == 'include':
             filename = arg.strip('\'"')
-            return self.include_file(source, filename, lines, index, i, i)
+            return self.include_file(source, filename, lines, index, i, i + 1)
         else:
             return i + 1  # will be treated as a directive by the parser
 
@@ -466,7 +466,10 @@ class Join(_Decorator):
         def exp():
             return self.exp.parse(ctx)
 
-        return ctx._positive_closure(exp, prefix=sep)
+        return self._closure(ctx, exp, sep=sep)
+
+    def _closure(self, ctx, exp, sep):
+        return ctx._closure(exp, sep=sep)
 
     def __str__(self):
         ssep = str(self.sep)
@@ -478,6 +481,9 @@ class Join(_Decorator):
 
 
 class PositiveJoin(Join):
+    def _closure(self, ctx, exp, sep):
+        return ctx._positive_closure(exp, sep=sep)
+
     def __str__(self):
         return super(PositiveJoin, self).__str__() + '+'
 
@@ -781,10 +787,12 @@ class Grammar(Model):
         self.keywords = keywords or set()
 
         self._adopt_children(rules)
+
         missing = self._missing_rules({r.name for r in self.rules})
         if missing:
-            print('\nunknown rule: '.join([''] + list(sorted(missing))))
-            raise GrammarError('Unknown rules, no parser generated.')
+            msg = '\n'.join([''] + list(sorted(missing)))
+            raise GrammarError('Unknown rules, no parser generated:' + msg)
+
         self._calc_lookahead_sets()
 
     def _missing_rules(self, ruleset):
