@@ -179,14 +179,23 @@ class Model(Node):
     def nodecount(self):
         return 1
 
+    def _to_str(self, lean=False):
+        return '%s:%d' % (type(self).__name__, id(self))
+
+    def _to_ustr(self, lean=False):
+        return ustr(self._to_str(lean=lean))
+
+    def __str__(self):
+        return self._to_str()
+
 
 class Void(Model):
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '()'
 
 
 class Fail(Model):
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '!()'
 
 
@@ -194,12 +203,12 @@ class Comment(Model):
     def __init__(self, ast=None, **kwargs):
         super(Comment, self).__init__(ast=AST(comment=ast))
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '(* %s *)' % self.comment
 
 
 class EOLComment(Comment):
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '  # %s\n' % self.comment
 
 
@@ -209,7 +218,7 @@ class EOF(Model):
         if not ctx.buf.atend():
             ctx._error('Expecting end of text.')
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '$'
 
 
@@ -238,8 +247,8 @@ class _Decorator(Model):
     def nodecount(self):
         return 1 + self.exp.nodecount()
 
-    def __str__(self):
-        return ustr(self.exp)
+    def _to_str(self, lean=False):
+        return self.exp._to_ustr(lean=lean)
 
 
 class Group(_Decorator):
@@ -248,8 +257,8 @@ class Group(_Decorator):
             self.exp.parse(ctx)
             return ctx.last_node
 
-    def __str__(self):
-        exp = ustr(self.exp)
+    def _to_str(self, lean=False):
+        exp = self.exp._to_ustr(lean=lean)
         if len(exp.splitlines()) > 1:
             return '(\n%s\n)' % indent(exp)
         else:
@@ -267,7 +276,7 @@ class Token(Model):
     def _first(self, k, F):
         return set([(self.token,)])
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return urepr(self.token)
 
 
@@ -279,7 +288,7 @@ class Constant(Model):
     def parse(self, ctx):
         return self.literal
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '`%s`' % urepr(self.literal)
 
 
@@ -295,7 +304,7 @@ class Pattern(Model):
     def _first(self, k, F):
         return set([(self.pattern,)])
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         pattern = ustr(self.pattern)
         if '/' not in pattern:
             template = '/%s/'
@@ -313,13 +322,13 @@ class Lookahead(_Decorator):
         with ctx._if():
             super(Lookahead, self).parse(ctx)
 
-    def __str__(self):
-        return '&' + ustr(self.exp)
+    def _to_str(self, lean=False):
+        return '&' + self.exp._to_ustr(lean=lean)
 
 
 class NegativeLookahead(_Decorator):
-    def __str__(self):
-        return '!' + ustr(self.exp)
+    def _to_str(self, lean=False):
+        return '!' + ustr(self.exp._to_str(lean=lean))
 
     def parse(self, ctx):
         with ctx._ifnot():
@@ -359,9 +368,9 @@ class Sequence(Model):
     def nodecount(self):
         return 1 + sum(s.nodecount() for s in self.sequence)
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         comments = self.comments_str()
-        seq = [ustr(s) for s in self.sequence]
+        seq = [ustr(s._to_str(lean=lean)) for s in self.sequence]
         single = ' '.join(seq)
         if len(single) <= PEP8_LLEN and len(single.splitlines()) <= 1:
             return comments + single
@@ -381,7 +390,7 @@ class Choice(Model):
                     ctx.last_node = o.parse(ctx)
                     return ctx.last_node
 
-            lookahead = ' '.join(ustr(urepr(f[0])) for f in self.lookahead if f)
+            lookahead = ' '.join(ustr(urepr(f[0])) for f in self.lookahead if str(f))
             if lookahead:
                 ctx._error('expecting one of {%s}' % lookahead)
             ctx._error('no available options')
@@ -406,8 +415,8 @@ class Choice(Model):
     def nodecount(self):
         return 1 + sum(o.nodecount() for o in self.options)
 
-    def __str__(self):
-        options = [ustr(o) for o in self.options]
+    def _to_str(self, lean=False):
+        options = [ustr(o._to_str(lean=lean)) for o in self.options]
 
         multi = any(len(o.splitlines()) > 1 for o in options)
         single = ' | '.join(o for o in options)
@@ -431,8 +440,8 @@ class Closure(_Decorator):
             result = dot(result, efirst, k)
         return {()} | result
 
-    def __str__(self):
-        sexp = ustr(self.exp)
+    def _to_str(self, lean=False):
+        sexp = ustr(self.exp._to_str(lean=lean))
         if len(sexp.splitlines()) <= 1:
             return '{%s}' % sexp
         else:
@@ -450,8 +459,8 @@ class PositiveClosure(Closure):
             result = dot(result, efirst, k)
         return result
 
-    def __str__(self):
-        return super(PositiveClosure, self).__str__() + '+'
+    def _to_str(self, lean=False):
+        return super(PositiveClosure, self)._to_str(lean=lean) + '+'
 
 
 class Join(_Decorator):
@@ -471,9 +480,9 @@ class Join(_Decorator):
     def _closure(self, ctx, exp, sep):
         return ctx._closure(exp, sep=sep)
 
-    def __str__(self):
-        ssep = str(self.sep)
-        sexp = ustr(self.exp)
+    def _to_str(self, lean=False):
+        ssep = self.sep._to_str(lean=lean)
+        sexp = ustr(self.exp._to_str(lean=lean))
         if len(sexp.splitlines()) <= 1:
             return '%s.{%s}' % (ssep, sexp)
         else:
@@ -484,15 +493,15 @@ class PositiveJoin(Join):
     def _closure(self, ctx, exp, sep):
         return ctx._positive_closure(exp, sep=sep)
 
-    def __str__(self):
-        return super(PositiveJoin, self).__str__() + '+'
+    def _to_str(self, lean=False):
+        return super(PositiveJoin, self)._to_str(lean=lean) + '+'
 
 
 class EmptyClosure(Model):
     def parse(self, ctx):
         return ctx._empty_closure()
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '{}'
 
 
@@ -505,8 +514,8 @@ class Optional(_Decorator):
     def _first(self, k, F):
         return {()} | self.exp._first(k, F)
 
-    def __str__(self):
-        exp = ustr(self.exp)
+    def _to_str(self, lean=False):
+        exp = ustr(self.exp._to_str(lean=lean))
         template = '[%s]'
         if isinstance(self.exp, Choice):
             template = trim(self.str_template)
@@ -529,7 +538,7 @@ class Cut(Model):
     def _first(self, k, F):
         return {('~',)}
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '~'
 
 
@@ -546,8 +555,8 @@ class Named(_Decorator):
     def defines(self):
         return [(self.name, False)] + super(Named, self).defines()
 
-    def __str__(self):
-        return '%s:%s' % (self.name, ustr(self.exp))
+    def _to_str(self, lean=False):
+        return '%s:%s' % (self.name, ustr(self.exp._to_str(lean=lean)))
 
 
 class NamedList(Named):
@@ -559,8 +568,8 @@ class NamedList(Named):
     def defines(self):
         return [(self.name, True)] + super(Named, self).defines()
 
-    def __str__(self):
-        return '%s+:%s' % (self.name, ustr(self.exp))
+    def _to_str(self, lean=False):
+        return '%s+:%s' % (self.name, ustr(self.exp._to_str(lean=lean)))
 
 
 class Override(Named):
@@ -583,7 +592,7 @@ class Special(Model):
     def _first(self, k, F):
         return set([(self.value,)])
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '?%s?' % self.value
 
 
@@ -614,7 +623,7 @@ class RuleRef(Model):
             self._first_set = {('<%s>' % self.name,)}
         return self._first_set
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return self.name
 
 
@@ -624,7 +633,7 @@ class RuleInclude(_Decorator):
         super(RuleInclude, self).__init__(rule.exp)
         self.rule = rule
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         return '>%s' % (self.rule.name)
 
 
@@ -674,7 +683,7 @@ class Rule(_Decorator):
         else:
             return urepr(p)
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         comments = self.comments_str()
         params = ', '.join(
             self.param_repr(p) for p in self.params
@@ -703,7 +712,7 @@ class Rule(_Decorator):
             name=self.name,
             base=base,
             params=params,
-            exp=indent(str(self.exp)),
+            exp=indent(self.exp._to_str(lean=lean)),
             comments=comments,
             is_name='@name\n' if self.is_name else '',
         )
@@ -876,7 +885,7 @@ class Grammar(Model):
     def nodecount(self):
         return 1 + sum(r.nodecount() for r in self.rules)
 
-    def __str__(self):
+    def _to_str(self, lean=False):
         regex_directives = {'comments', 'eol_comments', 'whitespace'}
         ustr_directives = {'comments', 'grammar'}
         string_directives = {'namechars'}
@@ -903,7 +912,7 @@ class Grammar(Model):
         keywords = '\n\n' + keywords + '\n' if keywords else ''
 
         rules = (
-            '\n\n'.join(ustr(rule)
+            '\n\n'.join(ustr(rule._to_str(lean=lean))
                         for rule in self.rules)
         ).rstrip() + '\n'
         return directives + keywords + rules
