@@ -179,6 +179,12 @@ class Model(Node):
     def nodecount(self):
         return 1
 
+    def pretty(self):
+        return self._to_str()
+
+    def pretty_lean(self):
+        return self._to_str(lean=True)
+
     def _to_str(self, lean=False):
         return '%s:%d' % (type(self).__name__, id(self))
 
@@ -556,7 +562,9 @@ class Named(_Decorator):
         return [(self.name, False)] + super(Named, self).defines()
 
     def _to_str(self, lean=False):
-        return '%s:%s' % (self.name, ustr(self.exp._to_str(lean=lean)))
+        if lean:
+            return self.exp._to_ustr(lean=True)
+        return '%s:%s' % (self.name, self.exp._to_ustr(lean=lean))
 
 
 class NamedList(Named):
@@ -569,6 +577,8 @@ class NamedList(Named):
         return [(self.name, True)] + super(Named, self).defines()
 
     def _to_str(self, lean=False):
+        if lean:
+            return self.exp._to_ustr(lean=True)
         return '%s+:%s' % (self.name, ustr(self.exp._to_str(lean=lean)))
 
 
@@ -685,26 +695,29 @@ class Rule(_Decorator):
 
     def _to_str(self, lean=False):
         comments = self.comments_str()
-        params = ', '.join(
-            self.param_repr(p) for p in self.params
-        ) if self.params else ''
+        if  lean:
+            params = ''
+        else:
+            params = ', '.join(
+                self.param_repr(p) for p in self.params
+            ) if self.params else ''
 
-        kwparams = ''
-        if self.kwparams:
-            kwparams = ', '.join(
-                '%s=%s' % (k, self.param_repr(v)) for (k, v)
-                in self.kwparams.items()
-            )
+            kwparams = ''
+            if self.kwparams:
+                kwparams = ', '.join(
+                    '%s=%s' % (k, self.param_repr(v)) for (k, v)
+                    in self.kwparams.items()
+                )
 
-        if params and kwparams:
-            params = '(%s, %s)' % (params, kwparams)
-        elif kwparams:
+            if params and kwparams:
+                params = '(%s, %s)' % (params, kwparams)
+            elif kwparams:
                 params = '(%s)' % (kwparams)
-        elif params:
-            if len(self.params) == 1:
-                params = '::%s' % params
-            else:
-                params = '(%s)' % params
+            elif params:
+                if len(self.params) == 1:
+                    params = '::%s' % params
+                else:
+                    params = '(%s)' % params
 
         base = ' < %s' % ustr(self.base.name) if self.base else ''
 
