@@ -127,19 +127,6 @@ class Buffer(object):
     def _postprocess(self):
         self._build_line_cache()
         self._len = len(self.text)
-        return
-
-        lines = self._lines
-        for i, line in enumerate(lines):
-            from pathlib import Path
-            print('%4.4d %3.3d %20s(%3.3d) : %s' % (
-                id(self),
-                i + 1,
-                Path(self._line_index[i].filename).name,
-                self._line_index[i].line,
-                line,
-            )
-            )
 
     def _preprocess_block(self, name, block, **kwargs):
         lines = self.split_block_lines(block)
