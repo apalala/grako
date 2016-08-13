@@ -9,8 +9,7 @@ Models calculate the LL(k) FIRST function to aid in providing more significant
 error messages when a choice fails to parse. FOLLOW(k) and LA(k) should be
 computed, but they are not.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
 import functools
