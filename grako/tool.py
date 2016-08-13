@@ -47,6 +47,10 @@ def parse_args():
                            help='generate a prettified version of the input grammar',
                            action='store_true'
                            )
+    main_mode.add_argument('--pretty-lean',
+                           help='like --pretty, but without name: or ::Parameter annotations',
+                           action='store_true'
+                           )
 
     ebnf_opts = argparser.add_argument_group('parse-time options')
     argparser.add_argument('filename',
@@ -162,7 +166,9 @@ def main(codegen=pythoncg):
             diagrams.draw(outfile, model)
         else:
             if args.pretty:
-                result = str(model)
+                result = model.pretty()
+            elif args.pretty_lean:
+                result = model.pretty_lean()
             elif args.object_model:
                 result = objectmodel.codegen(model)
             else:
