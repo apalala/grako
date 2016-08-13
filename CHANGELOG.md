@@ -16,6 +16,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Added
 
 -   Added this new *change log*.
+-   The `--pretty-lean` command-line option will produce `--pretty` output, discarding `named:` elements and rule `::Parameters`.
 
 
 ### Changed
