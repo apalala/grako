@@ -47,7 +47,7 @@ def parse_args():
                            help='generate a prettified version of the input grammar',
                            action='store_true'
                            )
-    main_mode.add_argument('--lean', '-l',
+    main_mode.add_argument('--pretty-lean',
                            help='like --pretty, but without name: or ::Parameter annotations',
                            action='store_true'
                            )
@@ -167,7 +167,7 @@ def main(codegen=pythoncg):
         else:
             if args.pretty:
                 result = model.pretty()
-            elif args.lean:
+            elif args.pretty_lean:
                 result = model.pretty_lean()
             elif args.object_model:
                 result = objectmodel.codegen(model)
