@@ -694,7 +694,7 @@ class Rule(_Decorator):
 
     def _to_str(self, lean=False):
         comments = self.comments_str()
-        if  lean:
+        if lean:
             params = ''
         else:
             params = ', '.join(

@@ -7,7 +7,7 @@ def main():
     from grako.test import bootstrap_test
     from grako.test import buffering_test
     from grako.test import ast_test
-    from grako.test import grammar_test
+    from grako.test.grammar import grammar_test
     from grako.test import codegen_test
     from grako.test import parsing_test
     from grako.test import diagram_test
