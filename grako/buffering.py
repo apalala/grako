@@ -23,10 +23,8 @@ __all__ = ['Buffer']
 RETYPE = type(regexp.compile('.'))
 
 
-PosLine = namedtuple(
-    'PosLine',
-    ['start', 'line', 'length']
-)
+class PosLine(namedtuple('PosLineBase', ['start', 'line', 'length'])):
+    pass
 
 
 LineInfo = namedtuple(
