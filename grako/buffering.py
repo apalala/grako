@@ -188,24 +188,24 @@ class Buffer(object):
     def pos(self, p):
         self.goto(p)
 
+    @property
+    def line(self):
+        return self.posline()
+
+    @property
+    def col(self):
+        return self.poscol()
+
     def posline(self, pos=None):
         if pos is None:
             pos = self._pos
         return self._linecache[pos].line
-
-    @property
-    def line(self):
-        return self.posline(self._pos)
 
     def poscol(self, pos=None):
         if pos is None:
             pos = self._pos
         start = self._linecache[pos].start
         return pos - start
-
-    @property
-    def col(self):
-        return self.poscol(self._pos)
 
     def atend(self):
         return self._pos >= self._len
