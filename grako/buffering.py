@@ -10,9 +10,12 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
+from itertools import takewhile, repeat
 from collections import namedtuple
 
-from grako.util import ustr, strtype, extend_list, re as regexp
+from grako.util import identity, imap, ustr, strtype
+from grako.util import extend_list, contains_sublist
+from grako.util import re as regexp
 from grako.util import WHITESPACE_RE, RE_FLAGS
 from grako.exceptions import ParseError
 
@@ -43,6 +46,7 @@ class PosLine(namedtuple('PosLineBase', ['start', 'line', 'length'])):
 
 
 class LineIndexEntry(namedtuple('LineIndexEntryBase', ['filename', 'line'])):
+
     @staticmethod
     def block_index(name, n):
         return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
@@ -274,38 +278,28 @@ class Buffer(object):
 
         return Comments(cmm, eolcmm)
 
+    def _index_comments(self, comments, selector):
+        if comments and self.comment_recovery:
+            n = self.line
+            extend_list(self._comment_index, n, default=new_comment)
+            previous = selector(self._comment_index[n])
+            if not contains_sublist(previous, comments):  # FIXME: will discard repeated comments
+                previous.extend(comments)
+
+    def _eat_regex(self, regex):
+        if regex is not None:
+            return list(takewhile(identity, imap(self.matchre, repeat(regex))))
+
     def eat_whitespace(self):
-        if self.whitespace_re is not None:
-            while self.matchre(self.whitespace_re):
-                pass
+        return self._eat_regex(self.whitespace_re)
 
     def eat_comments(self):
-        if self.comments_re is not None:
-            while True:
-                comment = self.matchre(self.comments_re)
-                if not comment:
-                    break
-                if self.comment_recovery:
-                    n = self.line
-                    extend_list(self._comment_index, n, default=new_comment)
-
-                    index = self._comment_index[n]
-                    if not index.inline or index.inline[-1] != comment:
-                        index.inline.append(comment)
+        comments = self._eat_regex(self.comments_re)
+        self._index_comments(comments, lambda x: x.inline)
 
     def eat_eol_comments(self):
-        if self.eol_comments_re is not None:
-            while True:
-                comment = self.matchre(self.eol_comments_re)
-                if not comment:
-                    break
-                if self.comment_recovery:
-                    n = self.line
-                    extend_list(self._comment_index, n, default=new_comment)
-
-                    index = self._comment_index[n]
-                    if not index.eol or index.eol[-1] != comment:
-                        index.eol.append(comment)
+        comments = self._eat_regex(self.eol_comments_re)
+        self._index_comments(comments, lambda x: x.eol)
 
     def next_token(self):
         p = None

@@ -35,6 +35,8 @@ if PY3:
         Mapping = collections.Mapping
     zip_longest = itertools.zip_longest
     import builtins
+
+    imap = map
 else:
     strtype = basestring  # noqa
     Mapping = collections.Mapping
@@ -63,6 +65,12 @@ def debug(*args, **kwargs):
 def warning(*args, **kwargs):
     kwargs['file'] = sys.stderr
     print('WARNING:', *args, **kwargs)
+
+
+def identity(*args):
+    if len(args) == 1:
+        return args[0]
+    return args
 
 
 def is_list(o):
@@ -249,6 +257,11 @@ def extend_list(x, n, default=None):
 
     missing = max(0, 1 + n - len(x))
     x.extend(default() for _ in range(missing))
+
+
+def contains_sublist(lst, sublst):
+    n = len(sublst)
+    return any(sublst == lst[i:i + n] for i in range(1 + len(lst) - n))
 
 
 def generic_main(custom_main, ParserClass, name='Unknown'):
