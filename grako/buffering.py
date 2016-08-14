@@ -315,7 +315,7 @@ class Buffer(object):
         while p < le and self.text[p] != c:
             p += 1
         self.goto(p)
-        return p
+        return self.pos
 
     def skip_past(self, c):
         self.skip_to(c)
