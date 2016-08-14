@@ -35,12 +35,12 @@ if PY3:
         Mapping = collections.Mapping
     zip_longest = itertools.zip_longest
     import builtins
-
     imap = map
 else:
     strtype = basestring  # noqa
     Mapping = collections.Mapping
     zip_longest = itertools.izip_longest
+    imap = itertools.imap
     import __builtin__ as builtins
 assert builtins
 
