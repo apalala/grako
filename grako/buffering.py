@@ -24,18 +24,33 @@ RETYPE = type(regexp.compile('.'))
 
 
 class PosLine(namedtuple('PosLineBase', ['start', 'line', 'length'])):
-    pass
+
+    @staticmethod
+    def build_line_cache(lines):
+        cache = []
+        n = 0
+        i = 0
+        for n, line in enumerate(lines):
+            pl = PosLine(i, n, len(line))
+            for c in line:
+                cache.append(pl)
+            i += len(line)
+        n += 1
+        if lines and lines[-1] and lines[-1][-1] in '\r\n':
+            n += 1
+        cache.append(PosLine(i, n, 0))
+        return cache, n
+
+
+class LineIndexEntry(namedtuple('LineIndexEntryBase', ['filename', 'line'])):
+    @staticmethod
+    def block_index(name, n):
+        return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
 
 
 LineInfo = namedtuple(
     'LineInfo',
     ['filename', 'line', 'col', 'start', 'end', 'text']
-)
-
-
-LineIndexEntry = namedtuple(
-    'LineIndexEntry',
-    ['filename', 'line']
 )
 
 
@@ -84,7 +99,7 @@ class Buffer(object):
         self._linecount = 0
         self._lines = []
         self._line_index = []
-        self._linecache = []
+        self._line_cache = []
         self._comment_index = []
         self._re_cache = {}
 
@@ -123,16 +138,15 @@ class Buffer(object):
         self.text = self.join_block_lines(lines)
 
     def _postprocess(self):
-        self._build_line_cache()
+        cache, count = PosLine.build_line_cache(self._lines)
+        self._line_cache = cache
+        self._linecount = count
         self._len = len(self.text)
 
     def _preprocess_block(self, name, block, **kwargs):
         lines = self.split_block_lines(block)
-        index = self._block_index(name, len(lines))
+        index = LineIndexEntry.block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
-
-    def _block_index(self, name, n):
-        return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
 
     def split_block_lines(self, block):
         return block.splitlines(True)
@@ -197,12 +211,12 @@ class Buffer(object):
     def posline(self, pos=None):
         if pos is None:
             pos = self._pos
-        return self._linecache[pos].line
+        return self._line_cache[pos].line
 
     def poscol(self, pos=None):
         if pos is None:
             pos = self._pos
-        start = self._linecache[pos].start
+        start = self._line_cache[pos].start
         return pos - start
 
     def atend(self):
@@ -378,23 +392,6 @@ class Buffer(object):
             self._re_cache[pattern] = re
         return re.match(self.text, self.pos + offset)
 
-    def _build_line_cache(self):
-        lines = self._lines
-        cache = []
-        n = 0
-        i = 0
-        for n, line in enumerate(lines):
-            pl = PosLine(i, n, len(line))
-            for c in line:
-                cache.append(pl)
-            i += len(line)
-        n += 1
-        if lines and lines[-1] and lines[-1][-1] in '\r\n':
-            n += 1
-        cache.append(PosLine(i, n, 0))
-        self._linecache = cache
-        self._linecount = n
-
     @property
     def linecount(self):
         return self._linecount
@@ -403,10 +400,10 @@ class Buffer(object):
         if pos is None:
             pos = self._pos
 
-        if pos >= len(self._linecache):
+        if pos >= len(self._line_cache):
             return LineInfo(self.filename, self.linecount, 0, self._len, self._len, '')
 
-        start, line, length = self._linecache[pos]
+        start, line, length = self._line_cache[pos]
         end = start + length
         col = pos - start
 
