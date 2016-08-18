@@ -12,11 +12,17 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+### Added
+
+
+## [3.13.0] @ 2016-08-18
+
 
 ### Added
 
 -   Added this new *change log*.
 -   The `--pretty-lean` command-line option will produce `--pretty` output, discarding `named:` elements and rule `::Parameters`.
+-   A `@@parseinfo` directive controls the generation of parse information from the grammar.
 
 
 ### Changed
@@ -24,6 +30,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache.
 -   Tab characters are left unchanged by `buffering.Buffer` as to keep references
     to positions in the original text relevant.
+-   Refactored the ever-growing grammar_test.py into multiple files under grako/test/grammar/.
 
 ### Fixed
 
@@ -573,7 +580,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.12.1
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.13.0
+[3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0
 [3.11.0]: https://bitbucket.org/apalala/grako/branches/compare/3.11.0%0D3.10.1
 [3.10.1]: https://bitbucket.org/apalala/grako/branches/compare/3.10.1%0D3.9.3

@@ -103,3 +103,32 @@ class DirectiveTests(unittest.TestCase):
         module = compile(code, 'test.py', 'exec')
 
         assert 'TestParser' in module.co_names
+
+    def test_parseinfo_directive(self):
+        grammar = '''
+            @@parseinfo
+            @@parseinfo :: True
+
+            test = value:"test" $;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("test")
+        self.assertIsNotNone(ast.parseinfo)
+
+        code = codegen(model)
+        self.assertTrue('parseinfo=True' in code)
+        compile(code, 'test.py', 'exec')
+
+
+        grammar = '''
+            @@parseinfo :: False
+
+            test = value:"test" $;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("test")
+        self.assertIsNone(ast.parseinfo)
+
+        code = codegen(model)
+        self.assertTrue('parseinfo=False' in code)
+        compile(code, 'test.py', 'exec')

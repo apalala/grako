@@ -372,6 +372,7 @@ class Grammar(Base):
         eol_comments_re = urepr(self.node.directives.get('eol_comments'))
         ignorecase = self.node.directives.get('ignorecase', 'None')
         left_recursion = self.node.directives.get('left_recursion', True)
+        parseinfo = self.node.directives.get('parseinfo', True)
 
         namechars = urepr(self.node.directives.get('namechars') or '')
 
@@ -394,6 +395,7 @@ class Grammar(Base):
                       comments_re=comments_re,
                       eol_comments_re=eol_comments_re,
                       left_recursion=left_recursion,
+                      parseinfo=parseinfo,
                       keywords=keywords,
                       namechars=namechars,
                       )
@@ -465,6 +467,7 @@ class Grammar(Base):
                                  eol_comments_re={eol_comments_re},
                                  ignorecase={ignorecase},
                                  left_recursion={left_recursion},
+                                 parseinfo={parseinfo},
                                  keywords=KEYWORDS,
                                  namechars={namechars},
                                  **kwargs):
@@ -475,6 +478,7 @@ class Grammar(Base):
                             eol_comments_re=eol_comments_re,
                             ignorecase=ignorecase,
                             left_recursion=left_recursion,
+                            parseinfo=parseinfo,
                             keywords=keywords,
                             namechars=namechars,
                             **kwargs
@@ -502,6 +506,7 @@ class Grammar(Base):
                         eol_comments_re={eol_comments_re},
                         ignorecase={ignorecase},
                         left_recursion={left_recursion},
+                        parseinfo={parseinfo},
                         **kwargs):
 
                     with open(filename) as f:

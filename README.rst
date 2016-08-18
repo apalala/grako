@@ -460,9 +460,21 @@ AST_ entries are single values if only one item was associated with a name, or l
 
 When the ``parseinfo=True`` keyword argument has been passed to the ``Parser`` constructor, a ``parseinfo`` element is added to AST_ nodes that are *dict*-like. The element contains a ``collections.namedtuple`` with the parse information for the node::
 
-   ParseInfo = namedtuple('ParseInfo', ['buffer', 'rule', 'pos', 'endpos'])
+    ParseInfo = namedtuple(
+        'ParseInfo',
+        [
+            'buffer',
+            'rule',
+            'pos',
+            'endpos',
+            'line',
+            'endline',
+        ]
+    )
 
 With the help of the ``Buffer.line_info()`` method, it is possible to recover the line, column, and original text parsed for the node. Note that when ``ParseInfo`` is generated, the ``Buffer`` used during parsing is kept in memory for the lifetime of the AST_.
+
+Generation of ``parseinfo`` can also be controlled using the ``@@parseinfo :: True`` grammar directive.
 
 
 Grammar Name

@@ -18,7 +18,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 8, 6, 10, 44, 50, 5)
+__version__ = (2016, 8, 18, 15, 32, 32, 3)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -101,7 +101,7 @@ class GrakoBootstrapParser(Parser):
         self.name_last_node('rules')
         self._check_eof()
         self.ast._define(
-            ['title', 'directives', 'keywords', 'rules'],
+            ['directives', 'keywords', 'rules', 'title'],
             []
         )
 
@@ -139,7 +139,9 @@ class GrakoBootstrapParser(Parser):
                                 self._token('ignorecase')
                             with self._option():
                                 self._token('left_recursion')
-                            self._error('expecting one of: ignorecase left_recursion nameguard')
+                            with self._option():
+                                self._token('parseinfo')
+                            self._error('expecting one of: ignorecase left_recursion nameguard parseinfo')
                     self.name_last_node('name')
                     self._cut()
                     with self._group():
@@ -230,7 +232,7 @@ class GrakoBootstrapParser(Parser):
                 self._token(')')
             self._error('no available options')
         self.ast._define(
-            ['params', 'kwparams'],
+            ['kwparams', 'params'],
             []
         )
 
@@ -284,7 +286,7 @@ class GrakoBootstrapParser(Parser):
         self._token(';')
         self._cut()
         self.ast._define(
-            ['decorators', 'name', 'params', 'kwparams', 'base', 'exp'],
+            ['base', 'decorators', 'exp', 'kwparams', 'name', 'params'],
             []
         )
 
@@ -418,7 +420,7 @@ class GrakoBootstrapParser(Parser):
         self._element_()
         self.name_last_node('exp')
         self.ast._define(
-            ['name', 'exp'],
+            ['exp', 'name'],
             []
         )
 
@@ -431,7 +433,7 @@ class GrakoBootstrapParser(Parser):
         self._element_()
         self.name_last_node('exp')
         self.ast._define(
-            ['name', 'exp'],
+            ['exp', 'name'],
             []
         )
 
@@ -541,7 +543,7 @@ class GrakoBootstrapParser(Parser):
                 self._error('expecting one of: + -')
         self._cut()
         self.ast._define(
-            ['sep', 'exp'],
+            ['exp', 'sep'],
             []
         )
 
@@ -561,7 +563,7 @@ class GrakoBootstrapParser(Parser):
             self._cut()
         self._cut()
         self.ast._define(
-            ['sep', 'exp'],
+            ['exp', 'sep'],
             []
         )
 

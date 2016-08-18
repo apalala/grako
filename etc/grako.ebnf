@@ -1,6 +1,7 @@
 @@grammar :: Grako
 @@comments :: /\(\*((?:.|\n)*?)\*\)/
 @@eol_comments :: /#([^\n]*?)$/
+@@parseinfo :: True
 @@left_recursion :: False
 
 
@@ -28,7 +29,7 @@ directive
             ~
             '::' ~ value:regex
         |
-            name:('nameguard' | 'ignorecase' | 'left_recursion')
+            name:('nameguard' | 'ignorecase' | 'left_recursion' | 'parseinfo')
             ~
             ('::' ~ value:boolean|value:`True`)
         |

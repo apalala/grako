@@ -770,6 +770,7 @@ class Grammar(Model):
                  comments_re=None,
                  eol_comments_re=None,
                  directives=None,
+                 parseinfo=None,
                  keywords=None):
         super(Grammar, self).__init__()
         assert isinstance(rules, list), str(rules)
@@ -796,6 +797,10 @@ class Grammar(Model):
         if left_recursion is None:
             left_recursion = directives.get('left_recursion')
         self.left_recursion = left_recursion
+
+        if parseinfo is None:
+            parseinfo = directives.get('parseinfo')
+        self._use_parseinfo = parseinfo
 
         if comments_re is None:
             comments_re = directives.get('comments')
@@ -860,6 +865,7 @@ class Grammar(Model):
               left_recursion=None,
               comments_re=None,
               eol_comments_re=None,
+              parseinfo=None,
               **kwargs):
         ctx = context or ModelContext(
             self.rules,
@@ -874,6 +880,9 @@ class Grammar(Model):
 
         if left_recursion is None:
             left_recursion = self.left_recursion
+
+        if parseinfo is None:
+            parseinfo = self._use_parseinfo
 
         if comments_re is None:
             comments_re = self.comments_re
@@ -891,6 +900,7 @@ class Grammar(Model):
             comments_re=comments_re,
             eol_comments_re=eol_comments_re,
             left_recursion=left_recursion,
+            parseinfo=parseinfo,
             **kwargs
         )
 
