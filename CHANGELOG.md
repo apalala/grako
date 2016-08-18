@@ -14,6 +14,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Added
 
+-   `grako.model.PreOrderWalker`. Untested.
+
 
 ## [3.13.0] @ 2016-08-18
 

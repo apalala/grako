@@ -234,6 +234,22 @@ class DepthFirstWalker(NodeWalker):
             return supers_walk(node, [], *args, **kwargs)
 
 
+class PreOrderWalker(NodeWalker):
+    def walk(self, node, *args, parent=None, **kwargs):
+        supers_walk = super(PreOrderWalker, self).walk
+
+        if isinstance(node, Node):
+            new_parent = supers_walk(node, *args, parent=parent, **kwargs)
+            for child in node.children():
+               self.walk(child, *args, parent=new_parent, **kwargs)
+        elif isinstance(node, collections.Mapping):
+            return {n: self.walk(e, *args, parent=parent, **kwargs) for n, e in node.items()}
+        elif isinstance(node, collections.Iterable):
+            return [self.walk(e, *args, parent=parent, **kwargs) for e in iter(node)]
+        else:
+            return supers_walk(node, *args, parent=parent, **kwargs)
+
+
 class ModelBuilderSemantics(object):
     """ Intended as a semantic action for parsing, a ModelBuilderSemantics creates
         nodes using the class name given as first parameter to a grammar
