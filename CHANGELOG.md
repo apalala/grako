@@ -30,7 +30,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Traded memory for simplicity and replaced the line-based line cache in `buffering.Buffer` for a position-based cache.
 -   Tab characters are left unchanged by `buffering.Buffer` as to keep references
     to positions in the original text relevant.
--   Refactored the ever-growing grammar_test.py into multiple files under grako/test/grammar/.
+-   Refactored the ever-growing *grammar_test.py* into multiple files under *grako/test/grammar/*.
 
 ### Fixed
 
