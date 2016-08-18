@@ -345,22 +345,22 @@ class Buffer(object):
 
         p = self.pos
         if ignorecase:
-            result = self.text[p:p + len(token)].lower() == token.lower()
+            is_match = self.text[p:p + len(token)].lower() == token.lower()
         else:
-            result = self.text[p:p + len(token)] == token
+            is_match = self.text[p:p + len(token)] == token
 
-        if result:
+        if is_match:
             self.move(len(token))
             if not self.nameguard:
                 return token
-            else:
-                partial_match = (
-                    token.isalnum() and
-                    token[0].isalpha() and
-                    self.is_name_char(self.current())
-                )
-                if not partial_match:
-                    return token
+
+            partial_match = (
+                token.isalnum() and
+                token[0].isalpha() and
+                self.is_name_char(self.current())
+            )
+            if not partial_match:
+                return token
         self.goto(p)
 
     def matchre(self, pattern, ignorecase=None):
