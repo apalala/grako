@@ -119,7 +119,6 @@ class DirectiveTests(unittest.TestCase):
         self.assertTrue('parseinfo=True' in code)
         compile(code, 'test.py', 'exec')
 
-
         grammar = '''
             @@parseinfo :: False
 
