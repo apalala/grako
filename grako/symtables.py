@@ -187,8 +187,6 @@ class Symbol(Namespace):
             ('references', asjson(self._references)),
         ])
 
-        return result
-
 
 class SymbolReference():
     def __init__(self, symbol, qualname, node):
@@ -208,6 +206,7 @@ class SymbolReference():
 
     def __eq__(self, other):
         return self.symbol == other.symbol and self.node == other.node
+
     def __json__(self):
         return odict([
             ('node', type(self.node).__name__),

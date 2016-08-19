@@ -241,7 +241,7 @@ class PreOrderWalker(NodeWalker):
         if isinstance(node, Node):
             new_parent = supers_walk(node, *args, parent=parent, **kwargs)
             for child in node.children():
-               self.walk(child, *args, parent=new_parent, **kwargs)
+                self.walk(child, *args, parent=new_parent, **kwargs)
         elif isinstance(node, collections.Mapping):
             return {n: self.walk(e, *args, parent=parent, **kwargs) for n, e in node.items()}
         elif isinstance(node, collections.Iterable):
