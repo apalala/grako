@@ -177,10 +177,11 @@ class Symbol(Namespace):
         return result
 
     def __json__(self):
-        result = odict()
-
-        result['node'] = type(self.node).__name__
-        result['entries'] = super(Symbol, self).__json__()
+        return odict([
+            ('node', type(self.node).__name__),
+            ('entries', super(Symbol, self).__json__()),
+            ('references', asjson(self._references)),
+        ])
 
         return result
 
@@ -203,3 +204,9 @@ class SymbolReference():
 
     def __eq__(self, other):
         return self.symbol == other.symbol and self.node == other.node
+    def __json__(self):
+        return odict([
+            ('node', type(self.node).__name__),
+            ('name', self.qualname),
+            ('symbol', self.symbol.qualname()),
+        ])
