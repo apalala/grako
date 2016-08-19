@@ -98,9 +98,13 @@ class Symbol(Namespace):
         if not isinstance(name, str):
             raise ValueError('"%s" is not a valid symbol name' % name)
         self.name = name
-        self.node = node
+        self._node = node
         self._parent = None
         self._references = []
+
+    @property
+    def node(self):
+        return self._node
 
     @property
     def line(self):
