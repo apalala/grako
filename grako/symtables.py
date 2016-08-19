@@ -43,9 +43,9 @@ class Namespace(object):
         return self.entries.get(name)
 
     def insert(self, symbol):
-        assert isinstance(symbol.name, str), '"%s" is not a valid symbol name' % symbol.name
+        assert isinstance(symbol.name, str), '"%s" is not a valid symbol name' % str(symbol.name)
         if symbol.name in self._entries:
-            raise SymbolTableError('Symbol "%s" already in namespace' % symbol.name)
+            raise SymbolTableError('Symbol "%s" already in namespace' % str(symbol.name))
 
         self._entries[symbol.name] = symbol
 
@@ -179,7 +179,6 @@ class Symbol(Namespace):
     def __json__(self):
         result = odict()
 
-        result['level'] = self.level
         result['node'] = type(self.node).__name__
         result['entries'] = super(Symbol, self).__json__()
 
