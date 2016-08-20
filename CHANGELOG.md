@@ -14,11 +14,13 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Added
 
-## [3.13.1] @ 2016-08-19
+## [3.14.0] @ 2016-08-19
 
 ### Added
 
 -   Added `grako.model.PreOrderWalker`. Untested.
+-   Now `grako.symtables.Namespace` supports duplicate entries.
+
 
 ### Fixed
 
@@ -591,8 +593,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.13.1
-[3.13.1]: https://bitbucket.org/apalala/grako/branches/compare/3.13.1%0D3.13.0
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.14.0
+[3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
 [3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/3.13.0%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0
 [3.11.0]: https://bitbucket.org/apalala/grako/branches/compare/3.11.0%0D3.10.1

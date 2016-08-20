@@ -86,6 +86,30 @@ def to_list(o):
         return [o]
 
 
+def simplify_list(x):
+    if isinstance(x, list) and len(x) == 1:
+        return simplify_list(x[0])
+    return x
+
+
+def extend_list(x, n, default=None):
+    def _null():
+        pass
+    default = default or _null
+
+    missing = max(0, 1 + n - len(x))
+    x.extend(default() for _ in range(missing))
+
+
+def contains_sublist(lst, sublst):
+    n = len(sublst)
+    return any(sublst == lst[i:i + n] for i in range(1 + len(lst) - n))
+
+
+def join_lists(lists):
+    return sum(lists, [])
+
+
 def compress_seq(seq):
     seen = set()
     result = []
@@ -140,12 +164,6 @@ def eval_escapes(s):
         return codecs.decode(match.group(0), 'unicode-escape')
 
     return ESCAPE_SEQUENCE_RE.sub(decode_match, s)
-
-
-def simplify_list(x):
-    if isinstance(x, list) and len(x) == 1:
-        return simplify_list(x[0])
-    return x
 
 
 def isiter(value):
@@ -248,20 +266,6 @@ def safe_name(name):
 
 def chunks(iterable, size, fillvalue=None):
     return zip_longest(*[iter(iterable)] * size, fillvalue=fillvalue)
-
-
-def extend_list(x, n, default=None):
-    def _null():
-        pass
-    default = default or _null
-
-    missing = max(0, 1 + n - len(x))
-    x.extend(default() for _ in range(missing))
-
-
-def contains_sublist(lst, sublst):
-    n = len(sublst)
-    return any(sublst == lst[i:i + n] for i in range(1 + len(lst) - n))
 
 
 def generic_main(custom_main, ParserClass, name='Unknown'):

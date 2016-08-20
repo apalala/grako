@@ -1,25 +1,58 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from copy import copy
 from collections import OrderedDict as odict
 
 from .util import asjson
+from .util import join_lists
 from .exceptions import GrakoException
 from .buffering import LineIndexEntry
+from .collections import OrderedDefaultDict
 
 
 DEFAULT_SEPARATOR = '.'
+
+
+def join_symtables(tables):
+    def join_namespaces(base, target):
+        base = copy(base)
+        for symbol in target.symbols:
+            name = symbol.name
+            if name not in base or base.duplicates:
+                base.insert(symbol)
+            else:
+                join_namespaces(base[name], symbol)
+        return base
+
+    if not tables:
+        return {}
+
+    result = copy(tables[0])
+    for table in tables[1:]:
+        result = join_namespaces(table, result)
+    return result
 
 
 class SymbolTableError(GrakoException):
     pass
 
 
+class EntryDict(OrderedDefaultDict):
+    def __init__(self, *args, **kwargs):
+        super(EntryDict, self).__init__(list, *args, **kwargs)
+
+
 class Namespace(object):
-    def __init__(self, separator=DEFAULT_SEPARATOR):
+    def __init__(self, duplicates=False, separator=DEFAULT_SEPARATOR):
         super(Namespace, self).__init__()
+        self._duplicates = duplicates
         self.separator = separator
-        self._entries = odict()
+        self._entries = EntryDict()
+
+    @property
+    def duplicates(self):
+        return self._duplicates
 
     @property
     def entries(self):
@@ -27,27 +60,37 @@ class Namespace(object):
 
     @property
     def symbols(self):
-        return list(self._entries.values())
+        return join_lists(self._entries.values())
 
     @property
     def names(self):
         return list(self._entries.keys())
 
-    def all_symbols(self):
+    def all_names(self):
         result = []
-        for entry in self.entries:
-            result.append(entry.name)
-            result.extend(entry.all_symbols())
+        for name, symbols in self.entries.items():
+            result.append(name)
+            for symbol in symbols:
+                result.extend(symbol.all_symbols())
+        return result
+
+    def __contains__(self, name):
+        return name in self.entries
 
     def __getitem__(self, name):
-        return self.entries.get(name)
+        if self.duplicates:
+            return self.entries[name]
+        elif name in self.entries:
+            return self.entries[name][0]
+        else:
+            raise KeyError(name)
 
     def insert(self, symbol):
         assert isinstance(symbol.name, str), '"%s" is not a valid symbol name' % str(symbol.name)
-        if symbol.name in self._entries:
+        if symbol.name in self._entries and not self.duplicates:
             raise SymbolTableError('Symbol "%s" already in namespace' % str(symbol.name))
 
-        self._entries[symbol.name] = symbol
+        self._entries[symbol.name].append(symbol)
 
     def search(self, name):
         result = []
@@ -83,7 +126,7 @@ class Namespace(object):
         return asjson(self)
 
     def __json__(self):
-        return odict([(entry.name, asjson(entry)) for entry in self.symbols])
+        return odict([(name, asjson(symbols)) for name, symbols in self.entries.items()])
 
 
 class SymbolTable(Namespace):
@@ -92,9 +135,11 @@ class SymbolTable(Namespace):
         symbol.add_reference(qualname, from_node)
 
 
+
+
 class Symbol(Namespace):
-    def __init__(self, name, node):
-        super(Symbol, self).__init__()
+    def __init__(self, name, node, duplicates=False):
+        super(Symbol, self).__init__(duplicates=duplicates)
         if not isinstance(name, str):
             raise ValueError('"%s" is not a valid symbol name' % name)
         self.name = name
@@ -187,8 +232,6 @@ class Symbol(Namespace):
             ('references', asjson(self._references)),
         ])
 
-        return result
-
 
 class SymbolReference():
     def __init__(self, symbol, qualname, node):
@@ -208,6 +251,7 @@ class SymbolReference():
 
     def __eq__(self, other):
         return self.symbol == other.symbol and self.node == other.node
+
     def __json__(self):
         return odict([
             ('node', type(self.node).__name__),
