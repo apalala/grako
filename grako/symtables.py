@@ -129,8 +129,6 @@ class SymbolTable(Namespace):
         symbol.add_reference(qualname, from_node)
 
 
-
-
 class Symbol(Namespace):
     def __init__(self, name, node, duplicates=False):
         super(Symbol, self).__init__(duplicates=duplicates)
