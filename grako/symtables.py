@@ -71,7 +71,7 @@ class Namespace(object):
         for name, symbols in self.entries.items():
             result.append(name)
             for symbol in symbols:
-                result.extend(symbol.all_symbols())
+                result.extend(symbol.all_names())
         return result
 
     def __contains__(self, name):
@@ -79,7 +79,7 @@ class Namespace(object):
 
     def __getitem__(self, name):
         if self.duplicates:
-            return self.entries[name]
+            return self.entries.get(name)
         elif name in self.entries:
             return self.entries[name][0]
         else:
@@ -92,17 +92,29 @@ class Namespace(object):
 
         self._entries[symbol.name].append(symbol)
 
-    def lookup(self, qualname):
-        return self._lookup_drilldown(qualname.split(self.separator))
+    def lookup_all(self, qualname, drill=True):
+        return self._lookup_drilldown(qualname.split(self.separator), drill=drill, max=None)
 
-    def _lookup_drilldown(self, namelist):
+    def lookup(self, qualname, drill=True):
+        result = self._lookup_drilldown(qualname.split(self.separator), drill=drill, max=1)
+        return result[0] if result else None
+
+    def _lookup_drilldown(self, namelist, drill=True, max=None):
         if not namelist:
-            return None
+            return []
 
-        for symbol in self.symbols:
-            result = symbol._lookup_drilldown(namelist)
-            if result:
-                return result
+        name = namelist[0]
+        symbols = self.entries[name] if name in self.entries else self.symbols
+        result = []
+        for symbol in symbols:
+            found = symbol._lookup_drilldown(namelist, drill=drill, max=max)
+            result.extend(found)
+            if max and len(result) >= max:
+                break
+        return result
+
+    def resolve(self, qualname):
+        return self.lookup(qualname)
 
     def filter(self, condition):
         return sum((symbol.filter(condition) for symbol in self.symbols), [])
@@ -171,12 +183,18 @@ class Symbol(Namespace):
     def qualname(self, sep=DEFAULT_SEPARATOR):
         return sep.join(self.qualpath())
 
-    def _lookup_drilldown(self, namelist):
+    def _lookup_drilldown(self, namelist, drill=True, max=None):
         if [self.name] == namelist:
-            return self
+            return [self]
         elif self.name == namelist[0]:
-            return super(Symbol, self)._lookup_drilldown(namelist[1:])
-        return super(Symbol, self)._lookup_drilldown(namelist)
+            return super(Symbol, self)._lookup_drilldown(namelist[1:], drill=drill, max=max)
+        elif drill:
+            return super(Symbol, self)._lookup_drilldown(namelist, drill=drill, max=max)
+        else:
+            return []
+
+    def resolve(self, qualname):
+        return self.lookup(qualname) or self.parent and self.parent.resolve(qualname)
 
     def filter(self, condition):
         this_case = [self] if condition(self) else []
@@ -223,6 +241,36 @@ class Symbol(Namespace):
             ('entries', super(Symbol, self).__json__()),
             ('references', asjson(self._references)),
         ])
+
+
+class BasedSymbol(Namespace):
+    def __init__(self, name, node, duplicates=False):
+        super(BasedSymbol, self).__init__(duplicates=duplicates)
+        self._bases = []
+
+    @property
+    def bases(self):
+        return self._bases
+
+    def add_base(self, base):
+        assert isinstance(base, Symbol)
+        self._bases.append(base)
+
+    def _lookup_drilldown(self, namelist, drill=True, max=max):
+        result = super(BasedSymbol, self)._lookup_drilldown(namelist, drill=drill, max=max)
+        if result:
+            return result
+
+        for base in self.bases:
+            result = base._lookup_drilldown(namelist, drill=drill, max=max)
+            if result:
+                return result
+        return result
+
+    def __json__(self):
+        result = super(BasedSymbol, self).__json__()
+        result['bases'] = asjson([b.qualname() for b in self.bases])
+        return result
 
 
 class SymbolReference():
