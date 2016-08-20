@@ -92,12 +92,6 @@ class Namespace(object):
 
         self._entries[symbol.name].append(symbol)
 
-    def search(self, name):
-        result = []
-        for symbol in self.symbols:
-            result.extend(symbol.search(name))
-        return result
-
     def lookup(self, qualname):
         return self._lookup_drilldown(qualname.split(self.separator))
 
