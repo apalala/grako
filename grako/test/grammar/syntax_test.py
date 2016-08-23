@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import unittest
 
@@ -7,10 +8,10 @@ from grako.exceptions import FailedParse
 from grako.tool import genmodel
 from grako.util import trim, ustr
 from grako.codegen import codegen
+from grako.buffering import Buffer
 
 
 class SyntaxTests(unittest.TestCase):
-
     def test_update_ast(self):
         grammar = '''
             foo = name:"1" [ name: bar ] ;
@@ -28,6 +29,25 @@ class SyntaxTests(unittest.TestCase):
         m = genmodel('Update', grammar)
         ast = m.parse("1101110100", nameguard=False)
         self.assertEqual([['11'], ['111'], ['1'], []], ast.items_)
+
+    def test_include_and_override(self):
+        gr = 'included_grammar'
+        included_grammar = "plu = 'aaaa';"
+
+        overridden = "%s@override\nplu = 'plu';"
+        inclusion = '#include :: %s.ebnf\n' % gr
+
+        including_grammar = overridden % (inclusion)
+        whole_grammar = overridden % (included_grammar)
+
+        fileset = [(gr, included_grammar),
+                   ('including_grammar', including_grammar)]
+        for k in fileset:
+            fn = "tmp/%s.ebnf" % k[0]
+            with open(fn, 'w') as fp:
+                fp.write(k[1])
+        model_whole = genmodel("test", whole_grammar)
+        model_inc = genmodel("test", including_grammar)
 
     def test_ast_assignment(self):
         grammar = '''
