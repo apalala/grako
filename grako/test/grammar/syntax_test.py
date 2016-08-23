@@ -8,7 +8,6 @@ from grako.exceptions import FailedParse
 from grako.tool import genmodel
 from grako.util import trim, ustr
 from grako.codegen import codegen
-from grako.buffering import Buffer
 
 
 class SyntaxTests(unittest.TestCase):
