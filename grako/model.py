@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import collections
 
-from grako.util import asjson, asjsons, Mapping, builtins
+from grako.util import asjson, asjsons, Mapping, builtins, is_list
 from grako.buffering import Comments
 from grako.exceptions import SemanticError
 from grako.ast import AST
@@ -243,7 +243,7 @@ class DepthFirstWalker(NodeWalker):
             return supers_walk(node, children, *args, **kwargs)
         elif isinstance(node, collections.Mapping):
             return {n: self.walk(e, *args, **kwargs) for n, e in node.items()}
-        elif isinstance(node, collections.Iterable):
+        elif is_list(node):
             return [self.walk(e, *args, **kwargs) for e in iter(node)]
         else:
             return supers_walk(node, [], *args, **kwargs)
