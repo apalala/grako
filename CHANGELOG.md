@@ -26,6 +26,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   `grako.symtables.Symbol` tried to serialize unknown fields to [JSON][].
 -   Add `grako.symtables.SymbolReference` to the [JSON][] representation of namespaces.
+-   `grako.model.DepthFirstWalker` could reach recursion limit when filtering for Iterables.  Now the filter is for `list`, which is the only container used in models.
 
 
 ## [3.13.0] @ 2016-08-18
