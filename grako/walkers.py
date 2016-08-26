@@ -1,7 +1,6 @@
-import collections
 from contextlib import contextmanager
 
-from grako.model import NodeWalker, Node
+from grako.model import NodeWalker
 
 
 class ContextWalker(NodeWalker):
@@ -51,19 +50,3 @@ class ContextWalker(NodeWalker):
                     self.pop_context()
             finally:
                 self.leave_context(ctx)
-
-
-class PreOrderWalker(NodeWalker):
-    def walk(self, node, *args, parent=None, **kwargs):
-        supers_walk = super(PreOrderWalker, self).walk
-
-        if isinstance(node, Node):
-            new_parent = supers_walk(node, *args, parent=parent, **kwargs)
-            for child in node.children():
-                self.walk(child, *args, parent=new_parent, **kwargs)
-        elif isinstance(node, collections.Mapping):
-            return {n: self.walk(e, *args, parent=parent, **kwargs) for n, e in node.items()}
-        elif isinstance(node, collections.Iterable):
-            return [self.walk(e, *args, parent=parent, **kwargs) for e in iter(node)]
-        else:
-            return supers_walk(node, *args, parent=parent, **kwargs)
