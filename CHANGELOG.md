@@ -18,7 +18,6 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Added
 
--   Added `grako.model.PreOrderWalker`. Untested.
 -   Now `grako.symtables.Namespace` supports duplicate entries.
 
 
