@@ -8,6 +8,7 @@ from grako.exceptions import FailedParse
 from grako.tool import genmodel
 from grako.util import trim, ustr
 from grako.codegen import codegen
+from grako.grammars import GrakoBuffer
 
 
 class SyntaxTests(unittest.TestCase):
@@ -29,7 +30,7 @@ class SyntaxTests(unittest.TestCase):
         ast = m.parse("1101110100", nameguard=False)
         self.assertEqual([['11'], ['111'], ['1'], []], ast.items_)
 
-    def _no_test_include_and_override(self):
+    def test_include_and_override(self):
         gr = 'included_grammar'
         included_grammar = "plu = 'aaaa';"
 
@@ -39,14 +40,14 @@ class SyntaxTests(unittest.TestCase):
         including_grammar = overridden % (inclusion)
         whole_grammar = overridden % (included_grammar)
 
-        fileset = [(gr, included_grammar),
-                   ('including_grammar', including_grammar)]
-        for k in fileset:
-            fn = "tmp/%s.ebnf" % k[0]
-            with open(fn, 'w') as fp:
-                fp.write(k[1])
-        model_whole = genmodel("test", whole_grammar)  # noqa
-        model_inc = genmodel("test", including_grammar)  # noqa
+        class FakeIncludesBuffer(GrakoBuffer):
+            def get_include(self, source, filename):
+                return included_grammar, source + '/' + filename
+
+        FI = FakeIncludesBuffer
+
+        genmodel("test", FI(whole_grammar))
+        genmodel("test", FI(including_grammar))
 
     def test_ast_assignment(self):
         grammar = '''
