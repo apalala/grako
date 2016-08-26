@@ -12,7 +12,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
-### Added
+
 
 ## [3.14.0] @ 2016-08-19
 
@@ -24,9 +24,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
--   `grako.symtables.Symbol` tried to serialize unknown fields to [JSON][].
+-   The new `grako.symtables.Symbol` tried to serialize unknown fields to [JSON][].
 -   Add `grako.symtables.SymbolReference` to the [JSON][] representation of namespaces.
--   `grako.model.DepthFirstWalker` could reach recursion limit when filtering for Iterables.  Now the filter is for `list`, which is the only container used in models.
+-   The new `grako.model.DepthFirstWalker` could reach recursion limit when filtering for Iterables.  Now the filter is for `list`, which is the only container used in models.
+-   The definition `grako.grammars.GrakoBuffer` was not overriding the bootstrap buffer, so `#include` was not working, among other possibly undetected (and serious) consequences.
 
 
 ## [3.13.0] @ 2016-08-18
