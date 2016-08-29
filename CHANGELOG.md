@@ -21,6 +21,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Now `grako.symtables.Namespace` supports duplicate entries.
 
 
+### Changed
+
+-   Use upercase ``-V`` instead of ``-v`` to report the tool version, as to be compatible with almost everyone else.
+
+
 ### Fixed
 
 -   The new `grako.symtables.Symbol` tried to serialize unknown fields to [JSON][].

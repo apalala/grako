@@ -100,7 +100,7 @@ def parse_args():
     std_args.add_argument('--help', '-h',
                           help='show this help message and exit',
                           action='help')
-    std_args.add_argument('--version', '-v',
+    std_args.add_argument('--version', '-V',
                           help='provide version information and exit',
                           action='version',
                           version=__version__
