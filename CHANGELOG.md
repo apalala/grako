@@ -27,6 +27,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Add `grako.symtables.SymbolReference` to the [JSON][] representation of namespaces.
 -   The new `grako.model.DepthFirstWalker` could reach recursion limit when filtering for Iterables.  Now the filter is for `list`, which is the only container used in models.
 -   The definition `grako.grammars.GrakoBuffer` was not overriding the bootstrap buffer, so `#include` was not working, among other possibly undetected (and serious) consequences.
+-   The separator character for rules in the trace logs (``C_DERIVE`` in `grako.contexts`) was undefined for non-[POSIX][] platforms (traces could not be used on Windows).
 
 
 ## [3.13.0] @ 2016-08-18
@@ -525,6 +526,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [PEG]: http://en.wikipedia.org/wiki/Parsing_expression_grammar
 [Packrat]: http://bford.info/packrat/
 [Perl]: http://www.perl.org/
+[POSIX]: https://en.wikipedia.org/wiki/POSIX
 [PyPy]: http://pypy.org/
 [Python]: http://python.org
 [Ruby]: http://www.ruby-lang.org/
