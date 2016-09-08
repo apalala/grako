@@ -775,7 +775,8 @@ class ParseContext(object):
                 self._pop_cut()
             self._add_cst_node(cst)
 
-    def _closure(self, block, sep=None):
+    def _closure(self, block, sep=None, prefix=None):
+        sep = sep if sep is not None else prefix
         self._push_cst()
         try:
             self.cst = []
@@ -791,7 +792,8 @@ class ParseContext(object):
         self.last_node = cst
         return cst
 
-    def _positive_closure(self, block, sep=None):
+    def _positive_closure(self, block, sep=None, prefix=None):
+        sep = sep if sep is not None else prefix
         self._push_cst()
         try:
             self.cst = None
