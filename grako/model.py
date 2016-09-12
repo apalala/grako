@@ -128,7 +128,7 @@ class Node(object):
             for c in child:
                 self.__cn(add_child, child_collection, c, seen=seen)
 
-    def children(self):
+    def children_set(self):
         childset = set()
 
         def cn(child):
@@ -149,6 +149,8 @@ class Node(object):
             if not k.startswith('_'):
                 cn(c)
         return child_list
+
+    children = children_list
 
     def asjson(self):
         return asjson(self)

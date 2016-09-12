@@ -12,6 +12,17 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+### Added
+
+### Changed
+
+-   `grako.model.Node.children()` now defaults to `Node.children_list()`. It was too unexpected that the child nodes might be out of order.
+
+
+### Fixed
+
+-   Added a patch for bakcwards compatibility with parsers generated before the switch from `prefix=` to `sep=` in generated calls to closures.
+
 
 
 ## [3.14.0] @ 2016-08-19
