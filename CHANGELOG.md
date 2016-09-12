@@ -22,6 +22,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Fixed
 
 -   Added a patch for bakcwards compatibility with parsers generated before the switch from `prefix=` to `sep=` in generated calls to closures.
+-   Restored special treatment of first line in `grako.util.trim()` (as in Python
+    doccomnents). There were unexpected results with the change.
 
 
 
