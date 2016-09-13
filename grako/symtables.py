@@ -85,6 +85,9 @@ class Namespace(object):
         else:
             raise KeyError(name)
 
+    def get(self, name, default=None):
+        return self.entries.get(name, default)
+
     def insert(self, symbol):
         assert isinstance(symbol.name, str), '"%s" is not a valid symbol name' % str(symbol.name)
         if symbol.name in self._entries and not self.duplicates:
