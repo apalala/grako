@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
-## [3.14.1] @ 2016-09-12
+## [3.15.0rc1] @ 2016-09-17
 
 ### Added
 
@@ -29,6 +29,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added a patch for bakcwards compatibility with parsers generated before the switch from `prefix=` to `sep=` in generated calls to closures.
 -   Restored special treatment of first line in `grako.util.trim()` (as in Python
     doccomnents). There were unexpected results with the change.
+-   Use `_args_` and `_kwargs_` in generated models to avoid conflicts with grammar elelemts that use the standard [Python][] names.
 
 
 
@@ -113,7 +114,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Unlink output file before attempting parser generation.
 -   A `-G FILE` command-line option forces saving of the object model.
 -   The function `grako.util.trim()` now also considers the first text ine.
--   Tested with [Python] 3.6.0a3.
+-   Tested with [Python][] 3.6.0a3.
 
 
 ### Fixed
@@ -122,7 +123,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Avoid recovering the same comment against the same line in `grako.buffering.Buffer`.
 -   Recovering comments and end-of-line comments together was incorrect.
 -   `model.Node` parenting still broken.
--   [73] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python] 3.x
+-   [73] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python][] 3.x
     using [pygraphviz] 1.3.1.
 -   [77][] [81] Advance over whitespace before memoization or left recursion.
 
@@ -200,7 +201,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Added `@@whitespace` directive to specify whitespace regular expression within the grammar [starkat].
 -   Added `@@nameguard` and `@@ignorecase` directives to toggle the respective boolean parameters within the grammar [starkat].
--   All tests pass with [Python] 3.5.
+-   All tests pass with [Python][] 3.5.
 -   Added basic support for output of an [AST] in [YAML] format.
 -   Applied [flake8] suggestions.
 
@@ -214,7 +215,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Detect and fail promptly on empty tokens in grammars.
 -   [52] Build with Cython failed on Windows.
--   [59] [Python] keywords can now actually be used as rule names in grammars [drothlis].
+-   [59] [Python][] keywords can now actually be used as rule names in grammars [drothlis].
 -   [60] `@@` directives were not pressent in the output of the `--pretty` option.
 -   [58] The parameters to the constructor of generated parsers were being ignored (pgebhard).
 -   `grammars.py` would call `ctx.error()` instead of `ctx._error()` on failed rule references.
@@ -292,7 +293,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Changed
 
 -   Now rule parameters and `model.ModelBuilderSemantics` are used to produce grammar models with a minimal set of semantic methods.
--   Code generation is now separtate from the grammar model, so translation targets different from [Python] are easier to implement.
+-   Code generation is now separtate from the grammar model, so translation targets different from [Python][] are easier to implement.
 
 
 ### Fixed
@@ -342,16 +343,16 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Renamed `Traverser` and `traverse` to `Walker` and `walk`.
 -   Now the keys in `grako.ast.AST` are ordered like in `collections.OrderedDict`.
 -   **Grako** models are now more [JSON]-friendly with the help of `grako.ast.AST.__json__()`, `grako.model.Node.__json__()` and `grako.util.asjon()`.
--   Removed checking for compatibility with [Python] 3.3 (use 3.4 instead).
+-   Removed checking for compatibility with [Python][] 3.3 (use 3.4 instead).
 -   Incorporated Robert [Speer]'s solution to honoring escape sequences without messing up the encoding.
--   Honor simple escape sequences in tokens while trying not to corrupt unicode input. Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of [Python] `\x` or `\o` escape sequences. There is no standard/stable way to unscape a [Python] string with escaped escape sequences.  Unicode is broken in [Python] 2.x.
+-   Honor simple escape sequences in tokens while trying not to corrupt unicode input. Projects using non-ASCII characters in grammars should prefer to use unicode character literals instead of [Python][] `\x` or `\o` escape sequences. There is no standard/stable way to unscape a [Python][] string with escaped escape sequences.  Unicode is broken in [Python][] 2.x.
 
 
 ### Fixed
 
--   The `--list` option was not working in [Python] 3.4.1.
+-   The `--list` option was not working in [Python][] 3.4.1.
 -   [22] Always exit with non-zero exit code on failure.
--   [23] Incorrect encoding of [Python] escape sequences in grammar tokens.
+-   [23] Incorrect encoding of [Python][] escape sequences in grammar tokens.
 -   [24] Incorrect template for *--pretty* of multi-line optionals.
 
 
@@ -364,7 +365,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Applied [flake8] to project and to generated parsers.
 -   Now a `_default()` method is called in the semantics delegate when no specific method is found. This allows, for example, generating meaningful errors when something in the semantics is missing.
 -   Changes to allow downstream translators to have different target languages with as little code replication as possible. There's new functionality pulled from downstream in `grako.model` and `grako.rendering`. `grako.model` is now a module instead of a package.
--   Added compatibility with [tox]. Now tests are performed against the latest releases of [Python] 2.7.x and 3.x, and [PyPy] 2.x.
+-   Added compatibility with [tox]. Now tests are performed against the latest releases of [Python][] 2.7.x and 3.x, and [PyPy] 2.x.
 
 
 ### Changed
@@ -383,12 +384,12 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Changed
 
 -   *Refactoring* The functionality that was almost identical in generated parsers and in models was refactored into `Context`.
--   Improve consistency of use Unicode between [Python] 2.7 and 3.x.
+-   Improve consistency of use Unicode between [Python][] 2.7 and 3.x.
 
 
 ### Fixed
 
--   Compatibility between [Python] 2.7/3.x print() statements.
+-   Compatibility between [Python][] 2.7/3.x print() statements.
 
 ## [2.2.2] @ 2013-11-06
 
@@ -422,7 +423,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Added
 
--   Now *tokens* accept [Python] escape sequences.
+-   Now *tokens* accept [Python][] escape sequences.
 -   Added a simple [Visitor Pattern] for `Renderer` nodes. Used it to implement diagramming.
 -   Create a basic diagram of a grammar if [pygraphviz] is available.  Added the `--draw` option to the command-line tool.
 -   Added command-line and parser options to specify the buffering treatment of `whitespace` and `nameguard` [lambdafu].
@@ -483,7 +484,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Changed
 
--   Ensure compatibility with [Python] 2.7.4 and 3.3.1.
+-   Ensure compatibility with [Python][] 2.7.4 and 3.3.1.
 -   Update credits.
 
 
@@ -619,8 +620,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.14.1
-[3.14.1]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.0rc1
+[3.15.0rc1]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
 [3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/3.13.0%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0

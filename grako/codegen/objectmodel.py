@@ -39,24 +39,24 @@ class Rule(ModelRenderer):
         kwargs = '\n'.join('%s=None, ' % d for d in defs)
         params = '\n'.join('%s=%s,' % (d, d) for d in defs)
         if params:
-            params = '\n*args,\n' + params + '\n**kwargs\n'
+            params = '\n*_args_,\n' + params + '\n**_kwargs_\n'
             params = indent(params, 3)
             params = params + '\n' + indent(')', 2)
 
-            kwargs = '\n' + indent(kwargs + '\n**kwargs', indent=17, multiplier=1)
+            kwargs = '\n' + indent(kwargs + '\n**_kwargs_', indent=17, multiplier=1)
         else:
-            kwargs = ' **kwargs'
-            params = '*args, **kwargs)'
+            kwargs = ' **_kwargs_'
+            params = '*_args_, **_kwargs_)'
 
         fields.update(
             class_name=safe_name(self.params[0]),
-            kwargs=kwargs,
+            _kwargs_=kwargs,
             params=params,
         )
 
     template = '''
             class {class_name}(ModelBase):
-                def __init__(self, *args,{kwargs}):
+                def __init__(self, *_args_,{_kwargs_}):
                     super({class_name}, self).__init__({params}\
             '''
 
