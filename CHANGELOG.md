@@ -28,9 +28,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Added a patch for bakcwards compatibility with parsers generated before the switch from `prefix=` to `sep=` in generated calls to closures.
 -   Restored special treatment of first line in `grako.util.trim()` (as in Python
-    doccomnents). There were unexpected results with the change.
+    _doc-comnents_). There were unexpected results without the special treatment.
 -   Use `_args_` and `_kwargs_` in generated models to avoid conflicts with grammar elelemts that use the standard [Python][] names.
--   The generated parser was overriding Buffer creation without consideration for settings passed to the Parser class. There's now a `buffer_class` _kwarg_ to the `Context`, `Parser`, and the generated parsers.
+-   The generated parser was overriding `Buffer` creation without regard for settings passed to the `Parser` class. There's now a `buffer_class` _kwarg_ to the `Context`, `Parser`, and the generated parser classes.
 
 
 
@@ -621,8 +621,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.0rc1
-[3.15.0rc1]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.0rc2
+[3.15.0rc2]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
 [3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/3.13.0%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0
