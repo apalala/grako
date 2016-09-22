@@ -94,6 +94,7 @@ class Closure(list):
 
 class ParseContext(object):
     def __init__(self,
+                 buffer_class=buffering.Buffer,
                  semantics=None,
                  parseinfo=False,
                  trace=False,
@@ -115,6 +116,7 @@ class ParseContext(object):
         super(ParseContext, self).__init__()
 
         self._buffer = None
+        self.buffer_class = buffer_class
         self.semantics = semantics
         self.encoding = encoding
         self.parseinfo = parseinfo
@@ -154,6 +156,7 @@ class ParseContext(object):
     def _reset(self,
                text=None,
                filename=None,
+               buffer_class=None,
                semantics=None,
                trace=None,
                comments_re=None,
@@ -193,7 +196,8 @@ class ParseContext(object):
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
-            buffer = buffering.Buffer(
+            bufferClass = buffer_class or self.buffer_class
+            buffer = bufferClass(
                 text,
                 filename=filename,
                 comments_re=comments_re or self.comments_re,
@@ -209,6 +213,7 @@ class ParseContext(object):
               text,
               rule_name='start',
               filename=None,
+              buffer_class=None,
               semantics=None,
               trace=False,
               whitespace=None,
@@ -218,6 +223,7 @@ class ParseContext(object):
             self._reset(
                 text=text,
                 filename=filename,
+                buffer_class=buffer_class,
                 semantics=semantics,
                 trace=trace or self.trace,
                 whitespace=whitespace if whitespace is not None else self.whitespace,

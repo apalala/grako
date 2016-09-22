@@ -470,6 +470,7 @@ class Grammar(Base):
                                  parseinfo={parseinfo},
                                  keywords=KEYWORDS,
                                  namechars={namechars},
+                                 buffer_class={name}Buffer,
                                  **kwargs):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,
@@ -481,13 +482,9 @@ class Grammar(Base):
                             parseinfo=parseinfo,
                             keywords=keywords,
                             namechars=namechars,
+                            buffer_class=buffer_class,
                             **kwargs
                         )
-
-                    def parse(self, text, *args, **kwargs):
-                        if not isinstance(text, Buffer):
-                            text = {name}Buffer(text, **kwargs)
-                        return super({name}Parser, self).parse(text, *args, **kwargs)
 
                 {rules}
 
@@ -496,33 +493,12 @@ class Grammar(Base):
                 {abstract_rules}
 
 
-                def main(
-                        filename,
-                        startrule,
-                        trace=False,
-                        whitespace=None,
-                        nameguard={nameguard},
-                        comments_re={comments_re},
-                        eol_comments_re={eol_comments_re},
-                        ignorecase={ignorecase},
-                        left_recursion={left_recursion},
-                        parseinfo={parseinfo},
-                        **kwargs):
-
+                def main(filename, startrule, **kwargs):
                     with open(filename) as f:
                         text = f.read()
                     whitespace = whitespace or {whitespace}
                     parser = {name}Parser(parseinfo=False)
-                    ast = parser.parse(
-                        text,
-                        startrule,
-                        filename=filename,
-                        trace=trace,
-                        whitespace=whitespace,
-                        nameguard=nameguard,
-                        ignorecase=ignorecase,
-                        **kwargs)
-                    return ast
+                    return parser.parse(text, startrule, filename=filename, **kwargs)
 
                 if __name__ == '__main__':
                     import json

@@ -18,7 +18,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 8, 18, 15, 32, 32, 3)
+__version__ = (2016, 9, 22, 20, 34, 9, 3)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -59,8 +59,10 @@ class GrakoBootstrapParser(Parser):
                  eol_comments_re='#([^\\n]*?)$',
                  ignorecase=None,
                  left_recursion=False,
+                 parseinfo=True,
                  keywords=KEYWORDS,
                  namechars='',
+                 buffer_class=GrakoBootstrapBuffer,
                  **kwargs):
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
@@ -69,15 +71,12 @@ class GrakoBootstrapParser(Parser):
             eol_comments_re=eol_comments_re,
             ignorecase=ignorecase,
             left_recursion=left_recursion,
+            parseinfo=parseinfo,
             keywords=keywords,
             namechars=namechars,
+            buffer_class=buffer_class,
             **kwargs
         )
-
-    def parse(self, text, *args, **kwargs):
-        if not isinstance(text, Buffer):
-            text = GrakoBootstrapBuffer(text, **kwargs)
-        return super(GrakoBootstrapParser, self).parse(text, *args, **kwargs)
 
     @graken()
     def _start_(self):
@@ -983,6 +982,7 @@ def main(
         eol_comments_re='#([^\\n]*?)$',
         ignorecase=None,
         left_recursion=False,
+        parseinfo=True,
         **kwargs):
 
     with open(filename) as f:
