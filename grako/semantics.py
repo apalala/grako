@@ -2,11 +2,14 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from collections import OrderedDict
 
-from grako.util import simplify_list, eval_escapes, warning
+from grako.model import Node
+from grako.synth import synthesize
+
+from grako.util import simplify_list, eval_escapes, warning, builtins
 from grako.util import re, RE_FLAGS
 from grako import grammars
 from grako.exceptions import FailedSemantics
-from grako.model import ModelBuilderSemantics
+from grako.exceptions import SemanticError
 
 
 class GrakoASTSemantics(object):
@@ -24,6 +27,67 @@ class GrakoASTSemantics(object):
         if len(ast) == 1:
             return simplify_list(ast[0])
         return ast
+
+
+class ModelBuilderSemantics(object):
+    """ Intended as a semantic action for parsing, a ModelBuilderSemantics creates
+        nodes using the class name given as first parameter to a grammar
+        rule, and synthesizes the class/type if it's not known.
+    """
+    def __init__(self, context=None, baseType=Node, types=None):
+        self.ctx = context
+        self.baseType = baseType
+
+        self.constructors = dict()
+
+        for t in types or ():
+            self._register_constructor(t)
+
+    def _register_constructor(self, constructor):
+        self.constructors[constructor.__name__] = constructor
+
+    def _get_constructor(self, typename):
+        typename = str(typename)
+        if typename in self.constructors:
+            return self.constructors[typename]
+
+        constructor = builtins
+        for name in typename.split('.'):
+            try:
+                context = vars(constructor)
+            except Exception as e:
+                raise SemanticError(
+                    'Could not find constructor for %s (%s): %s'
+                    % (typename, type(constructor).__name__, str(e))
+                )
+            if name in context:
+                constructor = context[name]
+            else:
+                constructor = None
+                break
+        if constructor:
+            return constructor
+
+        # synthethize a new type
+        constructor = synthesize(typename, self.baseType)
+        self._register_constructor(constructor)
+        return constructor
+
+    def _default(self, ast, *args, **kwargs):
+        if not args:
+            return ast
+        name = args[0]
+        constructor = self._get_constructor(name)
+        try:
+            if type(constructor) is type and issubclass(constructor, Node):
+                return constructor(*args[1:], ast=ast, ctx=self.ctx, **kwargs)
+            else:
+                return constructor(ast, *args[1:], **kwargs)
+        except Exception as e:
+            raise SemanticError(
+                'Could not call constructor for %s: %s'
+                % (name, str(e))
+            )
 
 
 class GrakoSemantics(ModelBuilderSemantics):

@@ -108,7 +108,7 @@ class Grammar(ModelRenderer):
                 from __future__ import print_function, division, absolute_import, unicode_literals
 
                 from grako.model import Node
-                from grako.model import ModelBuilderSemantics
+                from grako.semantics import ModelBuilderSemantics
 
 
                 __version__ = '{version}'

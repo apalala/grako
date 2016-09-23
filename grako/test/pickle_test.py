@@ -1,7 +1,7 @@
 import unittest
 import pickle
 
-from grako.model import ModelBuilderSemantics
+from grako.semantics import ModelBuilderSemantics
 from grako.tool import genmodel
 
 

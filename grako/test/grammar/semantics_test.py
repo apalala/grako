@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 from grako.tool import genmodel
-from grako.model import ModelBuilderSemantics
+from grako.semantics import ModelBuilderSemantics
 
 
 class SemanticsTests(unittest.TestCase):

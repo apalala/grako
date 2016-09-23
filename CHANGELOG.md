@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
-## [3.15.0rc2] @ 2016-09-17
+## [4.0.0rc1] @ 2016-09-17
 
 ### Added
 
@@ -21,9 +21,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Changed
 
--   `grako.model.Node.children()` now defaults to `Node.children_list()`. It was too unexpected that the child nodes might be out of order.
+-   The result of `grako.model.Node.children()` now defaults to `Node.children_list()`. It was too unexpected that the child nodes might be out of order.
 -   Simplified the `main()` function in generated parsers.
 -   Moved `NodeWalker` and descendants into the new `grako.walkers` module.
+-   Moved `ModelBuilderSemantics` to the `grako.semantics` module.
 
 
 ### Fixed
@@ -623,8 +624,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.0rc2
-[3.15.0rc2]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D4.0.0rc1
+[4.0.0rc1]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
 [3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/3.13.0%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0
