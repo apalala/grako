@@ -625,7 +625,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.0
-[3.15.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.1%0D3.14.0
+[3.15.0]: https://bitbucket.org/apalala/grako/branches/compare/3.15.0%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
 [3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/3.13.0%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0
