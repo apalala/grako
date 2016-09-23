@@ -12,7 +12,7 @@ import shutil
 import sys
 import unittest
 
-from grako.model import DepthFirstWalker
+from grako.walkers import DepthFirstWalker
 from grako.parser import GrakoGrammarGenerator, GrakoParser
 from grako.semantics import GrakoSemantics
 from grako.grammars import COMMENTS_RE, EOL_COMMENTS_RE

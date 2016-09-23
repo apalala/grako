@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import collections
 
-from grako.util import asjson, asjsons, Mapping, builtins, is_list
+from grako.util import asjson, asjsons, Mapping, builtins
 from grako.buffering import Comments
 from grako.exceptions import SemanticError
 from grako.ast import AST
@@ -188,67 +188,6 @@ class Node(object):
 
 
 ParseModel = Node
-
-
-# FIXME: kept here instead of in grako.walkers for backwars compatibility
-class NodeWalker(object):
-    def __new__(cls, *args, **kwargs):
-        cls._walker_cache = {}
-        return super(NodeWalker, cls).__new__(cls)
-
-    def walk(self, node, *args, **kwargs):
-        walker = self._find_walker(node)
-        if callable(walker):
-            return walker(node, *args, **kwargs)
-
-    def _find_walker(self, node, prefix='walk_'):
-        classid = id(node.__class__)
-
-        if classid in self._walker_cache:
-            return self._walker_cache[classid]
-
-        classes = [node.__class__]
-        while classes:
-            cls = classes.pop()
-            name = prefix + cls.__name__
-            walker = getattr(self, name, None)
-            if callable(walker):
-                break
-            for b in cls.__bases__:
-                if b not in classes:
-                    classes.append(b)
-        else:
-            walker = getattr(self, '_walk_default', None)
-            if walker is None:
-                walker = getattr(self, 'walk_default', None)  # backwars compatibility
-
-        self._walker_cache[classid] = walker
-        return walker
-
-    def _walk_children(self, node, *args, **kwargs):
-        if isinstance(node, Node):
-            return [self.walk(c, *args, **kwargs) for c in node.children()]
-        elif isinstance(node, collections.Mapping):
-            return {n: self.walk(e, *args, **kwargs) for n, e in node.items()}
-        elif isinstance(node, collections.Iterable):
-            return [self.walk(e, *args, **kwargs) for e in iter(node)]
-        else:
-            return self.walk(node, *args, **kwargs)
-
-
-# FIXME: kept here instead of in grako.walkers for backwars compatibility
-class DepthFirstWalker(NodeWalker):
-    def walk(self, node, *args, **kwargs):
-        supers_walk = super(DepthFirstWalker, self).walk
-        if isinstance(node, Node):
-            children = [self.walk(c, *args, **kwargs) for c in node.children()]
-            return supers_walk(node, children, *args, **kwargs)
-        elif isinstance(node, collections.Mapping):
-            return {n: self.walk(e, *args, **kwargs) for n, e in node.items()}
-        elif is_list(node):
-            return [self.walk(e, *args, **kwargs) for e in iter(node)]
-        else:
-            return supers_walk(node, [], *args, **kwargs)
 
 
 class ModelBuilderSemantics(object):
