@@ -14,7 +14,7 @@ from grako.util import (
     compress_seq
 )
 from grako.exceptions import CodegenError
-from grako.model import Node
+from grako.objectmodel import Node
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
 
 

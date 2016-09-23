@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from collections import OrderedDict
 
-from grako.model import Node
+from grako.objectmodel import Node
 from grako.synth import synthesize
 
 from grako.util import simplify_list, eval_escapes, warning, builtins

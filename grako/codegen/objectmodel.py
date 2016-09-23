@@ -10,7 +10,7 @@ from grako.util import (
     re,
     safe_name,
 )
-from grako.model import Node
+from grako.objectmodel import Node
 from grako.exceptions import CodegenError
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
 
@@ -107,7 +107,7 @@ class Grammar(ModelRenderer):
 
                 from __future__ import print_function, division, absolute_import, unicode_literals
 
-                from grako.model import Node
+                from grako.objectmodel import Node
                 from grako.semantics import ModelBuilderSemantics
 
 

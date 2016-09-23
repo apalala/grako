@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import unittest
 
 from grako.codegen import CodeGenerator, ModelRenderer
-from grako.model import Node
+from grako.objectmodel import Node
 
 
 class Generator(CodeGenerator):

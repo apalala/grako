@@ -322,13 +322,11 @@ def generic_main(custom_main, ParserClass, name='Unknown'):
         pass
 
 
-warnings.filterwarnings('default', category=DeprecationWarning)
-
-
 # decorator
 def deprecated(fun):
     @functools.wraps(fun)
     def wrapper(*args, **kwargs):
+        warnings.filterwarnings('default', category=DeprecationWarning)
         msg = "Call to deprecated function {}."
         warnings.warn(
             msg.format(fun.__name__),

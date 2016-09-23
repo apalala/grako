@@ -22,7 +22,7 @@ from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
 from grako.buffering import Buffer
 from grako.contexts import ParseContext
-from grako.model import Node
+from grako.objectmodel import Node
 from grako.bootstrap import GrakoBootstrapBuffer
 
 

@@ -1,7 +1,7 @@
 import collections
 from contextlib import contextmanager
 
-from grako.model import Node
+from grako.objectmodel import Node
 from grako.util import is_list
 
 
