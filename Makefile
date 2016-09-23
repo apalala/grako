@@ -69,4 +69,4 @@ distributions: release_check
 
 
 upload: distributions
-	twine uplodad dist/*
+	twine upload dist/*
