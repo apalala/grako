@@ -63,11 +63,10 @@ release_check: clean
 	@echo version `python -m grako --version`
 
 
-publish: release_check
+distributions: release_check
 	python setup.py sdist --formats=gztar,zip
 	python setup.py bdist_wheel --universal
 
 
-upload:
-	python setup.py sdist --formats=gztar,zip register upload
-	python setup.py bdist_wheel --universal upload
+upload: distributions
+	twine uplodad dist/*
