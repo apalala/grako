@@ -18,7 +18,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 9, 22, 20, 34, 9, 3)
+__version__ = (2016, 9, 23, 1, 53, 16, 4)
 
 __all__ = [
     'GrakoBootstrapParser',
@@ -972,33 +972,11 @@ class GrakoBootstrapSemantics(object):
         return ast
 
 
-def main(
-        filename,
-        startrule,
-        trace=False,
-        whitespace=None,
-        nameguard=None,
-        comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
-        eol_comments_re='#([^\\n]*?)$',
-        ignorecase=None,
-        left_recursion=False,
-        parseinfo=True,
-        **kwargs):
-
+def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    whitespace = whitespace or None
     parser = GrakoBootstrapParser(parseinfo=False)
-    ast = parser.parse(
-        text,
-        startrule,
-        filename=filename,
-        trace=trace,
-        whitespace=whitespace,
-        nameguard=nameguard,
-        ignorecase=ignorecase,
-        **kwargs)
-    return ast
+    return parser.parse(text, startrule, filename=filename, **kwargs)
 
 if __name__ == '__main__':
     import json
