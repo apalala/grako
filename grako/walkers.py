@@ -39,16 +39,6 @@ class NodeWalker(object):
         self._walker_cache[classid] = walker
         return walker
 
-    def _walk_children(self, node, *args, **kwargs):
-        if isinstance(node, Node):
-            return [self.walk(c, *args, **kwargs) for c in node.children()]
-        elif isinstance(node, collections.Mapping):
-            return {n: self.walk(e, *args, **kwargs) for n, e in node.items()}
-        elif isinstance(node, collections.Iterable):
-            return [self.walk(e, *args, **kwargs) for e in iter(node)]
-        else:
-            return self.walk(node, *args, **kwargs)
-
 
 class PreOrderWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
