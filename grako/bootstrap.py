@@ -18,8 +18,6 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 9, 23, 1, 53, 16, 4)
-
 __all__ = [
     'GrakoBootstrapParser',
     'GrakoBootstrapSemantics',
