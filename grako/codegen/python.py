@@ -426,8 +426,6 @@ class Grammar(Base):
                 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-                __version__ = {version}
-
                 __all__ = [
                     '{name}Parser',
                     '{name}Semantics',

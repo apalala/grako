@@ -18,6 +18,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Fixed
 
 -   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`.:
+-   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
 
 ## [3.15.0] @ 2016-09-23
 

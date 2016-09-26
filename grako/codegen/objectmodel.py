@@ -111,9 +111,6 @@ class Grammar(ModelRenderer):
                 from grako.semantics import ModelBuilderSemantics
 
 
-                __version__ = '{version}'
-
-
                 class {name}ModelBuilderSemantics(ModelBuilderSemantics):
                     def __init__(self):
                         types = [
