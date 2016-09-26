@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import itertools
 import string
 
-from grako.util import indent, isiter, strtype, trim, ustr
+from grako.util import indent, isiter, strtype, trim, ustr, slotsnvars
 
 
 def render(item, join='', **fields):
@@ -114,7 +114,7 @@ class Renderer(object):
 
     def render(self, template=None, **fields):
         fields.update(__class__=self.__class__.__name__)
-        fields.update({k: v for k, v in vars(self).items() if not k.startswith('_')})
+        fields.update({k: v for k, v in slotsnvars(self).items() if not k.startswith('_')})
 
         override = self.render_fields(fields)
         if override is not None:

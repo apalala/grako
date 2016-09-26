@@ -48,14 +48,20 @@ class Rule(ModelRenderer):
             kwargs = ' **_kwargs_'
             params = '*_args_, **_kwargs_)'
 
+        slots = ',\n'.join('%r' % d for d in defs)
         fields.update(
             class_name=safe_name(self.params[0]),
             _kwargs_=kwargs,
             params=params,
+            slots=slots,
         )
 
     template = '''
             class {class_name}(ModelBase):
+                __slots__ = [
+            {slots:2::}
+                ]
+
                 def __init__(self, *_args_,{_kwargs_}):
                     super({class_name}, self).__init__({params}\
             '''

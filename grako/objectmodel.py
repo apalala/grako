@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-
 import collections
 
-from grako.util import asjson, asjsons, Mapping
+from grako.util import asjson, asjsons, Mapping, slotsnvars
 from grako.buffering import Comments
 from grako.ast import AST
 
@@ -18,7 +17,6 @@ class Node(object):
     def __init__(self, ctx=None, ast=None, parseinfo=None, **kwargs):
         super(Node, self).__init__()
         self._ctx = ctx
-        self._ast = ast
 
         if isinstance(ast, AST):
             parseinfo = ast.parseinfo if not parseinfo else None
@@ -39,10 +37,6 @@ class Node(object):
                 while hasattr(self, name):
                     name = name + '_'
                 setattr(self, name, value)
-
-    @property
-    def ast(self):
-        return self._ast
 
     @property
     def parent(self):
@@ -125,7 +119,7 @@ class Node(object):
         def cn(child):
             self.__cn(lambda x: childset.add(x), childset, child)
 
-        for k, c in vars(self).items():
+        for k, c in slotsnvars(self).items():
             if not k.startswith('_'):
                 cn(c)
         return list(childset)
@@ -136,7 +130,7 @@ class Node(object):
         def cn(child):
             self.__cn(lambda x: child_list.append(x), child_list, child)
 
-        for k, c in sorted(vars(self).items(), key=vars_sort_key):
+        for k, c in sorted(slotsnvars(self).items(), key=vars_sort_key):
             if not k.startswith('_'):
                 cn(c)
         return child_list
@@ -163,9 +157,9 @@ class Node(object):
     def _pubdict(self):
         return {
             k: v
-            for k, v in vars(self).items()
+            for k, v in slotsnvars(self).items()
             if not k.startswith('_')
-        }
+            }
 
     def __json__(self):
         result = collections.OrderedDict(
