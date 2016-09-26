@@ -59,6 +59,9 @@ class Rule(ModelRenderer):
     template = '''
             class {class_name}(ModelBase):
                 __slots__ = [
+                    '_ctx',
+                    '_parseinfo',
+                    '_parent',
             {slots:2::}
                 ]
 

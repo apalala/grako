@@ -9,10 +9,11 @@ from grako.ast import AST
 
 
 class Node(object):
-    """ Base class for model nodes
-    """
-
-    inline = True
+    __slots__ = [
+        '_ctx',
+        '_parseinfo',
+        '_parent',
+    ]
 
     def __init__(self, ctx=None, ast=None, parseinfo=None, **kwargs):
         super(Node, self).__init__()

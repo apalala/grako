@@ -342,5 +342,6 @@ def slotsnvars(obj):
     result = vars(obj).copy()
     if hasattr(obj, '__slots__'):
         for key in obj.__slots__:
-            result[key] = getattr(obj, key)
+            if hasattr(obj, key):
+                result[key] = getattr(obj, key)
     return result

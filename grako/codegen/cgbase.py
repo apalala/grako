@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from grako.util import slotsnvars
 from grako.objectmodel import Node
 from grako.codegen import CodegenError
 from grako.rendering import render, Renderer, RenderingFormatter
@@ -64,7 +65,7 @@ class ModelRenderer(Renderer):
 
     def render(self, template=None, **fields):
         if isinstance(self.node, Node):
-            fields.update({k: v for k, v in vars(self.node).items() if not k.startswith('_')})
+            fields.update({k: v for k, v in slotsnvars(self.node).items() if not k.startswith('_')})
         else:
             fields.update(value=self.node)
         return super(ModelRenderer, self).render(template=template, **fields)
@@ -92,7 +93,7 @@ class CodeGenerator(object):
         result = dict()
 
         for module in modules:
-            for name, dtype in vars(module).items():
+            for name, dtype in slotsnvars(module).items():
                 if not isinstance(dtype, type):
                     continue
                 if not issubclass(dtype, ModelRenderer):
