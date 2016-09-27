@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import weakref
 from copy import copy
 from collections import OrderedDict as odict
 
@@ -176,7 +177,7 @@ class Symbol(Namespace):
 
     def insert(self, symbol):
         super(Symbol, self).insert(symbol)
-        symbol._parent = self
+        symbol._parent = weakref.proxy(self)
 
     def qualpath(self):
         if self.parent:

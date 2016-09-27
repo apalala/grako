@@ -15,10 +15,15 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [3.15.1] @ 2016-09-23
 
+
+### Changed
+
+-   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
+-   Use `weakref.proxy` for back-references (like `grako.objectmodel.Node._parent`) to make it easier for the [Python][] garbage collector.
+
 ### Fixed
 
 -   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`.:
--   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
 
 ## [3.15.0] @ 2016-09-23
 

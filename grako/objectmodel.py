@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 
 import collections
+import weakref
 
 from grako.util import asjson, asjsons, Mapping
 from grako.buffering import Comments
@@ -150,7 +151,7 @@ class Node(object):
         if parent is None:
             parent = self
         if isinstance(node, Node):
-            node._parent = parent
+            node._parent = weakref.proxy(parent)
             for c in node.children():
                 node._adopt_children(c, parent=node)
         elif isinstance(node, Mapping):
