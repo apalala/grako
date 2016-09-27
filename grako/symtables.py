@@ -3,12 +3,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from copy import copy
 from collections import OrderedDict as odict
+from collections import defaultdict
 
 from .util import asjson
 from .util import join_lists
 from .exceptions import GrakoException
 from .buffering import LineIndexEntry
-from .collections import OrderedDefaultDict
 
 
 DEFAULT_SEPARATOR = '.'
@@ -38,17 +38,12 @@ class SymbolTableError(GrakoException):
     pass
 
 
-class EntryDict(OrderedDefaultDict):
-    def __init__(self, *args, **kwargs):
-        super(EntryDict, self).__init__(list, *args, **kwargs)
-
-
 class Namespace(object):
     def __init__(self, duplicates=False, separator=DEFAULT_SEPARATOR):
         super(Namespace, self).__init__()
         self._duplicates = duplicates
         self.separator = separator
-        self._entries = EntryDict()
+        self._entries = defaultdict(list)
 
     @property
     def duplicates(self):
@@ -209,7 +204,8 @@ class Symbol(Namespace):
         return super(Symbol, self).filter(condition)
 
     def add_reference(self, qualname, node):
-        reference = SymbolReference(self, qualname, node)
+        # reference = SymbolReference(self, qualname, node)
+        reference = node
         if reference not in self.references:
             self._references.append(reference)
 
@@ -277,6 +273,12 @@ class BasedSymbol(Namespace):
 
 
 class SymbolReference():
+    __slots__ = [
+        'symbol',
+        'qualname',
+        'node',
+    ]
+
     def __init__(self, symbol, qualname, node):
         super(SymbolReference, self).__init__()
         self.symbol = symbol
