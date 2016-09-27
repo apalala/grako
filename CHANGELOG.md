@@ -23,7 +23,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
--   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`.:
+-   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`, so the re-export was re-instated.
 
 ## [3.15.0] @ 2016-09-23
 
