@@ -270,36 +270,3 @@ class BasedSymbol(Namespace):
         result = super(BasedSymbol, self).__json__()
         result['bases'] = asjson([b.qualname() for b in self.bases])
         return result
-
-
-class SymbolReference():
-    __slots__ = [
-        'symbol',
-        'qualname',
-        'node',
-    ]
-
-    def __init__(self, symbol, qualname, node):
-        super(SymbolReference, self).__init__()
-        self.symbol = symbol
-        self.qualname = qualname
-        self.node = node
-
-    def line_index(self):
-        result = set(self.node.line_index())
-        assert isinstance(result, set)
-        assert all(isinstance(i, LineIndexEntry) for i in result)
-        return result
-
-    def __hash__(self):
-        return hash(self.symbol) ^ hash(self.node)
-
-    def __eq__(self, other):
-        return self.symbol == other.symbol and self.node == other.node
-
-    def __json__(self):
-        return odict([
-            ('node', type(self.node).__name__),
-            ('name', self.qualname),
-            ('symbol', self.symbol.qualname()),
-        ])
