@@ -1,7 +1,10 @@
-include *.txt
+include *.cfg
+include *.ini
+include *.md
 include *.rst
+include *.txt
+include *.yaml
 include Makefile
-include tox.ini
 
 recursive-include etc *
 recursive-exclude etc *.pdf
@@ -15,6 +18,7 @@ exclude examples/regex/parser_base.py
 exclude examples/regex/genparser.py
 
 global-exclude *.pyc
+global-exclude *.pyd
 global-exclude *.pyo
 global-exclude *.orig
 global-exclude *.c
