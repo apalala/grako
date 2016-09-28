@@ -19,7 +19,8 @@ from grako.semantics import GrakoSemantics
 from grako.grammars import COMMENTS_RE, EOL_COMMENTS_RE
 from grako.codegen import codegen
 
-sys.path.append('./tmp')
+tmp = os.path.abspath('./tmp')
+sys.path.insert(0, tmp)
 
 
 class BootstrapTests(unittest.TestCase):
