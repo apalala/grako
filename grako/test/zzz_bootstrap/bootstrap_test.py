@@ -95,7 +95,8 @@ class BootstrapTests(unittest.TestCase):
 
         print('-' * 20, 'phase 07 - import generated code')
         py_compile.compile('./tmp/g06.py', doraise=True)
-        from g06 import GrakoBootstrapParser as GenParser  # @UnresolvedImport
+        g06 = __import__('g06')
+        GenParser = g06.GrakoBootstrapParser
 
         print('-' * 20, 'phase 08 - compile using generated code')
         parser = GenParser(trace=False)
