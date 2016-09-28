@@ -7,5 +7,5 @@ python:
   - "3.6"
   - "pypy"
   - "cython"
-install: pip install tox-travis
+install: "pip install tox-travis"
 script: tox
