@@ -101,7 +101,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added the `grako.synth` module which makes synthetic `grako.model.Node` classes pickable.
 -   Now patterns may be concatenated to split a complex pattern into parts, possibly accross several lines: `/regexp/ + /regexp/`.
 -   Added basic support for symbol tables in `grako.symtables`.
--   Syntax file for [Sublime Text][] [vmuriart][]
+-   Syntax file for [Sublime Text][] ([vmuriart][]).
 
 
 ### Changed
