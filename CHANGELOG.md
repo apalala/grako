@@ -1,6 +1,6 @@
 # Change Log
 
-**Grako** uses [Semantic Versioning] for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
+**Grako** uses [Semantic Versioning][] for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 [Semantic Versioning]: http://semver.org/
 
@@ -101,7 +101,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added the `grako.synth` module which makes synthetic `grako.model.Node` classes pickable.
 -   Now patterns may be concatenated to split a complex pattern into parts, possibly accross several lines: `/regexp/ + /regexp/`.
 -   Added basic support for symbol tables in `grako.symtables`.
--   Syntax file for [Sublime Text] [vmuriart]
+-   Syntax file for [Sublime Text][] [vmuriart][]
 
 
 ### Changed
@@ -139,9 +139,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Avoid recovering the same comment against the same line in `grako.buffering.Buffer`.
 -   Recovering comments and end-of-line comments together was incorrect.
 -   `model.Node` parenting still broken.
--   [73] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python][] 3.x
-    using [pygraphviz] 1.3.1.
--   [77][] [81] Advance over whitespace before memoization or left recursion.
+-   [73][] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python][] 3.x
+    using [pygraphviz][] 1.3.1.
+-   [77][] [81][] Advance over whitespace before memoization or left recursion.
 
 ## [3.9.3] @ 2016-07-15
 
@@ -157,10 +157,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Changed
 
 -   Simplified the regular expression for floats in the **Grako** grammar [siemer]
--   Set all [flake8] options in `tox.ini` [siemer].
+-   Set all [flake8][] options in `tox.ini` [siemer].
 -   Simplfied `__str__()` for directives [siemer].
 -   Now `STARTRULE` defaults to `start` in generated parsers.
--   Now the [AST] for a `grako.model.Node` is saved as `Node.ast`.
+-   Now the [AST][] for a `grako.model.Node` is saved as `Node.ast`.
 -   Several simplifications and refactorings by [siemer].
 
 ### Fixed
@@ -231,7 +231,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Detect and fail promptly on empty tokens in grammars.
 -   [52] Build with Cython failed on Windows.
--   [59] [Python][] keywords can now actually be used as rule names in grammars [drothlis].
+-   [59][] [Python][] keywords can now actually be used as rule names in grammars [drothlis].
 -   [60] `@@` directives were not pressent in the output of the `--pretty` option.
 -   [58] The parameters to the constructor of generated parsers were being ignored (pgebhard).
 -   `grammars.py` would call `ctx.error()` instead of `ctx._error()` on failed rule references.
