@@ -318,13 +318,7 @@ class Rule(_Decorator):
             else:
                 sdefines = indent(
                     '\n' +
-                    trim(
-                        '''\
-                            self.ast._define(
-                                %s,
-                                %s
-                        )''' % (sdefs, ldefs)
-                    )
+                    trim(self.define_template % (sdefs, ldefs))
                 )
 
         fields.update(defines=sdefines)
@@ -333,10 +327,17 @@ class Rule(_Decorator):
         )
 
     template = '''
-                @graken({params})
-                def _{name}_(self):
-                {exp:1::}{check_name}{defines}
-                '''
+        @graken({params})
+        def _{name}_(self):
+        {exp:1::}{check_name}{defines}
+        '''
+
+    define_template = '''\
+            self.ast._define(
+                %s,
+                %s
+            )\
+        '''
 
 
 class BasedRule(Rule):
