@@ -316,13 +316,16 @@ class Rule(_Decorator):
             if not ldefs:
                 sdefines = '\n\n    self.ast._define(%s, %s)' % (sdefs, ldefs)
             else:
-                sdefines = indent('\n' + trim('''\
-                                                self.ast._define(
-                                                    %s,
-                                                    %s
-                                                )''' % (sdefs, ldefs)
-                                            )
-                                  )
+                sdefines = indent(
+                    '\n' +
+                    trim(
+                        '''\
+                            self.ast._define(
+                                %s,
+                                %s
+                        )''' % (sdefs, ldefs)
+                    )
+                )
 
         fields.update(defines=sdefines)
         fields.update(

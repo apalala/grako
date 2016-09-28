@@ -31,80 +31,97 @@ def parse_args():
                                         add_help=False)
 
     main_mode = argparser.add_mutually_exclusive_group()
-    main_mode.add_argument('--generate-parser',
-                           help='generate parser code from the grammar (default)',
-                           action='store_true'
-                           )
-    main_mode.add_argument('--draw', '-d',
-                           help='generate a diagram of the grammar (requires --outfile)',
-                           action='store_true'
-                           )
-    main_mode.add_argument('--object-model', '-g',
-                           help='generate object model from the class names given as rule arguments',
-                           action='store_true'
-                           )
-    main_mode.add_argument('--pretty', '-p',
-                           help='generate a prettified version of the input grammar',
-                           action='store_true'
-                           )
-    main_mode.add_argument('--pretty-lean',
-                           help='like --pretty, but without name: or ::Parameter annotations',
-                           action='store_true'
-                           )
+    main_mode.add_argument(
+        '--generate-parser',
+        help='generate parser code from the grammar (default)',
+        action='store_true'
+    )
+    main_mode.add_argument(
+        '--draw', '-d',
+        help='generate a diagram of the grammar (requires --outfile)',
+        action='store_true'
+    )
+    main_mode.add_argument(
+        '--object-model', '-g',
+        help='generate object model from the class names given as rule arguments',
+        action='store_true'
+    )
+    main_mode.add_argument(
+        '--pretty', '-p',
+        help='generate a prettified version of the input grammar',
+        action='store_true'
+    )
+    main_mode.add_argument(
+        '--pretty-lean',
+        help='like --pretty, but without name: or ::Parameter annotations',
+        action='store_true'
+    )
 
     ebnf_opts = argparser.add_argument_group('parse-time options')
-    argparser.add_argument('filename',
-                           metavar='GRAMMAR',
-                           help='the filename of the Grako grammar to parse'
-                           )
-    ebnf_opts.add_argument('--color', '-c',
-                           help='use color in traces (requires the colorama library)',
-                           action='store_true'
-                           )
-    ebnf_opts.add_argument('--trace', '-t',
-                           help='produce verbose parsing output',
-                           action='store_true'
-                           )
+    argparser.add_argument(
+        'filename',
+        metavar='GRAMMAR',
+        help='the filename of the Grako grammar to parse'
+    )
+    ebnf_opts.add_argument(
+        '--color', '-c',
+        help='use color in traces (requires the colorama library)',
+        action='store_true'
+    )
+    ebnf_opts.add_argument(
+        '--trace', '-t',
+        help='produce verbose parsing output',
+        action='store_true'
+    )
 
     generation_opts = argparser.add_argument_group('generation options')
-    generation_opts.add_argument('--no-left-recursion', '-l',
-                                 help='turns left-recusion support off',
-                                 dest="left_recursion",
-                                 action='store_false'
-                                 )
-    generation_opts.add_argument('--name', '-m',
-                                 nargs=1,
-                                 metavar='NAME',
-                                 help='Name for the grammar (defaults to GRAMMAR base name)'
-                                 )
-    generation_opts.add_argument('--no-nameguard', '-n',
-                                 help='allow tokens that are prefixes of others',
-                                 dest="nameguard",
-                                 action='store_false',
-                                 default=None  # None allows grammar specified
-                                 )
-    generation_opts.add_argument('--outfile', '--output', '-o',
-                                 metavar='FILE',
-                                 help='output file (default is stdout)'
-                                 )
-    generation_opts.add_argument('--object-model-outfile', '-G',
-                                 metavar='FILE',
-                                 help='generate object model and save to FILE',
-                                )
-    generation_opts.add_argument('--whitespace', '-w',
-                                 metavar='CHARACTERS',
-                                 help='characters to skip during parsing (use "" to disable)',
-                                 )
+    generation_opts.add_argument(
+        '--no-left-recursion', '-l',
+        help='turns left-recusion support off',
+        dest="left_recursion",
+        action='store_false'
+    )
+    generation_opts.add_argument(
+        '--name', '-m',
+        nargs=1,
+        metavar='NAME',
+        help='Name for the grammar (defaults to GRAMMAR base name)'
+    )
+    generation_opts.add_argument(
+        '--no-nameguard', '-n',
+        help='allow tokens that are prefixes of others',
+        dest="nameguard",
+        action='store_false',
+        default=None  # None allows grammar specified
+    )
+    generation_opts.add_argument(
+        '--outfile', '--output', '-o',
+        metavar='FILE',
+        help='output file (default is stdout)'
+    )
+    generation_opts.add_argument(
+        '--object-model-outfile', '-G',
+        metavar='FILE',
+        help='generate object model and save to FILE',
+    )
+    generation_opts.add_argument(
+        '--whitespace', '-w',
+        metavar='CHARACTERS',
+        help='characters to skip during parsing (use "" to disable)',
+    )
 
     std_args = argparser.add_argument_group('common options')
-    std_args.add_argument('--help', '-h',
-                          help='show this help message and exit',
-                          action='help')
-    std_args.add_argument('--version', '-V',
-                          help='provide version information and exit',
-                          action='version',
-                          version=__version__
-                          )
+    std_args.add_argument(
+        '--help', '-h',
+        help='show this help message and exit',
+        action='help'
+    )
+    std_args.add_argument(
+        '--version', '-V',
+        help='provide version information and exit',
+        action='version',
+        version=__version__
+    )
 
     args = argparser.parse_args()
 
