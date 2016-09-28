@@ -11,6 +11,7 @@ import pickle
 import shutil
 import sys
 import unittest
+import py_compile
 
 from grako.walkers import DepthFirstWalker
 from grako.parser import GrakoGrammarGenerator, GrakoParser
@@ -92,6 +93,7 @@ class BootstrapTests(unittest.TestCase):
             f.write(gencode6)
 
         print('-' * 20, 'phase 07 - import generated code')
+        py_compile.compile('./tmp/g06.py', doraise=True)
         from g06 import GrakoBootstrapParser as GenParser  # @UnresolvedImport
 
         print('-' * 20, 'phase 08 - compile using generated code')
