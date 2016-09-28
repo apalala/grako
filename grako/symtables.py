@@ -169,7 +169,8 @@ class Symbol(Namespace):
 
     @property
     def parent(self):
-        return self._parent
+        if self._parent is not None:
+            return self._parent()
 
     @property
     def references(self):
@@ -177,7 +178,7 @@ class Symbol(Namespace):
 
     def insert(self, symbol):
         super(Symbol, self).insert(symbol)
-        symbol._parent = weakref.proxy(self)
+        symbol._parent = weakref.ref(self)
 
     def qualpath(self):
         if self.parent:
@@ -245,6 +246,16 @@ class Symbol(Namespace):
             ('entries', super(Symbol, self).__json__()),
             ('references', asjson(self._references)),
         ])
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.update(_parent=self.parent)
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        if self._parent is not None:
+            self._parent = weakref.ref(self._parent)
 
 
 class BasedSymbol(Namespace):

@@ -30,7 +30,7 @@ class Node(object):
         if isinstance(ast, Mapping):
             attributes.update({k: v for k, v in kwargs.items() if v is not None})
 
-        self._parent = None
+        self._parent = None  # will always be a weakref or None
         self._adopt_children(attributes)
         self.__postinit__(attributes)
 
@@ -47,7 +47,8 @@ class Node(object):
 
     @property
     def parent(self):
-        return self._parent
+        if self._parent is not None:
+            return self._parent()
 
     @property
     def line(self):
@@ -151,7 +152,7 @@ class Node(object):
         if parent is None:
             parent = self
         if isinstance(node, Node):
-            node._parent = weakref.proxy(parent)
+            node._parent = weakref.ref(parent)
             for c in node.children():
                 node._adopt_children(c, parent=node)
         elif isinstance(node, Mapping):
@@ -177,6 +178,16 @@ class Node(object):
 
     def __str__(self):
         return asjsons(self)
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.update(_parent=self.parent)
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        if self._parent is not None:
+            self._parent = weakref.ref(self._parent)
 
 
 ParseModel = Node
