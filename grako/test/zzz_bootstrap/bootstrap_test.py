@@ -98,19 +98,19 @@ class BootstrapTests(unittest.TestCase):
         g06 = __import__('g06')
         GenParser = g06.GrakoBootstrapParser
 
-        print('-' * 20, 'phase 08 - compile using generated code')
-        parser = GenParser(trace=False)
-        result = parser.parse(
-            text,
-            'start',
-            comments_re=COMMENTS_RE,
-            eol_comments_re=EOL_COMMENTS_RE
-        )
-        self.assertEqual(result, parser.ast['start'])
-        ast8 = parser.ast['start']
-        json8 = json.dumps(ast8, indent=2)
-        open('./tmp/08.ast', 'w').write(json8)
-        self.assertEqual(ast5, ast8)
+        # print('-' * 20, 'phase 08 - compile using generated code')
+        # parser = GenParser(trace=False)
+        # result = parser.parse(
+        #     text,
+        #     'start',
+        #     comments_re=COMMENTS_RE,
+        #     eol_comments_re=EOL_COMMENTS_RE
+        # )
+        # self.assertEqual(result, parser.ast['start'])
+        # ast8 = parser.ast['start']
+        # json8 = json.dumps(ast8, indent=2)
+        # open('./tmp/08.ast', 'w').write(json8)
+        # self.assertEqual(ast5, ast8)
 
         print('-' * 20, 'phase 09 - Generate parser with semantics')
         with open('etc/grako.ebnf') as f:
