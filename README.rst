@@ -1,6 +1,9 @@
 .. image:: https://badge.fury.io/py/grako.svg
     :target: https://badge.fury.io/py/grako
 
+.. image:: https://img.shields.io/pypi/pyversions/grako.svg
+    :target: https://pypi.python.org/pypi/grako
+
 .. image:: https://secure.travis-ci.org/apalala/grako.png
     :target: http://travis-ci.org/apalala/grako
 
