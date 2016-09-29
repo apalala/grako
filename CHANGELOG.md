@@ -27,6 +27,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
 -   Use `weakref.proxy` for back-references (like `grako.objectmodel.Node._parent`) to make it easier for the [Python][] garbage collector.
+-   Walker will now also recognize walk methods where the class name has the upper case characters replaced by an underscore followed by the characeter in lower case (`walk_NegativeLookahead()` or `walk__negative_lookahead()`.
 
 ### Fixed
 
