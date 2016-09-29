@@ -4,12 +4,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import weakref
 from copy import copy
 from collections import OrderedDict as odict  # noqa:N813
+from collections import defaultdict
 
 from .util import asjson
 from .util import join_lists
 from .exceptions import GrakoException
 from .buffering import LineIndexEntry
-from .collections import OrderedDefaultDict
 
 
 DEFAULT_SEPARATOR = '.'
@@ -39,17 +39,12 @@ class SymbolTableError(GrakoException):
     pass
 
 
-class EntryDict(OrderedDefaultDict):
-    def __init__(self, *args, **kwargs):
-        super(EntryDict, self).__init__(list, *args, **kwargs)
-
-
 class Namespace(object):
     def __init__(self, duplicates=False, separator=DEFAULT_SEPARATOR):
         super(Namespace, self).__init__()
         self._duplicates = duplicates
         self.separator = separator
-        self._entries = EntryDict()
+        self._entries = defaultdict(list)
 
     @property
     def duplicates(self):
@@ -211,7 +206,8 @@ class Symbol(Namespace):
         return super(Symbol, self).filter(condition)
 
     def add_reference(self, qualname, node):
-        reference = SymbolReference(self, qualname, node)
+        # reference = SymbolReference(self, qualname, node)
+        reference = node
         if reference not in self.references:
             self._references.append(reference)
 
@@ -286,30 +282,3 @@ class BasedSymbol(Namespace):
         result = super(BasedSymbol, self).__json__()
         result['bases'] = asjson([b.qualname() for b in self.bases])
         return result
-
-
-class SymbolReference():
-    def __init__(self, symbol, qualname, node):
-        super(SymbolReference, self).__init__()
-        self.symbol = symbol
-        self.qualname = qualname
-        self.node = node
-
-    def line_index(self):
-        result = set(self.node.line_index())
-        assert isinstance(result, set)
-        assert all(isinstance(i, LineIndexEntry) for i in result)
-        return result
-
-    def __hash__(self):
-        return hash(self.symbol) ^ hash(self.node)
-
-    def __eq__(self, other):
-        return self.symbol == other.symbol and self.node == other.node
-
-    def __json__(self):
-        return odict([
-            ('node', type(self.node).__name__),
-            ('name', self.qualname),
-            ('symbol', self.symbol.qualname()),
-        ])

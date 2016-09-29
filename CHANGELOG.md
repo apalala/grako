@@ -20,6 +20,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Test and publish **Grako** using [Travis CI][].
 
+
+### Changed
+
+-   Reduced the memory used by symbol tables by replacing `symtables.SymbolReference` by the referencing `objectmodel.Node`.
+
 ## [3.15.1] @ 2016-09-28
 
 
