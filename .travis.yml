@@ -1,26 +1,22 @@
 sudo: false
 language: python
-
 python:
-    - '2.7'
-    - '3.4'
-    - '3.5'
-    - pypy
-
+- '2.7'
+- '3.4'
+- '3.5'
+- pypy
 install:
-    - pip install tox-travis
-    - pip install pygraphviz
-    - pip install regex
-
+- pip install tox-travis
+- pip install pygraphviz
+- pip install regex
 script: tox
-
 deploy:
-    provider: pypi
-    user: Apalala
-    password:
-        secure: juIHc1i42zZ0eBS8IzE2nfrvuRIjmM6TliEpJcRmQX9FH8bUFM06semvLjiwDk34fblXQwWuYWFp2QYD5A2N1+gQ4EHu2WOWao7sdbk6peEVrmBsbT19f+i+6QuK661RIYN+bDtfvUhU0GrKK6NK7hBMmeEYGTm7USIcXv8gyHq6g/9bQlhH2S4tk7QaBxr7uBgLuIvdP9On08NDE+YhKXaQvftDKOKkCr6rSn29tbx7+0GVqj19nIhlyKSHne16kZ9/jVvGpfueLD0ZI0Ud7IgcwAE8R8L7h+MWXyA9lC+pijBjnhEI2W4xKVLFGjVDrE30wNDqR0hTT9Ctlon+f398xriIPW0kCYxURQig8X1Pxyam58+mh9rfxucnae4WBPY+Xh3Up5UR2c8JJ2o5U468QIy13VTv64XHcK7su8vZxNp3L7Wx6sOJk5vCkctTN6IcPnmARe8KzQLTnF7rOQ3OrD7KQRDWIPHYpB2PZ4qzuRBuBcK5aHEcySlUQwvnplc/tIhNGsouFMX8FqIqHD8tP05gr5KYYcFofuHQ1QQuFZ2VwNAQfDnBKsd2VL2yxopwIBH1QeNEbQ3m1dzPClLlDGEUa/zjVHRv8c6Cbijol+NEzeyEq/+bxRtdskuWekMKMBgHK4PhxJcywxVwGN8IzaHjxRQqi1zNm7GC9kU=
-    skip_cleanup: true
-    distributions: "sdist bdist_wheel"
-    on:
-        branch: release
-        tags: true
+  provider: pypi
+  user: apalala
+  password:
+    secure: g7OavOVyFgbdI6y11w+fu9JCilIF0bbuvYHdxAz3Gyv6Idl7MIxBI6NqrQTMDyeYv1v59uIAA2c09vDCIP4UnARlLWUv5hrdxPm3EUaKRhy1C6QTWuQt5NJdiI9D9tM8/IOFKNGDuYWnzsclzOMc5EG53JJerZzp0ItHPsVqLnDZ7ed/9V1FfUf/upeAXYrFE5j/Do9FTshasUE3qBgA9jj2FX9Nt6O9VxjfZEX8h71rltVoku2RuBYgK2GwgQRPHO/bdM2Mzfh/1A8/1U5b1Q08uJoEr5tYK2ACGaWznxY/NWLqX4m18BI3PP1zUh1OSoTfEDg+1km5SqWOzCIz6QPgdOQUae/wByKSEhg5aeX0SrDDhg+/zdFvA7sf5UXRJIapI9wNdPF2HZLCpklplvKVjOH+JYzWgkClHiRSA6CB7+n5ET24oJNz/cWvVWU1E4kPnDDaJZUQpvBz9XL2d87LL48HTCYzgAU2KINvF6w5m3yMVVpaOAP88NzrttNgBmvBkhO0v56++FTwTiwhW4fPSccJDaQKD0LtNWafHXwMNcMO+FXQNX8uVL9H1rSChcOJfRg0OuDw6e2KnV5MWi4Ax8wRI5X/XVmMT8qacYKZgdDZRyKVpraoN9snpW4xk4oaR1lEnOgE8fW98ARba+8M9aMdeClRryqj19HVr88=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: apalala/grako
+    branch: ''
