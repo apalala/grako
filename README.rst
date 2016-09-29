@@ -1,6 +1,9 @@
 .. image:: https://badge.fury.io/py/grako.svg
     :target: https://badge.fury.io/py/grako
 
+.. image:: https://img.shields.io/badge/license-BSD-blue.svg
+    :target: https://raw.githubusercontent.com/apalala/grako/master/LICENSE.txt
+
 .. image:: https://img.shields.io/pypi/pyversions/grako.svg
     :target: https://pypi.python.org/pypi/grako
 
