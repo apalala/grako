@@ -197,8 +197,8 @@ class ParseContext(object):
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
-            bufferClass = buffer_class or self.buffer_class
-            buffer = bufferClass(
+            buffer_class = buffer_class or self.buffer_class
+            buffer = buffer_class(
                 text,
                 filename=filename,
                 comments_re=comments_re or self.comments_re,

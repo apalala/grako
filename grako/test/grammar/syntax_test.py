@@ -44,10 +44,8 @@ class SyntaxTests(unittest.TestCase):
             def get_include(self, source, filename):
                 return included_grammar, source + '/' + filename
 
-        FI = FakeIncludesBuffer
-
-        genmodel("test", FI(whole_grammar))
-        genmodel("test", FI(including_grammar))
+        genmodel("test", FakeIncludesBuffer(whole_grammar))
+        genmodel("test", FakeIncludesBuffer(including_grammar))
 
     def test_ast_assignment(self):
         grammar = '''

@@ -2,7 +2,7 @@
 """
 Elements for a model of a parsed Grako grammar.
 
-A model constructed with these elements, and rooted in a Grammar instance is
+a model constructed with these elements, and rooted in a Grammar instance is
 able to parse the language defined by the grammar.
 
 Models calculate the LL(k) FIRST function to aid in providing more significant
@@ -154,11 +154,11 @@ class Model(Node):
     def _missing_rules(self, rules):
         return set()
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         return set()
 
-    def _follow(self, k, FL, A):
-        return A
+    def _follow(self, k, fl, a):
+        return a
 
     def comments_str(self):
         comments, eol = self.comments
@@ -238,11 +238,11 @@ class _Decorator(Model):
     def _missing_rules(self, rules):
         return self.exp._missing_rules(rules)
 
-    def _first(self, k, F):
-        return self.exp._first(k, F)
+    def _first(self, k, f):
+        return self.exp._first(k, f)
 
-    def _follow(self, k, FL, A):
-        return self.exp._follow(k, FL, A)
+    def _follow(self, k, fl, a):
+        return self.exp._follow(k, fl, a)
 
     def nodecount(self):
         return 1 + self.exp.nodecount()
@@ -273,7 +273,7 @@ class Token(Model):
     def parse(self, ctx):
         return ctx._token(self.token)
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         return set([(self.token,)])
 
     def _to_str(self, lean=False):
@@ -301,7 +301,7 @@ class Pattern(Model):
     def parse(self, ctx):
         return ctx._pattern(self.pattern)
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         return set([(self.pattern,)])
 
     def _to_str(self, lean=False):
@@ -350,20 +350,20 @@ class Sequence(Model):
     def _missing_rules(self, ruleset):
         return set().union(*[s._missing_rules(ruleset) for s in self.sequence])
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         result = {()}
         for s in self.sequence:
-            result = dot(result, s._first(k, F), k)
+            result = dot(result, s._first(k, f), k)
         return result
 
-    def _follow(self, k, FL, A):
-        fs = A
+    def _follow(self, k, fl, a):
+        fs = a
         for x in reversed(self.sequence):
             if isinstance(x, RuleRef):
-                FL[x.name] |= fs
-            x._follow(k, FL, fs)
+                fl[x.name] |= fs
+            x._follow(k, fl, fs)
             fs = dot(x.firstset, fs, k)
-        return A
+        return a
 
     def nodecount(self):
         return 1 + sum(s.nodecount() for s in self.sequence)
@@ -401,16 +401,16 @@ class Choice(Model):
     def _missing_rules(self, rules):
         return set().union(*[o._missing_rules(rules) for o in self.options])
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         result = set()
         for o in self.options:
-            result |= o._first(k, F)
+            result |= o._first(k, f)
         return result
 
-    def _follow(self, k, FL, A):
+    def _follow(self, k, fl, a):
         for o in self.options:
-            o._follow(k, FL, A)
-        return A
+            o._follow(k, fl, a)
+        return a
 
     def nodecount(self):
         return 1 + sum(o.nodecount() for o in self.options)
@@ -433,8 +433,8 @@ class Closure(_Decorator):
     def parse(self, ctx):
         return ctx._closure(lambda: self.exp.parse(ctx))
 
-    def _first(self, k, F):
-        efirst = self.exp._first(k, F)
+    def _first(self, k, f):
+        efirst = self.exp._first(k, f)
         result = {()}
         for _i in range(k):
             result = dot(result, efirst, k)
@@ -452,8 +452,8 @@ class PositiveClosure(Closure):
     def parse(self, ctx):
         return ctx._positive_closure(lambda: self.exp.parse(ctx))
 
-    def _first(self, k, F):
-        efirst = self.exp._first(k, F)
+    def _first(self, k, f):
+        efirst = self.exp._first(k, f)
         result = {()}
         for _i in range(k):
             result = dot(result, efirst, k)
@@ -511,8 +511,8 @@ class Optional(_Decorator):
         with ctx._optional():
             return self.exp.parse(ctx)
 
-    def _first(self, k, F):
-        return {()} | self.exp._first(k, F)
+    def _first(self, k, f):
+        return {()} | self.exp._first(k, f)
 
     def _to_str(self, lean=False):
         exp = ustr(self.exp._to_str(lean=lean))
@@ -535,7 +535,7 @@ class Cut(Model):
         ctx._cut()
         return None
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         return {('~',)}
 
     def _to_str(self, lean=False):
@@ -593,7 +593,7 @@ class OverrideList(NamedList):
 
 
 class Special(Model):
-    def _first(self, k, F):
+    def _first(self, k, f):
         return set([(self.value,)])
 
     def _to_str(self, lean=False):
@@ -617,8 +617,8 @@ class RuleRef(Model):
             return {self.name}
         return set()
 
-    def _first(self, k, F):
-        self._first_set = F.get(self.name, set())
+    def _first(self, k, f):
+        self._first_set = f.get(self.name, set())
         return self._first_set
 
     @property
@@ -670,13 +670,13 @@ class Rule(_Decorator):
             )
         return result
 
-    def _first(self, k, F):
+    def _first(self, k, f):
         if self._first_set:
             return self._first_set
-        return self.exp._first(k, F)
+        return self.exp._first(k, f)
 
-    def _follow(self, k, FL, A):
-        return self.exp._follow(k, FL, FL[self.name])
+    def _follow(self, k, fl, a):
+        return self.exp._follow(k, fl, fl[self.name])
 
     @staticmethod
     def param_repr(p):
@@ -828,26 +828,26 @@ class Grammar(Model):
         self._calc_follow_sets()
 
     def _calc_first_sets(self, k=1):
-        F = defaultdict(set)
-        F1 = None
-        while F1 != F:
-            F1 = copy(F)
+        f = defaultdict(set)
+        f1 = None
+        while f1 != f:
+            f1 = copy(f)
             for rule in self.rules:
-                F[rule.name] |= rule._first(k, F)
+                f[rule.name] |= rule._first(k, f)
 
         for rule in self.rules:
-            rule._first_set = F[rule.name]
+            rule._first_set = f[rule.name]
 
     def _calc_follow_sets(self, k=1):
-        FL = defaultdict(set)
-        FL1 = None
-        while FL1 != FL:
-            FL1 = copy(FL)
+        fl = defaultdict(set)
+        fl1 = None
+        while fl1 != fl:
+            fl1 = copy(fl)
             for rule in self.rules:
-                rule._follow(k, FL, set())
+                rule._follow(k, fl, set())
 
         for rule in self.rules:
-            rule._follow_set = FL[rule.name]
+            rule._follow_set = fl[rule.name]
 
     def parse(self,
               text,

@@ -271,13 +271,13 @@ def chunks(iterable, size, fillvalue=None):
     return zip_longest(*[iter(iterable)] * size, fillvalue=fillvalue)
 
 
-def generic_main(custom_main, ParserClass, name='Unknown'):
+def generic_main(custom_main, parser_class, name='Unknown'):
     import argparse
 
     class ListRules(argparse.Action):
         def __call__(self, parser, namespace, values, option_string):
             print('Rules:')
-            for r in ParserClass.rule_list():
+            for r in parser_class.rule_list():
                 print(r)
             print()
             sys.exit(0)

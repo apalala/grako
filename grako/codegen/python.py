@@ -440,15 +440,17 @@ class Grammar(Base):
 
 
                 class {name}Buffer(Buffer):
-                    def __init__(self,
-                                 text,
-                                 whitespace={whitespace},
-                                 nameguard={nameguard},
-                                 comments_re={comments_re},
-                                 eol_comments_re={eol_comments_re},
-                                 ignorecase={ignorecase},
-                                 namechars={namechars},
-                                 **kwargs):
+                    def __init__(
+                        self,
+                        text,
+                        whitespace={whitespace},
+                        nameguard={nameguard},
+                        comments_re={comments_re},
+                        eol_comments_re={eol_comments_re},
+                        ignorecase={ignorecase},
+                        namechars={namechars},
+                        **kwargs
+                    ):
                         super({name}Buffer, self).__init__(
                             text,
                             whitespace=whitespace,
@@ -462,18 +464,20 @@ class Grammar(Base):
 
 
                 class {name}Parser(Parser):
-                    def __init__(self,
-                                 whitespace={whitespace},
-                                 nameguard={nameguard},
-                                 comments_re={comments_re},
-                                 eol_comments_re={eol_comments_re},
-                                 ignorecase={ignorecase},
-                                 left_recursion={left_recursion},
-                                 parseinfo={parseinfo},
-                                 keywords=KEYWORDS,
-                                 namechars={namechars},
-                                 buffer_class={name}Buffer,
-                                 **kwargs):
+                    def __init__(
+                        self,
+                        whitespace={whitespace},
+                        nameguard={nameguard},
+                        comments_re={comments_re},
+                        eol_comments_re={eol_comments_re},
+                        ignorecase={ignorecase},
+                        left_recursion={left_recursion},
+                        parseinfo={parseinfo},
+                        keywords=KEYWORDS,
+                        namechars={namechars},
+                        buffer_class={name}Buffer,
+                        **kwargs
+                    ):
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,
                             nameguard=nameguard,

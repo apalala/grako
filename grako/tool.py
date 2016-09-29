@@ -15,7 +15,7 @@ from grako.exceptions import GrakoException
 from grako.parser import GrakoGrammarGenerator
 
 # we hook the tool to the Python code generator as the default
-from grako.codegen import pythoncg
+from grako.codegen.python import codegen as pythoncg
 from grako.codegen import objectmodel
 
 DESCRIPTION = (

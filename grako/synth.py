@@ -1,7 +1,7 @@
 __REGISTRY = vars()
 
 
-class __Synthetic(object):
+class _Synthetic(object):
     def __reduce__(self):
         return (
             synthesize(type(self).__name__, type(self).__bases__),
@@ -16,8 +16,8 @@ def synthesize(name, bases):
     if not isinstance(bases, tuple):
         bases = (bases,)
 
-    if __Synthetic not in bases:
-        bases = (__Synthetic,) + bases
+    if _Synthetic not in bases:
+        bases = (_Synthetic,) + bases
 
     constructor = __REGISTRY.get(typename)
     if not constructor:

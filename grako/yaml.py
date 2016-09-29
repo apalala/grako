@@ -12,9 +12,9 @@ from collections import OrderedDict
 from grako.ast import AST
 
 
-def dump(data, stream=None, Dumper=yaml.SafeDumper, object_pairs_hook=OrderedDict, **kwds):
+def dump(data, stream=None, dumper_class=yaml.SafeDumper, object_pairs_hook=OrderedDict, **kwds):
 
-    class OrderedDumper(Dumper):
+    class OrderedDumper(dumper_class):
         pass
 
     def _dict_representer(dumper, data):
@@ -34,9 +34,9 @@ def dump(data, stream=None, Dumper=yaml.SafeDumper, object_pairs_hook=OrderedDic
     )
 
 
-def load(stream, Loader=yaml.SafeLoader, object_pairs_hook=OrderedDict):
+def load(stream, loader_class=yaml.SafeLoader, object_pairs_hook=OrderedDict):
 
-    class OrderedLoader(Loader):
+    class OrderedLoader(loader_class):
         pass
 
     OrderedLoader.add_constructor(

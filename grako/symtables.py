@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import weakref
 from copy import copy
-from collections import OrderedDict as odict
+from collections import OrderedDict as odict  # noqa:N813
 
 from .util import asjson
 from .util import join_lists
