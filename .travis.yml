@@ -10,11 +10,13 @@ python:
 install:
     - pip install tox-travis
     - pip install pygraphviz
+    - pip install regex
+    - pip install --install-option="--no-cython-compile" cython
 
 script: tox
 
 deploy:
-    provider: pypy
+    provider: pypi
     user: Apalala
     password:
         secure: juIHc1i42zZ0eBS8IzE2nfrvuRIjmM6TliEpJcRmQX9FH8bUFM06semvLjiwDk34fblXQwWuYWFp2QYD5A2N1+gQ4EHu2WOWao7sdbk6peEVrmBsbT19f+i+6QuK661RIYN+bDtfvUhU0GrKK6NK7hBMmeEYGTm7USIcXv8gyHq6g/9bQlhH2S4tk7QaBxr7uBgLuIvdP9On08NDE+YhKXaQvftDKOKkCr6rSn29tbx7+0GVqj19nIhlyKSHne16kZ9/jVvGpfueLD0ZI0Ud7IgcwAE8R8L7h+MWXyA9lC+pijBjnhEI2W4xKVLFGjVDrE30wNDqR0hTT9Ctlon+f398xriIPW0kCYxURQig8X1Pxyam58+mh9rfxucnae4WBPY+Xh3Up5UR2c8JJ2o5U468QIy13VTv64XHcK7su8vZxNp3L7Wx6sOJk5vCkctTN6IcPnmARe8KzQLTnF7rOQ3OrD7KQRDWIPHYpB2PZ4qzuRBuBcK5aHEcySlUQwvnplc/tIhNGsouFMX8FqIqHD8tP05gr5KYYcFofuHQ1QQuFZ2VwNAQfDnBKsd2VL2yxopwIBH1QeNEbQ3m1dzPClLlDGEUa/zjVHRv8c6Cbijol+NEzeyEq/+bxRtdskuWekMKMBgHK4PhxJcywxVwGN8IzaHjxRQqi1zNm7GC9kU=
