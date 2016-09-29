@@ -23,5 +23,5 @@ deploy:
         - sdist
         - bdist_wheel
     on:
-        branch: default
+        branch: release
         tags: true
