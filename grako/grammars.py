@@ -568,7 +568,7 @@ class NamedList(Named):
         return value
 
     def defines(self):
-        return [(self.name, True)] + super(Named, self).defines()
+        return [(self.name, True)] + super(NamedList, self).defines()
 
     def _to_str(self, lean=False):
         if lean:

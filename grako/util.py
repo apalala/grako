@@ -273,7 +273,6 @@ def chunks(iterable, size, fillvalue=None):
 
 def generic_main(custom_main, ParserClass, name='Unknown'):
     import argparse
-    import sys
 
     class ListRules(argparse.Action):
         def __call__(self, parser, namespace, values, option_string):

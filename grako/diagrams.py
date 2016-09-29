@@ -122,7 +122,7 @@ class GraphvizWalker(NodeWalker):
     def subgraph(self, name, bunch):
         self.top_graph.add_subgraph(name)
 
-    def concat(*args):
+    def concat(self, *args):
         return list(itertools.chain(*args))
 
     def _walk_decorator(self, d):
