@@ -2,7 +2,8 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import copy
-from collections import OrderedDict, Callable
+from collections import OrderedDict
+from collections import Callable
 
 
 # Source: http://stackoverflow.com/a/6190500/562769
@@ -11,12 +12,12 @@ class OrderedDefaultDict(OrderedDict):
         if not isinstance(default_factory, (Callable, type(None))):
             raise TypeError('first argument must be callable or None')
 
-        super(OrderedDict, self).__init__(*args, **kwargs)
+        super(OrderedDefaultDict, self).__init__(*args, **kwargs)
         self.default_factory = default_factory
 
     def __getitem__(self, key):
         try:
-            return super(OrderedDict, self).__getitem__(key)
+            return super(OrderedDefaultDict, self).__getitem__(key)
         except KeyError:
             return self.__missing__(key)
 
@@ -45,5 +46,5 @@ class OrderedDefaultDict(OrderedDict):
     def __repr__(self):
         return 'OrderedDefaultDict(%s, %s)' % (
             self.default_factory,
-            OrderedDict.__repr__(self)
+            super(OrderedDefaultDict, self).__repr__(self)
         )

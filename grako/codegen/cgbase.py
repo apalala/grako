@@ -120,14 +120,14 @@ class CodeGenerator(object):
         if not isinstance(item, Node):
             return None
 
-        rendererClass = self._find_renderer_class(item)
-        if rendererClass is None:
+        renderer_class = self._find_renderer_class(item)
+        if renderer_class is None:
             raise CodegenError('Renderer not found for %s' % type(item).__name__)
         try:
-            assert issubclass(rendererClass, ModelRenderer)
-            return rendererClass(self, item)
+            assert issubclass(renderer_class, ModelRenderer)
+            return renderer_class(self, item)
         except Exception as e:
-            raise type(e)(str(e), rendererClass.__name__)
+            raise type(e)(str(e), renderer_class.__name__)
 
     def render(self, item, join='', **fields):
         renderer = self.get_renderer(item)

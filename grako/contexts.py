@@ -19,6 +19,7 @@ from grako.exceptions import (
     FailedLookahead,
     FailedParse,
     FailedPattern,
+    FailedRef,
     FailedSemantics,
     FailedKeywordSemantics,
     FailedToken,
@@ -196,8 +197,8 @@ class ParseContext(object):
         if isinstance(text, buffering.Buffer):
             buffer = text
         else:
-            bufferClass = buffer_class or self.buffer_class
-            buffer = bufferClass(
+            buffer_class = buffer_class or self.buffer_class
+            buffer = buffer_class(
                 text,
                 filename=filename,
                 comments_re=comments_re or self.comments_re,
@@ -382,7 +383,8 @@ class ParseContext(object):
         return stack
 
     def _find_rule(self, name):
-        return None
+        self._error(name, etype=FailedRef)
+        return lambda: None  # makes static checkers happy
 
     def _find_semantic_rule(self, name):
         if self.semantics is None:

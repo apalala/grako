@@ -1,12 +1,29 @@
-    *At least for the people who send me mail about a new language that they're designing, the general advice is: do it to learn about how to write a compiler. Don't have any expectations that anyone will use it, unless you hook up with some sort of organization in a position to push it hard. It's a lottery, and some can buy a lot of the tickets. There are plenty of beautiful languages (more beautiful than C) that didn't catch on. But someone does win the lottery, and doing a language at least teaches you something.*
+.. image:: https://badge.fury.io/py/grako.svg
+    :target: https://badge.fury.io/py/grako
 
-    `Dennis Ritchie`_ (1941-2011)
-    Creator of the C_ programming language and of Unix_
+.. image:: https://img.shields.io/badge/license-BSD-blue.svg
+    :target: https://raw.githubusercontent.com/apalala/grako/master/LICENSE.txt
+
+.. image:: https://img.shields.io/pypi/pyversions/grako.svg
+    :target: https://pypi.python.org/pypi/grako
+
+.. image:: https://secure.travis-ci.org/apalala/grako.png
+    :target: http://travis-ci.org/apalala/grako
+
+.. image:: https://landscape.io/github/apalala/grako/release/landscape.png
+   :target: https://landscape.io/github/apalala/grako/release
+
+----
+
+*At least for the people who send me mail about a new language that they're designing, the general advice is: do it to learn about how to write a compiler. Don't have any expectations that anyone will use it, unless you hook up with some sort of organization in a position to push it hard. It's a lottery, and some can buy a lot of the tickets. There are plenty of beautiful languages (more beautiful than C) that didn't catch on. But someone does win the lottery, and doing a language at least teaches you something.*
+     `Dennis Ritchie`_ (1941-2011)
+         Creator of the C_ programming language and of Unix_
 
 .. _Dennis Ritchie: http://en.wikipedia.org/wiki/Dennis_Ritchie
 .. _C: http://en.wikipedia.org/wiki/C_language
 .. _Unix: http://en.wikipedia.org/wiki/Unix
 
+----
 
 =====
 Grako

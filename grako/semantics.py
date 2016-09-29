@@ -34,9 +34,9 @@ class ModelBuilderSemantics(object):
         nodes using the class name given as first parameter to a grammar
         rule, and synthesizes the class/type if it's not known.
     """
-    def __init__(self, context=None, baseType=Node, types=None):
+    def __init__(self, context=None, base_type=Node, types=None):
         self.ctx = context
-        self.baseType = baseType
+        self.base_type = base_type
 
         self.constructors = dict()
 
@@ -69,7 +69,7 @@ class ModelBuilderSemantics(object):
             return constructor
 
         # synthethize a new type
-        constructor = synthesize(typename, self.baseType)
+        constructor = synthesize(typename, self.base_type)
         self._register_constructor(constructor)
         return constructor
 
@@ -93,7 +93,7 @@ class ModelBuilderSemantics(object):
 class GrakoSemantics(ModelBuilderSemantics):
     def __init__(self, grammar_name):
         super(GrakoSemantics, self).__init__(
-            baseType=grammars.Model,
+            base_type=grammars.Model,
             types=grammars.Model.classes()
         )
         self.grammar_name = grammar_name

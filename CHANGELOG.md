@@ -1,6 +1,6 @@
 # Change Log
 
-**Grako** uses [Semantic Versioning] for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
+**Grako** uses [Semantic Versioning][] for its releases, so parts of the version number may increase without any significant changes or backwards incompatibilities in the software.
 
 [Semantic Versioning]: http://semver.org/
 
@@ -13,12 +13,25 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
-## [3.15.1] @ 2016-09-23
+## [3.15.3] @ 2016-09-29
+
+
+### Added
+
+-   Test and publish **Grako** using [Travis CI][].
+
+## [3.15.1] @ 2016-09-28
+
+
+### Changed
+
+-   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
+-   Use `weakref.proxy` for back-references (like `grako.objectmodel.Node._parent`) to make it easier for the [Python][] garbage collector.
+-   Walker will now also recognize walk methods where the class name has the upper case characters replaced by an underscore followed by the characeter in lower case (`walk_NegativeLookahead()` or `walk__negative_lookahead()`.
 
 ### Fixed
 
--   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`.:
--   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
+-   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`, so the re-export was re-instated.
 
 ## [3.15.0] @ 2016-09-23
 
@@ -96,7 +109,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added the `grako.synth` module which makes synthetic `grako.model.Node` classes pickable.
 -   Now patterns may be concatenated to split a complex pattern into parts, possibly accross several lines: `/regexp/ + /regexp/`.
 -   Added basic support for symbol tables in `grako.symtables`.
--   Syntax file for [Sublime Text] [vmuriart]
+-   Syntax file for [Sublime Text][] ([vmuriart][]).
 
 
 ### Changed
@@ -134,9 +147,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Avoid recovering the same comment against the same line in `grako.buffering.Buffer`.
 -   Recovering comments and end-of-line comments together was incorrect.
 -   `model.Node` parenting still broken.
--   [73] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python][] 3.x
-    using [pygraphviz] 1.3.1.
--   [77][] [81] Advance over whitespace before memoization or left recursion.
+-   [73][] The `--draw` option did not recognize the new object model node types `Join` and `Constant`. Now `--draw` works with [Python][] 3.x
+    using [pygraphviz][] 1.3.1.
+-   [77][] [81][] Advance over whitespace before memoization or left recursion.
 
 ## [3.9.3] @ 2016-07-15
 
@@ -152,10 +165,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Changed
 
 -   Simplified the regular expression for floats in the **Grako** grammar [siemer]
--   Set all [flake8] options in `tox.ini` [siemer].
+-   Set all [flake8][] options in `tox.ini` [siemer].
 -   Simplfied `__str__()` for directives [siemer].
 -   Now `STARTRULE` defaults to `start` in generated parsers.
--   Now the [AST] for a `grako.model.Node` is saved as `Node.ast`.
+-   Now the [AST][] for a `grako.model.Node` is saved as `Node.ast`.
 -   Several simplifications and refactorings by [siemer].
 
 ### Fixed
@@ -226,7 +239,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Detect and fail promptly on empty tokens in grammars.
 -   [52] Build with Cython failed on Windows.
--   [59] [Python][] keywords can now actually be used as rule names in grammars [drothlis].
+-   [59][] [Python][] keywords can now actually be used as rule names in grammars [drothlis].
 -   [60] `@@` directives were not pressent in the output of the `--pretty` option.
 -   [58] The parameters to the constructor of generated parsers were being ignored (pgebhard).
 -   `grammars.py` would call `ctx.error()` instead of `ctx._error()` on failed rule references.
@@ -566,6 +579,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [Python]: http://python.org
 [Ruby]: http://www.ruby-lang.org/
 [Sublime Text]: https://www.sublimetext.com
+[Travis CI]: https://travis-ci.org
 [VB6]: http://en.wikipedia.org/wiki/Visual_basic_6
 [Vim spell]: http://vimdoc.sourceforge.net/htmldoc/spell.html
 [Visitor Pattern]: http://en.wikipedia.org/wiki/Visitor_pattern
@@ -631,7 +645,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.1
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.15.3
+[3.15.3]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.15.1
 [3.15.1]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.15.0
 [3.15.0]: https://bitbucket.org/apalala/grako/branches/compare/3.15.0%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0

@@ -3,14 +3,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from grako.exceptions import CodegenError
 from grako.codegen.cgbase import *  # noqa
-from grako.codegen import python
-
-
-pythoncg = python.codegen
 
 
 def codegen(model, target='python'):
     if target.lower() == 'python':
-        return pythoncg(model)
+        from grako.codegen import python
+        return python.codegen(model)
     else:
         raise CodegenError('Unknown target language: %s' % target)

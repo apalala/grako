@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 from grako.objectmodel import Node
 from grako.util import is_list
+from grako.util import re
 
 
 class NodeWalker(object):
@@ -16,6 +17,9 @@ class NodeWalker(object):
             return walker(node, *args, **kwargs)
 
     def _find_walker(self, node, prefix='walk_'):
+        def pythonize_match(m):
+            return '_' + m.group().lower()
+
         classid = id(node.__class__)
 
         if classid in self._walker_cache:
@@ -24,10 +28,18 @@ class NodeWalker(object):
         classes = [node.__class__]
         while classes:
             cls = classes.pop()
-            name = prefix + cls.__name__
-            walker = getattr(self, name, None)
+
+            cammelcase_name = cls.__name__
+            walker = getattr(self, prefix + cammelcase_name, None)
             if callable(walker):
                 break
+
+            pythonic_name = re.sub('[A-Z]', pythonize_match, cls.__name__)
+            if pythonic_name != cammelcase_name:
+                walker = getattr(self, prefix + pythonic_name, None)
+                if callable(walker):
+                    break
+
             for b in cls.__bases__:
                 if b not in classes:
                     classes.append(b)
@@ -35,6 +47,8 @@ class NodeWalker(object):
             walker = getattr(self, '_walk_default', None)
             if walker is None:
                 walker = getattr(self, 'walk_default', None)  # backwars compatibility
+            if not callable(walker):
+                walker = None
 
         self._walker_cache[classid] = walker
         return walker

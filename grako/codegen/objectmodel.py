@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from datetime import datetime
-from collections import OrderedDict as odict
+from collections import OrderedDict as odict  # noqa: N813
 
 from grako.util import (
     compress_seq,
