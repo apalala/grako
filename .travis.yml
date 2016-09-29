@@ -6,13 +6,11 @@ python:
     - '3.4'
     - '3.5'
     - pypy
-    - cython
 
 install:
     - pip install tox-travis
     - pip install pygraphviz
     - pip install regex
-    - pip install --install-option="--no-cython-compile" cython
 
 script: tox
 
