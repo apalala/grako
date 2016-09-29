@@ -4,8 +4,8 @@
 .. image:: https://secure.travis-ci.org/apalala/grako.png
     :target: http://travis-ci.org/apalala/grako
 
-.. image:: https://landscape.io/github/apalala/grako/master/landscape.png
-   :target: https://landscape.io/github/apalala/grako/master
+.. image:: https://landscape.io/github/apalala/grako/release/landscape.png
+   :target: https://landscape.io/github/apalala/grako/release
 
 ----
 
