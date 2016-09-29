@@ -4,9 +4,6 @@
 .. image:: https://secure.travis-ci.org/apalala/grako.png
     :target: http://travis-ci.org/apalala/grako
 
-.. image:: https://coveralls.io/repos/apalala/grako/badge.png?branch=release
-    :target: https://coveralls.io/r/apalala/grako?branch=release
-
 .. image:: https://landscape.io/github/apalala/grako/release/landscape.png
    :target: https://landscape.io/github/apalala/grako/release
 

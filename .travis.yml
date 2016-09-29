@@ -15,7 +15,6 @@ install:
 
 script:
     tox
-    coverage run --source=grako py.test
 
 deploy:
     provider: pypi
@@ -27,6 +26,3 @@ deploy:
         distributions: sdist bdist_wheel
         repo: apalala/grako
         branch: ''
-
-after_success:
-  coveralls
