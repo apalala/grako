@@ -6,6 +6,7 @@ python:
     - '3.4'
     - '3.5'
     - pypy
+    - cython
 
 install:
     - pip install tox-travis
