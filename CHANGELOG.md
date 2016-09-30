@@ -25,6 +25,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Changed
 
 -   Reduced the memory used by symbol tables by replacing `symtables.SymbolReference` by the referencing `objectmodel.Node`.
+-   Now `grako.grammars.Decorator` is public.
 
 ## [3.15.1] @ 2016-09-28
 
