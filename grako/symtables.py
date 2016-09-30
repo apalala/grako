@@ -40,15 +40,12 @@ class SymbolTableError(GrakoException):
 
 
 class Namespace(object):
-    def __init__(self, duplicates=False, separator=DEFAULT_SEPARATOR):
+    def __init__(self, ignorecase=False, duplicates=False, separator=DEFAULT_SEPARATOR):
         super(Namespace, self).__init__()
-        self._duplicates = duplicates
+        self.ignorecase = ignorecase
+        self.duplicates = duplicates
         self.separator = separator
         self._entries = defaultdict(list)
-
-    @property
-    def duplicates(self):
-        return self._duplicates
 
     @property
     def entries(self):
@@ -71,9 +68,13 @@ class Namespace(object):
         return result
 
     def __contains__(self, name):
+        if self.ignorecase:
+            name = name.upper()
         return name in self.entries
 
     def __getitem__(self, name):
+        if self.ignorecase:
+            name = name.upper()
         if self.duplicates:
             return self.entries.get(name)
         elif name in self.entries:
@@ -86,15 +87,22 @@ class Namespace(object):
 
     def insert(self, symbol):
         assert isinstance(symbol.name, str), '"%s" is not a valid symbol name' % str(symbol.name)
-        if symbol.name in self._entries and not self.duplicates:
+        name = symbol.name
+        if self.ignorecase:
+            name = name.upper()
+        if name in self._entries and not self.duplicates:
             raise SymbolTableError('Symbol "%s" already in namespace' % str(symbol.name))
 
-        self._entries[symbol.name].append(symbol)
+        self._entries[name].append(symbol)
 
     def lookup_all(self, qualname, drill=True):
+        if self.ignorecase:
+            qualname = qualname.upper()
         return self._lookup_drilldown(qualname.split(self.separator), drill=drill, max=None)
 
     def lookup(self, qualname, drill=True):
+        if self.ignorecase:
+            qualname = qualname.upper()
         result = self._lookup_drilldown(qualname.split(self.separator), drill=drill, max=1)
         return result[0] if result else None
 
@@ -102,10 +110,8 @@ class Namespace(object):
         if not namelist:
             return []
 
-        name = namelist[0]
-        symbols = self.entries[name] if name in self.entries else self.symbols
         result = []
-        for symbol in symbols:
+        for symbol in self.symbols:
             found = symbol._lookup_drilldown(namelist, drill=drill, max=max)
             result.extend(found)
             if max and len(result) >= max:
@@ -141,8 +147,8 @@ class SymbolTable(Namespace):
 
 
 class Symbol(Namespace):
-    def __init__(self, name, node, duplicates=False):
-        super(Symbol, self).__init__(duplicates=duplicates)
+    def __init__(self, name, node, ignorecase=False, duplicates=False):
+        super(Symbol, self).__init__(ignorecase=ignorecase, duplicates=duplicates)
         if not isinstance(name, str):
             raise ValueError('"%s" is not a valid symbol name' % name)
         self.name = name
@@ -184,7 +190,9 @@ class Symbol(Namespace):
         return sep.join(self.qualpath())
 
     def _lookup_drilldown(self, namelist, drill=True, max=None):
-        if [self.name] == namelist:
+        if self.ignorecase and [self.name.upper()] == namelist:
+            return [self]
+        elif not self.ignorecase and [self.name] == namelist:
             return [self]
         elif self.name == namelist[0]:
             return super(Symbol, self)._lookup_drilldown(namelist[1:], drill=drill, max=max)

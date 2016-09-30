@@ -19,6 +19,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Added
 
 -   Test and publish **Grako** using [Travis CI][].
+-   Added support for case-insensitivity to `grako.symtables`.
 
 
 ### Changed
