@@ -28,15 +28,17 @@ KEYWORDS = set([])
 
 
 class GrakoBootstrapBuffer(Buffer):
-    def __init__(self,
-                 text,
-                 whitespace=None,
-                 nameguard=None,
-                 comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
-                 eol_comments_re='#([^\\n]*?)$',
-                 ignorecase=None,
-                 namechars='',
-                 **kwargs):
+    def __init__(
+        self,
+        text,
+        whitespace=None,
+        nameguard=None,
+        comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+        eol_comments_re='#([^\\n]*?)$',
+        ignorecase=None,
+        namechars='',
+        **kwargs
+    ):
         super(GrakoBootstrapBuffer, self).__init__(
             text,
             whitespace=whitespace,
@@ -50,18 +52,20 @@ class GrakoBootstrapBuffer(Buffer):
 
 
 class GrakoBootstrapParser(Parser):
-    def __init__(self,
-                 whitespace=None,
-                 nameguard=None,
-                 comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
-                 eol_comments_re='#([^\\n]*?)$',
-                 ignorecase=None,
-                 left_recursion=False,
-                 parseinfo=True,
-                 keywords=KEYWORDS,
-                 namechars='',
-                 buffer_class=GrakoBootstrapBuffer,
-                 **kwargs):
+    def __init__(
+        self,
+        whitespace=None,
+        nameguard=None,
+        comments_re='\\(\\*((?:.|\\n)*?)\\*\\)',
+        eol_comments_re='#([^\\n]*?)$',
+        ignorecase=None,
+        left_recursion=False,
+        parseinfo=True,
+        keywords=KEYWORDS,
+        namechars='',
+        buffer_class=GrakoBootstrapBuffer,
+        **kwargs
+    ):
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,
