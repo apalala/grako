@@ -9,7 +9,6 @@ python:
 
 install:
     - pip install tox-travis
-    - pip install coveralls
     - pip install pygraphviz
     - pip install regex
 
