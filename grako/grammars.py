@@ -222,11 +222,11 @@ class EOF(Model):
         return '$'
 
 
-class _Decorator(Model):
+class Decorator(Model):
     def __init__(self, ast=None, **kwargs):
         if not isinstance(ast, AST):
             ast = AST(exp=ast)
-        super(_Decorator, self).__init__(ast)
+        super(Decorator, self).__init__(ast)
         assert isinstance(self.exp, Model)
 
     def parse(self, ctx):
@@ -251,7 +251,11 @@ class _Decorator(Model):
         return self.exp._to_ustr(lean=lean)
 
 
-class Group(_Decorator):
+# NOTE: backwards compatibility
+_Decorator = Decorator
+
+
+class Group(Decorator):
     def parse(self, ctx):
         with ctx._group():
             self.exp.parse(ctx)
@@ -317,7 +321,7 @@ class Pattern(Model):
             return result
 
 
-class Lookahead(_Decorator):
+class Lookahead(Decorator):
     def parse(self, ctx):
         with ctx._if():
             super(Lookahead, self).parse(ctx)
@@ -326,7 +330,7 @@ class Lookahead(_Decorator):
         return '&' + self.exp._to_ustr(lean=lean)
 
 
-class NegativeLookahead(_Decorator):
+class NegativeLookahead(Decorator):
     def _to_str(self, lean=False):
         return '!' + ustr(self.exp._to_str(lean=lean))
 
@@ -429,7 +433,7 @@ class Choice(Model):
             return single
 
 
-class Closure(_Decorator):
+class Closure(Decorator):
     def parse(self, ctx):
         return ctx._closure(lambda: self.exp.parse(ctx))
 
@@ -463,7 +467,7 @@ class PositiveClosure(Closure):
         return super(PositiveClosure, self)._to_str(lean=lean) + '+'
 
 
-class Join(_Decorator):
+class Join(Decorator):
     def __init__(self, ast=None, **kwargs):
         super(Join, self).__init__(ast.exp)
         self.sep = ast.sep
@@ -505,7 +509,7 @@ class EmptyClosure(Model):
         return '{}'
 
 
-class Optional(_Decorator):
+class Optional(Decorator):
     def parse(self, ctx):
         ctx.last_node = None
         with ctx._optional():
@@ -542,7 +546,7 @@ class Cut(Model):
         return '~'
 
 
-class Named(_Decorator):
+class Named(Decorator):
     def __init__(self, ast=None, **kwargs):
         super(Named, self).__init__(ast.exp)
         self.name = ast.name
@@ -631,7 +635,7 @@ class RuleRef(Model):
         return self.name
 
 
-class RuleInclude(_Decorator):
+class RuleInclude(Decorator):
     def __init__(self, rule):
         assert isinstance(rule, Rule), ustr(rule.name)
         super(RuleInclude, self).__init__(rule.exp)
@@ -641,7 +645,7 @@ class RuleInclude(_Decorator):
         return '>%s' % (self.rule.name)
 
 
-class Rule(_Decorator):
+class Rule(Decorator):
     def __init__(self, ast, name, exp, params, kwparams, decorators=None):
         assert kwparams is None or isinstance(kwparams, Mapping), kwparams
         super(Rule, self).__init__(ast)

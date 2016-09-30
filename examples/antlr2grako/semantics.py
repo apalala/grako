@@ -178,6 +178,6 @@ class ANTLRSemantics(object):
         if name in self.token_rules:
             exp = self.token_rules[name]
         else:
-            exp = model._Decorator(model.RuleRef(name))
+            exp = model.Decorator(model.RuleRef(name))
             self.token_rules[name] = exp
         return exp
