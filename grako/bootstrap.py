@@ -61,11 +61,13 @@ class GrakoBootstrapParser(Parser):
         ignorecase=None,
         left_recursion=False,
         parseinfo=True,
-        keywords=KEYWORDS,
+        keywords=None,
         namechars='',
         buffer_class=GrakoBootstrapBuffer,
         **kwargs
     ):
+        if keywords is None:
+            keywords = KEYWORDS
         super(GrakoBootstrapParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,

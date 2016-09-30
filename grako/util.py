@@ -28,6 +28,7 @@ if PY3:
     strtype = str
     basestring = None
     unicode = None
+    _unicode = str
     if PY33:
         from collections import abc
         Mapping = abc.Mapping
@@ -38,6 +39,7 @@ if PY3:
     imap = map
 else:
     strtype = basestring  # noqa
+    _unicode = unicode
     Mapping = collections.Mapping
     zip_longest = itertools.izip_longest
     imap = itertools.imap
@@ -126,7 +128,7 @@ def ustr(s):
     elif isinstance(s, unicode):
         return s
     elif isinstance(s, str):
-        return unicode(s, 'utf-8')
+        return _unicode(s, 'utf-8')
     else:
         return ustr(s.__str__())  # FIXME: last case resource!  We don't know unicode, period.
 

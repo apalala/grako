@@ -473,11 +473,13 @@ class Grammar(Base):
                         ignorecase={ignorecase},
                         left_recursion={left_recursion},
                         parseinfo={parseinfo},
-                        keywords=KEYWORDS,
+                        keywords=None,
                         namechars={namechars},
                         buffer_class={name}Buffer,
                         **kwargs
                     ):
+                        if keywords is None:
+                            keywords = KEYWORDS
                         super({name}Parser, self).__init__(
                             whitespace=whitespace,
                             nameguard=nameguard,
