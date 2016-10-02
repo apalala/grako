@@ -46,7 +46,7 @@ class ModelBuilderSemantics(object):
     def _register_constructor(self, constructor):
         self.constructors[constructor.__name__] = constructor
 
-    def _get_constructor(self, typename):
+    def _get_constructor(self, typename, base):
         typename = str(typename)
         if typename in self.constructors:
             return self.constructors[typename]
@@ -69,15 +69,18 @@ class ModelBuilderSemantics(object):
             return constructor
 
         # synthethize a new type
-        constructor = synthesize(typename, self.base_type)
+        constructor = synthesize(typename, base)
         self._register_constructor(constructor)
         return constructor
 
     def _default(self, ast, *args, **kwargs):
         if not args:
             return ast
-        name = args[0]
-        constructor = self._get_constructor(name)
+        class_names = args[0].split(':')
+        base = self.base_type
+        if len(class_names) >= 2:
+            base = self._get_constructor(class_names[1], base)
+        constructor = self._get_constructor(class_names[0], base)
         try:
             if type(constructor) is type and issubclass(constructor, Node):
                 return constructor(*args[1:], ast=ast, ctx=self.ctx, **kwargs)
