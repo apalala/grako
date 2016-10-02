@@ -54,7 +54,6 @@ def _typespec(rule, default_base=True):
     return _TypeSpec(class_name, base)
 
 
-
 class BaseClassRenderer(Renderer):
     def __init__(self, class_name):
         self.class_name = class_name
@@ -123,10 +122,11 @@ class Grammar(ModelRenderer):
             rule
             for rule in self.node.rules
             if _has_node_name(rule)
-            ]
+        ]
 
         model_class_declarations = [
-            self.get_renderer(rule).render() for rule in model_rules
+            self.get_renderer(rule).render()
+            for rule in model_rules
         ]
 
         base_class_declarations = '\n\n\n'.join(base_class_declarations)
