@@ -717,7 +717,7 @@ The class ``grako.model.NodeWalker`` allows for the easy traversal (*walk*) a mo
 
 When a method with a name like ``walk_NodeClassName`` is defined, it will be called when a node of that type is *walked*.
 
-Synthesized node classes cannot be pickled because the Python_ runtime won't be able to find a declaration for them (among other things, unpickled objects cannot be passed between processes). Predeclared classes can be passed to ``ModelBuilderSemantics`` instances through the ``types=`` parameter::
+Predeclared classes can be passed to ``ModelBuilderSemantics`` instances through the ``types=`` parameter::
 
     from mymodel import AddOperator, MulOperator
 
@@ -725,6 +725,31 @@ Synthesized node classes cannot be pickled because the Python_ runtime won't be 
 
 
 ``ModelBuilderSemantics`` assumes nothing about ``types=``, so any constructor (a function, or a partial function) can be used.
+
+
+Model Class Hierarchies
+-----------------------
+
+It is possible to specify a a base class for generated model nodes::
+
+    addition::AddOperator::Operator = left:mulexpre op:'+' right:addition ;
+    substraction::SubstractOperator::Operator = left:mulexpre op:'-' right:addition ;
+
+**Grako** will generate the base class if it's not already known.
+
+Base classes can be used as the target class in *walkers*, and in *code generators*::
+
+    class MyNodeWalker(NodeWalker):
+        def walk_Operator(self, node):
+            left = self.walk(node.left)
+            right = self.walk(node.right)
+            op = self.walk(node.op)
+
+            print(type(node).__name__, op, left, right)
+
+
+    class Operator(ModelRenderer):
+        template = '{left} {op} {right}'
 
 
 Templates and Translation

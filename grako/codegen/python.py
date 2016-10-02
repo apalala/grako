@@ -15,6 +15,7 @@ from grako.util import (
 )
 from grako.exceptions import CodegenError
 from grako.objectmodel import Node
+from grako.objectmodel import BASE_CLASS_TOKEN
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
 
 
@@ -278,7 +279,7 @@ class Rule(_Decorator):
         if isinstance(p, (int, float)):
             return ustr(p)
         else:
-            return urepr(p)
+            return urepr(p.split(BASE_CLASS_TOKEN)[0])
 
     def render_fields(self, fields):
         self.reset_counter()

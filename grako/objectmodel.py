@@ -10,6 +10,9 @@ from grako.buffering import Comments
 from grako.ast import AST
 
 
+BASE_CLASS_TOKEN = '::'
+
+
 class Node(object):
     """ Base class for model nodes
     """

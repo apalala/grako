@@ -53,7 +53,7 @@ keywords
 paramdef
     =
         (* no keyword params if ':: *)
-        '::' ~ params:params_only
+        '::' ~ params:params
     |
         '('
         ~
@@ -89,14 +89,16 @@ decorator
 
 params
     =
-    @+:literal {',' @+:literal !'=' ~ }
+    @+:first_param {',' @+:literal !'=' ~ }
     ;
 
 
-params_only
+first_param
     =
-    ','.{literal}+
+    | path
+    | literal
     ;
+
 
 
 kwparams
@@ -336,32 +338,38 @@ literal
     ;
 
 
-string
+string::str
     =
     (* allow single and double quotes *)
     ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
     ;
 
 
-hex
+hex::int
     =
     /0[xX](\d|[a-fA-F])+/
     ;
 
 
-float
+float::float
     =
     /[-+]?(?:\d+\.\d*|\d*\.\d+)(?:[Ee][-+]?\d+)?/
     ;
 
 
-int
+int::int
     =
     /[-+]?\d+/
     ;
 
 
-word
+path::str
+    =
+    /(?!\d)\w+/ + /(::(?!\d)\w+)+/
+    ;
+
+
+word::str
     =
     /(?!\d)\w+/
     ;

@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from datetime import datetime
-from collections import OrderedDict as odict  # noqa: N813
+from collections import namedtuple as NT
 
 from grako.util import (
     compress_seq,
@@ -11,12 +11,57 @@ from grako.util import (
     safe_name,
 )
 from grako.objectmodel import Node
+from grako.objectmodel import BASE_CLASS_TOKEN
 from grako.exceptions import CodegenError
+from grako.rendering import Renderer
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
+
+
+NODE_NAME_PATTERN = '(?!\d)\w+(' + BASE_CLASS_TOKEN + '(?!\d)\w+)*'
+
+
+_TypeSpec = NT('TypeSpec', ['class_name', 'base'])
 
 
 def codegen(model):
     return ObjectModelCodeGenerator().render(model)
+
+
+def _has_node_name(rule):
+    if not rule.params:
+        return None
+
+    typespec = rule.params[0]
+    if not re.match(NODE_NAME_PATTERN, typespec):
+        return None
+    if not typespec[0].isupper():
+        return None
+    return typespec
+
+
+def _typespec(rule, default_base=True):
+    if not _has_node_name(rule):
+        return _TypeSpec(None, None)
+
+    spec = rule.params[0].split(BASE_CLASS_TOKEN)
+    class_name = safe_name(spec[0])
+    base = None
+    bases = spec[1:]
+    if bases:
+        base = safe_name(bases[0])
+    elif default_base:
+        base = 'ModelBase'
+    return _TypeSpec(class_name, base)
+
+
+class BaseClassRenderer(Renderer):
+    def __init__(self, class_name):
+        self.class_name = class_name
+
+    template = '''
+        class {class_name}(ModelBase):
+            pass
+        '''
 
 
 class ObjectModelCodeGenerator(CodeGenerator):
@@ -48,46 +93,51 @@ class Rule(ModelRenderer):
             kwargs = ' **_kwargs_'
             params = '*_args_, **_kwargs_)'
 
+        spec = _typespec(self.node)
+
         fields.update(
-            class_name=safe_name(self.params[0]),
+            class_name=spec.class_name,
+            base=spec.base,
             _kwargs_=kwargs,
             params=params,
         )
 
     template = '''
-            class {class_name}(ModelBase):
-                def __init__(self, *_args_,{_kwargs_}):
-                    super({class_name}, self).__init__({params}\
-            '''
+        class {class_name}({base}):
+            def __init__(self, *_args_,{_kwargs_}):
+                super({class_name}, self).__init__({params}\
+        '''
 
 
 class Grammar(ModelRenderer):
-    @staticmethod
-    def object_model_typename(rule):
-        if not rule.params:
-            return
-        if not re.match('(?!\d)\w+', rule.params[0]):
-            return
-        if not rule.params[0][0].isupper():
-            return
-        return rule.params[0]
-
     def render_fields(self, fields):
-        model_rules = odict([
-            (self.object_model_typename(rule), rule)
+        bases = {_typespec(rule, False).base for rule in self.node.rules}
+        base_class_declarations = [
+            BaseClassRenderer(base).render()
+            for base in bases
+            if base is not None
+        ]
+
+        model_rules = [
+            rule
             for rule in self.node.rules
-        ])
-        del model_rules[None]
-        model_rules = list(model_rules.values())
+            if _has_node_name(rule)
+        ]
 
         model_class_declarations = [
-            self.get_renderer(rule).render() for rule in model_rules
+            self.get_renderer(rule).render()
+            for rule in model_rules
         ]
+
+        base_class_declarations = '\n\n\n'.join(base_class_declarations)
+        if base_class_declarations:
+            base_class_declarations += '\n\n'
         model_class_declarations = '\n\n\n'.join(model_class_declarations)
 
         version = datetime.now().strftime('%Y.%m.%d.%H')
 
         fields.update(
+            base_class_declarations=base_class_declarations,
             model_class_declarations=model_class_declarations,
             version=version,
         )
@@ -124,5 +174,5 @@ class Grammar(ModelRenderer):
                     pass
 
 
-                {model_class_declarations}
+                {base_class_declarations}{model_class_declarations}
                 '''
