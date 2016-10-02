@@ -53,7 +53,7 @@ keywords
 paramdef
     =
         (* no keyword params if ':: *)
-        '::' ~ params:params_only
+        '::' ~ params:params
     |
         '('
         ~
@@ -89,14 +89,16 @@ decorator
 
 params
     =
-    @+:literal {',' @+:literal !'=' ~ }
+    @+:first_param {',' @+:literal !'=' ~ }
     ;
 
 
-params_only
+first_param
     =
-    ','.{literal}+
+    | path
+    | literal
     ;
+
 
 
 kwparams
@@ -358,6 +360,12 @@ float
 int
     =
     /[-+]?\d+/
+    ;
+
+
+path
+    =
+    /(?!\d)\w+/ + /(:(?!\d)\w+)+/
     ;
 
 
