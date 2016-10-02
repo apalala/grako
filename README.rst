@@ -7,7 +7,7 @@
 .. image:: https://img.shields.io/pypi/pyversions/grako.svg
     :target: https://pypi.python.org/pypi/grako
 
-.. image:: https://secure.travis-ci.org/apalala/grako.png
+.. image:: https://secure.travis-ci.org/apalala/grako.svg
     :target: http://travis-ci.org/apalala/grako
 
 .. image:: https://landscape.io/github/apalala/grako/release/landscape.png
