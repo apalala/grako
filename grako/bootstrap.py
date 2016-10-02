@@ -211,7 +211,7 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._token('::')
                 self._cut()
-                self._params_only_()
+                self._params_()
                 self.name_last_node('params')
             with self._option():
                 self._token('(')
@@ -254,7 +254,7 @@ class GrakoBootstrapParser(Parser):
                 with self._option():
                     self._token('::')
                     self._cut()
-                    self._params_only_()
+                    self._params_()
                     self.name_last_node('params')
                 with self._option():
                     self._token('(')
@@ -308,7 +308,7 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _params_(self):
-        self._literal_()
+        self._first_param_()
         self.add_last_node_to_name('@')
 
         def block1():
@@ -321,14 +321,13 @@ class GrakoBootstrapParser(Parser):
         self._closure(block1)
 
     @graken()
-    def _params_only_(self):
-
-        def sep0():
-            self._token(',')
-
-        def block0():
-            self._literal_()
-        self._positive_closure(block0, sep=sep0)
+    def _first_param_(self):
+        with self._choice():
+            with self._option():
+                self._path_()
+            with self._option():
+                self._literal_()
+            self._error('no available options')
 
     @graken()
     def _kwparams_(self):
@@ -753,6 +752,10 @@ class GrakoBootstrapParser(Parser):
         self._pattern(r'[-+]?\d+')
 
     @graken()
+    def _path_(self):
+        self._pattern(r'(?!\d)\w+(:(?!\d)\w+)+')
+
+    @graken()
     def _word_(self):
         self._pattern(r'(?!\d)\w+')
 
@@ -831,7 +834,7 @@ class GrakoBootstrapSemantics(object):
     def params(self, ast):
         return ast
 
-    def params_only(self, ast):
+    def first_param(self, ast):
         return ast
 
     def kwparams(self, ast):
@@ -955,6 +958,9 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def int(self, ast):
+        return ast
+
+    def path(self, ast):
         return ast
 
     def word(self, ast):
