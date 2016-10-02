@@ -2,14 +2,22 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from collections import OrderedDict
 
+from grako.util import simplify_list
+from grako.util import eval_escapes
+from grako.util import warning
+from grako.util import builtins
+from grako.util import re, RE_FLAGS
+
+from grako.exceptions import FailedSemantics
+from grako.exceptions import SemanticError
+
 from grako.objectmodel import Node
 from grako.synth import synthesize
 
-from grako.util import simplify_list, eval_escapes, warning, builtins
-from grako.util import re, RE_FLAGS
 from grako import grammars
-from grako.exceptions import FailedSemantics
-from grako.exceptions import SemanticError
+
+
+BASE_CLASS_TOKEN = ':'
 
 
 class GrakoASTSemantics(object):
@@ -45,12 +53,9 @@ class ModelBuilderSemantics(object):
 
     def _register_constructor(self, constructor):
         self.constructors[constructor.__name__] = constructor
+        return constructor
 
-    def _get_constructor(self, typename, base):
-        typename = str(typename)
-        if typename in self.constructors:
-            return self.constructors[typename]
-
+    def _find_existing_constructor(self, typename):
         constructor = builtins
         for name in typename.split('.'):
             try:
@@ -65,22 +70,36 @@ class ModelBuilderSemantics(object):
             else:
                 constructor = None
                 break
-        if constructor:
-            return constructor
-
-        # synthethize a new type
-        constructor = synthesize(typename, base)
-        self._register_constructor(constructor)
         return constructor
+
+    def _get_constructor(self, typename, base):
+        typename = str(typename)  # cannot be unicode in Python 2.7
+
+        if typename in self.constructors:
+            return self.constructors[typename]
+
+        constructor = (
+            self._find_existing_constructor(typename) or
+            synthesize(typename, base)
+        )
+
+        return self._register_constructor(constructor)
 
     def _default(self, ast, *args, **kwargs):
         if not args:
             return ast
-        class_names = args[0].split(':')
-        base = self.base_type
-        if len(class_names) >= 2:
-            base = self._get_constructor(class_names[1], base)
-        constructor = self._get_constructor(class_names[0], base)
+
+        typespec = str(args[0])
+        type_and_bases = typespec.split(BASE_CLASS_TOKEN)
+        typename = type_and_bases[0]
+        bases = type_and_bases[1:]
+
+        if bases:
+            base = self._get_constructor(bases[0], self.base_type)
+        else:
+            base = self.base_type
+
+        constructor = self._get_constructor(typename, base)
         try:
             if type(constructor) is type and issubclass(constructor, Node):
                 return constructor(*args[1:], ast=ast, ctx=self.ctx, **kwargs)
@@ -89,7 +108,7 @@ class ModelBuilderSemantics(object):
         except Exception as e:
             raise SemanticError(
                 'Could not call constructor for %s: %s'
-                % (name, str(e))
+                % (typename, str(e))
             )
 
 
