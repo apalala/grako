@@ -13,8 +13,10 @@ from grako.util import (
     ustr,
     compress_seq
 )
+from grako.util import builtins
 from grako.exceptions import CodegenError
 from grako.objectmodel import Node
+from grako.objectmodel import BASE_CLASS_TOKEN
 from grako.codegen.cgbase import ModelRenderer, CodeGenerator
 
 
@@ -275,10 +277,10 @@ class RuleInclude(_Decorator):
 class Rule(_Decorator):
     @staticmethod
     def param_repr(p):
-        if isinstance(p, (int, float)):
+        if isinstance(type(p).__name__ in vars(builtins)):
             return ustr(p)
         else:
-            return urepr(p)
+            return urepr(p.split(BASE_CLASS_TOKEN)[0])
 
     def render_fields(self, fields):
         self.reset_counter()
