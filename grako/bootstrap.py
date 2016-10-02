@@ -753,7 +753,7 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _path_(self):
-        self._pattern(r'(?!\d)\w+(:(?!\d)\w+)+')
+        self._pattern(r'(?!\d)\w+(::(?!\d)\w+)+')
 
     @graken()
     def _word_(self):

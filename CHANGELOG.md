@@ -20,6 +20,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Test and publish **Grako** using [Travis CI][].
 -   Added support for case-insensitivity to `grako.symtables`.
+-   A base class can now be specified along with the object model class name in grammar rules:
+
+```ebnf
+integer::Integer::Literal
+```
 
 
 ### Changed

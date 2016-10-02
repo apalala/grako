@@ -12,12 +12,10 @@ from grako.exceptions import FailedSemantics
 from grako.exceptions import SemanticError
 
 from grako.objectmodel import Node
+from grako.objectmodel import BASE_CLASS_TOKEN
+
 from grako.synth import synthesize
-
 from grako import grammars
-
-
-BASE_CLASS_TOKEN = ':'
 
 
 class GrakoASTSemantics(object):
@@ -89,15 +87,13 @@ class ModelBuilderSemantics(object):
         if not args:
             return ast
 
-        typespec = str(args[0])
-        type_and_bases = typespec.split(BASE_CLASS_TOKEN)
-        typename = type_and_bases[0]
-        bases = type_and_bases[1:]
+        typespec = args[0].split(BASE_CLASS_TOKEN)
+        typename = typespec[0]
+        bases = typespec[1:]
 
-        if bases:
-            base = self._get_constructor(bases[0], self.base_type)
-        else:
-            base = self.base_type
+        base = self.base_type
+        for base in bases:
+            base = self._get_constructor(bases[0], base)
 
         constructor = self._get_constructor(typename, base)
         try:
