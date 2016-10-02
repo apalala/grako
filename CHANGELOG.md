@@ -31,7 +31,7 @@ integer::Integer::Literal
 
 -   Reduced the memory used by symbol tables by replacing `symtables.SymbolReference` by the referencing `objectmodel.Node`.
 -   Now `grako.grammars.Decorator` is public.
--   Demoted support for _left recursion_ to _experimental_. It has been reported that even some simple cases are not handled. 
+-   Demoted support for _left recursion_ to _experimental_. It has been reported that even some simple cases are not handled.
 
 ## [3.15.1] @ 2016-09-28
 
@@ -659,7 +659,7 @@ integer::Integer::Literal
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.0
-[3.16.0]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.15.1
+[3.16.0]: https://bitbucket.org/apalala/grako/branches/compare/3.16.0%0D3.15.1
 [3.15.1]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.15.0
 [3.15.0]: https://bitbucket.org/apalala/grako/branches/compare/3.15.0%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
