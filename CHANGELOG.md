@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
-## [3.16.0] @ 2016-09-29
+## [3.16.0] @ 2016-10-01
 
 
 ### Added
@@ -26,27 +26,15 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 integer::Integer::Literal
 ```
 
-
 ### Changed
 
 -   Reduced the memory used by symbol tables by replacing `symtables.SymbolReference` by the referencing `objectmodel.Node`.
 -   Now `grako.grammars.Decorator` is public.
 -   Demoted support for _left recursion_ to _experimental_. It has been reported that even some simple cases are not handled.
 
+
 ## [3.15.1] @ 2016-09-28
 
-
-### Changed
-
--   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
--   Use `weakref.proxy` for back-references (like `grako.objectmodel.Node._parent`) to make it easier for the [Python][] garbage collector.
--   Walker will now also recognize walk methods where the class name has the upper case characters replaced by an underscore followed by the characeter in lower case (`walk_NegativeLookahead()` or `walk__negative_lookahead()`.
-
-### Fixed
-
--   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`, so the re-export was re-instated.
-
-## [3.15.0] @ 2016-09-23
 
 ### Added
 
@@ -57,7 +45,9 @@ integer::Integer::Literal
 -   The result of `grako.model.Node.children()` now defaults to `Node.children_list()`. It was too unexpected that the child nodes might be out of order.
 -   Simplified the `main()` function in generated parsers.
 -   Moved `Node` into the new `grako.objectmodel`. Moved `NodeWalker` and descendants into the new `grako.walkers` module. Moved `ModelBuilderSemantics` into the `grako.semantics` module. The `grako.model` module was updated for backwards compatibility.
-
+-   Generated parsers and models no longer carry the current date as a version tag. The tags served only to confuse version control.
+-   Use `weakref.proxy` for back-references (like `grako.objectmodel.Node._parent`) to make it easier for the [Python][] garbage collector.
+-   Walker will now also recognize walk methods where the class name has the upper case characters replaced by an underscore followed by the characeter in lower case (`walk_NegativeLookahead()` or `walk__negative_lookahead()`.
 
 ### Fixed
 
@@ -67,7 +57,7 @@ integer::Integer::Literal
 -   Use `_args_` and `_kwargs_` in generated models to avoid conflicts with grammar elelemts that use the standard [Python][] names.
 -   The generated parser was overriding `Buffer` creation without regard for settings passed to the `Parser` class. There's now a `buffer_class` _kwarg_ to the `Context`, `Parser`, and the generated parser classes.
 -   Deprecation warnings were always being enabled by `grako.util`.
-
+-   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`, so the re-export was re-instated.
 
 
 ## [3.14.0] @ 2016-08-19
@@ -660,8 +650,7 @@ integer::Integer::Literal
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.0
 [3.16.0]: https://bitbucket.org/apalala/grako/branches/compare/3.16.0%0D3.15.1
-[3.15.1]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.15.0
-[3.15.0]: https://bitbucket.org/apalala/grako/branches/compare/3.15.0%0D3.14.0
+[3.15.1]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
 [3.13.0]: https://bitbucket.org/apalala/grako/branches/compare/3.13.0%0D3.12.1
 [3.12.1]: https://bitbucket.org/apalala/grako/branches/compare/3.12.1%0D3.11.0
