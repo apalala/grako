@@ -43,7 +43,7 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Efficient support for direct and indirect left recursion allows for more intuitive grammars.
+* Experimental support for direct and indirect left recursion allows for more intuitive grammars.
 
 The parser generator, the run-time support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
@@ -600,23 +600,6 @@ There are situations in which a token is reserved only in a very specific contex
 
     statements = {!'END' statement}+ ;
 
-Left Recursion
-==============
-
-**Grako** provides support for left recursion in PEG_ grammars.
-
-Sometimes, while debugging a grammar, it is useful to turn left-recursion support off::
-
-    parser = MyParser(
-        text,
-        left_recursion=False,
-    )
-
-Left recursion can also be turned off from within the grammar using the
-``@@left_recursion`` directive::
-
-        @@left_recursion :: False
-
 
 Semantic Actions
 ================
@@ -789,6 +772,23 @@ The default multiplier for ``ind`` is ``4``, but that can be overridden using ``
 
 **Note**
     Using a newline (``\\n``) as separator will interfere with left trimming and indentation of templates. To use newline as separator, specify it as ``\\n``, and the renderer will understand the intention.
+
+
+Left Recursion
+==============
+
+**Grako** provides experimental support for left recursion in PEG_ grammars. The implementation of left recursion is ongoing; it does not yet handle all cases.
+
+Sometimes, while debugging a grammar, it is useful to turn left-recursion support on or off::
+
+    parser = MyParser(
+        text,
+        left_recursion=False,
+    )
+
+Left recursion can also be turned off from within the grammar using the ``@@left_recursion`` directive::
+
+        @@left_recursion :: False
 
 
 Examples

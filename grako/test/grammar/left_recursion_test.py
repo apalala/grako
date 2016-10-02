@@ -11,6 +11,7 @@ class LeftRecursionTests(unittest.TestCase):
 
     def test_direct_left_recursion(self):
         grammar = '''
+            @@left_recursion :: True
             start
                 =
                 expre $
@@ -36,10 +37,11 @@ class LeftRecursionTests(unittest.TestCase):
 
     def test_indirect_left_recursion(self):
         grammar = '''
-        start = x $ ;
-        x = expr ;
-        expr = x '-' num | num;
-        num = ?/[0-9]+/? ;
+            @@left_recursion :: True
+            start = x $ ;
+            x = expr ;
+            expr = x '-' num | num;
+            num = ?/[0-9]+/? ;
         '''
         model = genmodel("test", grammar)
         ast = model.parse("5-87-32")
@@ -47,10 +49,11 @@ class LeftRecursionTests(unittest.TestCase):
 
     def test_indirect_left_recursion_with_cut(self):
         grammar = '''
-        start = x $ ;
-        x = expr ;
-        expr = x '-' ~ num | num;
-        num = ?/[0-9]+/? ;
+            @@left_recursion :: True
+            start = x $ ;
+            x = expr ;
+            expr = x '-' ~ num | num;
+            num = ?/[0-9]+/? ;
         '''
         model = genmodel("test", grammar)
         ast = model.parse("5-87-32")
@@ -58,42 +61,43 @@ class LeftRecursionTests(unittest.TestCase):
 
     def test_indirect_left_recursion_complex(self):
         grammar = '''
-        start = Primary $ ;
-        Primary = PrimaryNoNewArray ;
+            @@left_recursion :: True
+            start = Primary $ ;
+            Primary = PrimaryNoNewArray ;
 
-        PrimaryNoNewArray =
-          ClassInstanceCreationExpression
-        | MethodInvocation
-        | FieldAccess
-        | ArrayAccess
-        | 'this' ;
+            PrimaryNoNewArray =
+              ClassInstanceCreationExpression
+            | MethodInvocation
+            | FieldAccess
+            | ArrayAccess
+            | 'this' ;
 
-        ClassInstanceCreationExpression =
-          'new' ClassOrInterfaceType '(' ')'
-        | Primary '.new' Identifier '()' ;
+            ClassInstanceCreationExpression =
+              'new' ClassOrInterfaceType '(' ')'
+            | Primary '.new' Identifier '()' ;
 
-        MethodInvocation =
-          Primary '.' MethodName '()'
-        | MethodName '()' ;
+            MethodInvocation =
+              Primary '.' MethodName '()'
+            | MethodName '()' ;
 
-        FieldAccess =
-          Primary '.' Identifier
-        | 'super.' Identifier ;
+            FieldAccess =
+              Primary '.' Identifier
+            | 'super.' Identifier ;
 
-        ArrayAccess =
-          Primary '[' Expression ']'
-        | ExpressionName '[' Expression ']' ;
+            ArrayAccess =
+              Primary '[' Expression ']'
+            | ExpressionName '[' Expression ']' ;
 
-        ClassOrInterfaceType =
-          ClassName
-        | InterfaceTypeName ;
+            ClassOrInterfaceType =
+              ClassName
+            | InterfaceTypeName ;
 
-        ClassName = 'C' | 'D' ;
-        InterfaceTypeName = 'I' | 'J' ;
-        Identifier = 'x' | 'y' | ClassOrInterfaceType ;
-        MethodName = 'm' | 'n' ;
-        ExpressionName = Identifier ;
-        Expression = 'i' | 'j' ;
+            ClassName = 'C' | 'D' ;
+            InterfaceTypeName = 'I' | 'J' ;
+            Identifier = 'x' | 'y' | ClassOrInterfaceType ;
+            MethodName = 'm' | 'n' ;
+            ExpressionName = Identifier ;
+            Expression = 'i' | 'j' ;
         '''
         model = genmodel("test", grammar)
         ast = model.parse("this")
@@ -109,6 +113,7 @@ class LeftRecursionTests(unittest.TestCase):
 
     def test_no_left_recursion(self):
         grammar = '''
+            @@left_recursion :: True
             start
                 =
                 expre $
@@ -138,17 +143,19 @@ class LeftRecursionTests(unittest.TestCase):
 
     def test_nested_left_recursion(self):
         grammar_a = '''
-        s = e $ ;
-        e = [e '+'] t ;
-        t = [t '*'] a ;
-        a = ?/[0-9]/? ;
+            @@left_recursion :: True
+            s = e $ ;
+            e = [e '+'] t ;
+            t = [t '*'] a ;
+            a = ?/[0-9]/? ;
         '''
         grammar_b = '''
-        s = e $ ;
-        e = [e '+'] a ;
-        a = n | p ;
-        n = ?/[0-9]/? ;
-        p = '(' @:e ')' ;
+            @@left_recursion :: True
+            s = e $ ;
+            e = [e '+'] a ;
+            a = n | p ;
+            n = ?/[0-9]/? ;
+            p = '(' @:e ')' ;
         '''
         model_a = genmodel("test", grammar_a)
         model_b = genmodel("test", grammar_b)

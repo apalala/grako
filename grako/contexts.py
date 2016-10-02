@@ -106,7 +106,7 @@ class ParseContext(object):
                  ignorecase=False,
                  nameguard=None,
                  memoize_lookaheads=True,
-                 left_recursion=True,
+                 left_recursion=False,
                  trace_length=72,
                  trace_separator=C_DERIVE,
                  trace_filename=False,
