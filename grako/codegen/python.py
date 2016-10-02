@@ -13,7 +13,6 @@ from grako.util import (
     ustr,
     compress_seq
 )
-from grako.util import builtins
 from grako.exceptions import CodegenError
 from grako.objectmodel import Node
 from grako.objectmodel import BASE_CLASS_TOKEN
@@ -277,7 +276,7 @@ class RuleInclude(_Decorator):
 class Rule(_Decorator):
     @staticmethod
     def param_repr(p):
-        if isinstance(type(p).__name__ in vars(builtins)):
+        if isinstance(p, (int, float)):
             return ustr(p)
         else:
             return urepr(p.split(BASE_CLASS_TOKEN)[0])
