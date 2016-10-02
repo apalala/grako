@@ -102,19 +102,26 @@ class CodeGenerator(object):
 
         return result
 
-    def _find_renderer_class(self, item):
-        """
-        This method is used to find a ``ModelRenderer`` for the given
-        item. It can be overriden in descendat classes.
-        """
-        if not isinstance(item, Node):
+    def _find_renderer_class(self, node):
+        if not isinstance(node, Node):
             return None
 
-        name = item.__class__.__name__
-        try:
-            return self._renderers[name]
-        except KeyError:
-            raise CodegenError('Renderer for %s not found' % name)
+        node_class_name = node.__class__.__name__
+        classes = [node.__class__]
+        while classes:
+            cls = classes.pop()
+
+            name = cls.__name__
+            if name in self._renderers:
+                renderer = self._renderers[name]
+                self._renderers[node_class_name] = renderer
+                return renderer
+
+            for base in cls.__bases__:
+                if base not in classes:
+                    classes.append(base)
+
+        raise CodegenError('Renderer for %s not found' % node_class_name)
 
     def get_renderer(self, item):
         if not isinstance(item, Node):
