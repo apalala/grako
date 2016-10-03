@@ -136,6 +136,9 @@ class Namespace(object):
     def asjson(self):
         return asjson(self)
 
+    def __repr__(self):
+        return '%s[]' % type(self).__name__
+
     def __json__(self):
         return odict([(name, asjson(symbols)) for name, symbols in self.entries.items()])
 
@@ -243,6 +246,9 @@ class Symbol(Namespace):
         assert isinstance(result, set)
         assert all(isinstance(i, LineIndexEntry) for i in result)
         return result
+
+    def __repr__(self):
+        return '%s[]' % self.name
 
     def __json__(self):
         return odict([
