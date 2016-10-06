@@ -179,29 +179,29 @@ class LeftRecursionTests(unittest.TestCase):
 
             sub_expression = paren_expression | value ;
 
-            minus_expression = expression '-' sub_expression ;
+            minus_expression = expression '-' expression ;
 
             paren_expression = '(' expression ')' ;
 
             value = /[0-9]+/ ;
         '''
         model = genmodel(grammar=grammar)
-        model.parse('3', trace=trace, colorize=True)
-        model.parse('3 - 2', trace=trace, colorize=True)
-        model.parse('(3 - 2)', trace=trace, colorize=True)
-        model.parse('(3 - 2) - 1', trace=trace, colorize=True)
-        model.parse('3 - 2 - 1', trace=trace, colorize=True)
+        # model.parse('3', trace=trace, colorize=True)
+        # model.parse('3 - 2', trace=trace, colorize=True)
+        # model.parse('(3 - 2)', trace=trace, colorize=True)
+        # model.parse('(3 - 2) - 1', trace=trace, colorize=True)
+        # model.parse('3 - 2 - 1', trace=trace, colorize=True)
         model.parse('3 - (2 - 1)', trace=trace, colorize=True)
 
 
 def main(trace=True):
     t = LeftRecursionTests('test_direct_left_recursion')
-    t.test_direct_left_recursion(trace=trace)
-    t.test_indirect_left_recursion(trace=trace)
-    t.test_indirect_left_recursion_with_cut(trace=trace)
-    t.test_indirect_left_recursion_complex(trace=trace)
-    t.test_no_left_recursion(trace=trace)
-    t.test_nested_left_recursion(trace=trace)
+    # t.test_direct_left_recursion(trace=trace)
+    # t.test_indirect_left_recursion(trace=trace)
+    # t.test_indirect_left_recursion_with_cut(trace=trace)
+    # t.test_indirect_left_recursion_complex(trace=trace)
+    # t.test_no_left_recursion(trace=trace)
+    # t.test_nested_left_recursion(trace=trace)
     t.no_test_left_recursion_bug(trace=trace)
 
 
