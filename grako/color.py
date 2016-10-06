@@ -12,6 +12,14 @@ class _BF(object):
     RESET = ''
     WHITE = ''
     YELLOW = ''
+    LIGHTBLACK_EX = ''
+    LIGHTRED_EX = ''
+    LIGHTGREEN_EX = ''
+    LIGHTYELLOW_EX = ''
+    LIGHTBLUE_EX = ''
+    LIGHTMAGENTA_EX = ''
+    LIGHTCYAN_EX = ''
+    LIGHTWHITE_EX = ''
 
 
 class _Fore(_BF):
@@ -42,5 +50,6 @@ def init():
         Fore = colorama.Fore
         Back = colorama.Back
         Style = colorama.Style
+        colorama.Fore
     except ImportError:
         pass

@@ -49,10 +49,13 @@ U_POWER_SYMBOL = '\u23FB'
 U_POWER_ON_SYMBOL = '\u23FC'
 U_POWER_OFF_SYMBOL = '\u23FD'
 
+U_GREEK_SMALL_LETTER_EPSILON = '\u03B5'
+
 C_DERIVE = '<'
 C_ENTRY = '<'
 C_SUCCESS = '>'
 C_FAILURE = '!'
+C_RECURSION = 'e'
 
 
 if is_posix():
@@ -60,6 +63,7 @@ if is_posix():
     C_ENTRY = C_DERIVE
     C_SUCCESS = U_IDENTICAL_TO
     C_FAILURE = U_NOT_IDENTICAL_TO
+    C_RECURSION = U_GREEK_SMALL_LETTER_EPSILON
 
 
 ParseInfo = namedtuple(
@@ -378,7 +382,7 @@ class ParseContext(object):
         stack = self.trace_separator.join(reversed(self._rule_stack))
         if max(len(s) for s in stack.splitlines()) > self.trace_length:
             stack = stack[:self.trace_length]
-            stack = stack.rsplit(self.trace_separator, maxsplit=1)[0]
+            stack = stack.rsplit(self.trace_separator)[0]
             stack += self.trace_separator
         return stack
 
@@ -429,6 +433,9 @@ class ParseContext(object):
 
     def _trace_failure(self):
         self._trace_event(color.Fore.RED + color.Style.BRIGHT + C_FAILURE)
+
+    def _trace_recursion(self):
+        self._trace_event(color.Fore.MAGENTA + color.Style.BRIGHT + C_RECURSION)
 
     def _trace_match(self, token, name=None, failed=False):
         if self.trace:
@@ -491,9 +498,12 @@ class ParseContext(object):
             return node
         except FailedPattern:
             self._error('Expecting <%s>' % name)
-        except FailedParse:
+        except FailedParse as e:
             self._goto(pos)
-            self._trace_failure()
+            if isinstance(e, FailedLeftRecursion):
+                self._trace_recursion()
+            else:
+                self._trace_failure()
             raise
         finally:
             self._rule_stack.pop()
