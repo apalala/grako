@@ -49,7 +49,7 @@ class FailedKeywordSemantics(FailedSemantics):
     pass
 
 
-class FailedParseBase(ParseError):
+class FailedParse(ParseError):
     def __init__(self, buf, stack, item):
         self.buf = buf
         self.stack = stack
@@ -75,10 +75,6 @@ class FailedParseBase(ParseError):
                                leading,
                                '\n'.join(self.stack)
                                )
-
-
-class FailedParse(FailedParseBase):
-    pass
 
 
 class FailedToken(FailedParse):
@@ -111,7 +107,7 @@ class FailedMatch(FailedParse):
         return "expecting %s" % repr(self.name).strip('u')
 
 
-class FailedRef(FailedParseBase):
+class FailedRef(FailedParse):
     def __init__(self, buf, stack, name):
         super(FailedRef, self).__init__(buf, stack, name)
         self.name = name
