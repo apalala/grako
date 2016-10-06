@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 import functools
 from collections import namedtuple
 from contextlib import contextmanager
 
+from ._unicode_characters import (
+    U_ANTICLOCKWISE_GAPPED_CIRCLE_ARROW,
+    U_DLARROW,
+    U_IDENTICAL_TO,
+    U_NOT_IDENTICAL_TO,
+    U_FOUR_PER_EM_SPACE,
+    U_ZERO_WIDTH_NO_BREAK_SPACE,
+)
+
 from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name, is_posix
 from grako.ast import AST
 from grako import buffering
-
 from grako import color
-
 from grako.exceptions import (
     FailedCut,
     FailedLeftRecursion,
@@ -29,41 +35,18 @@ from grako.exceptions import (
 __all__ = ['ParseInfo', 'ParseContext']
 
 
-U_LARROW = '\u2190'
-U_DLARROW = '\u2199'
-
-U_LDARROW = '\u21D0'
-U_UDARROW = '\u21D1'
-U_RDARROW = '\u21D2'
-U_DDARROW = '\u21D3'
-
-U_L_TRIPPLE_ARROW = '\u21DA'
-
-U_WARNING = '\u26A0'
-U_NOT_EQUAL_TO = '\u2260'
-U_IDENTICAL_TO = '\u2261'
-U_NOT_IDENTICAL_TO = '\u2262'
-U_CHECK_MARK = '\u2713'
-
-U_POWER_SYMBOL = '\u23FB'
-U_POWER_ON_SYMBOL = '\u23FC'
-U_POWER_OFF_SYMBOL = '\u23FD'
-
-U_GREEK_SMALL_LETTER_EPSILON = '\u03B5'
-
-C_DERIVE = '<'
-C_ENTRY = '<'
-C_SUCCESS = '>'
-C_FAILURE = '!'
-C_RECURSION = 'e'
-
-
-if is_posix():
+if not is_posix():
+    C_DERIVE = '<'
+    C_ENTRY = '<'
+    C_SUCCESS = '>'
+    C_FAILURE = '!'
+    C_RECURSION = 'r '
+else:
     C_DERIVE = U_DLARROW
     C_ENTRY = C_DERIVE
     C_SUCCESS = U_IDENTICAL_TO
     C_FAILURE = U_NOT_IDENTICAL_TO
-    C_RECURSION = U_GREEK_SMALL_LETTER_EPSILON
+    C_RECURSION = U_ANTICLOCKWISE_GAPPED_CIRCLE_ARROW + U_FOUR_PER_EM_SPACE
 
 
 ParseInfo = namedtuple(
@@ -435,7 +418,7 @@ class ParseContext(object):
         self._trace_event(color.Fore.RED + color.Style.BRIGHT + C_FAILURE)
 
     def _trace_recursion(self):
-        self._trace_event(color.Fore.MAGENTA + color.Style.BRIGHT + C_RECURSION)
+        self._trace_event(color.Fore.RED + color.Style.BRIGHT + C_RECURSION)
 
     def _trace_match(self, token, name=None, failed=False):
         if self.trace:
@@ -579,7 +562,7 @@ class ParseContext(object):
 
             if key in self._recursive_results:
                 memo = self._recursive_results[key]
-            else:
+            elif name not in self._recursive_head:
                 self._recursive_head.append(name)
         return memo
 
