@@ -175,13 +175,21 @@ class LeftRecursionTests(unittest.TestCase):
 
             start = expression $ ;
 
-            expression = minus_expression | sub_expression ;
+            expression =
+                | paren_expression
+                | minus_expression
+                | value
+                ;
 
-            sub_expression = paren_expression | value ;
+            paren_expression
+                =
+                '(' expression ')'
+                ;
 
-            minus_expression = expression '-' expression ;
-
-            paren_expression = '(' expression ')' ;
+            minus_expression
+                =
+                expression '-' value
+                ;
 
             value = /[0-9]+/ ;
         '''
