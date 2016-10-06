@@ -9,7 +9,7 @@ from grako.tool import genmodel
 
 class LeftRecursionTests(unittest.TestCase):
 
-    def test_direct_left_recursion(self):
+    def test_direct_left_recursion(self, trace=False):
         grammar = '''
             @@left_recursion :: True
             start
@@ -32,10 +32,10 @@ class LeftRecursionTests(unittest.TestCase):
                 ;
         '''
         model = genmodel("test", grammar)
-        ast = model.parse("1*2+3*5")
+        ast = model.parse("1*2+3*5", trace=trace, colorize=True)
         self.assertEqual(['1', '*', '2', '+', '3', '*', '5'], ast)
 
-    def test_indirect_left_recursion(self):
+    def test_indirect_left_recursion(self, trace=False):
         grammar = '''
             @@left_recursion :: True
             start = x $ ;
@@ -44,10 +44,10 @@ class LeftRecursionTests(unittest.TestCase):
             num = ?/[0-9]+/? ;
         '''
         model = genmodel("test", grammar)
-        ast = model.parse("5-87-32")
+        ast = model.parse("5-87-32", trace=trace, colorize=True)
         self.assertEqual(['5', '-', '87', '-', '32'], ast)
 
-    def test_indirect_left_recursion_with_cut(self):
+    def test_indirect_left_recursion_with_cut(self, trace=False):
         grammar = '''
             @@left_recursion :: True
             start = x $ ;
@@ -56,10 +56,10 @@ class LeftRecursionTests(unittest.TestCase):
             num = ?/[0-9]+/? ;
         '''
         model = genmodel("test", grammar)
-        ast = model.parse("5-87-32")
+        ast = model.parse("5-87-32", trace=trace, colorize=True)
         self.assertEqual(['5', '-', '87', '-', '32'], ast)
 
-    def test_indirect_left_recursion_complex(self):
+    def test_indirect_left_recursion_complex(self, trace=False):
         grammar = '''
             @@left_recursion :: True
             start = Primary $ ;
@@ -100,18 +100,18 @@ class LeftRecursionTests(unittest.TestCase):
             Expression = 'i' | 'j' ;
         '''
         model = genmodel("test", grammar)
-        ast = model.parse("this")
+        ast = model.parse("this", trace=trace, colorize=True)
         self.assertEqual('this', ast)
-        ast = model.parse("this.x")
+        ast = model.parse("this.x", trace=trace, colorize=True)
         self.assertEqual(['this', '.', 'x'], ast)
-        ast = model.parse("this.x.y")
+        ast = model.parse("this.x.y", trace=trace, colorize=True)
         self.assertEqual(['this', '.', 'x', '.', 'y'], ast)
-        ast = model.parse("this.x.m()")
+        ast = model.parse("this.x.m()", trace=trace, colorize=True)
         self.assertEqual(['this', '.', 'x', '.', 'm', '()'], ast)
-        ast = model.parse("x[i][j].y")
+        ast = model.parse("x[i][j].y", trace=trace, colorize=True)
         self.assertEqual(['x', '[', 'i', ']', '[', 'j', ']', '.', 'y'], ast)
 
-    def test_no_left_recursion(self):
+    def test_no_left_recursion(self, trace=False):
         grammar = '''
             @@left_recursion :: True
             start
@@ -134,14 +134,14 @@ class LeftRecursionTests(unittest.TestCase):
                 ;
         '''
         model = genmodel("test", grammar)
-        model.parse("1*2+3*5")
+        model.parse("1*2+3*5", trace=trace, colorize=True)
         try:
-            model.parse("1*2+3*5", left_recursion=False)
+            model.parse("1*2+3*5", left_recursion=False, trace=trace, colorize=True)
             self.Fail('expected left recursion failure')
         except FailedParse:
             pass
 
-    def test_nested_left_recursion(self):
+    def test_nested_left_recursion(self, trace=False):
         grammar_a = '''
             @@left_recursion :: True
             s = e $ ;
@@ -159,11 +159,51 @@ class LeftRecursionTests(unittest.TestCase):
         '''
         model_a = genmodel("test", grammar_a)
         model_b = genmodel("test", grammar_b)
-        ast = model_a.parse("1*2+3*4")
+        ast = model_a.parse("1*2+3*4", trace=trace, colorize=True)
         self.assertEqual(['1', '*', '2', '+', ['3', '*', '4']], ast)
-        ast = model_b.parse("(1+2)+(3+4)")
+        ast = model_b.parse("(1+2)+(3+4)", trace=trace, colorize=True)
         self.assertEqual(['1', '+', '2', '+', ['3', '+', '4']], ast)
-        ast = model_a.parse("1*2*3")
+        ast = model_a.parse("1*2*3", trace=trace, colorize=True)
         self.assertEqual(['1', '*', '2', '*', '3'], ast)
-        ast = model_b.parse("(((1+2)))")
+        ast = model_b.parse("(((1+2)))", trace=trace, colorize=True)
         self.assertEqual(['1', '+', '2'], ast)
+
+    def no_test_left_recursion_bug(self, trace=False):
+        grammar = '''\
+            @@grammar :: Minus
+            @@left_recursion :: True
+
+            start = expression $ ;
+
+            expression = minus_expression | sub_expression ;
+
+            sub_expression = paren_expression | value ;
+
+            minus_expression = expression '-' sub_expression ;
+
+            paren_expression = '(' expression ')' ;
+
+            value = /[0-9]+/ ;
+        '''
+        model = genmodel(grammar=grammar)
+        model.parse('3', trace=trace, colorize=True)
+        model.parse('3 - 2', trace=trace, colorize=True)
+        model.parse('(3 - 2)', trace=trace, colorize=True)
+        model.parse('(3 - 2) - 1', trace=trace, colorize=True)
+        model.parse('3 - 2 - 1', trace=trace, colorize=True)
+        model.parse('3 - (2 - 1)', trace=trace, colorize=True)
+
+
+def main(trace=True):
+    t = LeftRecursionTests('test_direct_left_recursion')
+    t.test_direct_left_recursion(trace=trace)
+    t.test_indirect_left_recursion(trace=trace)
+    t.test_indirect_left_recursion_with_cut(trace=trace)
+    t.test_indirect_left_recursion_complex(trace=trace)
+    t.test_no_left_recursion(trace=trace)
+    t.test_nested_left_recursion(trace=trace)
+    t.no_test_left_recursion_bug(trace=trace)
+
+
+if __name__ == '__main__':
+    main()
