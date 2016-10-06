@@ -382,7 +382,7 @@ class ParseContext(object):
         stack = self.trace_separator.join(reversed(self._rule_stack))
         if max(len(s) for s in stack.splitlines()) > self.trace_length:
             stack = stack[:self.trace_length]
-            stack = stack.rsplit(self.trace_separator)[0]
+            stack = stack.rsplit(self.trace_separator, 1)[0]
             stack += self.trace_separator
         return stack
 
