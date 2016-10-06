@@ -12,6 +12,13 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+### Added
+    -   Make traces represent recursion failures differently.
+
+
+### Changed
+    -   Removed `grako.exceptions.FailedParseBase` as it served no purpose.
+
 
 ## [3.16.0] @ 2016-10-01
 
