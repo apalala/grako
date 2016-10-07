@@ -562,7 +562,7 @@ class ParseContext(object):
 
             if key in self._recursive_results:
                 memo = self._recursive_results[key]
-            elif name not in self._recursive_head:
+            else:
                 self._recursive_head.append(name)
         return memo
 
