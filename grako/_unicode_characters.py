@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from grako.util import is_posix
 
 U_LARROW = '\u2190'
 U_DLARROW = '\u2199'
@@ -33,3 +34,17 @@ U_PUNCTUATION_SPACE = '\u2008'
 U_FOUR_PER_EM_SPACE = '\u2005'
 U_MEDIUM_MATHEMATICAL_SPACE = '\u205F'
 U_ZERO_WIDTH_NO_BREAK_SPACE = '\uFEFF'
+
+
+if not is_posix():
+    C_DERIVE = '<'
+    C_ENTRY = '<'
+    C_SUCCESS = '>'
+    C_FAILURE = '!'
+    C_RECURSION = 'r '
+else:
+    C_DERIVE = U_DLARROW
+    C_ENTRY = C_DERIVE
+    C_SUCCESS = U_IDENTICAL_TO
+    C_FAILURE = U_NOT_IDENTICAL_TO
+    C_RECURSION = U_ANTICLOCKWISE_GAPPED_CIRCLE_ARROW + U_FOUR_PER_EM_SPACE

@@ -7,15 +7,14 @@ from collections import namedtuple
 from contextlib import contextmanager
 
 from ._unicode_characters import (
-    U_ANTICLOCKWISE_GAPPED_CIRCLE_ARROW,
-    U_DLARROW,
-    U_IDENTICAL_TO,
-    U_NOT_IDENTICAL_TO,
-    U_FOUR_PER_EM_SPACE,
-    U_ZERO_WIDTH_NO_BREAK_SPACE,
+    C_DERIVE,
+    C_ENTRY,
+    C_SUCCESS,
+    C_FAILURE,
+    C_RECURSION,
 )
 
-from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name, is_posix
+from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
 from grako.ast import AST
 from grako import buffering
 from grako import color
@@ -33,20 +32,6 @@ from grako.exceptions import (
 )
 
 __all__ = ['ParseInfo', 'ParseContext']
-
-
-if not is_posix():
-    C_DERIVE = '<'
-    C_ENTRY = '<'
-    C_SUCCESS = '>'
-    C_FAILURE = '!'
-    C_RECURSION = 'r '
-else:
-    C_DERIVE = U_DLARROW
-    C_ENTRY = C_DERIVE
-    C_SUCCESS = U_IDENTICAL_TO
-    C_FAILURE = U_NOT_IDENTICAL_TO
-    C_RECURSION = U_ANTICLOCKWISE_GAPPED_CIRCLE_ARROW + U_FOUR_PER_EM_SPACE
 
 
 ParseInfo = namedtuple(
