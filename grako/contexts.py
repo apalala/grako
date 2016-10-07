@@ -615,10 +615,13 @@ class ParseContext(object):
         return literal
 
     def _pattern(self, pattern):
+        p = self._pos
         token = self._buffer.matchre(pattern)
         if token is None:
             self._trace_match('', pattern, failed=True)
             self._error(pattern, etype=FailedPattern)
+        if self._pos == p:
+            self._error('%r matched empty string' % repr(pattern))
         self._trace_match(token, pattern)
         self._add_cst_node(token)
         self._last_node = token

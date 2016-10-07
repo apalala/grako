@@ -18,6 +18,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Changed
     -   Removed `grako.exceptions.FailedParseBase` as it served no purpose.
+    -   Disallow a pattern (`//`) matching the empty string. Use an optional if the match is optional. There's obscure parser behavior when a rule element doesn't advance over input.
 
 
 ## [3.16.0] @ 2016-10-01

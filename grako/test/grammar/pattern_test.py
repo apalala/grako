@@ -11,6 +11,7 @@ class PatternTests(unittest.TestCase):
 
     def test_patterns_with_newlines(self):
         grammar = '''
+            @@whitespace :: /[ \t]/
             start
                 =
                 blanklines $
@@ -23,17 +24,13 @@ class PatternTests(unittest.TestCase):
 
             blankline
                 =
-                /^[^\n]*\n?$/
-                ;
-
-            blankline2 =
-                ?/^[^\n]*\n?$/?
+                /^[^\\n]*\\n$/
                 ;
         '''
 
         model = genmodel("test", grammar)
-        ast = model.parse('\n\n')
-        self.assertEqual('', ustr(ast))
+        ast = model.parse('\n\n', trace=True)
+        self.assertEqual(['\n', '\n'], ast)
 
     def test_pattern_concatenation(self):
         grammar = '''
