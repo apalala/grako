@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from datetime import datetime
-from collections import namedtuple as NT
+from collections import namedtuple as NT  # noqa: N812
 
 from grako.util import (
     compress_seq,
