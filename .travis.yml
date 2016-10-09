@@ -30,4 +30,4 @@ deploy:
         tags: true
         distributions: sdist bdist_wheel
         repo: apalala/grako
-        # branch: release
+        branch: release
