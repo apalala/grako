@@ -167,7 +167,7 @@ class Buffer(object):
         lines[i:j] = blines
         index[i:j] = bindex
         assert len(lines) == len(index)
-        return j + len(blines)
+        return j + len(blines) - 1
 
     def include_file(self, source, name, lines, index, i, j):
         text, filename = self.get_include(source, name)

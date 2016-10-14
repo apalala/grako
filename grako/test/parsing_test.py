@@ -26,6 +26,16 @@ class ParsingTests(unittest.TestCase):
         buf = MockIncludeBuffer(trim(text))
         self.assertEqual('first\n\nINCLUDED "something"\nlast', buf.text)
 
+    def test_multiple_include(self):
+        text = '''\
+            first
+                #include :: "something"
+                #include :: "anotherthing"
+            last\
+        '''
+        buf = MockIncludeBuffer(trim(text))
+        self.assertEqual('first\n\nINCLUDED "something"\n\nINCLUDED "anotherthing"\nlast', buf.text)
+
     def test_escape_sequences(self):
         self.assertEqual(u'\n', eval_escapes(r'\n'))
         self.assertEqual(u'this \xeds a test', eval_escapes(r'this \xeds a test'))
