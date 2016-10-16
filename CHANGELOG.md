@@ -12,6 +12,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+
+## [3.16.1] @ 2016-10-16
+
 ### Added
     -   Make traces represent recursion failures differently.
 
@@ -660,7 +663,8 @@ integer::Integer::Literal
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.0
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.1
+[3.16.1]: https://bitbucket.org/apalala/grako/branches/compare/3.16.0%0D3.16.0
 [3.16.0]: https://bitbucket.org/apalala/grako/branches/compare/3.16.0%0D3.15.1
 [3.15.1]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.14.0
 [3.14.0]: https://bitbucket.org/apalala/grako/branches/compare/3.14.0%0D3.13.0
