@@ -20,6 +20,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
     -   Removed `grako.exceptions.FailedParseBase` as it served no purpose.
 
 
+### Fixed
+    -   Fix off-by-one preventing multiple include statemtents to work ([gegenschall][]).
+
+
 ## [3.16.0] @ 2016-10-01
 
 
@@ -616,6 +620,7 @@ integer::Integer::Literal
 [drothlis]: https://bitbucket.org/drothlis/
 [franz_g]: https://bitbucket.org/Franz_G
 [gapag]: https://bitbucket.org/gapag/
+[gegenschall]: https://bitbucket.org/gegenschall/
 [gkimbar]: https://bitbucket.org/gkimbar/
 [jimon]: https://bitbucket.org/jimon/
 [lambdafu]: http://blog.marcus-brinkmann.de/
