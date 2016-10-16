@@ -21,10 +21,13 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Changed
 -   Removed `grako.exceptions.FailedParseBase` as it served no purpose.
+-   Refactor the unicode part of traces into a separate module.
 
 
 ### Fixed
 -   Fix off-by-one preventing multiple include statemtents to work ([gegenschall][]).
+-   Left recursion was enable by default in generated parsers, though the README says its not.  Disabled.
+-   Bug fixes, in the commit log.
 
 
 ## [3.16.0] @ 2016-10-01
