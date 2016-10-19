@@ -13,6 +13,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+### Fixed
+-   `grako.walkers.NodeWalker` was walking base classes in the wrong order.
+
+
 ## [3.16.1] @ 2016-10-16
 
 ### Added

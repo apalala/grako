@@ -27,7 +27,7 @@ class NodeWalker(object):
 
         classes = [node.__class__]
         while classes:
-            cls = classes.pop()
+            cls = classes.pop(0)
 
             cammelcase_name = cls.__name__
             walker = getattr(self, prefix + cammelcase_name, None)
