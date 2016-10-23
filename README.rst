@@ -251,12 +251,13 @@ As a script, the generated parser's module accepts several options::
                             whitespace specification
 
 
-The EBNF Grammar Syntax
-=======================
+Grammar Syntax
+==============
 
-**Grako** uses a variant of the standard EBNF_ syntax. Syntax definitions for VIM_ can be found under the ``etc/vim`` directory in the source code distribution.
+**Grako** uses a variant of the standard EBNF_ syntax. Syntax definitions for VIM_ and for `Sublime Text`_ can be found under the ``etc/vim`` and ``etc/sublime`` directories in the source code distribution.
 
 .. _VIM: http://www.vim.org/
+.. _`Sublime Text`: https://www.sublimetext.com
 
 Rules
 -----
@@ -272,6 +273,17 @@ Rule names that start with an uppercase character::
    FRAGMENT = /[a-z]+/ ;
 
 *do not* advance over whitespace before beginning to parse. This feature becomes handy when defining complex lexical elements, as it allows breaking them into several rules.
+
+The parser returns an AST_ value for each rule depending on what was parsed:
+
+*   A single value
+*   A list of AST_
+*   A dict-like object for rules with named elements
+*   An object, when `ModelBuilderSemantics` is used
+*   None
+
+See the  *Abstract Syntax Trees* and *Building Models* sections for more details.
+
 
 Expressions
 -----------
@@ -300,9 +312,9 @@ The expressions, in reverse order of operator precedence, can be:
         Empty closure. Match nothing and produce an empty list as AST_.
 
     ``s.{ e }+``
-        Positive join. Inspired by Python_'s ``str.join()``, is equivalent to::
+        Positive join. Inspired by Python_'s ``str.join()``, is equivalent to:
 
-           e {s ~ e}
+           ``e {s ~ e}``
 
         The ``s`` part is not included in the resulting AST_.
 
