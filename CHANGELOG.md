@@ -16,6 +16,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Fixed
 -   `grako.walkers.NodeWalker` was walking base classes in the wrong order.
 -   `grako.walkers.PreOrderWalker` was trying to walk the children of objects that are not instances of `Node`.
+-   `grako.walkers.PreOrderWalker` was breaking protocol by always returning `None`.
 
 
 ## [3.16.1] @ 2016-10-16
