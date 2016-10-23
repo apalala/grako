@@ -1032,7 +1032,7 @@ The following must be mentioned as contributors of thoughts, ideas, code, *and f
 
 
 Contributors
-------------
+============
 
 The following, among others, have contributted to **Grako** with features, bug fixes, or suggestions: franz_g_, marcus_, pauls_, basel-shishani_, drothlis_, gapag_, gkimbar_, jimon_, lambdafu_, linkdd_, nehz_, neumond_, pgebhard_, r_speer_, siemer_, starkat_, vmuriart_, gegenschall_.
 
