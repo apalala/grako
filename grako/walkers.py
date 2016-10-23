@@ -57,8 +57,9 @@ class NodeWalker(object):
 class PreOrderWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
         super(PreOrderWalker, self).walk(node, *args, **kwargs)
-        for child in node.children_list():
-            self.walk(child)
+        if isinstance(node, Node):
+            for child in node.children_list():
+                self.walk(child)
 
 
 class DepthFirstWalker(NodeWalker):
