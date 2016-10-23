@@ -205,14 +205,12 @@ Using the Generated Parser
 
 To use the generated parser, just subclass the base or the abstract parser, create an instance of it, and invoke its ``parse()`` method passing the grammar to parse and the starting rule's name as parameter::
 
+    from myparser import MyParser
+
     parser = MyParser()
     ast = parser.parse('text to parse', rule_name='start')
     print(ast)
     print(json.dumps(ast, indent=2)) # ASTs are JSON-friendy
-
-This is more or less what happens if you invoke the generated parser directly::
-
-    python myparser.py inputfile startrule
 
 The generated parsers' constructors accept named arguments to specify whitespace characters, the regular expression for comments, case sensitivity, verbosity, and more (see below).
 
@@ -228,6 +226,29 @@ If special lexical treatment is required (as in *80 column* languages), then a d
     buf = MySpecialBuffer(text)
     model = parser.parse(buf, rule_name='start', semantics=MySemantics())
 
+The generated parser's module can also be invoked as a script::
+
+    python myparser.py inputfile startrule
+
+As a script, the generated parser's module accepts several options::
+
+    $ python myparser.py -h
+    usage: myparser.py [-h] [-c] [-l] [-n] [-t] [-w WHITESPACE] FILE [STARTRULE]
+
+    Simple parser for DBD.
+
+    positional arguments:
+      FILE                  the input file to parse
+      STARTRULE             the start rule for parsing
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c, --color           use color in traces (requires the colorama library)
+      -l, --list            list all rules and exit
+      -n, --no-nameguard    disable the 'nameguard' feature
+      -t, --trace           output trace information
+      -w WHITESPACE, --whitespace WHITESPACE
+                            whitespace specification
 
 
 The EBNF Grammar Syntax
