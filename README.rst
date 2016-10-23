@@ -110,16 +110,20 @@ The Generated Parsers
 
 A **Grako** generated parser consists of the following classes:
 
-* A *parser* class derived from ``Parser`` which implements the parser using one method for each grammar rule::
+* A ``MyLanguageBuffer`` class derived from ``grako.buffering.Buffer`` that handles the grammar definitions for *whitespace*, *comments*, and *case significance*.
 
-    def _myrulename_(self):
+* A ``MyLanguageParser`` class derived from ``grako.parsing.Parser`` which uses a ``MyLanguageBuffer`` for traversing input text, and implements the parser using one method for each grammar rule::
 
-* A *semantics delegate class* with one semantic method per grammar rule. Each method receives as its single parameter the `Abstract Syntax Tree`_ (AST_) built from the rule invocation::
+    def _somerulename_(self):
 
-    def myrulename(self, ast):
+* A ``MyLanguageSemantics`` class with one semantic method per grammar rule. Each method receives as its single parameter the `Abstract Syntax Tree`_ (AST_) built from the rule invocation::
+
+    def somerulename(self, ast):
         return ast
 
-The methods in the delegate class return the same AST_ received as parameter, but custom semantic classes can override the methods to have them return anything (for example, a `Semantic Graph`_). The semantics class can be used as a template for the final semantics implementation, which can omit methods for the rules it is not interested in.
+* A an ``if __name__ == '__main__':`` definition, so the generated parser can be executed as a Python_ script.
+
+The methods in the delegate class return the same AST_ received as parameter, but custom semantic classes can override the methods to have them return anything (for example, a `Semantic Graph`_). The semantics class can be used as a template for the final semantics implementation, which can omit methods for the rules that do not need semantic treatment.
 
 If present, a ``_default()`` method will be called in the semantics class when no method matched the rule name::
 
@@ -216,9 +220,9 @@ To add semantic actions, just pass a semantic delegate to the parse method::
 
     model = parser.parse(text, rule_name='start', semantics=MySemantics())
 
-If special lexical treatment is required (like in Python_'s structure-through-indentation), then a descendant of ``grako.buffering.Buffer`` can be passed instead of the text::
+If special lexical treatment is required (as in *80 column* languages), then a descendant of ``grako.buffering.Buffer`` can be passed instead of the text::
 
-    class MySpecialBuffer(grako.buffering.Buffer):
+    class MySpecialBuffer(MyLanguageBuffer):
         ...
 
     buf = MySpecialBuffer(text)
