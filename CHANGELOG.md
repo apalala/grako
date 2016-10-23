@@ -13,8 +13,12 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+## [3.16.2] @ 2016-10-??
+
 ### Fixed
 -   `grako.walkers.NodeWalker` was walking base classes in the wrong order.
+-   `grako.walkers.PreOrderWalker.walk()` was attempting to walk the children of objects not instances of `grako.model.Node`.
+-   `grako.walkers.PreOrderWalker.walk()` was breaking the `NodeWalker` protocol by always returning `None`.
 
 
 ## [3.16.1] @ 2016-10-16
@@ -670,7 +674,8 @@ integer::Integer::Literal
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.1
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.2
+[3.16.2]: https://bitbucket.org/apalala/grako/branches/compare/3.16.1%0D3.16.1
 [3.16.1]: https://bitbucket.org/apalala/grako/branches/compare/3.16.1%0D3.16.0
 [3.16.0]: https://bitbucket.org/apalala/grako/branches/compare/3.16.0%0D3.15.1
 [3.15.1]: https://bitbucket.org/apalala/grako/branches/compare/3.15.1%0D3.14.0
