@@ -121,7 +121,7 @@ A **Grako** generated parser consists of the following classes:
     def somerulename(self, ast):
         return ast
 
-* A an ``if __name__ == '__main__':`` definition, so the generated parser can be executed as a Python_ script.
+* A ``if __name__ == '__main__':`` definition, so the generated parser can be executed as a Python_ script.
 
 The methods in the delegate class return the same AST_ received as parameter, but custom semantic classes can override the methods to have them return anything (for example, a `Semantic Graph`_). The semantics class can be used as a template for the final semantics implementation, which can omit methods for the rules that do not need semantic treatment.
 
