@@ -43,13 +43,13 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Experimental support for direct and indirect left recursion allows for more intuitive grammars.
+* Automatic generation of `Abstract Syntax Trees`_ and Object Models, along with *Model Walkers* and *Code Generators* make analysis and translation approachable
 
 The parser generator, the run-time support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
-The only dependencies are on the Python_ or PyPy_ standard libraries (the proposed regex_ module will be used if installed, colorama_ will be used on trace output if available, and pygraphviz_ is required for generating diagrams). For performance beyond what which Python_ or PyPy_ can provide, take a look at the `Grako++`_ project.
+The only dependencies are on the Python_ standard library, yet the regex_ library will be used if installed, and colorama_ will be used on trace output if available.  pygraphviz_ is required for generating diagrams.
 
-**Grako** is feature-complete and currently being used with complex grammars to parse and translate hundreds of thousands of lines of complex text, including program source files and other structured input.
+**Grako** is feature-complete and currently being used with complex grammars to parse, analyze, and translate hundreds of thousands of lines of input text, including source code in several programming languages.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
@@ -75,22 +75,21 @@ Table of Contents
 Rationale
 =========
 
-**Grako** was created to address recurring problems encountered over decades of working with parser generation tools:
+**Grako** was created to address some recurring problems encountered over decades of working with parser generation tools:
 
-* Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexical analysis to handle those languages.
-
+* Some programming languages allow the use of *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs control of lexical analysis to be able to handle those languages.
 
 * LL and LR grammars become contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
 
-* Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_ in this case), allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
+* Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_) allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
 
-* Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
+* Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check the syntax of embedded semantic actions, so errors get reported at awkward moments, and against the generated code, not against the grammar.
 
 * Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
 
-* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but it's hard for grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
+* It is easy to recruit help with knowledge about a mainstream programming language like Python_, but help is hard to find for working with complex grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
 
-* Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+* Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that one cannot understand.
 
 * Python_ is a great language for working with language parsing and translation.
 
