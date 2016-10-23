@@ -43,13 +43,13 @@ Grako
 
 * Include files, rule inheritance, and rule inclusion give **Grako** grammars considerable expressive power.
 
-* Experimental support for direct and indirect left recursion allows for more intuitive grammars.
+* Automatic generation of `Abstract Syntax Trees`_ and Object Models, along with *Model Walkers* and *Code Generators* make analysis and translation approachable
 
 The parser generator, the run-time support, and the generated parsers have measurably low `Cyclomatic complexity`_.  At around 5 KLOC_ of Python_, it is possible to study all its source code in a single session.
 
-The only dependencies are on the Python_ or PyPy_ standard libraries (the proposed regex_ module will be used if installed, colorama_ will be used on trace output if available, and pygraphviz_ is required for generating diagrams). For performance beyond what which Python_ or PyPy_ can provide, take a look at the `Grako++`_ project.
+The only dependencies are on the Python_ standard library, yet the regex_ library will be used if installed, and colorama_ will be used on trace output if available.  pygraphviz_ is required for generating diagrams.
 
-**Grako** is feature-complete and currently being used with complex grammars to parse and translate hundreds of thousands of lines of complex text, including program source files and other structured input.
+**Grako** is feature-complete and currently being used with complex grammars to parse, analyze, and translate hundreds of thousands of lines of input text, including source code in several programming languages.
 
 .. _`Cyclomatic complexity`: http://en.wikipedia.org/wiki/Cyclomatic_complexity
 .. _KLOC: http://en.wikipedia.org/wiki/KLOC
@@ -75,22 +75,21 @@ Table of Contents
 Rationale
 =========
 
-**Grako** was created to address recurring problems encountered over decades of working with parser generation tools:
+**Grako** was created to address some recurring problems encountered over decades of working with parser generation tools:
 
-* Many languages allow the use of certain *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs to be able to control the lexical analysis to handle those languages.
-
+* Some programming languages allow the use of *keywords* as identifiers, or have different meanings for symbols depending on context (Ruby_). A parser needs control of lexical analysis to be able to handle those languages.
 
 * LL and LR grammars become contaminated with myriads of lookahead statements to deal with ambiguous constructs in the source language. PEG_ parsers address ambiguity from the onset.
 
-* Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_ in this case), allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
+* Separating the grammar from the code that implements the semantics, and using a variation of a well-known grammar syntax (EBNF_) allows for full declarative power in language descriptions. General-purpose programming languages are not up to the task.
 
-* Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check that the embedded semantic actions have correct syntax, so errors get reported at awkward moments, and against the generated code, not against the source.
+* Semantic actions *do not*  belong in a grammar. They create yet another programming language to deal with when doing parsing and translation: the source language, the grammar language, the semantics language, the generated parser's language, and the translation's target language. Most grammar parsers do not check the syntax of embedded semantic actions, so errors get reported at awkward moments, and against the generated code, not against the grammar.
 
 * Preprocessing (like dealing with includes, fixed column formats, or structure-through-indentation) belongs in well-designed program code; not in the grammar.
 
-* It is easy to recruit help with knowledge about a mainstream programming language (Python_ in this case), but it's hard for grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
+* It is easy to recruit help with knowledge about a mainstream programming language like Python_, but help is hard to find for working with complex grammar-description languages. **Grako** grammars are in the spirit of a *Translators and Interpreters 101* course (if something is hard to explain to a college student, it's probably too complicated, or not well understood).
 
-* Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that you cannot understand.
+* Generated parsers should be easy to read and debug by humans. Looking at the generated source code is sometimes the only way to find problems in a grammar, the semantic actions, or in the parser generator itself. It's inconvenient to trust generated code that one cannot understand.
 
 * Python_ is a great language for working with language parsing and translation.
 
@@ -111,16 +110,20 @@ The Generated Parsers
 
 A **Grako** generated parser consists of the following classes:
 
-* A *parser* class derived from ``Parser`` which implements the parser using one method for each grammar rule::
+* A ``MyLanguageBuffer`` class derived from ``grako.buffering.Buffer`` that handles the grammar definitions for *whitespace*, *comments*, and *case significance*.
 
-    def _myrulename_(self):
+* A ``MyLanguageParser`` class derived from ``grako.parsing.Parser`` which uses a ``MyLanguageBuffer`` for traversing input text, and implements the parser using one method for each grammar rule::
 
-* A *semantics delegate class* with one semantic method per grammar rule. Each method receives as its single parameter the `Abstract Syntax Tree`_ (AST_) built from the rule invocation::
+    def _somerulename_(self):
 
-    def myrulename(self, ast):
+* A ``MyLanguageSemantics`` class with one semantic method per grammar rule. Each method receives as its single parameter the `Abstract Syntax Tree`_ (AST_) built from the rule invocation::
+
+    def somerulename(self, ast):
         return ast
 
-The methods in the delegate class return the same AST_ received as parameter, but custom semantic classes can override the methods to have them return anything (for example, a `Semantic Graph`_). The semantics class can be used as a template for the final semantics implementation, which can omit methods for the rules it is not interested in.
+* A ``if __name__ == '__main__':`` definition, so the generated parser can be executed as a Python_ script.
+
+The methods in the delegate class return the same AST_ received as parameter, but custom semantic classes can override the methods to have them return anything (for example, a `Semantic Graph`_). The semantics class can be used as a template for the final semantics implementation, which can omit methods for the rules that do not need semantic treatment.
 
 If present, a ``_default()`` method will be called in the semantics class when no method matched the rule name::
 
@@ -202,14 +205,12 @@ Using the Generated Parser
 
 To use the generated parser, just subclass the base or the abstract parser, create an instance of it, and invoke its ``parse()`` method passing the grammar to parse and the starting rule's name as parameter::
 
+    from myparser import MyParser
+
     parser = MyParser()
     ast = parser.parse('text to parse', rule_name='start')
     print(ast)
     print(json.dumps(ast, indent=2)) # ASTs are JSON-friendy
-
-This is more or less what happens if you invoke the generated parser directly::
-
-    python myparser.py inputfile startrule
 
 The generated parsers' constructors accept named arguments to specify whitespace characters, the regular expression for comments, case sensitivity, verbosity, and more (see below).
 
@@ -217,22 +218,46 @@ To add semantic actions, just pass a semantic delegate to the parse method::
 
     model = parser.parse(text, rule_name='start', semantics=MySemantics())
 
-If special lexical treatment is required (like in Python_'s structure-through-indentation), then a descendant of ``grako.buffering.Buffer`` can be passed instead of the text::
+If special lexical treatment is required (as in *80 column* languages), then a descendant of ``grako.buffering.Buffer`` can be passed instead of the text::
 
-    class MySpecialBuffer(grako.buffering.Buffer):
+    class MySpecialBuffer(MyLanguageBuffer):
         ...
 
     buf = MySpecialBuffer(text)
     model = parser.parse(buf, rule_name='start', semantics=MySemantics())
 
+The generated parser's module can also be invoked as a script::
+
+    python myparser.py inputfile startrule
+
+As a script, the generated parser's module accepts several options::
+
+    $ python myparser.py -h
+    usage: myparser.py [-h] [-c] [-l] [-n] [-t] [-w WHITESPACE] FILE [STARTRULE]
+
+    Simple parser for DBD.
+
+    positional arguments:
+      FILE                  the input file to parse
+      STARTRULE             the start rule for parsing
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c, --color           use color in traces (requires the colorama library)
+      -l, --list            list all rules and exit
+      -n, --no-nameguard    disable the 'nameguard' feature
+      -t, --trace           output trace information
+      -w WHITESPACE, --whitespace WHITESPACE
+                            whitespace specification
 
 
-The EBNF Grammar Syntax
-=======================
+Grammar Syntax
+==============
 
-**Grako** uses a variant of the standard EBNF_ syntax. Syntax definitions for VIM_ can be found under the ``etc/vim`` directory in the source code distribution.
+**Grako** uses a variant of the standard EBNF_ syntax. Syntax definitions for VIM_ and for `Sublime Text`_ can be found under the ``etc/vim`` and ``etc/sublime`` directories in the source code distribution.
 
 .. _VIM: http://www.vim.org/
+.. _`Sublime Text`: https://www.sublimetext.com
 
 Rules
 -----
@@ -249,16 +274,36 @@ Rule names that start with an uppercase character::
 
 *do not* advance over whitespace before beginning to parse. This feature becomes handy when defining complex lexical elements, as it allows breaking them into several rules.
 
+The parser returns an AST_ value for each rule depending on what was parsed:
+
+*   A single value
+*   A list of AST_
+*   A dict-like object for rules with named elements
+*   An object, when `ModelBuilderSemantics` is used
+*   None
+
+See the  *Abstract Syntax Trees* and *Building Models* sections for more details.
+
+
 Expressions
 -----------
 
 The expressions, in reverse order of operator precedence, can be:
 
     ``e1 | e2``
-        Match either ``e1`` or ``e2``.
+        Choice. Match either ``e1`` or ``e2``.
+
+        A ``|`` be be used before the first option if desired::
+
+            choices
+                =
+                | e1
+                | e2
+                | e3
+                ;
 
     ``e1 e2``
-        Match ``e1`` and then match ``e2``.
+        Sequence. Match ``e1`` and then match ``e2``.
 
     ``( e )``
         Grouping. Match ``e``. For example: ``('a' | 'b')``.
@@ -291,13 +336,13 @@ The expressions, in reverse order of operator precedence, can be:
 
         It is equivalent to::
 
-            ( s.{e}+|{} )
+            s.{e}+|{}
 
     ``&e``
-        Positive lookahead. Try parsing ``e``, but do not consume any input.
+        Positive lookahead. Succeed if ``e`` can be parsed, but do not consume any input.
 
     ``!e``
-        Negative lookahead. Try parsing ``e`` and fail if there's a match. Do not consume any input whichever the outcome.
+        Negative lookahead. Fail if ``e`` can be parsed, and do not consume any input.
 
     ``>rulename``
         The include operator. Include the *right hand side* of rule ``rulename`` at this point.
@@ -355,7 +400,16 @@ The expressions, in reverse order of operator precedence, can be:
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
 
     ``~``
-        The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
+        The *cut* expression. Commit to the current option and prevent other options from being considered even if what follows fails to parse.
+
+        In this example, other options won't be considered if a parenthesis is parsed::
+
+            atom
+                =
+                  '(' ~ @:expre ')'
+                | int
+                | bool
+                ;
 
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, or is a Python_ keyword, an underscore (``_``) will be appended to the name.
@@ -531,7 +585,7 @@ If you do not define any whitespace characters, then you will have to handle whi
 
     parser = MyParser(text, whitespace='')
 
-Whitespace may also be specified within the grammar using the ``@@whitespace`` directive, although any of the above methods will overwrite the grammar directive::
+Whitespace may also be specified within the grammar using the ``@@whitespace`` directive, although any of the above methods will overwrite the setting in the grammar::
 
     @@whitespace :: /[\t ]+/
 
@@ -539,7 +593,7 @@ Whitespace may also be specified within the grammar using the ``@@whitespace`` d
 Case Sensitivity
 ================
 
-If the source language is case insensitive, you can tell your parser by using the ``ignorecase`` parameter::
+If the source language is case insensitive, it can be specified in the parser by using the ``ignorecase`` parameter::
 
     parser = MyParser(text, ignorecase=True)
 
@@ -678,8 +732,8 @@ You can also use Python_'s built-in types as node types, and ``ModelBuilderSeman
 ``ModelBuilderSemantics`` acts as any other semantics class, so its default behavior can be overidden by defining a method to handle the result of any particular grammar rule.
 
 
-Traversing Models
------------------
+Waliking Models
+---------------
 
 The class ``grako.model.NodeWalker`` allows for the easy traversal (*walk*) a model constructed with a ``ModelBuilderSemantics`` instance::
 
@@ -698,7 +752,18 @@ The class ``grako.model.NodeWalker`` allows for the easy traversal (*walk*) a mo
     walker = MyNodeWalker()
     walker.walk(model)
 
-When a method with a name like ``walk_NodeClassName`` is defined, it will be called when a node of that type is *walked*.
+When a method with a name like ``walk_AddOperator()`` is defined, it will be called when a node of that type is *walked* (the *pythonic* version of the class name may also be used for the *walk* method: ``walk_add_operator()``.
+
+If a *walk* method for a node class is not found, then a method for the class's bases is searched, so it is possible to write *catch-all* methods such as::
+
+    def walk_Node(self, node):
+       print('Reached Node', node)
+
+    def walk_str(self, s):
+       return s
+
+    def walk_object(self, o):
+       raise Exception('Unexpected tyle %s walked', type(o).__name__)
 
 Predeclared classes can be passed to ``ModelBuilderSemantics`` instances through the ``types=`` parameter::
 
@@ -715,8 +780,21 @@ Model Class Hierarchies
 
 It is possible to specify a a base class for generated model nodes::
 
-    addition::AddOperator::Operator = left:mulexpre op:'+' right:addition ;
-    substraction::SubstractOperator::Operator = left:mulexpre op:'-' right:addition ;
+    additive
+        =
+        | addition
+        | substraction
+        ;
+
+    addition::AddOperator::Operator
+        =
+        left:mulexpre op:'+' right:additive
+        ;
+
+    substraction::SubstractOperator::Operator
+        =
+        left:mulexpre op:'-' right:additive
+        ;
 
 **Grako** will generate the base class if it's not already known.
 
@@ -771,7 +849,7 @@ The extended format can also be used with non-iterables, in which case the rende
 The default multiplier for ``ind`` is ``4``, but that can be overridden using ``n*m`` (for example ``3*1``) in the format.
 
 **Note**
-    Using a newline (``\\n``) as separator will interfere with left trimming and indentation of templates. To use newline as separator, specify it as ``\\n``, and the renderer will understand the intention.
+    Using a newline character (``\n``) as separator will interfere with left trimming and indentation of templates. To use a newline as separator, specify it as ``\\n``, and the renderer will understand the intention.
 
 
 Left Recursion
@@ -797,7 +875,9 @@ Examples
 Grako
 -----
 
-The file ``etc/grako.ebnf`` contains a grammar for the **Grako** EBNF_ language written in the same **Grako** grammar language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser). **Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
+The file ``etc/grako.ebnf`` contains a grammar for the **Grako** grammar language written in its own grammar language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser).
+
+**Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
 
 Regex
 -----
