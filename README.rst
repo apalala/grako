@@ -291,10 +291,19 @@ Expressions
 The expressions, in reverse order of operator precedence, can be:
 
     ``e1 | e2``
-        Match either ``e1`` or ``e2``.
+        Choice. Match either ``e1`` or ``e2``.
+
+        A ``|`` be be used before the first option if desired::
+
+            choices
+                =
+                | e1
+                | e2
+                | e3
+                ;
 
     ``e1 e2``
-        Match ``e1`` and then match ``e2``.
+        Sequence. Match ``e1`` and then match ``e2``.
 
     ``( e )``
         Grouping. Match ``e``. For example: ``('a' | 'b')``.
@@ -312,9 +321,9 @@ The expressions, in reverse order of operator precedence, can be:
         Empty closure. Match nothing and produce an empty list as AST_.
 
     ``s.{ e }+``
-        Positive join. Inspired by Python_'s ``str.join()``, is equivalent to:
+        Positive join. Inspired by Python_'s ``str.join()``, is equivalent to::
 
-           ``e {s ~ e}``
+           e {s ~ e}
 
         The ``s`` part is not included in the resulting AST_.
 
@@ -327,13 +336,13 @@ The expressions, in reverse order of operator precedence, can be:
 
         It is equivalent to::
 
-            ( s.{e}+|{} )
+            s.{e}+|{}
 
     ``&e``
-        Positive lookahead. Try parsing ``e``, but do not consume any input.
+        Positive lookahead. Succeed if ``e`` can be parsed, but do not consume any input.
 
     ``!e``
-        Negative lookahead. Try parsing ``e`` and fail if there's a match. Do not consume any input whichever the outcome.
+        Negative lookahead. Fail if ``e`` can be parsed, and do not consume any input.
 
     ``>rulename``
         The include operator. Include the *right hand side* of rule ``rulename`` at this point.
@@ -391,7 +400,16 @@ The expressions, in reverse order of operator precedence, can be:
         The *fail* expression. This is actually ``!`` applied to ``()``, which always fails.
 
     ``~``
-        The *cut* expression. After this point, prevent other options from being considered even if the current option fails to parse.
+        The *cut* expression. Commit to the current option and prevent other options from being considered even if what follows fails to parse.
+
+        In this example, other options won't be considered if a parenthesis is parsed::
+
+            atom
+                =
+                  '(' ~ @:expre ')'
+                | int
+                | bool
+                ;
 
     ``name:e``
         Add the result of ``e`` to the AST_ using ``name`` as key. If ``name`` collides with any attribute or method of ``dict``, or is a Python_ keyword, an underscore (``_``) will be appended to the name.
@@ -567,7 +585,7 @@ If you do not define any whitespace characters, then you will have to handle whi
 
     parser = MyParser(text, whitespace='')
 
-Whitespace may also be specified within the grammar using the ``@@whitespace`` directive, although any of the above methods will overwrite the grammar directive::
+Whitespace may also be specified within the grammar using the ``@@whitespace`` directive, although any of the above methods will overwrite the setting in the grammar::
 
     @@whitespace :: /[\t ]+/
 
@@ -575,7 +593,7 @@ Whitespace may also be specified within the grammar using the ``@@whitespace`` d
 Case Sensitivity
 ================
 
-If the source language is case insensitive, you can tell your parser by using the ``ignorecase`` parameter::
+If the source language is case insensitive, it can be specified in the parser by using the ``ignorecase`` parameter::
 
     parser = MyParser(text, ignorecase=True)
 
@@ -714,8 +732,8 @@ You can also use Python_'s built-in types as node types, and ``ModelBuilderSeman
 ``ModelBuilderSemantics`` acts as any other semantics class, so its default behavior can be overidden by defining a method to handle the result of any particular grammar rule.
 
 
-Traversing Models
------------------
+Waliking Models
+---------------
 
 The class ``grako.model.NodeWalker`` allows for the easy traversal (*walk*) a model constructed with a ``ModelBuilderSemantics`` instance::
 
@@ -734,7 +752,18 @@ The class ``grako.model.NodeWalker`` allows for the easy traversal (*walk*) a mo
     walker = MyNodeWalker()
     walker.walk(model)
 
-When a method with a name like ``walk_NodeClassName`` is defined, it will be called when a node of that type is *walked*.
+When a method with a name like ``walk_AddOperator()`` is defined, it will be called when a node of that type is *walked* (the *pythonic* version of the class name may also be used for the *walk* method: ``walk_add_operator()``.
+
+If a *walk* method for a node class is not found, then a method for the class's bases is searched, so it is possible to write *catch-all* methods such as::
+
+    def walk_Node(self, node):
+       print('Reached Node', node)
+
+    def walk_str(self, s):
+       return s
+
+    def walk_object(self, o):
+       raise Exception('Unexpected tyle %s walked', type(o).__name__)
 
 Predeclared classes can be passed to ``ModelBuilderSemantics`` instances through the ``types=`` parameter::
 
@@ -751,8 +780,21 @@ Model Class Hierarchies
 
 It is possible to specify a a base class for generated model nodes::
 
-    addition::AddOperator::Operator = left:mulexpre op:'+' right:addition ;
-    substraction::SubstractOperator::Operator = left:mulexpre op:'-' right:addition ;
+    additive
+        =
+        | addition
+        | substraction
+        ;
+
+    addition::AddOperator::Operator
+        =
+        left:mulexpre op:'+' right:additive
+        ;
+
+    substraction::SubstractOperator::Operator
+        =
+        left:mulexpre op:'-' right:additive
+        ;
 
 **Grako** will generate the base class if it's not already known.
 
@@ -807,7 +849,7 @@ The extended format can also be used with non-iterables, in which case the rende
 The default multiplier for ``ind`` is ``4``, but that can be overridden using ``n*m`` (for example ``3*1``) in the format.
 
 **Note**
-    Using a newline (``\\n``) as separator will interfere with left trimming and indentation of templates. To use newline as separator, specify it as ``\\n``, and the renderer will understand the intention.
+    Using a newline character (``\n``) as separator will interfere with left trimming and indentation of templates. To use a newline as separator, specify it as ``\\n``, and the renderer will understand the intention.
 
 
 Left Recursion
@@ -833,7 +875,9 @@ Examples
 Grako
 -----
 
-The file ``etc/grako.ebnf`` contains a grammar for the **Grako** EBNF_ language written in the same **Grako** grammar language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser). **Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
+The file ``etc/grako.ebnf`` contains a grammar for the **Grako** grammar language written in its own grammar language. It is used in the *bootstrap* test suite to prove that **Grako** can generate a parser to parse its own language, and the resulting parser is made the bootstrap parser every time **Grako** is stable (see ``grako/bootstrap.py`` for the generated parser).
+
+**Grako** uses **Grako** to translate grammars into parsers, so it is a good example of end-to-end translation.
 
 Regex
 -----
