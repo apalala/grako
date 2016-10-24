@@ -568,15 +568,15 @@ When there are no named items in a rule, the [AST][Abstract Syntax Tree]
 consists of the elements parsed by the rule, either a single item or a
 list. This default behavior makes it easier to write simple rules:
 
-~~~ebnf
+```ocaml
 number = /[0-9]+/ ;
-~~~
+```
 
 Without having to write:
 
-~~~ebnf
+```ocaml
 number = number:/[0-9]+/ ;
-~~~
+```
 
 When a rule has named elements, the unnamed ones are excluded from the
 [AST][Abstract Syntax Tree] (they are ignored).
