@@ -21,7 +21,7 @@ setuptools.setup(
     description='Grako (for "grammar compiler") takes a grammar'
                 ' in a variation of EBNF as input, and outputs a memoizing'
                 ' PEG/Packrat parser in Python.',
-    long_description=io.open('README.rst', encoding='utf-8').read(),
+    long_description=io.open('DESCRIPTION.rst', encoding='utf-8').read(),
     license='BSD License',
     packages=setuptools.find_packages(),
     include_package_data=True,
