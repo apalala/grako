@@ -303,7 +303,7 @@ definitions for [VIM] and for [Sublime Text] can be found under the
 A grammar consists of a sequence of one or more rules of the form:
 
 ```ebnf
-    name = <expre> ;
+name = <expre> ;
 ```
 
 If a *name* collides with a [Python] keyword, an underscore (`_`) will
@@ -335,7 +335,7 @@ details.
 
 The expressions, in reverse order of operator precedence, can be:
 
-`e1 | e2`
+#### `e1 | e2`
 
 :   Choice. Match either `e1` or `e2`.
 
