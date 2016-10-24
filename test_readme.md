@@ -6,13 +6,11 @@
 
 ------------------------------------------------------------------------
 
-*At least for the people who send me mail about a new language that they're designing, the general advice is: do it to learn about how to write a compiler. Don't have any expectations that anyone will use it, unless you hook up with some sort of organization in a position to push it hard. It's a lottery, and some can buy a lot of the tickets. There are plenty of beautiful languages (more beautiful than C) that didn't catch on. But someone does win the lottery, and doing a language at least teaches you something.*
-
-:
-
-    [Dennis Ritchie] (1941-2011)
-
-    :   Creator of the [C] programming language and of [Unix]
+> _At least for the people who send me mail about a new language that they're designing, the general advice is: do it to learn about how to write a compiler. Don't have any expectations that anyone will use it, unless you hook up with some sort of organization in a position to push it hard. It's a lottery, and some can buy a lot of the tickets. There are plenty of beautiful languages (more beautiful than C) that didn't catch on. But someone does win the lottery, and doing a language at least teaches you something._
+>
+> [Dennis Ritchie] (1941-2011)
+>
+> :   Creator of the [C] programming language and of [Unix]
 
 ------------------------------------------------------------------------
 
@@ -306,235 +304,235 @@ details.
 
 The expressions, in reverse order of operator precedence, can be:
 
-> `e1 | e2`
->
-> :   Choice. Match either `e1` or `e2`.
->
->     A `|` be be used before the first option if desired:
->
->         choices
->             =
->             | e1
->             | e2
->             | e3
->             ;
->
-> `e1 e2`
->
-> :   Sequence. Match `e1` and then match `e2`.
->
-> `( e )`
->
-> :   Grouping. Match `e`. For example: `('a' | 'b')`.
->
-> `[ e ]`
->
-> :   Optionally match `e`.
->
-> `{ e }` or `{ e }*`
->
-> :   Closure. Match `e` zero or more times. Note that the
->     [AST][Abstract Syntax Tree] returned for a closure is always
->     a list.
->
-> `{ e }+`
->
-> :   Positive closure. Match `e` one or more times. The [AST][Abstract
->     Syntax Tree] is always a list.
->
-> `{}`
->
-> :   Empty closure. Match nothing and produce an empty list as
->     [AST][Abstract Syntax Tree].
->
-> `s.{ e }+`
->
-> :   Positive join. Inspired by [Python]'s `str.join()`, is equivalent
->     to:
->
->         e {s ~ e}
->
->     The `s` part is not included in the resulting [AST][Abstract
->     Syntax Tree].
->
->     Use grouping if `s` is more complex than a *token* or a *pattern*:
->
->         (s t).{ e }+
->
-> `s.{ e }` or `s.{ e }*`
->
-> :   Join. Parses the list of `s`-separated expressions, or nothing.
->
->     It is equivalent to:
->
->         s.{e}+|{}
->
-> `&e`
->
-> :   Positive lookahead. Succeed if `e` can be parsed, but do not
->     consume any input.
->
-> `!e`
->
-> :   Negative lookahead. Fail if `e` can be parsed, and do not consume
->     any input.
->
-> `>rulename`
->
-> :   The include operator. Include the *right hand side* of rule
->     `rulename` at this point.
->
->     The following set of declarations:
->
->         includable = exp1 ;
->
->         expanded = exp0 >includable exp2 ;
->
->     Has the same effect as defining *expanded* as:
->
->         expanded = exp0 exp1 exp2 ;
->
->     Note that the included rule must be defined before the rule that
->     includes it.
->
-> `'text'` or `"text"`
->
-> :   Match the token *text* within the quotation marks.
->
->     Note that if *text* is alphanumeric, then **Grako** will check
->     that the character following the token is not alphanumeric. This
->     is done to prevent tokens like *IN* matching when the text ahead
->     is *INITIALIZE*. This feature can be turned off by passing
->     `nameguard=False` to the `Parser` or the `Buffer`, or by using a
->     pattern expression (see below) instead of a token expression.
->     Alternatively, the `@@nameguard` or `@@namechars` directives may
->     be specified in the grammar:
->
->         @@nameguard :: False
->
->     or to specify additional characters that should also be considered
->     part of names:
->
->         @@namechars :: '$-.'
->
-> `/regexp/`
->
-> :   The pattern expression. Match the [Python] regular expression
->     `regexp` at the current text position. Unlike other expressions,
->     this one does not advance over whitespace or comments. For that,
->     place the `regexp` as the only term in its own rule.
->
->     The `regexp` is passed *as-is* to the [Python][] [re] module (or
->     [regex] if available), using `match()` at the current position in
->     the text. The matched text is the [AST][Abstract Syntax Tree] for
->     the expression.
->
-> `?/regexp/?`
->
-> :   Another form of the pattern expression that can be used when there
->     are slashes (`/`) in the pattern.
->
-> `+/regexp/`
->
-> :   Concatenate the given pattern with the preceding one.
->
-> `` `constant ``\`
->
-> :   Match nothing, but behave as if `constant` had been parsed.
->
->     Constants can be used to inject elements into the concrete and
->     abstract syntax trees, perhaps avoiding having to write a
->     semantic action. For example:
->
->         boolean_option = name ['=' (boolean|`true`) ] ;
->
-> `rulename`
->
-> :   Invoke the rule named `rulename`. To help with lexical aspects of
->     grammars, rules with names that begin with an uppercase letter
->     will not advance the input over whitespace or comments.
->
-> `()`
->
-> :   The empty expression. Succeed without advancing over input. Its
->     value is `None`.
->
-> `!()`
->
-> :   The *fail* expression. This is actually `!` applied to `()`, which
->     always fails.
->
-> `~`
->
-> :   The *cut* expression. Commit to the current option and prevent
->     other options from being considered even if what follows fails
->     to parse.
->
->     In this example, other options won't be considered if a
->     parenthesis is parsed:
->
->         atom
->             =
->               '(' ~ @:expre ')'
->             | int
->             | bool
->             ;
->
-> `name:e`
->
-> :   Add the result of `e` to the [AST][Abstract Syntax Tree] using
->     `name` as key. If `name` collides with any attribute or method of
->     `dict`, or is a [Python] keyword, an underscore (`_`) will be
->     appended to the name.
->
-> `name+:e`
->
-> :   Add the result of `e` to the [AST][Abstract Syntax Tree] using
->     `name` as key. Force the entry to be a list even if only one
->     element is added. Collisions with `dict` attributes or [Python]
->     keywords are resolved by appending an underscore to `name`.
->
-> `@:e`
->
-> :   The override operator. Make the [AST][Abstract Syntax Tree] for
->     the complete rule be the [AST][Abstract Syntax Tree] for `e`.
->
->     The override operator is useful to recover only part of the right
->     hand side of a rule without the need to name it, or add a
->     semantic action.
->
->     This is a typical use of the override operator:
->
->         subexp = '(' @:expre ')' ;
->
->     The [AST][Abstract Syntax Tree] returned for the `subexp` rule
->     will be the [AST][Abstract Syntax Tree] recovered from invoking
->     `expre`.
->
-> `@+:e`
->
-> :   Like `@:e`, but make the [AST][Abstract Syntax Tree] always be
->     a list.
->
->     This operator is convenient in cases such as:
->
->         arglist = '(' @+:arg {',' @+:arg}* ')' ;
->
->     In which the delimiting tokens are of no interest.
->
-> `$`
->
-> :   The *end of text* symbol. Verify that the end of the input text
->     has been reached.
->
-> `(*` *comment* `*)`
->
-> :   Comments may appear anywhere in the text.
->
-> `#` *comment*
->
-> :   [Python]-style comments are also allowed.
->
+`e1 | e2`
+
+:   Choice. Match either `e1` or `e2`.
+
+    A `|` be be used before the first option if desired:
+
+        choices
+            =
+            | e1
+            | e2
+            | e3
+            ;
+
+`e1 e2`
+
+:   Sequence. Match `e1` and then match `e2`.
+
+`( e )`
+
+:   Grouping. Match `e`. For example: `('a' | 'b')`.
+
+`[ e ]`
+
+:   Optionally match `e`.
+
+`{ e }` or `{ e }*`
+
+:   Closure. Match `e` zero or more times. Note that the
+    [AST][Abstract Syntax Tree] returned for a closure is always
+    a list.
+
+`{ e }+`
+
+:   Positive closure. Match `e` one or more times. The [AST][Abstract
+    Syntax Tree] is always a list.
+
+`{}`
+
+:   Empty closure. Match nothing and produce an empty list as
+    [AST][Abstract Syntax Tree].
+
+`s.{ e }+`
+
+:   Positive join. Inspired by [Python]'s `str.join()`, is equivalent
+    to:
+
+        e {s ~ e}
+
+    The `s` part is not included in the resulting [AST][Abstract
+    Syntax Tree].
+
+    Use grouping if `s` is more complex than a *token* or a *pattern*:
+
+        (s t).{ e }+
+
+`s.{ e }` or `s.{ e }*`
+
+:   Join. Parses the list of `s`-separated expressions, or nothing.
+
+    It is equivalent to:
+
+        s.{e}+|{}
+
+`&e`
+
+:   Positive lookahead. Succeed if `e` can be parsed, but do not
+    consume any input.
+
+`!e`
+
+:   Negative lookahead. Fail if `e` can be parsed, and do not consume
+    any input.
+
+`>rulename`
+
+:   The include operator. Include the *right hand side* of rule
+    `rulename` at this point.
+
+    The following set of declarations:
+
+        includable = exp1 ;
+
+        expanded = exp0 >includable exp2 ;
+
+    Has the same effect as defining *expanded* as:
+
+        expanded = exp0 exp1 exp2 ;
+
+    Note that the included rule must be defined before the rule that
+    includes it.
+
+`'text'` or `"text"`
+
+:   Match the token *text* within the quotation marks.
+
+    Note that if *text* is alphanumeric, then **Grako** will check
+    that the character following the token is not alphanumeric. This
+    is done to prevent tokens like *IN* matching when the text ahead
+    is *INITIALIZE*. This feature can be turned off by passing
+    `nameguard=False` to the `Parser` or the `Buffer`, or by using a
+    pattern expression (see below) instead of a token expression.
+    Alternatively, the `@@nameguard` or `@@namechars` directives may
+    be specified in the grammar:
+
+        @@nameguard :: False
+
+    or to specify additional characters that should also be considered
+    part of names:
+
+        @@namechars :: '$-.'
+
+`/regexp/`
+
+:   The pattern expression. Match the [Python] regular expression
+    `regexp` at the current text position. Unlike other expressions,
+    this one does not advance over whitespace or comments. For that,
+    place the `regexp` as the only term in its own rule.
+
+    The `regexp` is passed *as-is* to the [Python][] [re] module (or
+    [regex] if available), using `match()` at the current position in
+    the text. The matched text is the [AST][Abstract Syntax Tree] for
+    the expression.
+
+`?/regexp/?`
+
+:   Another form of the pattern expression that can be used when there
+    are slashes (`/`) in the pattern.
+
+`+/regexp/`
+
+:   Concatenate the given pattern with the preceding one.
+
+`` `constant ``\`
+
+:   Match nothing, but behave as if `constant` had been parsed.
+
+    Constants can be used to inject elements into the concrete and
+    abstract syntax trees, perhaps avoiding having to write a
+    semantic action. For example:
+
+        boolean_option = name ['=' (boolean|`true`) ] ;
+
+`rulename`
+
+:   Invoke the rule named `rulename`. To help with lexical aspects of
+    grammars, rules with names that begin with an uppercase letter
+    will not advance the input over whitespace or comments.
+
+`()`
+
+:   The empty expression. Succeed without advancing over input. Its
+    value is `None`.
+
+`!()`
+
+:   The *fail* expression. This is actually `!` applied to `()`, which
+    always fails.
+
+`~`
+
+:   The *cut* expression. Commit to the current option and prevent
+    other options from being considered even if what follows fails
+    to parse.
+
+    In this example, other options won't be considered if a
+    parenthesis is parsed:
+
+        atom
+            =
+              '(' ~ @:expre ')'
+            | int
+            | bool
+            ;
+
+`name:e`
+
+:   Add the result of `e` to the [AST][Abstract Syntax Tree] using
+    `name` as key. If `name` collides with any attribute or method of
+    `dict`, or is a [Python] keyword, an underscore (`_`) will be
+    appended to the name.
+
+`name+:e`
+
+:   Add the result of `e` to the [AST][Abstract Syntax Tree] using
+    `name` as key. Force the entry to be a list even if only one
+    element is added. Collisions with `dict` attributes or [Python]
+    keywords are resolved by appending an underscore to `name`.
+
+`@:e`
+
+:   The override operator. Make the [AST][Abstract Syntax Tree] for
+    the complete rule be the [AST][Abstract Syntax Tree] for `e`.
+
+    The override operator is useful to recover only part of the right
+    hand side of a rule without the need to name it, or add a
+    semantic action.
+
+    This is a typical use of the override operator:
+
+        subexp = '(' @:expre ')' ;
+
+    The [AST][Abstract Syntax Tree] returned for the `subexp` rule
+    will be the [AST][Abstract Syntax Tree] recovered from invoking
+    `expre`.
+
+`@+:e`
+
+:   Like `@:e`, but make the [AST][Abstract Syntax Tree] always be
+    a list.
+
+    This operator is convenient in cases such as:
+
+        arglist = '(' @+:arg {',' @+:arg}* ')' ;
+
+    In which the delimiting tokens are of no interest.
+
+`$`
+
+:   The *end of text* symbol. Verify that the end of the input text
+    has been reached.
+
+`(*` *comment* `*)`
+
+:   Comments may appear anywhere in the text.
+
+`#` *comment*
+
+:   [Python]-style comments are also allowed.
+
 When there are no named items in a rule, the [AST][Abstract Syntax Tree]
 consists of the elements parsed by the rule, either a single item or a
 list. This default behavior makes it easier to write simple rules:
