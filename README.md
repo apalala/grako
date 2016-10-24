@@ -141,76 +141,88 @@ not need semantic treatment.
 If present, a `_default()` method will be called in the semantics class
 when no method matched the rule name:
 
-    def _default(self, ast):
-        ...
-        return ast
+```python
+def _default(self, ast):
+    ...
+    return ast
+```
 
 If present, a `_postproc()` method will be called in the semantics class
 after each rule (including the semantics) is processed. This method will
 receive the current parsing context as parameter:
 
-    def _postproc(self, context, ast):
-        ...
+```python
+def _postproc(self, context, ast):
+    ...
+```
 
 Using the Tool
 --------------
 
 **Grako** can be run from the command line:
 
-    $ python -m grako
+```bash
+$ python -m grako
+```
 
 Or:
 
-    $ scripts/grako
+```bash
+$ scripts/grako
+```
 
 Or just:
 
-    $ grako
+```bash
+$ grako
+```
 
 if **Grako** was installed using *easy\_install* or *pip*.
 
 The *-h* and *--help* parameters provide full usage information:
 
-    $ python -m grako -h
-    usage: grako [--generate-parser | --draw | --object-model | --pretty]
-                [--color] [--trace] [--no-left-recursion] [--name NAME]
-                [--no-nameguard] [--outfile FILE] [--object-model-outfile FILE]
-                [--whitespace CHARACTERS] [--help] [--version]
-                GRAMMAR
+```bash
+$ python -m grako -h
+usage: grako [--generate-parser | --draw | --object-model | --pretty]
+            [--color] [--trace] [--no-left-recursion] [--name NAME]
+            [--no-nameguard] [--outfile FILE] [--object-model-outfile FILE]
+            [--whitespace CHARACTERS] [--help] [--version]
+            GRAMMAR
 
-    Grako (for "grammar compiler") takes a grammar in a variation of EBNF as
-    input, and outputs a memoizing PEG/Packrat parser in Python.
+Grako (for "grammar compiler") takes a grammar in a variation of EBNF as
+input, and outputs a memoizing PEG/Packrat parser in Python.
 
-    positional arguments:
-    GRAMMAR               the filename of the Grako grammar to parse
+positional arguments:
+GRAMMAR               the filename of the Grako grammar to parse
 
-    optional arguments:
-    --generate-parser     generate parser code from the grammar (default)
-    --draw, -d            generate a diagram of the grammar (requires --outfile)
-    --object-model, -g    generate object model from the class names given as
-                            rule arguments
-    --pretty, -p          generate a prettified version of the input grammar
+optional arguments:
+--generate-parser     generate parser code from the grammar (default)
+--draw, -d            generate a diagram of the grammar (requires --outfile)
+--object-model, -g    generate object model from the class names given as
+                        rule arguments
+--pretty, -p          generate a prettified version of the input grammar
 
-    parse-time options:
-    --color, -c           use color in traces (requires the colorama library)
-    --trace, -t           produce verbose parsing output
+parse-time options:
+--color, -c           use color in traces (requires the colorama library)
+--trace, -t           produce verbose parsing output
 
-    generation options:
-    --no-left-recursion, -l
-                            turns left-recusion support off
-    --name NAME, -m NAME  Name for the grammar (defaults to GRAMMAR base name)
-    --no-nameguard, -n    allow tokens that are prefixes of others
-    --outfile FILE, --output FILE, -o FILE
-                            output file (default is stdout)
-    --object-model-outfile FILE, -G FILE
-                            generate object model and save to FILE
-    --whitespace CHARACTERS, -w CHARACTERS
-                            characters to skip during parsing (use "" to disable)
+generation options:
+--no-left-recursion, -l
+                        turns left-recusion support off
+--name NAME, -m NAME  Name for the grammar (defaults to GRAMMAR base name)
+--no-nameguard, -n    allow tokens that are prefixes of others
+--outfile FILE, --output FILE, -o FILE
+                        output file (default is stdout)
+--object-model-outfile FILE, -G FILE
+                        generate object model and save to FILE
+--whitespace CHARACTERS, -w CHARACTERS
+                        characters to skip during parsing (use "" to disable)
 
-    common options:
-    --help, -h            show this help message and exit
-    --version, -v         provide version information and exit
-    $
+common options:
+--help, -h            show this help message and exit
+--version, -v         provide version information and exit
+$
+```
 
 Using the Generated Parser
 --------------------------
@@ -219,12 +231,14 @@ To use the generated parser, just subclass the base or the abstract
 parser, create an instance of it, and invoke its `parse()` method
 passing the grammar to parse and the starting rule's name as parameter:
 
-    from myparser import MyParser
+```python
+from myparser import MyParser
 
-    parser = MyParser()
-    ast = parser.parse('text to parse', rule_name='start')
-    print(ast)
-    print(json.dumps(ast, indent=2)) # ASTs are JSON-friendy
+parser = MyParser()
+ast = parser.parse('text to parse', rule_name='start')
+print(ast)
+print(json.dumps(ast, indent=2)) # ASTs are JSON-friendy
+```
 
 The generated parsers' constructors accept named arguments to specify
 whitespace characters, the regular expression for comments, case
@@ -233,21 +247,27 @@ sensitivity, verbosity, and more (see below).
 To add semantic actions, just pass a semantic delegate to the parse
 method:
 
-    model = parser.parse(text, rule_name='start', semantics=MySemantics())
+```python
+model = parser.parse(text, rule_name='start', semantics=MySemantics())
+```
 
 If special lexical treatment is required (as in *80 column* languages),
 then a descendant of `grako.buffering.Buffer` can be passed instead of
 the text:
 
-    class MySpecialBuffer(MyLanguageBuffer):
-        ...
+```python
+class MySpecialBuffer(MyLanguageBuffer):
+    ...
 
-    buf = MySpecialBuffer(text)
-    model = parser.parse(buf, rule_name='start', semantics=MySemantics())
+buf = MySpecialBuffer(text)
+model = parser.parse(buf, rule_name='start', semantics=MySemantics())
+```
 
 The generated parser's module can also be invoked as a script:
 
-    python myparser.py inputfile startrule
+```bash
+$ python myparser.py inputfile startrule
+```
 
 As a script, the generated parser's module accepts several options:
 
