@@ -348,35 +348,35 @@ The expressions, in reverse order of operator precedence, can be:
             | e3
             ;
 
-`e1 e2`
+#### `e1 e2`
 
 :   Sequence. Match `e1` and then match `e2`.
 
-`( e )`
+#### `( e )`
 
 :   Grouping. Match `e`. For example: `('a' | 'b')`.
 
-`[ e ]`
+#### `[ e ]`
 
 :   Optionally match `e`.
 
-`{ e }` or `{ e }*`
+#### `{ e }` or `{ e }*`
 
 :   Closure. Match `e` zero or more times. Note that the
     [AST][Abstract Syntax Tree] returned for a closure is always
     a list.
 
-`{ e }+`
+#### `{ e }+`
 
 :   Positive closure. Match `e` one or more times. The [AST][Abstract
     Syntax Tree] is always a list.
 
-`{}`
+#### `{}`
 
 :   Empty closure. Match nothing and produce an empty list as
     [AST][Abstract Syntax Tree].
 
-`s.{ e }+`
+#### `s.{ e }+`
 
 :   Positive join. Inspired by [Python]'s `str.join()`, is equivalent
     to:
@@ -390,7 +390,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         (s t).{ e }+
 
-`s.{ e }` or `s.{ e }*`
+#### `s.{ e }` or `s.{ e }*`
 
 :   Join. Parses the list of `s`-separated expressions, or nothing.
 
@@ -398,35 +398,17 @@ The expressions, in reverse order of operator precedence, can be:
 
         s.{e}+|{}
 
-`&e`
+#### `&e`
 
 :   Positive lookahead. Succeed if `e` can be parsed, but do not
     consume any input.
 
-`!e`
+#### `!e`
 
 :   Negative lookahead. Fail if `e` can be parsed, and do not consume
     any input.
 
-`>rulename`
-
-:   The include operator. Include the *right hand side* of rule
-    `rulename` at this point.
-
-    The following set of declarations:
-
-        includable = exp1 ;
-
-        expanded = exp0 >includable exp2 ;
-
-    Has the same effect as defining *expanded* as:
-
-        expanded = exp0 exp1 exp2 ;
-
-    Note that the included rule must be defined before the rule that
-    includes it.
-
-`'text'` or `"text"`
+#### `'text'` or `"text"`
 
 :   Match the token *text* within the quotation marks.
 
@@ -446,7 +428,7 @@ The expressions, in reverse order of operator precedence, can be:
 
         @@namechars :: '$-.'
 
-`/regexp/`
+#### `/regexp/`
 
 :   The pattern expression. Match the [Python] regular expression
     `regexp` at the current text position. Unlike other expressions,
@@ -458,16 +440,16 @@ The expressions, in reverse order of operator precedence, can be:
     the text. The matched text is the [AST][Abstract Syntax Tree] for
     the expression.
 
-`?/regexp/?`
+#### `?/regexp/?`
 
 :   Another form of the pattern expression that can be used when there
     are slashes (`/`) in the pattern.
 
-`+/regexp/`
+#### `+/regexp/`
 
 :   Concatenate the given pattern with the preceding one.
 
-`` `constant ``\`
+#### `` `constant ``\`
 
 :   Match nothing, but behave as if `constant` had been parsed.
 
@@ -477,23 +459,41 @@ The expressions, in reverse order of operator precedence, can be:
 
         boolean_option = name ['=' (boolean|`true`) ] ;
 
-`rulename`
+#### `rulename`
 
 :   Invoke the rule named `rulename`. To help with lexical aspects of
     grammars, rules with names that begin with an uppercase letter
     will not advance the input over whitespace or comments.
 
-`()`
+#### `>rulename`
+
+:   The include operator. Include the *right hand side* of rule
+    `rulename` at this point.
+
+    The following set of declarations:
+
+        includable = exp1 ;
+
+        expanded = exp0 >includable exp2 ;
+
+    Has the same effect as defining *expanded* as:
+
+        expanded = exp0 exp1 exp2 ;
+
+    Note that the included rule must be defined before the rule that
+    includes it.
+
+#### `()`
 
 :   The empty expression. Succeed without advancing over input. Its
     value is `None`.
 
-`!()`
+#### `!()`
 
 :   The *fail* expression. This is actually `!` applied to `()`, which
     always fails.
 
-`~`
+#### `~`
 
 :   The *cut* expression. Commit to the current option and prevent
     other options from being considered even if what follows fails
@@ -509,21 +509,21 @@ The expressions, in reverse order of operator precedence, can be:
             | bool
             ;
 
-`name:e`
+#### `name:e`
 
 :   Add the result of `e` to the [AST][Abstract Syntax Tree] using
     `name` as key. If `name` collides with any attribute or method of
     `dict`, or is a [Python] keyword, an underscore (`_`) will be
     appended to the name.
 
-`name+:e`
+#### `name+:e`
 
 :   Add the result of `e` to the [AST][Abstract Syntax Tree] using
     `name` as key. Force the entry to be a list even if only one
     element is added. Collisions with `dict` attributes or [Python]
     keywords are resolved by appending an underscore to `name`.
 
-`@:e`
+#### `@:e`
 
 :   The override operator. Make the [AST][Abstract Syntax Tree] for
     the complete rule be the [AST][Abstract Syntax Tree] for `e`.
@@ -540,7 +540,7 @@ The expressions, in reverse order of operator precedence, can be:
     will be the [AST][Abstract Syntax Tree] recovered from invoking
     `expre`.
 
-`@+:e`
+#### `@+:e`
 
 :   Like `@:e`, but make the [AST][Abstract Syntax Tree] always be
     a list.
@@ -551,16 +551,16 @@ The expressions, in reverse order of operator precedence, can be:
 
     In which the delimiting tokens are of no interest.
 
-`$`
+#### `$`
 
 :   The *end of text* symbol. Verify that the end of the input text
     has been reached.
 
-`(*` *comment* `*)`
+#### `(*` *comment* `*)`
 
 :   Comments may appear anywhere in the text.
 
-`#` *comment*
+#### `#` *comment*
 
 :   [Python]-style comments are also allowed.
 
@@ -568,11 +568,15 @@ When there are no named items in a rule, the [AST][Abstract Syntax Tree]
 consists of the elements parsed by the rule, either a single item or a
 list. This default behavior makes it easier to write simple rules:
 
-    number = /[0-9]+/ ;
+~~~ebnf
+number = /[0-9]+/ ;
+~~~
 
 Without having to write:
 
-    number = number:/[0-9]+/ ;
+~~~ebnf
+number = number:/[0-9]+/ ;
+~~~
 
 When a rule has named elements, the unnamed ones are excluded from the
 [AST][Abstract Syntax Tree] (they are ignored).
@@ -581,33 +585,41 @@ When a rule has named elements, the unnamed ones are excluded from the
 
 **Grako** allows rules to specify [Python]-style arguments:
 
-    addition(Add, op='+')
-        =
-        addend '+' addend
-        ;
+```ebnf
+addition(Add, op='+')
+    =
+    addend '+' addend
+    ;
+```
 
 The arguments values are fixed at grammar-compilation time.
 
 An alternative syntax is available if no *keyword parameters* are
 required:
 
-    addition::Add, '+'
-        =
-        addend '+' addend
-        ;
+```ebnf
+addition::Add, '+'
+    =
+    addend '+' addend
+    ;
+```
 
 Semantic methods must be ready to receive any arguments declared in the
 corresponding rule:
 
-    def addition(self, ast, name, op=None):
-        ...
+```python
+def addition(self, ast, name, op=None):
+    ...
+```
 
 When working with rule arguments, it is good to define a `_default()`
 method that is ready to take any combination of standard and keyword
 arguments:
 
-    def _default(self, ast, *args, **kwargs):
-        ...
+```python
+def _default(self, ast, *args, **kwargs):
+    ...
+```
 
 ### Based Rules
 
@@ -616,13 +628,17 @@ Rules may extend previously defined rules using the `<` operator. The
 
 The following set of declarations:
 
-    base::Param = exp1 ;
+```ebnf
+base::Param = exp1 ;
 
-    extended < base = exp2 ;
+extended < base = exp2 ;
+```
 
 Has the same effect as defining *extended* as:
 
-    extended::Param = exp1 exp2 ;
+```ebnf
+extended::Param = exp1 exp2 ;
+```
 
 Parameters from the *base rule* are copied to the new rule if the new
 rule doesn't define its own. Repeated inheritance should be possible,
@@ -632,12 +648,14 @@ but it *hasn't been tested*.
 
 A grammar rule may be redefined by using the `@override` decorator:
 
-    start = ab $;
+```ebnf
+start = ab $;
 
-    ab = 'xyz' ;
+ab = 'xyz' ;
 
-    @override
-    ab = @:'a' {@:'b'} ;
+@override
+ab = @:'a' {@:'b'} ;
+```
 
 When combined with the `#include` directive, rule overrides can be used
 to create a modified grammar without altering the original.
@@ -663,17 +681,19 @@ When the `parseinfo=True` keyword argument has been passed to the
 Syntax Tree] nodes that are *dict*-like. The element contains a
 `collections.namedtuple` with the parse information for the node:
 
-    ParseInfo = namedtuple(
-        'ParseInfo',
-        [
-            'buffer',
-            'rule',
-            'pos',
-            'endpos',
-            'line',
-            'endline',
-        ]
-    )
+```python
+ParseInfo = namedtuple(
+    'ParseInfo',
+    [
+        'buffer',
+        'rule',
+        'pos',
+        'endpos',
+        'line',
+        'endline',
+    ]
+)
+```
 
 With the help of the `Buffer.line_info()` method, it is possible to
 recover the line, column, and original text parsed for the node. Note
@@ -689,16 +709,23 @@ Grammar Name
 The prefix to be used in classes generated by **Grako** can be passed to
 the command-line tool using the `-m` option:
 
-    grako -m My mygrammar.ebnf
+```bash
+$ grako -m MyLanguage mygrammar.ebnf
+```
 
 will generate:
 
-    class MyParser(Parser):
+```python
+class MyLanguageParser(Parser):
+    ...
+```
 
 The name can also be specified within the grammar using the `@@grammar`
 directive:
 
-    @@grammar :: My
+```ebnf
+@@grammar :: MyLanguage
+```
 
 Whitespace
 ----------
@@ -713,7 +740,9 @@ For example, the following will skip over *tab* (`\t`) and *space*
 characters, but not so with other typical whitespace characters such as
 *newline* (`\n`):
 
-    parser = MyParser(text, whitespace='\t ')
+```python
+parser = MyParser(text, whitespace='\t ')
+```
 
 The character string is converted into a regular expression character
 set before starting to parse.
@@ -721,7 +750,9 @@ set before starting to parse.
 You can also provide a regular expression directly instead of a string.
 The following is equivalent to the above example:
 
-    parser = MyParser(text, whitespace=re.compile(r'[\t ]+'))
+```python
+parser = MyParser(text, whitespace=re.compile(r'[\t ]+'))
+```
 
 Note that the regular expression must be pre-compiled to let **Grako**
 distinguish it from plain string.
@@ -730,13 +761,17 @@ If you do not define any whitespace characters, then you will have to
 handle whitespace in your grammar rules (as it's often done in [PEG]
 parsers):
 
-    parser = MyParser(text, whitespace='')
+```python
+parser = MyParser(text, whitespace='')
+```
 
 Whitespace may also be specified within the grammar using the
 `@@whitespace` directive, although any of the above methods will
 overwrite the setting in the grammar:
 
-    @@whitespace :: /[\t ]+/
+```ebnf
+@@whitespace :: /[\t ]+/
+```
 
 Case Sensitivity
 ----------------
