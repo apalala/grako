@@ -271,23 +271,25 @@ $ python myparser.py inputfile startrule
 
 As a script, the generated parser's module accepts several options:
 
-    $ python myparser.py -h
-    usage: myparser.py [-h] [-c] [-l] [-n] [-t] [-w WHITESPACE] FILE [STARTRULE]
+```bash
+$ python myparser.py -h
+usage: myparser.py [-h] [-c] [-l] [-n] [-t] [-w WHITESPACE] FILE [STARTRULE]
 
-    Simple parser for DBD.
+Simple parser for DBD.
 
-    positional arguments:
-      FILE                  the input file to parse
-      STARTRULE             the start rule for parsing
+positional arguments:
+    FILE                  the input file to parse
+    STARTRULE             the start rule for parsing
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c, --color           use color in traces (requires the colorama library)
-      -l, --list            list all rules and exit
-      -n, --no-nameguard    disable the 'nameguard' feature
-      -t, --trace           output trace information
-      -w WHITESPACE, --whitespace WHITESPACE
-                            whitespace specification
+optional arguments:
+    -h, --help            show this help message and exit
+    -c, --color           use color in traces (requires the colorama library)
+    -l, --list            list all rules and exit
+    -n, --no-nameguard    disable the 'nameguard' feature
+    -t, --trace           output trace information
+    -w WHITESPACE, --whitespace WHITESPACE
+                        whitespace specification
+```
 
 Grammar Syntax
 --------------
@@ -300,14 +302,18 @@ definitions for [VIM] and for [Sublime Text] can be found under the
 
 A grammar consists of a sequence of one or more rules of the form:
 
+```ebnf
     name = <expre> ;
+```
 
 If a *name* collides with a [Python] keyword, an underscore (`_`) will
 be appended to it on the generated parser.
 
 Rule names that start with an uppercase character:
 
-    FRAGMENT = /[a-z]+/ ;
+```ebnf
+FRAGMENT = /[a-z]+/ ;
+```
 
 *do not* advance over whitespace before beginning to parse. This feature
 becomes handy when defining complex lexical elements, as it allows
