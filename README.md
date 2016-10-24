@@ -114,8 +114,8 @@ A **Grako** generated parser consists of the following classes:
     the parser using one method for each grammar rule:
 
 ```python
-    def _somerulename_(self):
-        ...
+        def _somerulename_(self):
+            ...
 ```
 
 -   A `MyLanguageSemantics` class with one semantic method per
@@ -123,8 +123,10 @@ A **Grako** generated parser consists of the following classes:
     [Abstract Syntax Tree] ([AST][Abstract Syntax Tree]) built from the
     rule invocation:
 
+```python
         def somerulename(self, ast):
             return ast
+```
 
 -   A `if __name__ == '__main__':` definition, so the generated parser
     can be executed as a [Python] script.
