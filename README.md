@@ -113,7 +113,10 @@ A **Grako** generated parser consists of the following classes:
     uses a `MyLanguageBuffer` for traversing input text, and implements
     the parser using one method for each grammar rule:
 
+    ~~~python
         def _somerulename_(self):
+            ...
+    ~~~
 
 -   A `MyLanguageSemantics` class with one semantic method per
     grammar rule. Each method receives as its single parameter the
