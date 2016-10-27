@@ -970,7 +970,7 @@ rule:
 addition::AddOperator = left:mulexpre '+' right:addition ;
 ```
 
-`ModelBuilderSemantics` will synthesize an `AddOperator(Node)` class and
+`ModelBuilderSemantics` will synthesize a `class AddOperator(Node):` class and
 use it to construct the node. The synthesized class will have one
 attribute with the same name as the named elements in the rule.
 
