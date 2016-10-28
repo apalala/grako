@@ -87,6 +87,7 @@ Rationale
 * Python_ is a great language for working with language parsing and translation.
 
 .. _`Abstract Syntax Tree`: http://en.wikipedia.org/wiki/Abstract_syntax_tree
+.. _`Abstract Syntax Trees`: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _AST: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _ASTs: http://en.wikipedia.org/wiki/Abstract_syntax_tree
 .. _CST:  http://en.wikipedia.org/wiki/Concrete_syntax_tree
