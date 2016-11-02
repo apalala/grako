@@ -27,7 +27,7 @@ def codegen(model):
     return ObjectModelCodeGenerator().render(model)
 
 
-def _has_node_name(rule):
+def _get_node_class_name(rule):
     if not rule.params:
         return None
 
@@ -40,7 +40,7 @@ def _has_node_name(rule):
 
 
 def _typespec(rule, default_base=True):
-    if not _has_node_name(rule):
+    if not _get_node_class_name(rule):
         return _TypeSpec(None, None)
 
     spec = rule.params[0].split(BASE_CLASS_TOKEN)
@@ -111,17 +111,24 @@ class Rule(ModelRenderer):
 
 class Grammar(ModelRenderer):
     def render_fields(self, fields):
-        bases = {_typespec(rule, False).base for rule in self.node.rules}
+        node_class_names = set()
+
+        bases = []
+        model_rules = []
+        for rule in self.node.rules:
+            spec = _typespec(rule, False)
+            if not spec.class_name:
+                continue
+            if spec.class_name not in node_class_names:
+                model_rules.append(rule)
+            if spec.base and spec.base not in node_class_names:
+                bases.append(spec.base)
+            node_class_names.add(spec.class_name)
+            node_class_names.add(spec.base)
+
         base_class_declarations = [
             BaseClassRenderer(base).render()
             for base in bases
-            if base is not None
-        ]
-
-        model_rules = [
-            rule
-            for rule in self.node.rules
-            if _has_node_name(rule)
         ]
 
         model_class_declarations = [

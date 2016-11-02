@@ -13,6 +13,13 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+## [3.16.4] @ 2016-11-02
+
+### Fixed
+
+-   [99] Object model generation would generate repeated classes when the same class name was applied to different rules in the grammar.
+
+
 ## [3.16.3] @ 2016-10-27
 
 ### Fixed
@@ -673,8 +680,10 @@ integer::Integer::Literal
 [74]: https://bitbucket.org/apalala/grako/issue/74
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
+[99]: https://bitbucket.org/apalala/grako/issue/99
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.3
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.4
+[3.16.4]: https://bitbucket.org/apalala/grako/branches/compare/3.16.4%0D3.16.3
 [3.16.3]: https://bitbucket.org/apalala/grako/branches/compare/3.16.3%0D3.16.1
 [3.16.1]: https://bitbucket.org/apalala/grako/branches/compare/3.16.1%0D3.16.0
 [3.16.0]: https://bitbucket.org/apalala/grako/branches/compare/3.16.0%0D3.15.1
