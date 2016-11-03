@@ -63,6 +63,16 @@ class PreOrderWalker(NodeWalker):
         return result
 
 
+class NodePreOrderWalker(NodeWalker):
+    def walk_object(self, node):
+        return node
+
+    def walk_Node(self, node):
+        for child in node.children_list():
+            self.walk(child)
+        return node
+
+
 class DepthFirstWalker(NodeWalker):
     def walk(self, node, *args, **kwargs):
         supers_walk = super(DepthFirstWalker, self).walk
