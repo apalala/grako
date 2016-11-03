@@ -437,7 +437,7 @@ class Grammar(Base):
                     'main'
                 ]
 
-                KEYWORDS = set([{keywords}])
+                KEYWORDS = {{{keywords}}}
 
 
                 class {name}Buffer(Buffer):
