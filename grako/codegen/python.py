@@ -41,7 +41,7 @@ class Base(ModelRenderer):
 
 
 class Void(Base):
-    template = 'pass'
+    template = 'self._void()'
 
 
 class Fail(Base):

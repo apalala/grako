@@ -806,3 +806,6 @@ class ParseContext(object):
             name = name.upper()
         if name in self.keywords:
             raise FailedKeywordSemantics('"%s" is a reserved word' % name)
+
+    def _void(self):
+        self.last_node = None

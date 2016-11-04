@@ -130,6 +130,7 @@ class Model(Node):
         self._follow_set = set()
 
     def parse(self, ctx):
+        ctx.last_node = None
         return None
 
     def defines(self):
