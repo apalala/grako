@@ -13,6 +13,24 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+## [3.16.5] @ 2016-11-04
+
+
+### Added
+
+- Experimental `grako.walkers.NodePreOrderWalker`, with more predictable and easy to understand semantics.
+
+
+### Changed
+
+- The code generator now uses a set literal for the `KEYWORDS` constant.
+
+
+### Fixed
+
+-   BUG: Parsing `()` (void/nothing) should clear last_node in `Context`, so `name:()` results in `name is None`.
+
+
 ## [3.16.4] @ 2016-11-02
 
 ### Fixed
@@ -682,7 +700,8 @@ integer::Integer::Literal
 [81]: https://bitbucket.org/apalala/grako/issue/81
 [99]: https://bitbucket.org/apalala/grako/issue/99
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.4
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.5
+[3.16.5]: https://bitbucket.org/apalala/grako/branches/compare/3.16.5%0D3.16.4
 [3.16.4]: https://bitbucket.org/apalala/grako/branches/compare/3.16.4%0D3.16.3
 [3.16.3]: https://bitbucket.org/apalala/grako/branches/compare/3.16.3%0D3.16.1
 [3.16.1]: https://bitbucket.org/apalala/grako/branches/compare/3.16.1%0D3.16.0
