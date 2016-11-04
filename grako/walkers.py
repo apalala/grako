@@ -64,10 +64,10 @@ class PreOrderWalker(NodeWalker):
 
 
 class NodePreOrderWalker(NodeWalker):
-    def walk_object(self, node):
+    def walk_object(self, node, *args, **kwargs):
         return node
 
-    def walk_Node(self, node):
+    def walk_Node(self, node, *args, **kwargs):
         for child in node.children_list():
             self.walk(child)
         return node
