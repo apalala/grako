@@ -1334,6 +1334,7 @@ Changes
 
 See the [CHANGELOG] for details.
 
+  [AST]: https://en.wikipedia.org/wiki/Abstract_syntax_tree
   [Dennis Ritchie]: http://en.wikipedia.org/wiki/Dennis_Ritchie
   [C]: http://en.wikipedia.org/wiki/C_language
   [Unix]: http://en.wikipedia.org/wiki/Unix
