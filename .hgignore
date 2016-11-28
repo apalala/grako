@@ -8,13 +8,14 @@
 ^build$
 ^grako.egg-info/
 ^examples/.*/grako$
-^examples/.*/antlr_parser
+^examples/.*/*_parser
 ^examples/.*/python.ebnf$
 genparser.py$
 parser_base.py$
 docs/_build/
 \.ropeproject/
 ^grako\.build/
+\.DS_Store
 
 # IDEs
 \.idea$
