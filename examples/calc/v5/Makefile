@@ -17,7 +17,7 @@ calc_parser.py: calc.ebnf
 
 
 calc_model.py: calc.ebnf
-	PYTHONPATH=../../.. python -m grako -G $@ $<
+	PYTHONPATH=../../.. python -m grako -g -o $@ $<
 
 
 clean:

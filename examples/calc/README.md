@@ -552,3 +552,145 @@ number::int
     /\d+/
     ;
 ```
+
+The object model classes can be generated using the `-g` option in `grako`:
+
+```bash
+$ PYTHONPATH=../../.. python -m grako -g -o calc_model.py calc.ebnf
+```
+
+If the model classes are not generited, they will can be synthetized at runtime using
+``grako.semantics.ModelBuilderSemantics``. This is what the class definitions for arithmetic expressions looks like:
+
+
+```python
+from grako.objectmodel import Node
+from grako.semantics import ModelBuilderSemantics
+
+
+class CalcModelBuilderSemantics(ModelBuilderSemantics):
+    def __init__(self):
+        types = [
+            t for t in globals().values()
+            if type(t) is type and issubclass(t, ModelBase)
+        ]
+        super(CalcModelBuilderSemantics, self).__init__(types=types)
+
+
+class ModelBase(Node):
+    pass
+
+
+class Add(ModelBase):
+    def __init__(self,
+                 left=None,
+                 op=None,
+                 right=None,
+                 **_kwargs_):
+        super(Add, self).__init__(
+            left=left,
+            op=op,
+            right=right,
+            **_kwargs_
+        )
+
+
+class Subtract(ModelBase):
+    def __init__(self,
+                 left=None,
+                 op=None,
+                 right=None,
+                 **_kwargs_):
+        super(Subtract, self).__init__(
+            left=left,
+            op=op,
+            right=right,
+            **_kwargs_
+        )
+
+
+class Multiply(ModelBase):
+    def __init__(self,
+                 left=None,
+                 op=None,
+                 right=None,
+                 **_kwargs_):
+        super(Multiply, self).__init__(
+            left=left,
+            op=op,
+            right=right,
+            **_kwargs_
+        )
+
+
+class Divide(ModelBase):
+    def __init__(self,
+                 left=None,
+                 right=None,
+                 **_kwargs_):
+        super(Divide, self).__init__(
+            left=left,
+            right=right,
+            **_kwargs_
+        )
+```
+
+The model that results from a parse can be printed, and walked:
+
+```python
+import sys
+from grako.walkers import NodeWalker
+from calc_parser import CalcParser
+from calc_model import CalcModelBuilderSemantics
+
+
+class CalcWalker(NodeWalker):
+    def walk_object(self, node):
+        return node
+
+    def walk_Add(self, node):
+        return self.walk(node.left) + self.walk(node.right)
+
+    def walk_Subtract(self, node):
+        return self.walk(node.left) - self.walk(node.right)
+
+    def walk_Multiply(self, node):
+        return self.walk(node.left) * self.walk(node.right)
+
+    def walk_Divide(self, node):
+        return self.walk(node.left) / self.walk(node.right)
+
+
+def calc(text):
+    parser = CalcParser(semantics=CalcModelBuilderSemantics())
+    return parser.parse(text)
+
+
+if __name__ == '__main__':
+    text = open(sys.argv[1]).read()
+    model = calc(text)
+    print(model)
+    print(text.strip(), '=', CalcWalker().walk(model))
+```
+
+The above program produces this result:
+
+```bash
+{
+  "__class__": "Add",
+  "right": {
+    "__class__": "Multiply",
+    "right": {
+      "__class__": "Subtract",
+      "right": 20,
+      "op": "-",
+      "left": 10
+    },
+    "op": "*",
+    "left": 5
+  },
+  "op": "+",
+  "left": 3
+}
+3 + 5 * ( 10 - 20 ) = -47
+```
