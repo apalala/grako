@@ -383,3 +383,99 @@ But the [AST] is not too satisfactory:
 ```
 
 ## One rule per expression type
+
+Having semantic actions determine what was parsed with ``isinstance()`` or querying the [AST] for operators is not pythonic, nor object oriented, and it leads to code that's more difficult to maintain. It's preferable to have one rule per _expression kind_, something that will be necessary if we want to build object models to use _walkers_ and _code generation_.
+
+
+```ocaml
+@@grammar::Calc
+
+
+start
+    =
+    expression $
+    ;
+
+
+expression
+    =
+    | addition
+    | subtraction
+    | term
+    ;
+
+
+addition
+    =
+    left:term op:'+' ~ right:expression
+    ;
+
+
+subtraction
+    =
+    left:term op:'-' ~ right:expression
+    ;
+
+
+term
+    =
+    | multiplication
+    | division
+    | factor
+    ;
+
+
+multiplication
+    =
+    left:factor op:'*' ~ right:term
+    ;
+
+
+division
+    =
+    left:factor '/' ~ right:term
+    ;
+
+
+factor
+    =
+    | subexpression
+    | number
+    ;
+
+
+subexpression
+    =
+    '(' ~ @:expression ')'
+    ;
+
+
+number
+    =
+    /\d+/
+    ;
+```
+
+
+The corresponding semantics are:
+
+```python
+class CalcSemantics(object):
+    def number(self, ast):
+        return int(ast)
+
+    def addition(self, ast):
+        return ast.left + ast.right
+
+    def subtraction(self, ast):
+        return ast.left - ast.right
+
+    def multiplication(self, ast):
+        return ast.left * ast.right
+
+    def division(self, ast):
+        return ast.left / ast.right
+```
+
+
+## Object models
