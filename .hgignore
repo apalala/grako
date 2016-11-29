@@ -8,7 +8,8 @@
 ^build$
 ^grako.egg-info/
 ^examples/.*/grako$
-^examples/.*/*_parser
+^examples/.*/*_parser\.py
+^examples/.*/*_model\.py
 ^examples/.*/python.ebnf$
 genparser.py$
 parser_base.py$

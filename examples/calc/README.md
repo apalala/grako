@@ -479,3 +479,76 @@ class CalcSemantics(object):
 
 
 ## Object models
+
+Semantics bound to grammar rules are powerful and versatile, but they risk being more tied to the parsing process than to the objects that are parsed. That is not a problem for simple languages, like the arithmetic expression language in this tutorial, but the number of grammar rules quickly becomes much more larger than the types of objects parsed as the complexity of the parsed language increases. **Grako** provides for the creation of typed object models directly from the parsing process, and for the navigation (_walking_) and transformation (_code generation_) of those models in later passes.
+
+The first step in the creation of an object model as [AST] is to annotate the grammar with the desired class names for the objects parsed:
+
+```ocaml
+@@grammar::Calc
+
+
+start
+    =
+    expression $
+    ;
+
+
+expression
+    =
+    | addition
+    | subtraction
+    | term
+    ;
+
+
+addition::Add
+    =
+    left:term op:'+' ~ right:expression
+    ;
+
+
+subtraction::Subtract
+    =
+    left:term op:'-' ~ right:expression
+    ;
+
+
+term
+    =
+    | multiplication
+    | division
+    | factor
+    ;
+
+
+multiplication::Multiply
+    =
+    left:factor op:'*' ~ right:term
+    ;
+
+
+division::Divide
+    =
+    left:factor '/' ~ right:term
+    ;
+
+
+factor
+    =
+    | subexpression
+    | number
+    ;
+
+
+subexpression
+    =
+    '(' ~ @:expression ')'
+    ;
+
+
+number::int
+    =
+    /\d+/
+    ;
+```
