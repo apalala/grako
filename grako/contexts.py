@@ -165,6 +165,7 @@ class ParseContext(object):
             namechars = self.namechars
 
         self._initialize_caches()
+        self._furthest_exception = None
 
         if isinstance(text, buffering.Buffer):
             buffer = text
@@ -181,6 +182,10 @@ class ParseContext(object):
                 namechars=namechars,
                 **kwargs)
         self._buffer = buffer
+
+    def _set_furthest_exception(self, e):
+        if not self._furthest_exception or e.pos > self._furthest_exception.pos:
+            self._furthest_exception = e
 
     def parse(self,
               text,
@@ -208,6 +213,9 @@ class ParseContext(object):
             return result
         except FailedCut as e:
             raise e.nested
+        except FailedParse as e:
+            self._set_furthest_exception(e)
+            raise self._furthest_exception
         finally:
             self._clear_cache()
 
@@ -468,6 +476,7 @@ class ParseContext(object):
             self._error('Expecting <%s>' % name)
         except FailedParse as e:
             self._goto(pos)
+            self._set_furthest_exception(e)
             if isinstance(e, FailedLeftRecursion):
                 self._trace_recursion()
             else:
@@ -515,6 +524,7 @@ class ParseContext(object):
             except FailedSemantics as e:
                 self._error(str(e), FailedParse)
         except FailedParse as e:
+            self._set_furthest_exception(e)
             if self._memoization():
                 cache[key] = e
             raise
