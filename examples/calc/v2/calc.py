@@ -6,13 +6,13 @@ from calc_parser import CalcParser
 
 class CalcSemantics(object):
     def number(self, ast):
-       return int(ast)
+        return int(ast)
 
     def factor(self, ast):
-       if not isinstance(ast, list):
-           return ast
-       else:
-           return ast[1]
+        if not isinstance(ast, list):
+            return ast
+        else:
+            return ast[1]
 
     def term(self, ast):
         if not isinstance(ast, list):
@@ -38,6 +38,7 @@ class CalcSemantics(object):
 def calc(text):
     parser = CalcParser(semantics=CalcSemantics())
     return parser.parse(text)
+
 
 if __name__ == '__main__':
     text = open(sys.argv[1]).read()

@@ -6,7 +6,7 @@ from calc_parser import CalcParser
 
 class CalcSemantics(object):
     def number(self, ast):
-       return int(ast)
+        return int(ast)
 
     def term(self, ast):
         if ast.factor:
@@ -32,6 +32,7 @@ class CalcSemantics(object):
 def calc(text):
     parser = CalcParser(semantics=CalcSemantics())
     return parser.parse(text)
+
 
 if __name__ == '__main__':
     text = open(sys.argv[1]).read()
