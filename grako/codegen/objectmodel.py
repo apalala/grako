@@ -84,14 +84,14 @@ class Rule(ModelRenderer):
         kwargs = '\n'.join('%s=None, ' % d for d in defs)
         params = '\n'.join('%s=%s,' % (d, d) for d in defs)
         if params:
-            params = '\n*_args_,\n' + params + '\n**_kwargs_\n'
+            params = '\n' + params + '\n**_kwargs_\n'
             params = indent(params, 3)
             params = params + '\n' + indent(')', 2)
 
             kwargs = '\n' + indent(kwargs + '\n**_kwargs_', indent=17, multiplier=1)
         else:
             kwargs = ' **_kwargs_'
-            params = '*_args_, **_kwargs_)'
+            params = '**_kwargs_)'
 
         spec = _typespec(self.node)
 
@@ -104,7 +104,7 @@ class Rule(ModelRenderer):
 
     template = '''
         class {class_name}({base}):
-            def __init__(self, *_args_,{_kwargs_}):
+            def __init__(self,{_kwargs_}):
                 super({class_name}, self).__init__({params}\
         '''
 
