@@ -338,38 +338,38 @@ literal
     ;
 
 
-string::str
+string
     =
     (* allow single and double quotes *)
     ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
     ;
 
 
-hex::int
+hex
     =
     /0[xX](\d|[a-fA-F])+/
     ;
 
 
-float::float
+float
     =
     /[-+]?(?:\d+\.\d*|\d*\.\d+)(?:[Ee][-+]?\d+)?/
     ;
 
 
-int::int
+int
     =
     /[-+]?\d+/
     ;
 
 
-path::str
+path
     =
     /(?!\d)\w+/ + /(::(?!\d)\w+)+/
     ;
 
 
-word::str
+word
     =
     /(?!\d)\w+/
     ;

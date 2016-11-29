@@ -508,6 +508,7 @@ class Grammar(Base):
                     parser = {name}Parser(parseinfo=False)
                     return parser.parse(text, startrule, filename=filename, **kwargs)
 
+
                 if __name__ == '__main__':
                     import json
                     ast = generic_main(main, {name}Parser, name='{name}')
