@@ -985,7 +985,7 @@ integer::int = /[0-9]+/ ;
 default behavior can be overidden by defining a method to handle the
 result of any particular grammar rule.
 
-### Waliking Models
+### Walking Models
 
 The class `grako.model.NodeWalker` allows for the easy traversal
 (*walk*) a model constructed with a `ModelBuilderSemantics` instance:
