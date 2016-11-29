@@ -24,7 +24,7 @@ __all__ = [
     'main'
 ]
 
-KEYWORDS = set([])
+KEYWORDS = {}
 
 
 class GrakoBootstrapBuffer(Buffer):
@@ -610,7 +610,7 @@ class GrakoBootstrapParser(Parser):
     @graken('EmptyClosure')
     def _empty_closure_(self):
         self._token('{')
-        pass
+        self._void()
         self.name_last_node('@')
         self._token('}')
 
@@ -987,6 +987,7 @@ def main(filename, startrule, **kwargs):
         text = f.read()
     parser = GrakoBootstrapParser(parseinfo=False)
     return parser.parse(text, startrule, filename=filename, **kwargs)
+
 
 if __name__ == '__main__':
     import json
