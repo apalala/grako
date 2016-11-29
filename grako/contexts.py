@@ -212,7 +212,8 @@ class ParseContext(object):
             self.ast[rule_name] = result
             return result
         except FailedCut as e:
-            raise e.nested
+            self._set_furthest_exception(e.nested)
+            raise self._furthest_exception
         except FailedParse as e:
             self._set_furthest_exception(e)
             raise self._furthest_exception
