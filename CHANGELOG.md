@@ -12,6 +12,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+### Changed
+
+- Report the parse exception (``grako.exceptions.FailedParse``) ocurring furthest in the input so error messages are more meningful even when no _cut_ (``~``) expressions are used.
 
 ## [3.16.5] @ 2016-11-04
 
