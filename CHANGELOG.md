@@ -12,6 +12,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+
+### Added
+
+- A new _calc_ example project (`examples/calc`) based on the _calculator_ example from [PLY] goes through most **Grako** features in tutorial form.
+
 ### Changed
 
 - Report the parse exception (``grako.exceptions.FailedParse``) ocurring furthest in the input so error messages are more meningful even when no _cut_ (``~``) expressions are used.
@@ -631,6 +636,7 @@ integer::Integer::Literal
 [KLOC]: http://en.wikipedia.org/wiki/KLOC
 [NATURAL]: http://en.wikipedia.org/wiki/NATURAL
 [PEG]: http://en.wikipedia.org/wiki/Parsing_expression_grammar
+[PLY]: http://www.dabeaz.com/ply/ply.html#ply_nn22
 [Packrat]: http://bford.info/packrat/
 [Perl]: http://www.perl.org/
 [POSIX]: https://en.wikipedia.org/wiki/POSIX
