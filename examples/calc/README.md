@@ -547,9 +547,9 @@ subexpression
     ;
 
 
-number::int
+number::Number
     =
-    /\d+/
+    value:/\d+/
     ;
 ```
 
@@ -694,3 +694,73 @@ The above program produces this result:
 }
 3 + 5 * ( 10 - 20 ) = -47
 ```
+
+
+## Code Generation
+
+Translation is one of the most common tasks in language processing. Analysis often sumarizes the parsed input, and _walkers_ are  good for that. In translation, the output can often be as verbose as the input, so a systematic approach that avoids bookkeeping as much as possible. **Grako** provides support for template-based code generation (translation) in the ``grako.codegen`` module. Code generation works defining a translation class for each class in the model specified by the grammar.
+
+The following code generator translates input expressions to the postfix instructions of a stack-based processor:
+
+```python
+import sys
+from grako.codegen import ModelRenderer
+from grako.codegen import CodeGenerator
+
+THIS_MODULE =  sys.modules[__name__]
+
+
+class PostfixCodeGenerator(CodeGenerator):
+    def __init__(self):
+        super(PostfixCodeGenerator, self).__init__(modules=[THIS_MODULE])
+
+
+class Number(ModelRenderer):
+    template = '''\
+    PUSH {value}'''
+
+
+class Add(ModelRenderer):
+    template = '''\
+    {left}
+    {right}
+    ADD'''
+
+
+class Subtract(ModelRenderer):
+    template = '''\
+    {left}
+    {right}
+    SUB'''
+
+
+class Multiply(ModelRenderer):
+    template = '''\
+    {left}
+    {right}
+    MUL'''
+
+
+class Divide(ModelRenderer):
+    template = '''\
+    {left}
+    {right}
+    DIV'''
+
+
+print(PostfixCodeGenerator().render(model))
+```
+
+Which results in:
+
+```bash
+PUSH 3
+PUSH 5
+PUSH 10
+PUSH 20
+SUB
+MUL
+ADD
+```
+
+
