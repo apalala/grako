@@ -7,8 +7,7 @@ test: clean parser
 parser: calc_parser.py
 
 calc_parser.py: calc.ebnf
-	PYTHONPATH=../../.. python -m grako -o $@ \
-			   $< 2>&1
+	PYTHONPATH=../../.. python -m grako -o $@ $< 2>&1
 
 clean:
 	-@rm -f calc/calc_parser.py

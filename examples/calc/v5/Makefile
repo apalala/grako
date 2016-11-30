@@ -13,11 +13,11 @@ model: calc_model.py
 
 
 calc_parser.py: calc.ebnf
-	PYTHONPATH=../../.. python -m grako -o $@ $<
+	PYTHONPATH=../../.. python -m grako -o $@ $< 2>&1
 
 
 calc_model.py: calc.ebnf
-	PYTHONPATH=../../.. python -m grako -g -o $@ $<
+	PYTHONPATH=../../.. python -m grako -g -o $@ $< 2>&1
 
 
 clean:

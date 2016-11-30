@@ -10,6 +10,9 @@ class CalcWalker(NodeWalker):
     def walk_object(self, node):
         return node
 
+    def walk_Number(self, node):
+        return int(node.value)
+
     def walk_Add(self, node):
         return self.walk(node.left) + self.walk(node.right)
 
