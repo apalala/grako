@@ -5,7 +5,7 @@ grako_test:
 	python -u -m grako.test 2>&1
 
 
-examples: regex_test antlr_test
+examples: regex_test antlr_test calc_test
 
 
 regex_test:
@@ -14,6 +14,9 @@ regex_test:
 
 antlr_test:
 	cd examples/antlr2grako; make -s clean; make -s test > /dev/null
+
+calc_test:
+	cd examples/calc; make -s clean; make -s test > /dev/null
 
 
 flake8:
