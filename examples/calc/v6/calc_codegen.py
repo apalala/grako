@@ -2,7 +2,7 @@ import sys
 from grako.codegen import ModelRenderer
 from grako.codegen import CodeGenerator
 
-THIS_MODULE =  sys.modules[__name__]
+THIS_MODULE = sys.modules[__name__]
 
 
 class PostfixCodeGenerator(CodeGenerator):
