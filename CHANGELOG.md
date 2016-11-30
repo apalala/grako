@@ -13,6 +13,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+## [3.17.0] @ 2016-11-30
+
+
 ### Added
 
 - A new _calc_ example project (`examples/calc`) based on the _calculator_ example from [PLY] goes through most **Grako** features in tutorial form.
@@ -712,7 +715,8 @@ integer::Integer::Literal
 [81]: https://bitbucket.org/apalala/grako/issue/81
 [99]: https://bitbucket.org/apalala/grako/issue/99
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.16.5
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.17.0
+[3.17.0]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.16.5
 [3.16.5]: https://bitbucket.org/apalala/grako/branches/compare/3.16.5%0D3.16.4
 [3.16.4]: https://bitbucket.org/apalala/grako/branches/compare/3.16.4%0D3.16.3
 [3.16.3]: https://bitbucket.org/apalala/grako/branches/compare/3.16.3%0D3.16.1
