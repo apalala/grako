@@ -44,7 +44,6 @@ class PatternTests(unittest.TestCase):
         ast = model.parse('abc123 def456')
         self.assertEqual(['abc123', 'def456'], ast)
 
-
     def test_empty_pattern(self):
         grammar = '''
             start = @:// ;

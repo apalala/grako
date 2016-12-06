@@ -139,4 +139,3 @@ class DirectiveTests(unittest.TestCase):
             start = $ ;
         '''
         genmodel(grammar=grammar)
-
