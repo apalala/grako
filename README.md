@@ -437,8 +437,8 @@ The expressions, in reverse order of operator precedence, can be:
 
     The `regexp` is passed *as-is* to the [Python][] [re] module (or
     [regex] if available), using `match()` at the current position in
-    the text. The matched text is the [AST][Abstract Syntax Tree] for
-    the expression.
+    the text. The [AST][Abstract Syntax Tree] for
+    the expression is the matched text.
 
 #### `?/regexp/?`
 

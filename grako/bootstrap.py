@@ -779,6 +779,16 @@ class GrakoBootstrapParser(Parser):
     def _regex_(self):
         with self._choice():
             with self._option():
+                with self._group():
+                    with self._choice():
+                        with self._option():
+                            self._token('?//?')
+                        with self._option():
+                            self._token('//')
+                        self._error('expecting one of: // ?//?')
+                self._cut()
+                self._void()
+            with self._option():
                 self._token('?/')
                 self._cut()
                 self._pattern(r'(.|\n)+?(?=/\?)')

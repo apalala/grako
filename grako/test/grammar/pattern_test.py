@@ -43,3 +43,10 @@ class PatternTests(unittest.TestCase):
         model = genmodel(grammar=grammar)
         ast = model.parse('abc123 def456')
         self.assertEqual(['abc123', 'def456'], ast)
+
+
+    def test_empty_pattern(self):
+        grammar = '''
+            start = @:// ;
+        '''
+        genmodel(grammar=grammar)

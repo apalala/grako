@@ -131,3 +131,12 @@ class DirectiveTests(unittest.TestCase):
         code = codegen(model)
         self.assertTrue('parseinfo=False' in code)
         compile(code, 'test.py', 'exec')
+
+    def test_empty_whitespace(self):
+        grammar = '''
+            @@whitespace :: //
+
+            start = $ ;
+        '''
+        genmodel(grammar=grammar)
+
