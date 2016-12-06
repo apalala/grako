@@ -724,7 +724,7 @@ integer::Integer::Literal
 [99]: https://bitbucket.org/apalala/grako/issue/99
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.17.0
-[3.17.1]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.17.0
+[3.17.1]: https://bitbucket.org/apalala/grako/branches/compare/3.17.1%0D3.17.0
 [3.17.0]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.16.5
 [3.16.5]: https://bitbucket.org/apalala/grako/branches/compare/3.16.5%0D3.16.4
 [3.16.4]: https://bitbucket.org/apalala/grako/branches/compare/3.16.4%0D3.16.3
