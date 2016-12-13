@@ -102,4 +102,4 @@ class KeywordTests(unittest.TestCase):
             id = /\w+/ ;
         '''
         model = genmodel('test', grammar)
-        ast = model.parse("hello Øresund")
+        model.parse("hello Øresund")

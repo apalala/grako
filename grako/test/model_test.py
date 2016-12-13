@@ -16,7 +16,6 @@ class ModelTests(unittest.TestCase):
                     **_kwargs_
                 )
 
-
         atom = Atom(symbol='foo', ast={})
         self.assertIsNotNone(atom.symbol)
         self.assertEqual(atom.symbol, 'foo')
