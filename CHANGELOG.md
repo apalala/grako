@@ -12,6 +12,12 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+## [3.18.1] @ 2016-12-13
+
+### Fixed
+
+- [102] `MANIFEST.in` dit not include the _calc_ example, so it wasn't distributed.
+
 
 ## [3.17.0] @ 2016-12-01
 
@@ -714,8 +720,10 @@ integer::Integer::Literal
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 [99]: https://bitbucket.org/apalala/grako/issue/99
+[102]: https://bitbucket.org/apalala/grako/issue/102
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.17.0
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.1rc1
+[3.18.1rc1]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.17.0
 [3.17.0]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.16.5
 [3.16.5]: https://bitbucket.org/apalala/grako/branches/compare/3.16.5%0D3.16.4
 [3.16.4]: https://bitbucket.org/apalala/grako/branches/compare/3.16.4%0D3.16.3

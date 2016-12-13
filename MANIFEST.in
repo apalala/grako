@@ -17,6 +17,10 @@ recursive-include examples/regex *
 exclude examples/regex/parser_base.py
 exclude examples/regex/genparser.py
 
+recursive-include examples/calc *
+recursive-exclude examples/calc calc_parser.py
+recursive-exclude examples/calc calc_model.py
+
 global-exclude *.pyc
 global-exclude *.pyd
 global-exclude *.pyo
