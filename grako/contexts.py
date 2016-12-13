@@ -523,7 +523,7 @@ class ParseContext(object):
                     cache[key] = result
                 return result
             except FailedSemantics as e:
-                self._error(str(e), FailedParse)
+                self._error(ustr(e), FailedParse)
         except FailedParse as e:
             self._set_furthest_exception(e)
             if self._memoization():
@@ -812,7 +812,7 @@ class ParseContext(object):
         return cst
 
     def _check_name(self):
-        name = str(self.last_node)
+        name = ustr(self.last_node)
         if self.ignorecase or self._buffer.ignorecase:
             name = name.upper()
         if name in self.keywords:

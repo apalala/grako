@@ -22,6 +22,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 - [101] `objectmodel.Node` constructor does not set attributes when `ast=None`.
 - [102] `MANIFEST.in` dit not include the _calc_ example, so it wasn't distributed.
+- [103] `grako.contexts.ParseContext._check_name fails in [Python] _2.7) with non-ASCII identifiers.  For _2.7_ compatibility, `grako.util.ustr()` must be used instead of the built-in `str()`.
 
 
 ## [3.17.0] @ 2016-12-01
@@ -727,6 +728,7 @@ integer::Integer::Literal
 [99]: https://bitbucket.org/apalala/grako/issue/99
 [101]: https://bitbucket.org/apalala/grako/issue/101
 [102]: https://bitbucket.org/apalala/grako/issue/102
+[103]: https://bitbucket.org/apalala/grako/issue/103
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.1rc1
 [3.18.1rc1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.0rc1%0D3.17.0

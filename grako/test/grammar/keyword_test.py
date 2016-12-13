@@ -91,3 +91,15 @@ class KeywordTests(unittest.TestCase):
         except FailedParse as e:
             self.assertTrue('"A" is a reserved word' in str(e))
             pass
+
+    def test_check_unicode_name(self):
+        grammar = '''
+            @@keyword :: A
+
+            start = {id}+ $ ;
+
+            @name
+            id = /\w+/ ;
+        '''
+        model = genmodel('test', grammar)
+        ast = model.parse("hello Øresund")
