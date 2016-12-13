@@ -12,6 +12,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
+
+### Fixed
+
+- [104] Wrong shebang in examples/antlr2grako/antlr2grako.py
+
 ## [3.18.1] @ 2016-12-13
 
 
@@ -729,6 +734,7 @@ integer::Integer::Literal
 [101]: https://bitbucket.org/apalala/grako/issue/101
 [102]: https://bitbucket.org/apalala/grako/issue/102
 [103]: https://bitbucket.org/apalala/grako/issue/103
+[104]: https://bitbucket.org/apalala/grako/issue/104
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
