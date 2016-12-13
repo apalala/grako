@@ -12,7 +12,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [X.Y.Z]
 
-## [3.18.1] @ 2016-12-13
+## [3.18.1rc1] @ 2016-12-13
 
 ### Fixed
 
