@@ -14,8 +14,13 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ## [3.18.1rc1] @ 2016-12-13
 
+
+### Changed
+- Updated list of contributors
+
 ### Fixed
 
+- [101] `objectmodel.Node` constructor does not set attributes when `ast=None`.
 - [102] `MANIFEST.in` dit not include the _calc_ example, so it wasn't distributed.
 
 
@@ -720,6 +725,7 @@ integer::Integer::Literal
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
 [99]: https://bitbucket.org/apalala/grako/issue/99
+[101]: https://bitbucket.org/apalala/grako/issue/101
 [102]: https://bitbucket.org/apalala/grako/issue/102
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.1rc1

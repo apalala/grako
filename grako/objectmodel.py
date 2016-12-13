@@ -30,7 +30,7 @@ class Node(object):
 
         attributes = ast or {}
         # asume that kwargs contains node attributes of interest
-        if isinstance(ast, Mapping):
+        if isinstance(attributes, Mapping):
             attributes.update({k: v for k, v in kwargs.items() if v is not None})
 
         self._parent = None  # will always be a weakref or None

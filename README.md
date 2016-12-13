@@ -1332,7 +1332,7 @@ features, bug fixes, or suggestions: [franz\_g], [marcus][lambdafu],
 [pauls][Paul Sargent], [basel-shishani][Basel Shishani],
 [drothlis][David Röthlisberger], [gapag], [gkimbar], [jimon],
 [lambdafu], [linkdd], [nehz], [neumond], [pgebhard], [r\_speer][Robert
-Speer], [siemer], [starkat][Kathryn Long], [vmuriart], [gegenschall].
+Speer], [siemer], [starkat][Kathryn Long], [vmuriart], [gegenschall], [tonico_strasser], [vinay.sajip].
 
 Changes
 -------
@@ -1418,4 +1418,7 @@ See the [CHANGELOG] for details.
   [siemer]: https://bitbucket.org/siemer/
   [vmuriart]: https://bitbucket.org/vmuriart/
   [gegenschall]: https://bitbucket.org/gegenschall/
+  [tonico_strasser]: https://bitbucket.org/tonico_strasser/
+  [vinay.sajip]: https://bitbucket.org/vinay.sajip/
+  [brouhaha]: https://bitbucket.org/brouhaha/
   [CHANGELOG]: https://bitbucket.org/apalala/grako/src/default/CHANGELOG.md
