@@ -15,6 +15,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
+- Fixed signature of `__call__` method in `class ListRules(argparse.Action)`.
+
+
+### Fixed
+
 - [104] Wrong shebang in examples/antlr2grako/antlr2grako.py
 
 ## [3.18.1] @ 2016-12-13
