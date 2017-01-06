@@ -480,7 +480,7 @@ class CalcSemantics(object):
 
 ## Object models
 
-Semantics bound to grammar rules are powerful and versatile, but they risk being more tied to the parsing process than to the objects that are parsed. That is not a problem for simple languages, like the arithmetic expression language in this tutorial, but the number of grammar rules quickly becomes much more larger than the types of objects parsed as the complexity of the parsed language increases. **Grako** provides for the creation of typed object models directly from the parsing process, and for the navigation (_walking_) and transformation (_code generation_) of those models in later passes.
+Binding semantics to grammar rules is powerful and versatile, but this approach risks tying the semantics to the *parsing process*, rather than to *the objects* that are parsed.  That is not a problem for simple languages, like the arithmetic expression language in this tutorial. But as the complexity of the parsed language increases, the number of grammar rules quickly becomes larger than the types of objects parsed. **Grako** provides for the creation of typed object models directly from the parsing process, and for the navigation (_walking_) and transformation (_code generation_) of those models in later passes.
 
 The first step in the creation of an object model as [AST] is to annotate the grammar with the desired class names for the objects parsed:
 
@@ -559,8 +559,7 @@ The object model classes can be generated using the `-g` option in `grako`:
 $ PYTHONPATH=../../.. python -m grako -g -o calc_model.py calc.ebnf
 ```
 
-If the model classes are not generited, they will can be synthetized at runtime using
-``grako.semantics.ModelBuilderSemantics``. This is what the class definitions for arithmetic expressions looks like:
+If the model classes are not generated, they can be synthetized at runtime using ``grako.semantics.ModelBuilderSemantics``. The class definitions for arithmetic expressions look like this:
 
 
 ```python
@@ -698,7 +697,7 @@ The above program produces this result:
 
 ## Code Generation
 
-Translation is one of the most common tasks in language processing. Analysis often sumarizes the parsed input, and _walkers_ are  good for that. In translation, the output can often be as verbose as the input, so a systematic approach that avoids bookkeeping as much as possible. **Grako** provides support for template-based code generation (translation) in the ``grako.codegen`` module. Code generation works defining a translation class for each class in the model specified by the grammar.
+Translation is one of the most common tasks in language processing. Analysis often sumarizes the parsed input, and _walkers_ are good for that. In translation, the output can often be as verbose as the input, so a systematic approach that avoids bookkeeping as much as possible. **Grako** provides support for template-based code generation (translation) in the ``grako.codegen`` module.  Code generation works defining a translation class for each class in the model specified by the grammar.
 
 The following code generator translates input expressions to the postfix instructions of a stack-based processor:
 

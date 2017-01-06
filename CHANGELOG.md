@@ -16,6 +16,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Fixed
 
 - Fixed signature of `__call__` method in `class ListRules(argparse.Action)`.
+- [107] Fixed typo, improve English in "Calc" example ([sjbrownBitbucket]).
 
 
 ### Fixed
@@ -710,6 +711,7 @@ integer::Integer::Literal
 [siemer]: https://bitbucket.org/siemer/
 [starkat]: https://bitbucket.org/starkat
 [vmuriart]: https://bitbucket.org/vmuriart/
+[sjbrownBitbucket]: https://bitbucket.org/sjbrownBitbucket/
 
 [22]: https://bitbucket.org/apalala/grako/issue/22
 [23]: https://bitbucket.org/apalala/grako/issue/23
@@ -740,6 +742,7 @@ integer::Integer::Literal
 [102]: https://bitbucket.org/apalala/grako/issue/102
 [103]: https://bitbucket.org/apalala/grako/issue/103
 [104]: https://bitbucket.org/apalala/grako/issue/104
+[107]: https://bitbucket.org/apalala/grako/issue/107
 
 [X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
