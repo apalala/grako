@@ -12,4 +12,4 @@ pipelines:
           - pip install -U tox
           - pip --version
           - tox --version
-          - tox -r -e py27,py35,py36,cython
+          - tox -r -e py27,py35,cython
