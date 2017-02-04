@@ -66,7 +66,7 @@ release_check: clean
 	@echo version `python -m grako --version`
 
 
-distributions: release_check
+distributions: clean
 	python setup.py sdist --formats=zip
 	python setup.py bdist_wheel --universal
 
