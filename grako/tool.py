@@ -83,7 +83,6 @@ def parse_args():
     )
     generation_opts.add_argument(
         '--name', '-m',
-        nargs=1,
         metavar='NAME',
         help='Name for the grammar (defaults to GRAMMAR base name)'
     )
