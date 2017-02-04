@@ -13,6 +13,14 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+### Changed
+
+- [PyPi] (the _Python Package Index_) now requires there be a single source-code archive in each release. The chosen format is '.zip'.
+- [PyPi] publication requires there be a `README`, `README.rst`, or `README.txt` file. Renamed `DISTRIBUTION.rst` to `README.rst`.
+
+
+## [3.18.2] @ 2016-02-04
+
 ### Fixed
 
 - Fixed signature of `__call__` method in `class ListRules(argparse.Action)`.
@@ -746,7 +754,8 @@ integer::Integer::Literal
 [107]: https://bitbucket.org/apalala/grako/issue/107
 [109]: https://bitbucket.org/apalala/grako/issue/109
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.1
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.2
+[3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
 [3.17.0]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.16.5
 [3.16.5]: https://bitbucket.org/apalala/grako/branches/compare/3.16.5%0D3.16.4
