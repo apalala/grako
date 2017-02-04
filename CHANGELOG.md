@@ -13,6 +13,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+### Changed
+
+- [PyPi] (the _Python Package Index_) now requires there be a single source-code archive in each release. The chosen format is '.zip'.
+
+
 ## [3.18.2] @ 2016-02-04
 
 ### Fixed

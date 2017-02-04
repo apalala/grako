@@ -67,7 +67,7 @@ release_check: clean
 
 
 distributions: release_check
-	python setup.py sdist --formats=gztar,zip
+	python setup.py sdist --formats=zip
 	python setup.py bdist_wheel --universal
 
 
