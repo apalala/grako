@@ -512,7 +512,7 @@ class ParseContext(object):
                 elif '@' in node:
                     node = node['@']  # override the AST
                 elif self.parseinfo:
-                    node._parseinfo = self._get_parseinfo(name, pos)
+                    node.set_parseinfo(self._get_parseinfo(name, pos))
 
                 node = self._invoke_semantic_rule(name, node, params, kwparams)
                 result = (node, self._pos, self._state)
