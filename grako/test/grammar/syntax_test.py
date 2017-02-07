@@ -287,3 +287,14 @@ class SyntaxTests(unittest.TestCase):
         codegen(model)
         ast = model.parse("xxxy", nameguard=False)
         self.assertEqual([['x', 'x', 'x'], [], 'y'], ast)
+
+    def test_parseinfo(self):
+        grammar = '''
+            start = head:{'x'}+ {} tail:'y'$;
+        '''
+        model = genmodel("test", grammar)
+        ast = model.parse("xxxy", nameguard=False, parseinfo=True)
+        self.assertIsNotNone(ast)
+        self.assertIsNotNone(ast.head)
+        self.assertIsNotNone(ast.tail)
+        self.assertIsNotNone(ast.parseinfo)

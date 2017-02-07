@@ -17,6 +17,7 @@ from grako.walkers import DepthFirstWalker
 from grako.parser import GrakoGrammarGenerator, GrakoParser
 from grako.semantics import GrakoSemantics
 from grako.codegen import codegen
+from grako.util import asjson
 
 tmp = os.path.abspath('./tmp')
 sys.path.insert(0, tmp)
@@ -36,7 +37,7 @@ class BootstrapTests(unittest.TestCase):
             text = str(f.read())
         g = GrakoParser('GrakoBootstrap')
         grammar0 = g.parse(text)
-        ast0 = json.dumps(grammar0, indent=2)
+        ast0 = json.dumps(asjson(grammar0), indent=2)
         with open('./tmp/00.ast', 'w') as f:
             f.write(ast0)
 
@@ -66,7 +67,7 @@ class BootstrapTests(unittest.TestCase):
         g = GrakoParser('GrakoBootstrap')
         ast3 = g.parse(text)
         with open('./tmp/03.ast', 'w') as f:
-            f.write(json.dumps(ast3, indent=2))
+            f.write(json.dumps(asjson(ast3), indent=2))
 
         print('-' * 20, 'phase 04 - repeat')
         with open('./tmp/02.ebnf') as f:
@@ -85,7 +86,7 @@ class BootstrapTests(unittest.TestCase):
             text = f.read()
         ast5 = parser.parse(text)
         with open('./tmp/05.ast', 'w') as f:
-            f.write(json.dumps(ast5, indent=2))
+            f.write(json.dumps(asjson(ast5), indent=2))
 
         print('-' * 20, 'phase 06 - generate parser code')
         gencode6 = codegen(parser)
@@ -107,7 +108,7 @@ class BootstrapTests(unittest.TestCase):
         # )
         # self.assertEqual(result, parser.ast['start'])
         # ast8 = parser.ast['start']
-        # json8 = json.dumps(ast8, indent=2)
+        # json8 = json.dumps(asjson(ast8), indent=2)
         # open('./tmp/08.ast', 'w').write(json8)
         # self.assertEqual(ast5, ast8)
 

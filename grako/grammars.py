@@ -749,7 +749,7 @@ class BasedRule(Rule):
         )
         self.base = base
         ast = AST(sequence=[self.base.exp, self.exp])
-        ast._parseinfo = self.base.parseinfo
+        ast.set_parseinfo(self.base.parseinfo)
         self.rhs = Sequence(ast)
 
     def parse(self, ctx):

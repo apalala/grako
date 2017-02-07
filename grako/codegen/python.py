@@ -511,11 +511,13 @@ class Grammar(Base):
 
                 if __name__ == '__main__':
                     import json
+                    from grako.util import asjson
+
                     ast = generic_main(main, {name}Parser, name='{name}')
                     print('AST:')
                     print(ast)
                     print()
                     print('JSON:')
-                    print(json.dumps(ast.asjson(), indent=2))
+                    print(json.dumps(asjson(ast), indent=2))
                     print()
                 '''

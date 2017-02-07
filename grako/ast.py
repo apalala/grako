@@ -14,22 +14,12 @@ class AST(dict):
     def __init__(self, *args, **kwargs):
         super(AST, self).__init__()
         self._order = []
-        self._parseinfo = None
 
         self.update(*args, **kwargs)
         self._closed = True
 
-    @property
-    def parseinfo(self):
-        """ Make the special attribute `_parseinfo` be available
-            as a property without an underscore in the name.
-            This patch helps with backwards compatibility.
-        """
-        return self._parseinfo
-
-    @parseinfo.setter
-    def parseinfo(self, value):
-        self._parseinfo = value
+    def set_parseinfo(self, value):
+        self.set('parseinfo', value)
 
     def asjson(self):
         return asjson(self)
@@ -153,7 +143,6 @@ class AST(dict):
                 self._order.append(key)
 
     def __json__(self):
-        # preserve order
         return {
             asjson(k): asjson(v)
             for k, v in self.items() if not k.startswith('_')
