@@ -17,6 +17,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 - [PyPi] (the _Python Package Index_) now requires there be a single source-code archive in each release. The chosen format is '.zip'.
 - [PyPi] publication requires there be a `README`, `README.rst`, or `README.txt` file. Renamed `DISTRIBUTION.rst` to `README.rst`.
+- Make `parseinfo` less special so it can be part of `ATS` and of `asjson(ast)`.
 
 
 ## [3.18.2] @ 2016-02-04
