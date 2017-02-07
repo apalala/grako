@@ -505,7 +505,7 @@ class Grammar(Base):
                 def main(filename, startrule, **kwargs):
                     with open(filename) as f:
                         text = f.read()
-                    parser = {name}Parser(parseinfo=False)
+                    parser = {name}Parser()
                     return parser.parse(text, startrule, filename=filename, **kwargs)
 
 
