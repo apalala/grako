@@ -431,3 +431,9 @@ class Buffer(object):
         if end is None:
             end = len(self._line_index)
         return self._line_index[start:1 + end]
+
+    def __repr__(self):
+        return '%s@%d' % (type(self).__name__, self.pos)
+
+    def __json__(self):
+        return None
