@@ -1,4 +1,4 @@
-test: grako_test examples
+test: flake8 grako_test examples
 
 
 grako_test:
