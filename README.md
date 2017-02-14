@@ -7,13 +7,15 @@
 
 > _At least for the people who send me mail about a new language that they're designing, the general advice is: do it to learn about how to write a compiler. Don't have any expectations that anyone will use it, unless you hook up with some sort of organization in a position to push it hard. It's a lottery, and some can buy a lot of the tickets. There are plenty of beautiful languages (more beautiful than C) that didn't catch on. But someone does win the lottery, and doing a language at least teaches you something._
 >
-> [Dennis Ritchie] (1941-2011)
->
-> :   Creator of the [C] programming language and of [Unix]
+>[Dennis Ritchie] (1941-2011)<br/>
+>   _Creator of the [C] programming language and of [Unix]_
 
 
 Grako
 =====
+
+    Copyright © 2017      by Juancarlo Añez
+    Copyright © 2012-2016 by Juancarlo Añez and Thomas Bragg
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a
 variation of [EBNF] as input, and outputs [memoizing] ([Packrat]) [PEG]
@@ -1229,10 +1231,7 @@ know about limitations.
 License
 -------
 
-**Grako** is Copyright (C) 2012-2016 by [Thomas Bragg] and [Juancarlo
-Añez]
-
-You may use the tool under the terms of the [BSD]-style license
+You may use **Grako** under the terms of the [BSD]-style license
 described in the enclosed **LICENSE.txt** file. *If your project
 requires different licensing* please [email][Juancarlo Añez].
 
