@@ -765,15 +765,13 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _regexes_(self):
-        self._regex_()
-        self.add_last_node_to_name('@')
 
-        def block1():
+        def sep0():
             self._token('+')
-            self._cut()
+
+        def block0():
             self._regex_()
-            self.add_last_node_to_name('@')
-        self._closure(block1)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _regex_(self):
@@ -985,16 +983,18 @@ class GrakoBootstrapSemantics(object):
 def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    parser = GrakoBootstrapParser(parseinfo=False)
+    parser = GrakoBootstrapParser()
     return parser.parse(text, startrule, filename=filename, **kwargs)
 
 
 if __name__ == '__main__':
     import json
+    from grako.util import asjson
+
     ast = generic_main(main, GrakoBootstrapParser, name='GrakoBootstrap')
     print('AST:')
     print(ast)
     print()
     print('JSON:')
-    print(json.dumps(ast, indent=2))
+    print(json.dumps(asjson(ast), indent=2))
     print()
