@@ -27,8 +27,8 @@
 Grako
 =====
 
-    Copyright © 2017      by Juancarlo Añez
-    Copyright © 2012-2016 by Juancarlo Añez and Thomas Bragg
+    Copyright (C) 2017      by Juancarlo Añez
+    Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.

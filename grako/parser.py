@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017      by Juancarlo Añez
+# Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 """
 Implements parsing of Grako's EBNF idiom for grammars, and grammar model
 creation using the .grammars module.

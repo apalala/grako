@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017      by Juancarlo Añez
+# Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 # This code was copied from post from coldfix in Stack Overflow:
