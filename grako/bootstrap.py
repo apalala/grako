@@ -796,7 +796,7 @@ class GrakoBootstrapParser(Parser):
             with self._option():
                 self._token('/')
                 self._cut()
-                self._pattern(r'([^/\n]|\\/|\\\\)+')
+                self._pattern(r'([^/\\]|\\/|\\.)+')
                 self.name_last_node('@')
                 self._token('/')
                 self._cut()
