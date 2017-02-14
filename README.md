@@ -379,6 +379,24 @@ The expressions, in reverse order of operator precedence, can be:
 :   Empty closure. Match nothing and produce an empty list as
     [AST][Abstract Syntax Tree].
 
+
+#### `~`
+
+:   The *cut* expression. Commit to the current option and prevent
+    other options from being considered even if what follows fails
+    to parse.
+
+    In this example, other options won't be considered if a
+    parenthesis is parsed:
+
+        atom
+            =
+              '(' ~ @:expre ')'
+            | int
+            | bool
+            ;
+
+
 #### `s.{ e }+`
 
 :   Positive join. Inspired by [Python]'s `str.join()`, is equivalent
@@ -431,26 +449,33 @@ The expressions, in reverse order of operator precedence, can be:
 
         @@namechars :: '$-.'
 
-#### `/regexp/`
+#### `r'text'` or `r"text"`
 
-:   The pattern expression. Match the [Python] regular expression
+:   Match the token *text* within the quotation marks, interpreting _text_ like [Python]'s [raw string literal]s.
+
+[string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
+[raw string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
+
+
+#### `?"regexp"` or `?'regexp'`
+
+:   The _pattern_ expression. Match the [Python] regular expression
     `regexp` at the current text position. Unlike other expressions,
     this one does not advance over whitespace or comments. For that,
     place the `regexp` as the only term in its own rule.
 
-    The `regexp` is passed *as-is* to the [Python][] [re] module (or
-    [regex] if available), using `match()` at the current position in
+    The *regex* is interpreted as a [Python]'s [raw string literal] and
+    passed *as-is* to the [Python][] [re] module (or to
+    [regex], if available), using `match()` at the current position in
     the text. The matched text is the [AST][Abstract Syntax Tree] for
     the expression.
 
-#### `?/regexp/?`
+    Consecutive patterns are concatenated to form a single one.
 
-:   Another form of the pattern expression that can be used when there
-    are slashes (`/`) in the pattern.
 
-#### `+/regexp/`
+* `/regexp/`
 
-:   Concatenate the given pattern with the preceding one.
+:   Another form of the _pattern_ expression.
 
 #### `` `constant ``\`
 
@@ -495,22 +520,6 @@ The expressions, in reverse order of operator precedence, can be:
 
 :   The *fail* expression. This is actually `!` applied to `()`, which
     always fails.
-
-#### `~`
-
-:   The *cut* expression. Commit to the current option and prevent
-    other options from being considered even if what follows fails
-    to parse.
-
-    In this example, other options won't be considered if a
-    parenthesis is parsed:
-
-        atom
-            =
-              '(' ~ @:expre ')'
-            | int
-            | bool
-            ;
 
 #### `name:e`
 
@@ -559,10 +568,6 @@ The expressions, in reverse order of operator precedence, can be:
 :   The *end of text* symbol. Verify that the end of the input text
     has been reached.
 
-#### `(*` *comment* `*)`
-
-:   Comments may appear anywhere in the text.
-
 #### `#` *comment*
 
 :   [Python]-style comments are also allowed.
@@ -583,6 +588,26 @@ number = number:/[0-9]+/ ;
 
 When a rule has named elements, the unnamed ones are excluded from the
 [AST][Abstract Syntax Tree] (they are ignored).
+
+### Deprecated Expressions
+
+The following expressions are still recognized in grammars, but they are considered deprecated, and will be removed in a future version of **Grako**.
+
+* `?/regexp/?`
+
+:   Another form of the pattern expression that can be used when there
+    are slashes (`/`) in the pattern. Use the `?"regexp"` or `?'regexp'` forms instead.
+
+* `+/regexp/`
+
+:   Concatenate the given pattern with the preceding one.
+
+
+* `(*` *comment* `*)`
+
+:   Comments may appear anywhere in the text. Use the [Python]-style comments instead.
+
+
 
 ### Rules with Arguments
 

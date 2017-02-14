@@ -322,16 +322,12 @@ class Pattern(Model):
     def _to_str(self, lean=False):
         parts = []
         for pat in (ustr(p) for p in self.patterns):
-            if '/' not in pat:
-                template = '/%s/'
-                parts.append(template % pat)
-            else:
-                template = '?/%s/?'
-                result = template % pat
-                if result.count('?') % 2:
-                    result += '?'  # for the VIM syntax
-                parts.append(result)
-        return ' +\n'.join(parts)
+            template = '/%s/'
+            if '/' in pat:
+                template = '?"%s"'
+                pat = pat.replace('"', r'\"')
+            parts.append(template % pat)
+        return '\n+ '.join(parts)
 
 
 class Lookahead(Decorator):
@@ -441,7 +437,7 @@ class Choice(Model):
         if multi:
             return '\n|\n'.join(indent(o) for o in options)
         elif len(options) and len(single) > PEP8_LLEN:
-            return '  ' + '\n| '.join(o for o in options)
+            return '| ' + '\n| '.join(o for o in options)
         else:
             return single
 
