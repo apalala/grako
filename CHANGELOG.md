@@ -19,6 +19,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 - [PyPi] publication requires there be a `README`, `README.rst`, or `README.txt` file. Renamed `DISTRIBUTION.rst` to `README.rst`.
 - Make `parseinfo` less special so it can be part of `ATS` and of `asjson(ast)`.
 - Move `etc/grako.ebnf`, the **Grako** grammar to a `grammar` directory.
+- Honor `/e/ + /e/` regexp syntax when prettifying.
 
 
 ## [3.18.2] @ 2016-02-04

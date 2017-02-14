@@ -299,9 +299,15 @@ class Constant(Model):
 
 class Pattern(Model):
     def __postinit__(self, ast):
-        re.compile(ast, RE_FLAGS)
         super(Pattern, self).__postinit__(ast)
-        self.pattern = ast
+        if not isinstance(ast, list):
+            ast = [ast]
+        self.patterns = ast
+        re.compile(self.pattern, RE_FLAGS)
+
+    @property
+    def pattern(self):
+        return ''.join(self.patterns)
 
     def parse(self, ctx):
         return ctx._pattern(self.pattern)
@@ -310,16 +316,18 @@ class Pattern(Model):
         return set([(self.pattern,)])
 
     def _to_str(self, lean=False):
-        pattern = ustr(self.pattern)
-        if '/' not in pattern:
-            template = '/%s/'
-            return template % pattern
-        else:
-            template = '?/%s/?'
-            result = template % pattern
-            if result.count('?') % 2:
-                result += '?'  # for the VIM syntax
-            return result
+        parts = []
+        for pat in (ustr(p) for p in self.patterns):
+            if '/' not in pat:
+                template = '/%s/'
+                parts.append(template % pat)
+            else:
+                template = '?/%s/?'
+                result = template % pat
+                if result.count('?') % 2:
+                    result += '?'  # for the VIM syntax
+                parts.append(result)
+        return ' +\n'.join(parts)
 
 
 class Lookahead(Decorator):

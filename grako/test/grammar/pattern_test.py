@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
+from grako.util import trim
 from grako.tool import genmodel
 
 
@@ -33,13 +34,19 @@ class PatternTests(unittest.TestCase):
 
     def test_pattern_concatenation(self):
         grammar = '''
-            start = {letters_digits}+ ;
+            start
+                =
+                {letters_digits}+
+                ;
+
 
             letters_digits
                 =
-                /[a-z]+/ + /[0-9]+/
+                /[a-z]+/ +
+                /[0-9]+/
                 ;
         '''
         model = genmodel(grammar=grammar)
         ast = model.parse('abc123 def456')
         self.assertEqual(['abc123', 'def456'], ast)
+        self.assertEqual(trim(grammar), model.pretty())

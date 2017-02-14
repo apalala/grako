@@ -124,12 +124,7 @@ class GrakoSemantics(ModelBuilderSemantics):
         return grammars.Token(token)
 
     def pattern(self, ast, *args):
-        pattern = ast
-        try:
-            re.compile(pattern, RE_FLAGS)
-        except (TypeError, re.error) as e:
-            raise FailedSemantics('regexp error: ' + str(e))
-        return grammars.Pattern(pattern)
+        return grammars.Pattern(ast)
 
     def regexes(self, ast, *args):
         pattern = ''.join(ast)
@@ -137,7 +132,7 @@ class GrakoSemantics(ModelBuilderSemantics):
             re.compile(pattern, RE_FLAGS)
         except (TypeError, re.error) as e:
             raise FailedSemantics('regexp error: ' + str(e))
-        return pattern
+        return ast
 
     def regex(self, ast, *args):
         pattern = ast

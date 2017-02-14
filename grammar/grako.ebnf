@@ -383,7 +383,7 @@ pattern::Pattern
 
 regexes
     =
-    @+:regex {'+' ~ @+:regex}*
+    '+'.{regex}+
     ;
 
 
