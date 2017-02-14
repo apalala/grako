@@ -398,30 +398,17 @@ pattern::Pattern
 
 regexes
     =
-    | {new_regex}+
-    | '+'.{old_regex}+
+    '+'.{regex}+
     ;
 
 
 
 regex
     =
-    | new_regex
-    | old_regex
-    ;
-
-
-new_regex
-    =
-    '?' @:STRING
-    ;
-
-
-old_regex
-    =
     | '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
     | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
-    | ?"/([^/\n]|\\/|\\\\)*/" ~
+    | '?' @:STRING
+    | ?"/([^/\n]|\/|\\)*/"
     ;
 
 

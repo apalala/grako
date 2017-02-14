@@ -782,39 +782,16 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _regexes_(self):
-        with self._choice():
-            with self._option():
 
-                def block0():
-                    self._new_regex_()
-                self._positive_closure(block0)
-            with self._option():
+        def sep0():
+            self._token('+')
 
-                def sep1():
-                    self._token('+')
-
-                def block1():
-                    self._old_regex_()
-                self._positive_closure(block1, sep=sep1)
-            self._error('no available options')
+        def block0():
+            self._regex_()
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _regex_(self):
-        with self._choice():
-            with self._option():
-                self._new_regex_()
-            with self._option():
-                self._old_regex_()
-            self._error('no available options')
-
-    @graken()
-    def _new_regex_(self):
-        self._token('?')
-        self._STRING_()
-        self.name_last_node('@')
-
-    @graken()
-    def _old_regex_(self):
         with self._choice():
             with self._option():
                 self._token('?/')
@@ -830,7 +807,13 @@ class GrakoBootstrapParser(Parser):
                 self.name_last_node('@')
                 self._token('/')
                 self._cut()
-            self._error('expecting one of: / ?/')
+            with self._option():
+                self._token('?')
+                self._STRING_()
+                self.name_last_node('@')
+            with self._option():
+                self._pattern(r'/([^/\n]|\/|\\)*/')
+            self._error('expecting one of: / /([^/\\n]|\\/|\\\\)*/ ?/')
 
     @graken()
     def _boolean_(self):
@@ -1017,12 +1000,6 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def regex(self, ast):
-        return ast
-
-    def new_regex(self, ast):
-        return ast
-
-    def old_regex(self, ast):
         return ast
 
     def boolean(self, ast):

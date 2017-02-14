@@ -45,7 +45,7 @@ class PatternTests(unittest.TestCase):
             letters_digits
                 =
                 ?"[a-z]+"
-                ?'[0-9]+'
+                + ?'[0-9]+'
                 ;
         '''
         pretty = '''
@@ -57,30 +57,12 @@ class PatternTests(unittest.TestCase):
 
             letters_digits
                 =
-                /[a-z]+/ +
-                /[0-9]+/
+                /[a-z]+/
+                + /[0-9]+/
                 ;
         '''
         model = genmodel(grammar=grammar)
         ast = model.parse('abc123 def456')
         self.assertEqual(['abc123', 'def456'], ast)
+        print(model.pretty())
         self.assertEqual(trim(pretty), model.pretty())
-
-    def test_old_pattern_concatenation(self):
-        grammar = '''
-            start
-                =
-                {letters_digits}+
-                ;
-
-
-            letters_digits
-                =
-                /[a-z]+/ +
-                /[0-9]+/
-                ;
-        '''
-        model = genmodel(grammar=grammar)
-        ast = model.parse('abc123 def456')
-        self.assertEqual(['abc123', 'def456'], ast)
-        self.assertEqual(trim(grammar), model.pretty())

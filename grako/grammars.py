@@ -331,7 +331,7 @@ class Pattern(Model):
                 if result.count('?') % 2:
                     result += '?'  # for the VIM syntax
                 parts.append(result)
-        return ' +\n'.join(parts)
+        return '\n+ '.join(parts)
 
 
 class Lookahead(Decorator):
@@ -441,7 +441,7 @@ class Choice(Model):
         if multi:
             return '\n|\n'.join(indent(o) for o in options)
         elif len(options) and len(single) > PEP8_LLEN:
-            return '  ' + '\n| '.join(o for o in options)
+            return '| ' + '\n| '.join(o for o in options)
         else:
             return single
 
