@@ -13,8 +13,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
-### Added
+## [3.19.0] 2017-02-14
 
+
+### Added
 
 - [Python]-style _[raw string literals]_ are now valid: `r'text'` or `r"text"`.
 - A new syntax for patterns: `?'text'` or `?"text"`.
@@ -771,7 +773,8 @@ integer::Integer::Literal
 [107]: https://bitbucket.org/apalala/grako/issue/107
 [109]: https://bitbucket.org/apalala/grako/issue/109
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.18.2
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.0
+[3.19.0]: https://bitbucket.org/apalala/grako/branches/compare/3.19.0%0D3.18.2
 [3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
 [3.17.0]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.16.5

@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2017      by Juancarlo Añez
 # Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
+
 import sys
 import io
 import setuptools
 import grako
+
+
+SHORT_DESCRIPTION = (
+    '{toolname} takes a grammar'
+    ' in a variation of EBNF as input, and outputs a memoizing'
+    ' PEG/Packrat parser in Python.'
+).format(toolname=grako.__toolname__)
 
 try:
     from Cython.Build import cythonize
@@ -17,12 +25,10 @@ setuptools.setup(
     zip_safe=False,
     name='grako',
     version=grako.__version__,
-    url='http://bitbucket.org/apalala/grako',
+    url='http://bitbucket.org/neogeny/{package}'.format(package=grako.__package__),
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
-    description='Grako (for "grammar compiler") takes a grammar'
-                ' in a variation of EBNF as input, and outputs a memoizing'
-                ' PEG/Packrat parser in Python.',
+    description=SHORT_DESCRIPTION,
     long_description=io.open('README.rst', encoding='utf-8').read(),
     license='BSD License',
     packages=setuptools.find_packages(),
