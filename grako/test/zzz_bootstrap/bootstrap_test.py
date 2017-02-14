@@ -33,7 +33,7 @@ class BootstrapTests(unittest.TestCase):
         if not os.path.isdir('./tmp'):
             os.mkdir('./tmp')
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
-        with open('etc/grako.ebnf') as f:
+        with open('grammar/grako.ebnf') as f:
             text = str(f.read())
         g = GrakoParser('GrakoBootstrap')
         grammar0 = g.parse(text)
@@ -42,7 +42,7 @@ class BootstrapTests(unittest.TestCase):
             f.write(ast0)
 
         print('-' * 20, 'phase 01 - parse with parser generator')
-        with open('etc/grako.ebnf') as f:
+        with open('grammar/grako.ebnf') as f:
             text = str(f.read())
         g = GrakoGrammarGenerator('GrakoBootstrap')
         g.parse(text, trace=False)
@@ -113,7 +113,7 @@ class BootstrapTests(unittest.TestCase):
         # self.assertEqual(ast5, ast8)
 
         print('-' * 20, 'phase 09 - Generate parser with semantics')
-        with open('etc/grako.ebnf') as f:
+        with open('grammar/grako.ebnf') as f:
             text = f.read()
         parser = GrakoGrammarGenerator('GrakoBootstrap')
         g9 = parser.parse(text)
