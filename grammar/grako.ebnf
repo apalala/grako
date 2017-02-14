@@ -331,20 +331,32 @@ constant::Constant
 
 token::Token
     =
-    string
+    string | raw_string
     ;
 
 
 literal
     =
-    string | word | hex | float | int
+    string | raw_string | word | hex | float | int
     ;
 
 
 string
     =
-    (* allow single and double quotes *)
-    ('"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'") ~
+    STRING
+    ;
+
+
+raw_string
+    =
+    'r' @:STRING
+    ;
+
+
+STRING
+    =
+    | '"' ~ @:/([^"\n]|\\"|\\\\)*/ '"' ~
+    | "'" ~ @:/([^'\n]|\\'|\\\\)*/ "'" ~
     ;
 
 
@@ -390,10 +402,12 @@ regexes
     ;
 
 
+
 regex
     =
-      '?/' ~ @:?/(.|\n)+?(?=/\?)/?? ?//\?+/?? ~
-    | '/' ~ @:?/(.|\n)+?(?=/)/? '/' ~
+    | '/' ~ @:?"([^/\\]|\\/|\\.)+" '/' ~
+    | '?/' ~ @:?"(.|\n)+?(?=/\?)" ?"/\?+" ~
+    | '?' @:STRING
     ;
 
 

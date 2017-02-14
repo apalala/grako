@@ -703,13 +703,20 @@ class GrakoBootstrapParser(Parser):
 
     @graken('Token')
     def _token_(self):
-        self._string_()
+        with self._choice():
+            with self._option():
+                self._string_()
+            with self._option():
+                self._raw_string_()
+            self._error('no available options')
 
     @graken()
     def _literal_(self):
         with self._choice():
             with self._option():
                 self._string_()
+            with self._option():
+                self._raw_string_()
             with self._option():
                 self._word_()
             with self._option():
@@ -722,22 +729,32 @@ class GrakoBootstrapParser(Parser):
 
     @graken()
     def _string_(self):
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('"')
-                    self._cut()
-                    self._pattern(r'([^"\n]|\\"|\\\\)*')
-                    self.name_last_node('@')
-                    self._token('"')
-                with self._option():
-                    self._token("'")
-                    self._cut()
-                    self._pattern(r"([^'\n]|\\'|\\\\)*")
-                    self.name_last_node('@')
-                    self._token("'")
-                self._error('expecting one of: " \'')
-        self._cut()
+        self._STRING_()
+
+    @graken()
+    def _raw_string_(self):
+        self._token('r')
+        self._STRING_()
+        self.name_last_node('@')
+
+    @graken()
+    def _STRING_(self):
+        with self._choice():
+            with self._option():
+                self._token('"')
+                self._cut()
+                self._pattern(r'([^"\n]|\\"|\\\\)*')
+                self.name_last_node('@')
+                self._token('"')
+                self._cut()
+            with self._option():
+                self._token("'")
+                self._cut()
+                self._pattern(r"([^'\n]|\\'|\\\\)*")
+                self.name_last_node('@')
+                self._token("'")
+                self._cut()
+            self._error('expecting one of: " \'')
 
     @graken()
     def _hex_(self):
@@ -777,6 +794,13 @@ class GrakoBootstrapParser(Parser):
     def _regex_(self):
         with self._choice():
             with self._option():
+                self._token('/')
+                self._cut()
+                self._pattern(r'([^/\\]|\\/|\\.)+')
+                self.name_last_node('@')
+                self._token('/')
+                self._cut()
+            with self._option():
                 self._token('?/')
                 self._cut()
                 self._pattern(r'(.|\n)+?(?=/\?)')
@@ -784,12 +808,9 @@ class GrakoBootstrapParser(Parser):
                 self._pattern(r'/\?+')
                 self._cut()
             with self._option():
-                self._token('/')
-                self._cut()
-                self._pattern(r'(.|\n)+?(?=/)')
+                self._token('?')
+                self._STRING_()
                 self.name_last_node('@')
-                self._token('/')
-                self._cut()
             self._error('expecting one of: / ?/')
 
     @graken()
@@ -947,6 +968,12 @@ class GrakoBootstrapSemantics(object):
         return ast
 
     def string(self, ast):
+        return ast
+
+    def raw_string(self, ast):
+        return ast
+
+    def STRING(self, ast):
         return ast
 
     def hex(self, ast):

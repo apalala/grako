@@ -300,3 +300,17 @@ class SyntaxTests(unittest.TestCase):
         self.assertIsNotNone(ast.head)
         self.assertIsNotNone(ast.tail)
         self.assertIsNotNone(ast.parseinfo)
+
+    def test_raw_string(self):
+        grammar = r'''
+            start = r'am\nraw' ;
+        '''
+        pretty = r'''
+            start
+                =
+                'am\\nraw'
+                ;
+        '''
+        model = genmodel("start", grammar)
+        print(model.pretty())
+        self.assertEqual(trim(pretty), model.pretty())

@@ -88,3 +88,16 @@ class PrettyTests(unittest.TestCase):
         self.assertEqual(str(model), model.pretty())
 
         self.assertEqual(pretty_lean, model.pretty_lean())
+
+    def test_slashed_pattern(self):
+        grammar = '''
+            start
+                =
+                ?"[a-z]+/[0-9]+" $
+                ;
+        '''
+        model = genmodel(grammar=grammar)
+        ast = model.parse('abc/123')
+        self.assertEqual('abc/123', ast)
+        print(model.pretty())
+        self.assertEqual(trim(grammar), model.pretty())

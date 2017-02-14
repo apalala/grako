@@ -44,11 +44,25 @@ class PatternTests(unittest.TestCase):
 
             letters_digits
                 =
-                /[a-z]+/ +
-                /[0-9]+/
+                ?"[a-z]+"
+                + ?'[0-9]+'
+                ;
+        '''
+        pretty = '''
+            start
+                =
+                {letters_digits}+
+                ;
+
+
+            letters_digits
+                =
+                /[a-z]+/
+                + /[0-9]+/
                 ;
         '''
         model = genmodel(grammar=grammar)
         ast = model.parse('abc123 def456')
         self.assertEqual(['abc123', 'def456'], ast)
-        self.assertEqual(trim(grammar), model.pretty())
+        print(model.pretty())
+        self.assertEqual(trim(pretty), model.pretty())
