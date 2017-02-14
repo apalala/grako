@@ -228,8 +228,12 @@ class EOF(Model):
 
 
 class Decorator(Model):
-    def __init__(self, ast=None, **kwargs):
-        if not isinstance(ast, AST):
+    def __init__(self, ast=None, exp=None, **kwargs):
+        if exp is not None:
+            self.exp = exp
+        elif not isinstance(ast, AST):
+            # Patch to avoid bad interactions with attribute setting in Model.
+            # Also a shortcut for subexpressions that are not ASTs.
             ast = AST(exp=ast)
         super(Decorator, self).__init__(ast)
         assert isinstance(self.exp, Model)
@@ -657,7 +661,7 @@ class RuleInclude(Decorator):
 class Rule(Decorator):
     def __init__(self, ast, name, exp, params, kwparams, decorators=None):
         assert kwparams is None or isinstance(kwparams, Mapping), kwparams
-        super(Rule, self).__init__(ast)
+        super(Rule, self).__init__(exp=exp, ast=ast)
         self.name = name
         self.params = params
         self.kwparams = kwparams
