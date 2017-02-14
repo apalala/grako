@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017      by Juancarlo Añez
+# Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 """
 Tests for consistency of the line information caches kept by
 grako.buffering.Buffer.
@@ -9,16 +11,18 @@ from __future__ import (absolute_import, division, print_function,
 import os
 import random
 import unittest
+from codecs import open
 
 from grako.buffering import Buffer
+from grako.util import ustr
 
 
 class BufferingTests(unittest.TestCase):
 
     def setUp(self):
         testfile = os.path.splitext(__file__)[0] + '.py'
-        with open(testfile) as f:
-            self.text = str(f.read())
+        with open(testfile, encoding='utf-8') as f:
+            self.text = ustr(f.read())
         self.buf = Buffer(self.text, whitespace='')
 
     def test_pos_consistency(self):
