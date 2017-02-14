@@ -477,6 +477,13 @@ The expressions, in reverse order of operator precedence, can be:
 
 :   Another form of the _pattern_ expression.
 
+
+* `+/regexp/`
+
+:   Concatenate the given pattern with the preceding one.
+
+
+
 #### `` `constant ``\`
 
 :   Match nothing, but behave as if `constant` had been parsed.
@@ -597,11 +604,6 @@ The following expressions are still recognized in grammars, but they are conside
 
 :   Another form of the pattern expression that can be used when there
     are slashes (`/`) in the pattern. Use the `?"regexp"` or `?'regexp'` forms instead.
-
-* `+/regexp/`
-
-:   Concatenate the given pattern with the preceding one.
-
 
 * `(*` *comment* `*)`
 
