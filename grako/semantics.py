@@ -121,7 +121,7 @@ class GrakoSemantics(ModelBuilderSemantics):
         self.rules = OrderedDict()
 
     def token(self, ast, *args):
-        token = eval_escapes(ast)
+        token = ast
         if not token:
             raise FailedSemantics('empty token')
         return grammars.Token(token)
@@ -144,6 +144,9 @@ class GrakoSemantics(ModelBuilderSemantics):
         except (TypeError, re.error) as e:
             raise FailedSemantics('regexp error: ' + str(e))
         return pattern
+
+    def string(self, ast):
+        return eval_escapes(ast)
 
     def hext(self, ast):
         return int(ast, 16)

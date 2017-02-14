@@ -13,14 +13,27 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+### Added
+
+
+- [Python]-style _[raw string literals]_ are now valid: `r'text'` or `r"text"`.
+- A new syntax for patterns: `?'text'` or `?"text"`.
+
+
 ### Changed
 
 - [PyPi] (the _Python Package Index_) now requires there be a single source-code archive in each release. The chosen format is '.zip'.
 - [PyPi] publication requires there be a `README`, `README.rst`, or `README.txt` file. Renamed `DISTRIBUTION.rst` to `README.rst`.
 - Make `parseinfo` less special so it can be part of `ATS` and of `asjson(ast)`.
 - Move `etc/grako.ebnf`, the **Grako** grammar to a `grammar` directory.
-- Honor `/e/ + /e/` regexp syntax when prettifying.
+- Deprecated the `?/regexp/?` style of patterns.
+- Deprecated the `(* *)` style of comments.
 - Updated copyright notices.
+
+
+### Fixed
+
+- [96] Honor regexp concatenation when prettifying.
 
 
 ## [3.18.2] @ 2016-02-04
@@ -703,6 +716,8 @@ integer::Integer::Literal
 [re]: https://docs.python.org/3.4/library/re.html
 [regex]: https://pypi.python.org/pypi/regex
 [tox]: https://testrun.org/tox/latest/
+[string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
+[raw string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
 
 [Sargent]: https://bitbucket.org/PaulS/
 [Speer]: https://bitbucket.org/r_speer
@@ -750,6 +765,7 @@ integer::Integer::Literal
 [74]: https://bitbucket.org/apalala/grako/issue/74
 [77]: https://bitbucket.org/apalala/grako/issue/77
 [81]: https://bitbucket.org/apalala/grako/issue/81
+[96]: https://bitbucket.org/apalala/grako/issue/96
 [99]: https://bitbucket.org/apalala/grako/issue/99
 [101]: https://bitbucket.org/apalala/grako/issue/101
 [102]: https://bitbucket.org/apalala/grako/issue/102
