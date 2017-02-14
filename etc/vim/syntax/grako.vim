@@ -1,8 +1,6 @@
 " Vim syntax file
 " Language:         EBNF/Grako
 " Maintainer:       Hans Fugal, Apalala
-" Last Change:      $Date: 2014/07/16 15:36:00 $
-" Version:          1.0.0
 " With thanks to Michael Brailsford for the BNF syntax file.
 
 " Quit when a syntax file was already loaded

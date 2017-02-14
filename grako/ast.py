@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017      by Juancarlo Añez
+# Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 """
 Define the AST class, a direct descendant of dict that's used during parsing
 to store the values of named elements of grammar rules.

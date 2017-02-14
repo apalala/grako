@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2017      by Juancarlo Añez
+# Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 import sys
 from grako.codegen import ModelRenderer
 from grako.codegen import CodeGenerator

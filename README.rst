@@ -27,6 +27,10 @@
 Grako
 =====
 
+    Copyright (C) 2017      by Juancarlo Añez
+    Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
+
+
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
 **Grako** is *different* from other PEG_ parser generators:
@@ -111,12 +115,10 @@ The `complete documentation`_ is available at **Grako**'s `home page`_.
 License
 =======
 
-**Grako** is Copyright (C) 2012-2016 by `Thomas Bragg`_ and  `Juancarlo Añez`_
-
 .. _`Juancarlo Añez`: mailto:apalala@gmail.com
 .. _`Thomas Bragg`: mailto:tbragg95@gmail.com
 
-You may use the tool under the terms of the BSD_-style license described in the enclosed **LICENSE.txt** file. *If your project requires different licensing* please email_.
+You may use **Grako** under the terms of the BSD_-style license described in the enclosed **LICENSE.txt** file. *If your project requires different licensing* please email_.
 
 .. _BSD: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
 .. _email: mailto:apalala@gmail.com
