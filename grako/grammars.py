@@ -322,15 +322,11 @@ class Pattern(Model):
     def _to_str(self, lean=False):
         parts = []
         for pat in (ustr(p) for p in self.patterns):
-            if '/' not in pat:
-                template = '/%s/'
-                parts.append(template % pat)
-            else:
-                template = '?/%s/?'
-                result = template % pat
-                if result.count('?') % 2:
-                    result += '?'  # for the VIM syntax
-                parts.append(result)
+            template = '/%s/'
+            if '/' in pat:
+                template = '?"%s"'
+                pat = pat.replace('"', r'\"')
+            parts.append(template % pat)
         return '\n+ '.join(parts)
 
 

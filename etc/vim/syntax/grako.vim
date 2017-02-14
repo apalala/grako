@@ -29,7 +29,7 @@ syn region ebnfProduction start=/\zs[^;]/ end=/[;]/me=e-1 contained contains=ebn
 syn match ebnfDelimiter #[\-\*+]\|>>\|[&~,(|)\]}\[{!]\|\(\*)\)\|\((\*\)\|\(:)\)\|\((:\)# contained
 syn match ebnfSpecial /[~+*%\.]/ contained
 syn region ebnfPattern matchgroup=Delimiter start=/\// end=/\// contained
-syn region ebnfSpecialSequence matchgroup=Delimiter start=/?/ end=/?/ contained
+syn region ebnfSpecialSequence matchgroup=Delimiter start=/?\// end=/\/?/ contained
 syn match ebnfEndProduction /[;]/ contained
 syn region ebnfTerminal matchgroup=delimiter start=/"/ end=/"/ contained
 syn region ebnfTerminal matchgroup=delimiter start=/'/ end=/'/ contained

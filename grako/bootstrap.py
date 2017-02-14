@@ -794,6 +794,13 @@ class GrakoBootstrapParser(Parser):
     def _regex_(self):
         with self._choice():
             with self._option():
+                self._token('/')
+                self._cut()
+                self._pattern(r'([^/\n]|\\/|\\\\)+')
+                self.name_last_node('@')
+                self._token('/')
+                self._cut()
+            with self._option():
                 self._token('?/')
                 self._cut()
                 self._pattern(r'(.|\n)+?(?=/\?)')
@@ -801,19 +808,10 @@ class GrakoBootstrapParser(Parser):
                 self._pattern(r'/\?+')
                 self._cut()
             with self._option():
-                self._token('/')
-                self._cut()
-                self._pattern(r'(.|\n)+?(?=/)')
-                self.name_last_node('@')
-                self._token('/')
-                self._cut()
-            with self._option():
                 self._token('?')
                 self._STRING_()
                 self.name_last_node('@')
-            with self._option():
-                self._pattern(r'/([^/\n]|\/|\\)*/')
-            self._error('expecting one of: / /([^/\\n]|\\/|\\\\)*/ ?/')
+            self._error('expecting one of: / ?/')
 
     @graken()
     def _boolean_(self):
