@@ -18,7 +18,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Enable `python setup.py test` with [pytest].
 
 
-## [3.19.0] @ 2017-02-15
+## [3.19.1] @ 2017-02-15
 
 
 ### Added
@@ -788,8 +788,8 @@ integer::Integer::Literal
 [108]: https://bitbucket.org/apalala/grako/issue/108
 [109]: https://bitbucket.org/apalala/grako/issue/109
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.0
-[3.19.0]: https://bitbucket.org/apalala/grako/branches/compare/3.19.0%0D3.18.2
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.1
+[3.19.1]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
 [3.17.0]: https://bitbucket.org/apalala/grako/branches/compare/3.17.0%0D3.16.5
