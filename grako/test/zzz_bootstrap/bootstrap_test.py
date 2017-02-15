@@ -2,7 +2,7 @@
 # Copyright (C) 2017      by Juancarlo Añez
 # Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 """
-This awkward set of tests tries to make Grako bang its head against iself.
+This awkward set of tests tries to make the tool bang its head against iself.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -17,7 +17,7 @@ import py_compile
 
 from grako.walkers import DepthFirstWalker
 from grako.parser import GrammarGenerator, EBNFParser
-from grako.semantics import GrakoSemantics
+from grako.semantics import EBNFGrammarSemantics
 from grako.codegen import codegen
 from grako.util import asjson
 
@@ -128,7 +128,7 @@ class BootstrapTests(unittest.TestCase):
         g10 = g9.parse(
             text,
             start_rule='start',
-            semantics=GrakoSemantics('EBNFBootstrap')
+            semantics=EBNFGrammarSemantics('EBNFBootstrap')
         )
         generated_grammar10 = str(g10)
         with open('./tmp/10.ebnf', 'w') as f:
@@ -145,7 +145,7 @@ class BootstrapTests(unittest.TestCase):
         r11 = g11.parse(
             text,
             start_rule='start',
-            semantics=GrakoSemantics('EBNFBootstrap')
+            semantics=EBNFGrammarSemantics('EBNFBootstrap')
         )
         with open('./tmp/11.ebnf', 'w') as f:
             f.write(str(g11))

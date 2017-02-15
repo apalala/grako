@@ -21,7 +21,7 @@ from grako.synth import synthesize
 from grako import grammars
 
 
-class GrakoASTSemantics(object):
+class ASTSemantics(object):
 
     def group(self, ast, *args):
         return simplify_list(ast)
@@ -111,9 +111,9 @@ class ModelBuilderSemantics(object):
             )
 
 
-class GrakoSemantics(ModelBuilderSemantics):
+class EBNFGrammarSemantics(ModelBuilderSemantics):
     def __init__(self, grammar_name):
-        super(GrakoSemantics, self).__init__(
+        super(EBNFGrammarSemantics, self).__init__(
             base_type=grammars.Model,
             types=grammars.Model.classes()
         )
