@@ -13,6 +13,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z]
 
 
+### Added
+
+-   Enalbed `python setup.py test` using [py.test].
+
+
 ## [3.19.0] 2017-02-14
 
 
@@ -695,9 +700,9 @@ integer::Integer::Literal
 [NATURAL]: http://en.wikipedia.org/wiki/NATURAL
 [PEG]: http://en.wikipedia.org/wiki/Parsing_expression_grammar
 [PLY]: http://www.dabeaz.com/ply/ply.html#ply_nn22
+[POSIX]: https://en.wikipedia.org/wiki/POSIX
 [Packrat]: http://bford.info/packrat/
 [Perl]: http://www.perl.org/
-[POSIX]: https://en.wikipedia.org/wiki/POSIX
 [PyPy]: http://pypy.org/
 [Python]: http://python.org
 [Ruby]: http://www.ruby-lang.org/
@@ -719,11 +724,12 @@ integer::Integer::Literal
 [memoizing]: http://en.wikipedia.org/wiki/Memoization
 [pull request]: https://bitbucket.org/apalala/grako/pull-request/13/
 [pygraphviz]: https://pypi.python.org/pypi/pygraphviz
+[pytest]: https://pypi.org/project/pytest/
+[raw string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
 [re]: https://docs.python.org/3.4/library/re.html
 [regex]: https://pypi.python.org/pypi/regex
-[tox]: https://testrun.org/tox/latest/
 [string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
-[raw string literal]: https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
+[tox]: https://testrun.org/tox/latest/
 
 [Sargent]: https://bitbucket.org/PaulS/
 [Speer]: https://bitbucket.org/r_speer

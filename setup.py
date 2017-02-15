@@ -57,6 +57,9 @@ setuptools.setup(
         'Topic :: Software Development :: Interpreters',
         'Topic :: Text Processing :: General'
     ],
+    install_requires=[],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     extras_require={
         'future-regex': ['regex']
     },
