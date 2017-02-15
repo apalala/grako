@@ -10,20 +10,20 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [keeapachangelog.org]: http://keepachangelog.com/
 
 
-## [X.Y.Z]
+## [X.Y.Z] @ 2017
 
 
 ### Added
 
--   Enalbed `python setup.py test` using [py.test].
+-   Enable `python setup.py test` with [pytest].
 
 
-## [3.19.0] 2017-02-14
+## [3.19.0] @ 2017-02-15
 
 
 ### Added
 
-- [Python]-style _[raw string literals]_ are now valid: `r'text'` or `r"text"`.
+- [Python]-style _[raw string literal]s_ are now valid: `r'text'` or `r"text"`.
 - A new syntax for patterns: `?'text'` or `?"text"`.
 
 
@@ -43,8 +43,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
-- [96] Honor regexp concatenation when prettifying.
-- [108]: Clarify the use of the `exp` parameter in `grammars.Decorator`, `grammars.Rule`, and `grammar.BasedRule`.
+- [96]  Honor regexp concatenation when prettifying.
+- [108] Clarify the use of the `exp` parameter in `grammars.Decorator`, `grammars.Rule`, and `grammar.BasedRule`.
 
 
 ## [3.18.2] @ 2016-02-04
@@ -703,6 +703,7 @@ integer::Integer::Literal
 [POSIX]: https://en.wikipedia.org/wiki/POSIX
 [Packrat]: http://bford.info/packrat/
 [Perl]: http://www.perl.org/
+[PyPi]: http://pypi.org/
 [PyPy]: http://pypy.org/
 [Python]: http://python.org
 [Ruby]: http://www.ruby-lang.org/
