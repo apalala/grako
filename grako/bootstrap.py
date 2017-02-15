@@ -18,16 +18,10 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__all__ = [
-    'GrakoBootstrapParser',
-    'GrakoBootstrapSemantics',
-    'main'
-]
-
 KEYWORDS = {}
 
 
-class GrakoBootstrapBuffer(Buffer):
+class EBNFBootstrapBuffer(Buffer):
     def __init__(
         self,
         text,
@@ -39,7 +33,7 @@ class GrakoBootstrapBuffer(Buffer):
         namechars='',
         **kwargs
     ):
-        super(GrakoBootstrapBuffer, self).__init__(
+        super(EBNFBootstrapBuffer, self).__init__(
             text,
             whitespace=whitespace,
             nameguard=nameguard,
@@ -51,7 +45,7 @@ class GrakoBootstrapBuffer(Buffer):
         )
 
 
-class GrakoBootstrapParser(Parser):
+class EBNFBootstrapParser(Parser):
     def __init__(
         self,
         whitespace=None,
@@ -63,12 +57,12 @@ class GrakoBootstrapParser(Parser):
         parseinfo=True,
         keywords=None,
         namechars='',
-        buffer_class=GrakoBootstrapBuffer,
+        buffer_class=EBNFBootstrapBuffer,
         **kwargs
     ):
         if keywords is None:
             keywords = KEYWORDS
-        super(GrakoBootstrapParser, self).__init__(
+        super(EBNFBootstrapParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,
             comments_re=comments_re,
@@ -828,7 +822,7 @@ class GrakoBootstrapParser(Parser):
         self._cut()
 
 
-class GrakoBootstrapSemantics(object):
+class EBNFBootstrapSemantics(object):
     def start(self, ast):
         return ast
 
@@ -1010,7 +1004,7 @@ class GrakoBootstrapSemantics(object):
 def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    parser = GrakoBootstrapParser()
+    parser = EBNFBootstrapParser()
     return parser.parse(text, startrule, filename=filename, **kwargs)
 
 
@@ -1018,7 +1012,7 @@ if __name__ == '__main__':
     import json
     from grako.util import asjson
 
-    ast = generic_main(main, GrakoBootstrapParser, name='GrakoBootstrap')
+    ast = generic_main(main, EBNFBootstrapParser, name='EBNFBootstrap')
     print('AST:')
     print(ast)
     print()

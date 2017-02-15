@@ -10,7 +10,7 @@ from grako.exceptions import FailedParse
 from grako.tool import genmodel
 from grako.util import trim, ustr
 from grako.codegen import codegen
-from grako.grammars import GrakoBuffer
+from grako.grammars import EBNFBuffer
 
 
 class SyntaxTests(unittest.TestCase):
@@ -42,7 +42,7 @@ class SyntaxTests(unittest.TestCase):
         including_grammar = overridden % (inclusion)
         whole_grammar = overridden % (included_grammar)
 
-        class FakeIncludesBuffer(GrakoBuffer):
+        class FakeIncludesBuffer(EBNFBuffer):
             def get_include(self, source, filename):
                 return included_grammar, source + '/' + filename
 

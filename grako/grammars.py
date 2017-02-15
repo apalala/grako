@@ -27,7 +27,7 @@ from grako.ast import AST
 from grako.buffering import Buffer
 from grako.contexts import ParseContext
 from grako.objectmodel import Node
-from grako.bootstrap import GrakoBootstrapBuffer
+from grako.bootstrap import EBNFBootstrapBuffer
 
 
 PEP8_LLEN = 72
@@ -46,9 +46,9 @@ def pythonize_name(name):
     return ''.join('_' + c.lower() if c.isupper() else c for c in name)
 
 
-class GrakoBuffer(GrakoBootstrapBuffer):
+class EBNFBuffer(EBNFBootstrapBuffer):
     def __init__(self, text, filename=None, comments_re=None, eol_comments_re=None, **kwargs):
-        super(GrakoBuffer, self).__init__(
+        super(EBNFBuffer, self).__init__(
             text,
             filename=filename,
             memoize_lookaheads=False,
@@ -84,7 +84,7 @@ class GrakoBuffer(GrakoBootstrapBuffer):
 class GrakoContext(ParseContext):
     def parse(self, text, rule='start', filename=None, parseinfo=True, **kwargs):
         if not isinstance(text, Buffer):
-            text = GrakoBuffer(
+            text = EBNFBuffer(
                 text,
                 filename=filename,
                 **kwargs

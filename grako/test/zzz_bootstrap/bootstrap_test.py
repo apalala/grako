@@ -16,7 +16,7 @@ import unittest
 import py_compile
 
 from grako.walkers import DepthFirstWalker
-from grako.parser import GrakoGrammarGenerator, GrakoParser
+from grako.parser import GrammarGenerator, EBNFParser
 from grako.semantics import GrakoSemantics
 from grako.codegen import codegen
 from grako.util import asjson
@@ -37,7 +37,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 00 - parse using the bootstrap grammar')
         with open('grammar/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoParser('GrakoBootstrap')
+        g = EBNFParser('EBNFBootstrap')
         grammar0 = g.parse(text)
         ast0 = json.dumps(asjson(grammar0), indent=2)
         with open('./tmp/00.ast', 'w') as f:
@@ -46,7 +46,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 01 - parse with parser generator')
         with open('grammar/grako.ebnf') as f:
             text = str(f.read())
-        g = GrakoGrammarGenerator('GrakoBootstrap')
+        g = GrammarGenerator('EBNFBootstrap')
         g.parse(text, trace=False)
 
         generated_grammar1 = str(g.ast['start'])
@@ -56,7 +56,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 02 - parse previous output with the parser generator')
         with open('./tmp/01.ebnf', 'r') as f:
             text = str(f.read())
-        g = GrakoGrammarGenerator('GrakoBootstrap')
+        g = GrammarGenerator('EBNFBootstrap')
         g.parse(text, trace=False)
         generated_grammar2 = str(g.ast['start'])
         with open('./tmp/02.ebnf', 'w') as f:
@@ -66,7 +66,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 03 - repeat')
         with open('./tmp/02.ebnf') as f:
             text = f.read()
-        g = GrakoParser('GrakoBootstrap')
+        g = EBNFParser('EBNFBootstrap')
         ast3 = g.parse(text)
         with open('./tmp/03.ast', 'w') as f:
             f.write(json.dumps(asjson(ast3), indent=2))
@@ -74,7 +74,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 04 - repeat')
         with open('./tmp/02.ebnf') as f:
             text = f.read()
-        g = GrakoGrammarGenerator('GrakoBootstrap')
+        g = GrammarGenerator('EBNFBootstrap')
         g.parse(text)
         parser = g.ast['start']
     #    pprint(parser.first_sets, indent=2, depth=3)
@@ -98,7 +98,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 07 - import generated code')
         py_compile.compile('./tmp/g06.py', doraise=True)
         # g06 = __import__('g06')
-        # GenParser = g06.GrakoBootstrapParser
+        # GenParser = g06.EBNFBootstrapParser
 
         # print('-' * 20, 'phase 08 - compile using generated code')
         # parser = GenParser(trace=False)
@@ -117,7 +117,7 @@ class BootstrapTests(unittest.TestCase):
         print('-' * 20, 'phase 09 - Generate parser with semantics')
         with open('grammar/grako.ebnf') as f:
             text = f.read()
-        parser = GrakoGrammarGenerator('GrakoBootstrap')
+        parser = GrammarGenerator('EBNFBootstrap')
         g9 = parser.parse(text)
         generated_grammar9 = str(g9)
         with open('./tmp/09.ebnf', 'w') as f:
@@ -128,7 +128,7 @@ class BootstrapTests(unittest.TestCase):
         g10 = g9.parse(
             text,
             start_rule='start',
-            semantics=GrakoSemantics('GrakoBootstrap')
+            semantics=GrakoSemantics('EBNFBootstrap')
         )
         generated_grammar10 = str(g10)
         with open('./tmp/10.ebnf', 'w') as f:
@@ -145,7 +145,7 @@ class BootstrapTests(unittest.TestCase):
         r11 = g11.parse(
             text,
             start_rule='start',
-            semantics=GrakoSemantics('GrakoBootstrap')
+            semantics=GrakoSemantics('EBNFBootstrap')
         )
         with open('./tmp/11.ebnf', 'w') as f:
             f.write(str(g11))

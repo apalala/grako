@@ -10,10 +10,10 @@ from __future__ import (absolute_import, division, print_function,
 import unittest
 
 from grako.util import trim, eval_escapes
-from grako.grammars import GrakoBuffer
+from grako.grammars import EBNFBuffer
 
 
-class MockIncludeBuffer(GrakoBuffer):
+class MockIncludeBuffer(EBNFBuffer):
     def get_include(self, source, name):
         return '\nINCLUDED "%s"\n' % name, name
 
