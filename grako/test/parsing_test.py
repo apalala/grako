@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2017      by Juancarlo Añez
 # Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
-"""
-Grako language parsing tests.
-"""
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
 
 from grako.util import trim, eval_escapes
-from grako.grammars import GrakoBuffer
+from grako.grammars import EBNFBuffer
 
 
-class MockIncludeBuffer(GrakoBuffer):
+class MockIncludeBuffer(EBNFBuffer):
     def get_include(self, source, name):
         return '\nINCLUDED "%s"\n' % name, name
 

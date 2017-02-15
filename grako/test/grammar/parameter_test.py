@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
-from grako.parser import GrakoGrammarGenerator
+from grako.parser import GrammarGenerator
 from grako.tool import genmodel
 from grako.util import trim, ustr, PY3
 from grako.codegen import codegen
@@ -20,7 +20,7 @@ class ParameterTests(unittest.TestCase):
                 {'a'} $
                 ;
         '''
-        g = GrakoGrammarGenerator('Keywords')
+        g = GrammarGenerator('Keywords')
         model = g.parse(grammar, trace=False)
         code = codegen(model)
         self.assertEqual('#!/usr/bin/env python', code.splitlines()[0])

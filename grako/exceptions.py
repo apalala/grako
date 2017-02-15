@@ -1,37 +1,32 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2017      by Juancarlo Añez
 # Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
-"""
-Exceptions used in Grako parser generation and in generated parsers.
-
-The parameters of the Failed... hierarchy of exceptions are the ones required
-to be able to report accurate error messages as late as possible with the aid
-of the .buffering.Buffer class, and with as little overhead as possible for
-exceptions that will not be parsing errors (remember that Grako uses the
-exception system to backtrack).
-"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from grako.util import re
 
 
-class GrakoException(Exception):
+class ParseException(Exception):
     pass
 
 
-class OptionSucceeded(GrakoException):
+# alias for backwards compatibility
+GrakoException = ParseException
+
+
+class OptionSucceeded(ParseException):
     pass
 
 
-class GrammarError(GrakoException):
+class GrammarError(ParseException):
     pass
 
 
-class SemanticError(GrakoException):
+class SemanticError(ParseException):
     pass
 
 
-class CodegenError(GrakoException):
+class CodegenError(ParseException):
     pass
 
 
@@ -39,7 +34,7 @@ class MissingSemanticFor(SemanticError):
     pass
 
 
-class ParseError(GrakoException):
+class ParseError(ParseException):
     pass
 
 

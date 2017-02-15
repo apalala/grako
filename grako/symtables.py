@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from .util import asjson
 from .util import join_lists
-from .exceptions import GrakoException
+from .exceptions import ParseException
 from .buffering import LineIndexEntry
 
 
@@ -37,7 +37,7 @@ def join_symtables(tables):
     return result
 
 
-class SymbolTableError(GrakoException):
+class SymbolTableError(ParseException):
     pass
 
 

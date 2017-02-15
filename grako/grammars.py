@@ -1,18 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2017      by Juancarlo Añez
 # Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
-# Copyright (C) 2017      by Juancarlo Añez
-# Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
-"""
-Elements for a model of a parsed Grako grammar.
-
-a model constructed with these elements, and rooted in a Grammar instance is
-able to parse the language defined by the grammar.
-
-Models calculate the LL(k) FIRST function to aid in providing more significant
-error messages when a choice fails to parse. FOLLOW(k) and LA(k) should be
-computed, but they are not.
-"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
@@ -24,10 +12,9 @@ from grako.util import indent, trim, ustr, urepr, strtype, compress_seq, chunks
 from grako.util import re, RE_FLAGS
 from grako.exceptions import FailedRef, GrammarError
 from grako.ast import AST
-from grako.buffering import Buffer
 from grako.contexts import ParseContext
 from grako.objectmodel import Node
-from grako.bootstrap import GrakoBootstrapBuffer
+from grako.bootstrap import EBNFBootstrapBuffer
 
 
 PEP8_LLEN = 72
@@ -46,9 +33,9 @@ def pythonize_name(name):
     return ''.join('_' + c.lower() if c.isupper() else c for c in name)
 
 
-class GrakoBuffer(GrakoBootstrapBuffer):
+class EBNFBuffer(EBNFBootstrapBuffer):
     def __init__(self, text, filename=None, comments_re=None, eol_comments_re=None, **kwargs):
-        super(GrakoBuffer, self).__init__(
+        super(EBNFBuffer, self).__init__(
             text,
             filename=filename,
             memoize_lookaheads=False,
@@ -81,27 +68,11 @@ class GrakoBuffer(GrakoBootstrapBuffer):
             return i + 1  # will be treated as a directive by the parser
 
 
-class GrakoContext(ParseContext):
-    def parse(self, text, rule='start', filename=None, parseinfo=True, **kwargs):
-        if not isinstance(text, Buffer):
-            text = GrakoBuffer(
-                text,
-                filename=filename,
-                **kwargs
-            )
-        return super(GrakoContext, self).parse(
-            text,
-            rule,
-            filename=filename,
-            parseinfo=parseinfo,
-            **kwargs
-        )
-
-
-class ModelContext(GrakoContext):
+class ModelContext(ParseContext):
     def __init__(self, rules, semantics=None, trace=False, **kwargs):
         super(ModelContext, self).__init__(
             semantics=semantics,
+            buffer_class=EBNFBuffer,
             trace=trace,
             **kwargs
         )

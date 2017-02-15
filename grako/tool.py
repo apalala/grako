@@ -13,8 +13,8 @@ import sys
 
 from grako._version import __version__
 from grako.util import eval_escapes
-from grako.exceptions import GrakoException
-from grako.parser import GrakoGrammarGenerator
+from grako.exceptions import ParseException
+from grako.parser import GrammarGenerator
 
 # we hook the tool to the Python code generator as the default
 from grako.codegen.python import codegen as pythoncg
@@ -133,7 +133,7 @@ def parse_args():
 
 
 def genmodel(name=None, grammar=None, **kwargs):
-    return GrakoGrammarGenerator(name, **kwargs).parse(grammar, **kwargs)
+    return GrammarGenerator(name, **kwargs).parse(grammar, **kwargs)
 
 
 def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythoncg):
@@ -205,7 +205,7 @@ def main(codegen=pythoncg):
         print('{:12,d}  lines in grammar'.format(len(grammar.split())), file=sys.stderr)
         print('{:12,d}  rules in grammar'.format(len(model.rules)), file=sys.stderr)
         print('{:12,d}  nodes in AST'.format(model.nodecount()), file=sys.stderr)
-    except GrakoException as e:
+    except ParseException as e:
         print(e, file=sys.stderr)
         sys.exit(1)
 
