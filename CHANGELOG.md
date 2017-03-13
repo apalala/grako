@@ -18,6 +18,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Enable `python setup.py test` with [pytest].
 
 
+### Changed
+
+- Remove the deprecated `prerix=` argument to `ParseContext.closure()`.
+
+
 ## [3.19.1] @ 2017-02-15
 
 
