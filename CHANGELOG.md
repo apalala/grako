@@ -20,7 +20,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Changed
 
-- Remove the deprecated `prerix=` argument to `ParseContext.closure()`.
+- Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
 
 
 ## [3.19.1] @ 2017-02-15
