@@ -6,7 +6,7 @@
     `Dennis Ritchie`_ (1941-2011)
         Creator of the C_ programming language and of Unix_
 
-.. _Dennis Ritchie: http://en.wikipedia.org/wiki/Dennis_Ritchie
+.. _`Dennis Ritchie`: http://en.wikipedia.org/wiki/Dennis_Ritchie
 .. _C: http://en.wikipedia.org/wiki/C_language
 .. _Unix: http://en.wikipedia.org/wiki/Unix
 
@@ -19,7 +19,10 @@ Grako
     Copyright (C) 2017      by Juancarlo Añez
     Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 
-**THE ORIGINAL SOURCE OF FUNDING FOR *GRAKO* DEVELOPMENT HAS ENDED**
+
+----
+
+**THE ORIGINAL SOURCE OF FUNDING FOR GRAKO DEVELOPMENT HAS ENDED**
 
 |donate|
 
@@ -32,6 +35,8 @@ please donate_ to the project*.
 and right associativity, new algorithms for left-recursion, a
 unified intermediate model for parsing and translating programming
 languages, and more...*
+
+----
 
 .. _donate: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
 
