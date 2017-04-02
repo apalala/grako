@@ -47,7 +47,7 @@ clean_cython:
 
 release_check: clean
 	rst2html.py README.rst > /dev/null
-	python setup.py sdist
+	python setup.py sdist --formats=zip
 	tox
 	@echo version `python -m grako --version`
 
