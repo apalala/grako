@@ -10,20 +10,30 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 [keeapachangelog.org]: http://keepachangelog.com/
 
 
-## [X.Y.Z] @ 2017
+## [X.Y.Z][] @ 2017
 
+
+## [3.19.2][] @ 2017-03-02
 
 ### Added
 
--   Enable `python setup.py test` with [pytest].
+-   Request funding for future development of **Grako**.
+
+[paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
 
 
 ### Changed
 
-- Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
+-   Enable `python setup.py test` with [pytest][].
+-   Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
 
 
-## [3.19.1] @ 2017-02-15
+### Fixed
+
+-   The incomplete `examples/python` example was the source of confusion, as users expected it to work even when the example is not mentioned in the documentation. The directory is removed from the distribution and the mail repository branch until the example is complete ans working.
+
+
+## [3.19.1][] @ 2017-02-15
 
 
 ### Added
@@ -52,7 +62,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 - [108] Clarify the use of the `exp` parameter in `grammars.Decorator`, `grammars.Rule`, and `grammar.BasedRule`.
 
 
-## [3.18.2] @ 2016-02-04
+## [3.18.2][] @ 2016-02-04
 
 ### Fixed
 
@@ -65,7 +75,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 - [104] Wrong shebang in examples/antlr2grako/antlr2grako.py
 
-## [3.18.1] @ 2016-12-13
+## [3.18.1][] @ 2016-12-13
 
 
 ### Changed
@@ -75,10 +85,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 - [101] `objectmodel.Node` constructor does not set attributes when `ast=None`.
 - [102] `MANIFEST.in` dit not include the _calc_ example, so it wasn't distributed.
-- [103] `grako.contexts.ParseContext._check_name fails in [Python] _2.7) with non-ASCII identifiers.  For _2.7_ compatibility, `grako.util.ustr()` must be used instead of the built-in `str()`.
+- [103] `grako.contexts.ParseContext._check_name` fails in [Python] _2.7_) with non-ASCII identifiers.  For _2.7_ compatibility, `grako.util.ustr()` must be used instead of the built-in `str()`.
 
 
-## [3.17.0] @ 2016-12-01
+## [3.17.0][] @ 2016-12-01
 
 
 ### Added
@@ -92,7 +102,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ### Fixed
 - `*args` followed by keyword parameters is not valid in [Python] 2.7.
 
-## [3.16.5] @ 2016-11-04
+## [3.16.5][] @ 2016-11-04
 
 
 ### Added
@@ -107,17 +117,17 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
--   BUG: Parsing `()` (void/nothing) should clear last_node in `Context`, so `name:()` results in `name is None`.
+-   BUG: Parsing `()` (void/nothing) should clear last_node in `Context`, so `name:()` results in `ast.name is None`.
 
 
-## [3.16.4] @ 2016-11-02
+## [3.16.4][] @ 2016-11-02
 
 ### Fixed
 
 -   [99] Object model generation would generate repeated classes when the same class name was applied to different rules in the grammar.
 
 
-## [3.16.3] @ 2016-10-27
+## [3.16.3][] @ 2016-10-27
 
 ### Fixed
 -   `grako.walkers.NodeWalker` was walking base classes in the wrong order.
@@ -125,7 +135,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   `grako.walkers.PreOrderWalker.walk()` was breaking the `NodeWalker` protocol by always returning `None`.
 
 
-## [3.16.1] @ 2016-10-16
+## [3.16.1][] @ 2016-10-16
 
 ### Added
 -   Make traces represent recursion failures differently.
@@ -142,7 +152,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Bug fixes, in the commit log.
 
 
-## [3.16.0] @ 2016-10-01
+## [3.16.0][] @ 2016-10-01
 
 
 ### Added
@@ -162,7 +172,7 @@ integer::Integer::Literal
 -   Demoted support for _left recursion_ to _experimental_. It has been reported that even some simple cases are not handled.
 
 
-## [3.15.1] @ 2016-09-28
+## [3.15.1][] @ 2016-09-28
 
 
 ### Added
@@ -189,7 +199,7 @@ integer::Integer::Literal
 -   Found programs that expect `grako.ast.AST` to be reexported from `grako.model`, so the re-export was re-instated.
 
 
-## [3.14.0] @ 2016-08-19
+## [3.14.0][] @ 2016-08-19
 
 ### Added
 
@@ -210,7 +220,7 @@ integer::Integer::Literal
 -   The separator character for rules in the trace logs (``C_DERIVE`` in `grako.contexts`) was undefined for non-[POSIX][] platforms (traces could not be used on Windows).
 
 
-## [3.13.0] @ 2016-08-18
+## [3.13.0][] @ 2016-08-18
 
 
 ### Added
@@ -232,7 +242,7 @@ integer::Integer::Literal
 - In traces, the error column pointer was off when tab characters were involved.
 
 
-## [3.12.1] @ 2016-08-06
+## [3.12.1][] @ 2016-08-06
 
 
 ### Added
@@ -257,7 +267,7 @@ integer::Integer::Literal
 -   Fixed several inconsistencies in the implementation and use of `buffering.Buffer` line indexing.
 -   Repeated parameters to object model constructors.
 
-## [3.10.1] @ 2016-07-17
+## [3.10.1][] @ 2016-07-17
 
 
 ### Added
@@ -283,7 +293,7 @@ integer::Integer::Literal
     using [pygraphviz][] 1.3.1.
 -   [77][] [81][] Advance over whitespace before memoization or left recursion.
 
-## [3.9.3] @ 2016-07-15
+## [3.9.3][] @ 2016-07-15
 
 
 ### Added
@@ -316,7 +326,7 @@ integer::Integer::Literal
 -   Cleaned up the grammar in `examples/python`; still untested.
 -   Removed outdated information from the *README*.
 
-## [3.8.2] @ 2016-04-23
+## [3.8.2][] @ 2016-04-23
 
 ### Added
 
@@ -333,7 +343,7 @@ integer::Integer::Literal
 -   Wrong version number (RC) in this document.
 -   [73] Keywords were not being passed to the base class of the generated parser.
 
-## [3.7.0] @ 2016-03-05
+## [3.7.0][] @ 2016-03-05
 
 
 ### Added
@@ -350,7 +360,7 @@ integer::Integer::Literal
 -   Moved the bulk of the entry code for generated parsers to `util.generic_main()`. This allows for the verbose code to be verified by the usual tools.
 -   Deprecate `{e}-` by removing it from the documentation.
 
-## [3.6.7] @ 2016-01-27
+## [3.6.7][] @ 2016-01-27
 
 
 ### Added
@@ -381,7 +391,7 @@ integer::Integer::Literal
 -   Left recursion in the grammar was checked for in the wrong place when disabled.
 
 
-## [3.5.1] @ 2015-03-12
+## [3.5.1][] @ 2015-03-12
 
 
 ### Changed
@@ -397,7 +407,7 @@ integer::Integer::Literal
 -   [48] Rules can now be overriden/redefined using the `@override` decorator.
 
 
-## [3.4.3] @ 2014-11-27
+## [3.4.3][] @ 2014-11-27
 
 
 ### Added
@@ -421,7 +431,7 @@ integer::Integer::Literal
 
 
 
-## [3.3.0] @ 2014-07-22
+## [3.3.0][] @ 2014-07-22
 
 ### Added
 
@@ -439,7 +449,7 @@ integer::Integer::Literal
 -   [37] Block comments are preserved when using the `--pretty` option.
 
 
-## [3.2.1] @ 2014-07-21
+## [3.2.1][] @ 2014-07-21
 
 
 ### Added
@@ -458,7 +468,7 @@ integer::Integer::Literal
 -   [36] Keyword arguments in rules were not being parsed correctly ([franz_g]).
 -   Removed attribute assignment to the underlying `dict` in `AST`. It was the source of obscure bugs for **Grako** users.
 
-## [3.1.2] @ 2014-07-14
+## [3.1.2][] @ 2014-07-14
 
 
 ### Added
@@ -476,7 +486,7 @@ integer::Integer::Literal
 -   [30] Make sure that `--whitespace` and `--no-nameguard` indeed affect the behavior of the generated parser as expected.
 
 
-## [3.0.4] @ 2014-07-01
+## [3.0.4][] @ 2014-07-01
 
 
 ### Added
@@ -512,7 +522,7 @@ integer::Integer::Literal
 -   [24] Incorrect template for *--pretty* of multi-line optionals.
 
 
-## [2.4.3] @ 2014-06-08
+## [2.4.3][] @ 2014-06-08
 
 
 ### Added
@@ -529,7 +539,7 @@ integer::Integer::Literal
 -   The [Visitor Pattern] doesn't make much sense in a dynamically typed language, so the functionality was replaced by more flexible `Traverser` classes. The new `_traverse_XX()` methods in Traverser classes carry a leading underscore to remind that they shouldn't be used outside of the protocol.
 
 
-## [2.3.0] @ 2013-11-27
+## [2.3.0][] @ 2013-11-27
 
 
 ### Added
@@ -547,7 +557,7 @@ integer::Integer::Literal
 
 -   Compatibility between [Python][] 2.7/3.x print() statements.
 
-## [2.2.2] @ 2013-11-06
+## [2.2.2][] @ 2013-11-06
 
 
 ### Added
@@ -574,7 +584,7 @@ integer::Integer::Literal
 -   Several minor bug fixes [lambdafu].
 
 
-## [2.0.4] @ 2013-08-15
+## [2.0.4][] @ 2013-08-15
 
 
 ### Added
@@ -601,7 +611,7 @@ integer::Integer::Literal
 -   Several improvements and bug fixes mostly by [lambdafu].
 
 
-## [1.4.0] @ 2013-05-02
+## [1.4.0][] @ 2013-05-02
 
 
 ### Added
@@ -624,7 +634,7 @@ integer::Integer::Literal
 -   Sometimes the [AST] for a closure (`{}`) was not a list.
 
 
-## [1.3.0] @ 2013-04-11
+## [1.3.0][] @ 2013-04-11
 
 
 ### Added
@@ -644,7 +654,7 @@ integer::Integer::Literal
 -   Update credits.
 
 
-## [1.2.1] @ 2013-03-19
+## [1.2.1][] @ 2013-03-19
 
 
 ### Added
@@ -669,7 +679,7 @@ integer::Integer::Literal
 -   Remove or comment-out code for tagged/named rule names (they don't work, and their usefulness is doubtful).
 -   Spell-check this document with [Vim spell].
 
-## [1.1.0] @ 2013-02-22
+## [1.1.0][] @ 2013-02-22
 
 ### Changed
 
@@ -684,7 +694,7 @@ integer::Integer::Literal
 -   Need to preserve state when closure iterations match partially.
 -   Work with Unicode while rendering.
 
-## [1.0.0] @ 2013-02-09
+## [1.0.0][] @ 2013-02-09
 
 -   First public release.
 
@@ -792,8 +802,10 @@ integer::Integer::Literal
 [107]: https://bitbucket.org/apalala/grako/issue/107
 [108]: https://bitbucket.org/apalala/grako/issue/108
 [109]: https://bitbucket.org/apalala/grako/issue/109
+[115]: https://bitbucket.org/apalala/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.1
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.2
+[3.19.2]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.19.1
 [3.19.1]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
