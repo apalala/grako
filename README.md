@@ -1,8 +1,8 @@
-[![image](https://badge.fury.io/py/grako.svg)](https://badge.fury.io/py/grako)
-[![image](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/apalala/grako/master/LICENSE.txt)
-[![image](https://img.shields.io/pypi/pyversions/grako.svg)](https://pypi.python.org/pypi/grako)
-[![image](https://secure.travis-ci.org/apalala/grako.svg)](http://travis-ci.org/apalala/grako)
-[![image](https://landscape.io/github/apalala/grako/release/landscape.png)](https://landscape.io/github/apalala/grako/release)
+[![fury](https://badge.fury.io/py/grako.svg)](https://badge.fury.io/py/grako)
+[![license](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/apalala/grako/master/LICENSE.txt)
+[![pyversions](https://img.shields.io/pypi/pyversions/grako.svg)](https://pypi.python.org/pypi/grako)
+[![travis](https://secure.travis-ci.org/apalala/grako.svg)](http://travis-ci.org/apalala/grako)
+[![landscape](https://landscape.io/github/apalala/grako/release/landscape.png)](https://landscape.io/github/apalala/grako/release)
 
 
 > _At least for the people who send me mail about a new language that they're designing, the general advice is: do it to learn about how to write a compiler. Don't have any expectations that anyone will use it, unless you hook up with some sort of organization in a position to push it hard. It's a lottery, and some can buy a lot of the tickets. There are plenty of beautiful languages (more beautiful than C) that didn't catch on. But someone does win the lottery, and doing a language at least teaches you something._

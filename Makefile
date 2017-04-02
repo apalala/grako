@@ -46,13 +46,14 @@ clean_cython:
 
 
 release_check: clean
+	pandoc README.md -o README.rst
 	rst2html.py README.rst > /dev/null
 	python setup.py sdist
 	tox
 	@echo version `python -m grako --version`
 
 
-distributions: clean
+distributions: clean release_check
 	python setup.py sdist --formats=zip
 	python setup.py bdist_wheel --universal
 

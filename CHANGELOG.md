@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
-## [3.19.2][] @ 2017-03-02
+## [3.19.4][] @ 2017-03-02
 
 ### Added
 
@@ -804,8 +804,8 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/apalala/grako/issue/109
 [115]: https://bitbucket.org/apalala/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.2
-[3.19.2]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.19.1
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.4
+[3.19.4]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.19.1
 [3.19.1]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1
 [3.18.1]: https://bitbucket.org/apalala/grako/branches/compare/3.18.1%0D3.17.0
