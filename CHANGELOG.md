@@ -17,12 +17,15 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Added
 
--   Enable `python setup.py test` with [pytest].
+-   Request funding for future development of **Grako**.
+
+[paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
 
 
 ### Changed
 
-- Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
+-   Enable `python setup.py test` with [pytest][].
+-   Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
 
 
 ### Fixed
@@ -114,7 +117,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Fixed
 
--   BUG: Parsing `()` (void/nothing) should clear last_node in `Context`, so `name:()` results in `name is None`.
+-   BUG: Parsing `()` (void/nothing) should clear last_node in `Context`, so `name:()` results in `ast.name is None`.
 
 
 ## [3.16.4][] @ 2016-11-02
