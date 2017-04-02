@@ -17,9 +17,33 @@ Grako
     Copyright (C) 2017      by Juancarlo Añez
     Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 
+
+> **NOTE:** _The original source of funding for **Grako** development has ended. If you'd like to contribute to the future of **Grako**, please **[donate][]**._
+
+[donate]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
+
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="P9PV7ZACB669J">
+    <input type="image"
+        src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif"
+        border="0"
+        name="submit" alt="PayPal - The safer, easier way to pay online!">
+    <img alt=""
+        border="0"
+        src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1"
+        height="1">
+</form>
+
+
+
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a
 variation of [EBNF] as input, and outputs [memoizing] ([Packrat]) [PEG]
 parsers in [Python].
+
+
 
 **Grako** is *different* from other [PEG] parser generators:
 
