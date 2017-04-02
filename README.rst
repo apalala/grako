@@ -25,14 +25,15 @@ Grako
 
 *And my work is moving away from parsing and translation.*
 
-*If you'd like to contribute to the future development of Grako, please `make a donation`_.*
+*If you'd like to contribute to the future development of Grako,
+please donate_ to the project*.
 
 *Some of the planned new features are: grammar expressions for left
 and right associativity, new algorithms for left-recursion, a
 unified intermediate model for parsing and translating programming
 languages, and more...*
 
-.. _make a donation: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
+.. _donate: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
 
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
