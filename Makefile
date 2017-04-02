@@ -46,7 +46,6 @@ clean_cython:
 
 
 release_check: clean
-	pandoc README.md -o README.rst
 	rst2html.py README.rst > /dev/null
 	python setup.py sdist
 	tox
