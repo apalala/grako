@@ -32,7 +32,7 @@ and right associativity, new algorithms for left-recursion, a
 unified intermediate model for parsing and translating programming
 languages, and more...*
 
-.. _`make a donation`: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
+.. _make a donation: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
 
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
