@@ -19,21 +19,20 @@ Grako
     Copyright (C) 2017      by Juancarlo Añez
     Copyright (C) 2012-2016 by Juancarlo Añez and Thomas Bragg
 
+**THE ORIGINAL SOURCE OF FUNDING FOR *GRAKO* DEVELOPMENT HAS ENDED**
 
-    **THE ORIGINAL SOURCE OF FUNDING FOR *GRAKO* DEVELOPMENT HAS ENDED**
+|donate|
 
-    |donate|
+*And my work is moving away from parsing and translation.*
 
-    *And my work is moving away from parsing and translation.*
+*If you'd like to contribute to the future development of **Grako**,
+please* **`make a
+donation <https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J>`__**.
 
-    *If you'd like to contribute to the future development of **Grako**,
-    please* **`make a
-    donation <https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J>`__**.
-
-    *Some of the planned new features are: grammar expressions for left
-    and right associativity, new algorithms for left-recursion, a
-    unified intermediate model for parsing and translating programming
-    languages, and more...*
+*Some of the planned new features are: grammar expressions for left
+and right associativity, new algorithms for left-recursion, a
+unified intermediate model for parsing and translating programming
+languages, and more...*
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
