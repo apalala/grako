@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 from grako.exceptions import FailedParse
-from grako.tool import genmodel
+from grako.tool import compile
 from grako.codegen import codegen
 
 
@@ -24,7 +24,7 @@ class KeywordTests(unittest.TestCase):
                     {'x'}+
                 ;
         '''
-        m = genmodel('Keywords', grammar)
+        m = compile(grammar, 'Keywords')
         m.parse('x')
 
     def test_python_keywords_in_rule_names(self):
@@ -35,7 +35,7 @@ class KeywordTests(unittest.TestCase):
         grammar = '''
             not = 'x' ;
         '''
-        m = genmodel('Keywords', grammar)
+        m = compile(grammar, 'Keywords')
 
         class Semantics(object):
             def __init__(self):
@@ -57,12 +57,12 @@ class KeywordTests(unittest.TestCase):
 
             start = ('a' 'b').{'x'}+ ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         c = codegen(model)
         parser.suite(c)
 
         grammar2 = str(model)
-        model2 = genmodel("test", grammar2)
+        model2 = compile(grammar2, "test")
         c2 = codegen(model2)
         parser.suite(c2)
 
@@ -79,7 +79,7 @@ class KeywordTests(unittest.TestCase):
             @name
             id = /\w+/ ;
         '''
-        model = genmodel('test', grammar)
+        model = compile(grammar, 'test')
         c = codegen(model)
         parser.suite(c)
 
@@ -103,5 +103,5 @@ class KeywordTests(unittest.TestCase):
             @name
             id = /\w+/ ;
         '''
-        model = genmodel('test', grammar)
+        model = compile(grammar, 'test')
         model.parse("hello Øresund")

@@ -7,7 +7,7 @@ import unittest
 
 from grako.exceptions import FailedSemantics
 from grako.grammars import ModelContext
-from grako.tool import genmodel
+from grako.tool import compile
 
 
 class StatefulTests(unittest.TestCase):
@@ -60,7 +60,7 @@ class StatefulTests(unittest.TestCase):
             def li_text(self, ast):
                 return ast.text if ast.ul is None else ast.text + ast.ul
 
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         context = ModelContext(model.rules, whitespace='', nameguard=False)
         ast = model.parse('*abc', "document", context=context, semantics=StatefulSemantics(context), whitespace='', nameguard=False)
         self.assertEqual(ast, "<ul><li>abc</li></ul>")

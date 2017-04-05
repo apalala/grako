@@ -15,7 +15,7 @@ PARSER_FILENAME = 'genparser.py'
 
 def main():
     grammar = regex_parser.translate('(a|b)*')
-    model = grako.genmodel('Regexp', grammar)
+    model = grako.compile(grammar, 'Regexp')
     model.parse('aaabbaba', 'S0')
     try:
         model.parse('aaaCbbaba', 'S0')

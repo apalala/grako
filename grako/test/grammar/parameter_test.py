@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 from grako.parser import GrammarGenerator
-from grako.tool import genmodel
+from grako.tool import compile
 from grako.util import trim, ustr, PY3
 from grako.codegen import codegen
 
@@ -33,7 +33,7 @@ class ParameterTests(unittest.TestCase):
                 'a'
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         self.assertEqual(trim(grammar), ustr(model))
 
     def test_36_params_and_keyword_params(self):
@@ -43,7 +43,7 @@ class ParameterTests(unittest.TestCase):
                 'a'
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         self.assertEqual(trim(grammar), ustr(model))
 
     def test_36_param_combinations(self):
@@ -121,9 +121,9 @@ class ParameterTests(unittest.TestCase):
                 ;
         '''
 
-        model = genmodel('RuleArguments', grammar)
+        model = compile(grammar, 'RuleArguments')
         self.assertEqual(trim(pretty), ustr(model))
-        model = genmodel('RuleArguments', pretty)
+        model = compile(pretty, 'RuleArguments')
 
         ast = model.parse("a b c")
         self.assertEqual(['a', 'b', 'c'], ast)
@@ -176,7 +176,7 @@ class ParameterTests(unittest.TestCase):
                 assert_equal("ßäöüÄÖÜ", k1)
                 return ast
 
-        m = genmodel("UnicodeRuleArguments", grammar)
+        m = compile(grammar, "UnicodeRuleArguments")
         ast = m.parse("a b c")
         self.assertEqual(['a', 'b', 'c'], ast)
 
@@ -218,5 +218,5 @@ class ParameterTests(unittest.TestCase):
         else:
             grammar += rule2
 
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         self.assertEqual(trim(grammar), ustr(model))

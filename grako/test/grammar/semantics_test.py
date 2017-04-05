@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
-from grako.tool import genmodel
+from grako.tool import compile
 from grako.semantics import ModelBuilderSemantics
 
 
@@ -19,7 +19,7 @@ class SemanticsTests(unittest.TestCase):
         text = '5 4 3 2 1'
 
         semantics = ModelBuilderSemantics()
-        model = genmodel('test', grammar)
+        model = compile(grammar, 'test')
         ast = model.parse(text, semantics=semantics)
         self.assertEqual(15, ast)
 
@@ -33,6 +33,6 @@ class SemanticsTests(unittest.TestCase):
         '''
 
         semantics = ModelBuilderSemantics(types=[dotted])
-        model = genmodel('test', grammar)
+        model = compile(grammar, 'test')
         ast = model.parse(text, semantics=semantics)
         self.assertEqual('5.4.3.2.1', ast)

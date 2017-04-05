@@ -132,18 +132,31 @@ def parse_args():
     return args
 
 
-def compile(name=None, grammar=None, **kwargs):
+def compile(grammar, name=None, **kwargs):
     return GrammarGenerator(name, **kwargs).parse(grammar, **kwargs)
 
 
+__compiled_grammar_cache = {}
+
+
+def parse(grammar, input, **kwargs):
+    global __compiled_grammar_cache
+    cache = __compiled_grammar_cache
+    model = cache.setdefault(grammar, compile(grammar=grammar, **kwargs))
+    return model.parse(input, **kwargs)
+
+
 def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythoncg):
-    model = compile(name, grammar, filename=filename, trace=trace)
+    model = compile(grammar, name, filename=filename, trace=trace)
     return codegen(model)
 
 
-# an alias
-def genmodel(*args, **kwargs):
-    return compile(*args, **kwargs)
+# for backwards compatibility. Use `compile()` instead
+def genmodel(name=None, grammar=None, **kwargs):
+    if grammar is None:
+        raise ParseException('grammar is None')
+
+    return compile(grammar, name=name, **kwargs)
 
 
 def prepare_for_output(filename):
@@ -173,13 +186,7 @@ def main(codegen=pythoncg):
     grammar = codecs.open(args.filename, 'r', encoding='utf-8').read()
 
     try:
-        model = compile(
-            args.name,
-            grammar,
-            trace=args.trace,
-            filename=args.filename,
-            colorize=args.color
-        )
+        model = compile(grammar, args.name, trace=args.trace, filename=args.filename, colorize=args.color)
         model.whitespace = args.whitespace
         model.nameguard = args.nameguard
         model.left_recursion = args.left_recursion

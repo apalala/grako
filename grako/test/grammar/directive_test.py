@@ -5,9 +5,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
-from grako.tool import genmodel
+import grako
 from grako.util import trim
 from grako.codegen import codegen
+
+
+EXEC = str('exec')
 
 
 class DirectiveTests(unittest.TestCase):
@@ -18,9 +21,9 @@ class DirectiveTests(unittest.TestCase):
 
             test = "test" $;
         '''
-        model = genmodel("test", grammar)
+        model = grako.compile(grammar, "test")
         code = codegen(model)
-        compile(code, 'test.py', 'exec')
+        compile('test.py', code, EXEC)
 
     def test_eol_comments_re_directive(self):
         grammar = '''
@@ -28,9 +31,9 @@ class DirectiveTests(unittest.TestCase):
 
             test = "test" $;
         '''
-        model = genmodel("test", grammar)
+        model = grako.compile(grammar, "test")
         code = codegen(model)
-        compile(code, 'test.py', 'exec')
+        compile(code, 'test.py', EXEC)
 
     def test_left_recursion_directive(self):
         grammar = '''
@@ -38,12 +41,12 @@ class DirectiveTests(unittest.TestCase):
 
             test = "test" $;
         '''
-        model = genmodel("test", grammar)
+        model = grako.compile(grammar, "test")
         self.assertFalse(model.directives.get('left_recursion'))
         self.assertFalse(model.left_recursion)
 
         code = codegen(model)
-        compile(code, 'test.py', 'exec')
+        compile('test.py', code, EXEC)
 
     def test_whitespace_no_newlines(self):
         grammar = """
@@ -86,7 +89,7 @@ class DirectiveTests(unittest.TestCase):
             ]
         ]
 
-        model = genmodel("document", grammar)
+        model = grako.compile(grammar, "document")
         ast = model.parse(text, start='document')
         self.assertEqual(expected, ast)
 
@@ -97,12 +100,12 @@ class DirectiveTests(unittest.TestCase):
             start = test $;
             test = "test";
         '''
-        model = genmodel(grammar=grammar)
+        model = grako.compile(grammar=grammar)
         self.assertEqual('Test', model.directives.get('grammar'))
         self.assertEqual('Test', model.name)
 
         code = codegen(model)
-        module = compile(code, 'test.py', 'exec')
+        module = compile(code, 'test.py', EXEC)
 
         assert 'TestParser' in module.co_names
 
@@ -113,23 +116,23 @@ class DirectiveTests(unittest.TestCase):
 
             test = value:"test" $;
         '''
-        model = genmodel("test", grammar)
+        model = grako.compile(grammar, "test")
         ast = model.parse("test")
         self.assertIsNotNone(ast.parseinfo)
 
         code = codegen(model)
         self.assertTrue('parseinfo=True' in code)
-        compile(code, 'test.py', 'exec')
+        compile(code, 'test.py', EXEC)
 
         grammar = '''
             @@parseinfo :: False
 
             test = value:"test" $;
         '''
-        model = genmodel("test", grammar)
+        model = grako.compile(grammar, "test")
         ast = model.parse("test")
         self.assertIsNone(ast.parseinfo)
 
         code = codegen(model)
         self.assertTrue('parseinfo=False' in code)
-        compile(code, 'test.py', 'exec')
+        compile(code, 'test.py', EXEC)

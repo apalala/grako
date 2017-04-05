@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 from grako.util import trim
-from grako.tool import genmodel
+from grako.tool import compile
 
 
 class PrettyTests(unittest.TestCase):
@@ -82,7 +82,7 @@ class PrettyTests(unittest.TestCase):
                 ;
         ''')
 
-        model = genmodel(grammar=grammar)
+        model = compile(grammar=grammar)
 
         self.assertEqual(pretty, model.pretty())
         self.assertEqual(str(model), model.pretty())
@@ -96,7 +96,7 @@ class PrettyTests(unittest.TestCase):
                 ?"[a-z]+/[0-9]+" $
                 ;
         '''
-        model = genmodel(grammar=grammar)
+        model = compile(grammar=grammar)
         ast = model.parse('abc/123')
         self.assertEqual('abc/123', ast)
         print(model.pretty())

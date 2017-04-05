@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 from grako.util import trim
-from grako.tool import genmodel
+from grako.tool import compile
 
 
 class PatternTests(unittest.TestCase):
@@ -30,7 +30,7 @@ class PatternTests(unittest.TestCase):
                 ;
         '''
 
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse('\n\n', trace=True)
         self.assertEqual(['\n', '\n'], ast)
 
@@ -61,7 +61,7 @@ class PatternTests(unittest.TestCase):
                 + /[0-9]+/
                 ;
         '''
-        model = genmodel(grammar=grammar)
+        model = compile(grammar=grammar)
         ast = model.parse('abc123 def456')
         self.assertEqual(['abc123', 'def456'], ast)
         print(model.pretty())

@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 from grako.exceptions import FailedParse
-from grako.tool import genmodel
+from grako.tool import compile
 from grako.codegen import codegen
 
 
@@ -25,7 +25,7 @@ class JoinTests(unittest.TestCase):
             start = [','.{'x'}+] ;
         '''
 
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         codegen(model)
         ast = model.parse("x y, x y", nameguard=False)
         self.assertEqual([['x', 'y'], ['x', 'y']], ast)
@@ -37,7 +37,7 @@ class JoinTests(unittest.TestCase):
         except FailedParse:
             pass
 
-        model = genmodel("test", grammar2)
+        model = compile(grammar2, "test")
         ast = model.parse("y x", nameguard=False)
         self.assertEqual([], ast)
         ast = model.parse("x", nameguard=False)
@@ -45,7 +45,7 @@ class JoinTests(unittest.TestCase):
         ast = model.parse("x,x", nameguard=False)
         self.assertEqual(['x', 'x'], ast)
 
-        model = genmodel("test", grammar3)
+        model = compile(grammar3, "test")
         ast = model.parse("y x", nameguard=False)
         self.assertEqual(None, ast)
 
@@ -54,7 +54,7 @@ class JoinTests(unittest.TestCase):
             start = ','.{'x' 'y'} 'z' ;
         '''
 
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         codegen(model)
 
         ast = model.parse("x y, x y z", nameguard=False)
@@ -70,7 +70,7 @@ class JoinTests(unittest.TestCase):
         grammar = '''
             start = ('a' 'b').{'x'}+ ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         c = codegen(model)
         import parser
         parser.suite(c)

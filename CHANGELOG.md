@@ -13,9 +13,20 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
-### Changed
+## [3.20.0][] @ 2017-03-05
 
--   Renamed `grako.genmodel` was renamed to `grako.compile`, leaving `grako.genmodel` as an alias for backwards compatibility.
+### Added
+
+-   Added `grako.compile(grammar, name=None, **kwargs)` as a substitute for `grako.genmodel` (which remains for backwards compatibility).
+
+-   Added a `grako.parse(grammar, input, **kwargs)` that will compile a grammar and uset to parse the given input. For efficiency, parsed grammars are cached.
+
+
+
+
+### Fixed
+
+-   The `parseinfo=` keyword parameter was unused in `GrammarGenerator.__init__()`.
 
 
 ## [3.19.4][] @ 2017-03-02
@@ -809,7 +820,8 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/apalala/grako/issue/109
 [115]: https://bitbucket.org/apalala/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.19.4
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.20.0
+[3.20.0]: https://bitbucket.org/apalala/grako/branches/compare/3.20.0%0D3.19.4
 [3.19.4]: https://bitbucket.org/apalala/grako/branches/compare/3.19.4%0D3.19.1
 [3.19.1]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1

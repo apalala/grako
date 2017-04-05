@@ -5,7 +5,7 @@ import unittest
 import pickle
 
 from grako.semantics import ModelBuilderSemantics
-from grako.tool import genmodel
+from grako.tool import compile
 
 
 class PickleTest(unittest.TestCase):
@@ -24,7 +24,7 @@ class PickleTest(unittest.TestCase):
                 ;
         '''
 
-        m = genmodel('ASeq', grammar)
+        m = compile(grammar, 'ASeq')
         model = m.parse('a a a', semantics=ModelBuilderSemantics())
         self.assertEqual('ASeq', type(model).__name__)
 

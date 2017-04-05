@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 import unittest
 
 from grako.exceptions import FailedParse
-from grako.tool import genmodel
+from grako.tool import compile
 from grako.util import trim, ustr
 from grako.codegen import codegen
 from grako.grammars import EBNFBuffer
@@ -19,7 +19,7 @@ class SyntaxTests(unittest.TestCase):
             foo = name:"1" [ name: bar ] ;
             bar = { "2" } * ;
         '''
-        m = genmodel('Keywords', grammar)
+        m = compile(grammar, 'Keywords')
         ast = m.parse('1 2')
         self.assertEqual(['1', ['2']], ast.name)
 
@@ -28,7 +28,7 @@ class SyntaxTests(unittest.TestCase):
             item = @:{ subitem } * "0" ;
             subitem = ?/1+/? ;
         '''
-        m = genmodel('Update', grammar)
+        m = compile(grammar, 'Update')
         ast = m.parse("1101110100", nameguard=False)
         self.assertEqual([['11'], ['111'], ['1'], []], ast.items_)
 
@@ -46,8 +46,8 @@ class SyntaxTests(unittest.TestCase):
             def get_include(self, source, filename):
                 return included_grammar, source + '/' + filename
 
-        genmodel("test", FakeIncludesBuffer(whole_grammar))
-        genmodel("test", FakeIncludesBuffer(including_grammar))
+        compile(FakeIncludesBuffer(whole_grammar), "test")
+        compile(FakeIncludesBuffer(including_grammar), "test")
 
     def test_ast_assignment(self):
         grammar = '''
@@ -59,7 +59,7 @@ class SyntaxTests(unittest.TestCase):
             ff = @+: {"a"}* @+: {"b"}* $ ;
         '''
 
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
 
         def p(input, rule):
             return model.parse(input, start=rule, whitespace='')
@@ -84,22 +84,22 @@ class SyntaxTests(unittest.TestCase):
 
     def test_optional_closure(self):
         grammar = 'start = foo+:"x" foo:{"y"}* {foo:"z"}* ;'
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("xyyzz", nameguard=False)
         self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
         grammar = 'start = foo+:"x" [foo+:{"y"}*] {foo:"z"}* ;'
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("xyyzz", nameguard=False)
         self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
         grammar = 'start = foo+:"x" foo:[{"y"}*] {foo:"z"}* ;'
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("xyyzz", nameguard=False)
         self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
         grammar = 'start = foo+:"x" [foo:{"y"}*] {foo:"z"}* ;'
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("xyyzz", nameguard=False)
         self.assertEqual(['x', ['y', 'y'], 'z', 'z'], ast.foo)
 
@@ -107,14 +107,14 @@ class SyntaxTests(unittest.TestCase):
         grammar = '''
             start = '1' ['2' '3'] '4' $ ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("1234", nameguard=False)
         self.assertEqual(['1', '2', '3', '4'], ast)
 
         grammar = '''
             start = '1' foo:['2' '3'] '4' $ ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("1234", nameguard=False)
         self.assertEqual(['2', '3'], ast.foo)
 
@@ -122,7 +122,7 @@ class SyntaxTests(unittest.TestCase):
         grammar = '''
             start = '1' ('2' '3') '4' $ ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("1234", nameguard=False)
         self.assertEqual(['1', '2', '3', '4'], ast)
 
@@ -143,7 +143,7 @@ class SyntaxTests(unittest.TestCase):
                 'A' !('A'|'B')
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("AB", nameguard=False)
         self.assertEqual(['A', 'B'], ast)
 
@@ -162,7 +162,7 @@ class SyntaxTests(unittest.TestCase):
                 'A' b:'B'
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("A", nameguard=False)
         self.assertEqual({'x': 'A', 'o': None}, ast)
 
@@ -174,7 +174,7 @@ class SyntaxTests(unittest.TestCase):
                 $
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("abb", nameguard=False)
         self.assertEqual(['a', 'b', 'b'], ast)
 
@@ -186,7 +186,7 @@ class SyntaxTests(unittest.TestCase):
                 $
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("a", nameguard=False)
         self.assertEqual(['a'], ast)
 
@@ -197,7 +197,7 @@ class SyntaxTests(unittest.TestCase):
                 $
                 ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("a", nameguard=False)
         self.assertEqual('a', ast)
 
@@ -220,7 +220,7 @@ class SyntaxTests(unittest.TestCase):
                 {@:'b'}
                 ;
             '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("abb", nameguard=False)
         self.assertEqual(['a', 'b', 'b'], ast)
         self.assertEqual(trim(grammar), ustr(model))
@@ -232,7 +232,7 @@ class SyntaxTests(unittest.TestCase):
             a = @:'a' ;
             b = >a {@:'b'} ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("abb", nameguard=False)
         self.assertEqual(['a', 'b', 'b'], ast)
 
@@ -245,7 +245,7 @@ class SyntaxTests(unittest.TestCase):
             @override
             ab = @:'a' {@:'b'} ;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("abb", nameguard=False)
         self.assertEqual(['a', 'b', 'b'], ast)
 
@@ -265,7 +265,7 @@ class SyntaxTests(unittest.TestCase):
             number = /-?[0-9]+/;
         """
 
-        model = genmodel("final", grammar)
+        model = compile(grammar, "final")
         codegen(model)
         model.parse('(sometype){boolean = true}')
 
@@ -276,7 +276,7 @@ class SyntaxTests(unittest.TestCase):
             cell = /[a-z]+/ ;
         """
         try:
-            genmodel("model", grammar)
+            compile(grammar, "model")
             self.fail('allowed empty token')
         except FailedParse:
             pass
@@ -285,7 +285,7 @@ class SyntaxTests(unittest.TestCase):
         grammar = '''
             start = {'x'}+ {} 'y'$;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         codegen(model)
         ast = model.parse("xxxy", nameguard=False)
         self.assertEqual([['x', 'x', 'x'], [], 'y'], ast)
@@ -294,7 +294,7 @@ class SyntaxTests(unittest.TestCase):
         grammar = '''
             start = head:{'x'}+ {} tail:'y'$;
         '''
-        model = genmodel("test", grammar)
+        model = compile(grammar, "test")
         ast = model.parse("xxxy", nameguard=False, parseinfo=True)
         self.assertIsNotNone(ast)
         self.assertIsNotNone(ast.head)
@@ -311,6 +311,6 @@ class SyntaxTests(unittest.TestCase):
                 'am\\nraw'
                 ;
         '''
-        model = genmodel("start", grammar)
+        model = compile(grammar, "start")
         print(model.pretty())
         self.assertEqual(trim(pretty), model.pretty())

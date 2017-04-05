@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import unittest
-from grako.tool import genmodel
+from grako.tool import compile
 
 
 class DiagramTests(unittest.TestCase):
@@ -21,7 +21,7 @@ class DiagramTests(unittest.TestCase):
         except ImportError:
             return
 
-        m = genmodel('Diagram', grammar)
+        m = compile(grammar, 'Diagram')
         draw('tmp/diagram.png', m)
 
 
