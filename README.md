@@ -191,12 +191,10 @@ Using the Tool
 
 **Grako** can be uses as a library, much like [Python][]'s `re`, by embedding grammars as strings and generating grammar models instead of generating code.
 
-These methods allow
-
-*   `compile(grammar, name=None, **kwargs)`
+*   `grako.compile(grammar, name=None, **kwargs)`
 >    Compiles the grammar and generates a _model_ that can subsequently be used for parsing input with.
 
-*   `parse(grammar, input, **kwargs)`
+*   `grako.parse(grammar, input, **kwargs)`
 >    Compiles the grammar and parses the given input producing an [AST][] as result. The result is >    equivalent to calling `model = compile(grammar); model.parse(input)`. Compiled grammars are cached for efficiency.
 
 This is an example of how to use **Grako** as a library:
