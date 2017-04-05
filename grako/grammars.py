@@ -452,9 +452,10 @@ class PositiveClosure(Closure):
 
 
 class Join(Decorator):
-    def __init__(self, ast=None, **kwargs):
+    def __init__(self, ast=None, keep_sep=False, **kwargs):
         super(Join, self).__init__(ast.exp)
         self.sep = ast.sep
+        self.keep_sep = keep_sep
 
     def parse(self, ctx):
         def sep():
@@ -463,10 +464,10 @@ class Join(Decorator):
         def exp():
             return self.exp.parse(ctx)
 
-        return self._closure(ctx, exp, sep=sep)
+        return self._closure(ctx, exp, sep, self.keep_sep)
 
-    def _closure(self, ctx, exp, sep):
-        return ctx._closure(exp, sep=sep)
+    def _closure(self, ctx, exp, sep, keep_sep):
+        return ctx._closure(exp, sep=sep, keep_sep=keep_sep)
 
     def _to_str(self, lean=False):
         ssep = self.sep._to_str(lean=lean)
@@ -478,11 +479,21 @@ class Join(Decorator):
 
 
 class PositiveJoin(Join):
-    def _closure(self, ctx, exp, sep):
-        return ctx._positive_closure(exp, sep=sep)
+    def _closure(self, ctx, exp, sep, keep_sep):
+        return ctx._positive_closure(exp, sep=sep, keep_sep=keep_sep)
 
     def _to_str(self, lean=False):
         return super(PositiveJoin, self)._to_str(lean=lean) + '+'
+
+
+class KeeperJoin(Join):
+    def __init__(self, ast=None, **kwargs):
+        super(KeeperJoin, self).__init__(ast=ast, keep_sep=True, **kwargs)
+
+
+class KeeperPositiveJoin(PositiveJoin):
+    def __init__(self, ast=None, **kwargs):
+        super(KeeperPositiveJoin, self).__init__(ast=ast, keep_sep=True, **kwargs)
 
 
 class EmptyClosure(Model):
