@@ -146,9 +146,9 @@ def parse(grammar, input, **kwargs):
     return model.parse(input, **kwargs)
 
 
-def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythoncg):
-    model = compile(grammar, name, filename=filename, trace=trace)
-    return codegen(model)
+def to_python_sourcecode(grammar, name=None, filename=None, **kwargs):
+    model = compile(grammar, name=name, filename=filename, **kwargs)
+    return pythoncg(model)
 
 
 # for backwards compatibility. Use `compile()` instead
@@ -157,6 +157,12 @@ def genmodel(name=None, grammar=None, **kwargs):
         raise ParseException('grammar is None')
 
     return compile(grammar, name=name, **kwargs)
+
+
+# for backwards compatibility. Use `compile()` instead
+def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythoncg, **kwargs):
+    model = compile(grammar, name=name, filename=filename, trace=trace, **kwargs)
+    return codegen(model)
 
 
 def prepare_for_output(filename):
