@@ -13,6 +13,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
+### Changed
+
+-   Renamed `grako.genmodel` was renamed to `grako.compile`, leaving `grako.genmodel` as an alias for backwards compatibility.
+
+
 ## [3.19.4][] @ 2017-03-02
 
 ### Added

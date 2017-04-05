@@ -132,13 +132,18 @@ def parse_args():
     return args
 
 
-def genmodel(name=None, grammar=None, **kwargs):
+def compile(name=None, grammar=None, **kwargs):
     return GrammarGenerator(name, **kwargs).parse(grammar, **kwargs)
 
 
 def gencode(name=None, grammar=None, trace=False, filename=None, codegen=pythoncg):
-    model = genmodel(name, grammar, filename=filename, trace=trace)
+    model = compile(name, grammar, filename=filename, trace=trace)
     return codegen(model)
+
+
+# an alias
+def genmodel(*args, **kwargs):
+    return compile(*args, **kwargs)
 
 
 def prepare_for_output(filename):
@@ -168,7 +173,7 @@ def main(codegen=pythoncg):
     grammar = codecs.open(args.filename, 'r', encoding='utf-8').read()
 
     try:
-        model = genmodel(
+        model = compile(
             args.name,
             grammar,
             trace=args.trace,
