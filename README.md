@@ -1483,7 +1483,7 @@ Contributors
 ------------
 
 The following, among others, have contributted to **Grako** with
-features, bug fixes, or suggestions: [franz\_g], [marcus][lambdafu],
+features, bug fixes, or suggestions: [franz_g], [marcus][lambdafu],
 [pauls][Paul Sargent], [basel-shishani][Basel Shishani],
 [drothlis][David Röthlisberger], [gapag], [gkimbar], [jimon],
 [lambdafu], [linkdd], [nehz], [neumond], [pgebhard], [r\_speer][Robert
@@ -1562,7 +1562,7 @@ See the [CHANGELOG] for details.
   [Warth et al]: http://www.vpri.org/pdf/tr2007002_packrat.pdf
   [Kathryn Long]: https://bitbucket.org/starkat
   [David Röthlisberger]: https://bitbucket.org/drothlis/
-  [franz\_g]: https://bitbucket.org/Franz_G
+  [franz_g]: https://bitbucket.org/Franz_G
   [gapag]: https://bitbucket.org/gapag/
   [gkimbar]: https://bitbucket.org/gkimbar/
   [jimon]: https://bitbucket.org/jimon/
