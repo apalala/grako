@@ -142,7 +142,7 @@ __compiled_grammar_cache = {}
 def parse(grammar, input, **kwargs):
     global __compiled_grammar_cache
     cache = __compiled_grammar_cache
-    model = cache.setdefault(grammar, compile(grammar=grammar, **kwargs))
+    model = cache.setdefault(grammar, compile(grammar, **kwargs))
     return model.parse(input, **kwargs)
 
 
