@@ -185,6 +185,109 @@ def _postproc(self, context, ast):
 Using the Tool
 --------------
 
+
+### As a Library
+
+**Grako** can be uses as a library, much like [Python][]'s `re`, by embedding grammars as strings and generating grammar models instead of generating code.
+
+These methods allow
+
+*   `compile(grammar, name=None, **kwargs)`
+>    Compiles the grammar and generates a _model_ that can subsequently be used for parsing input with.
+
+*   `parse(grammar, input, **kwargs)`
+>    Compiles the grammar and parses the given input producing an [AST][] as result. The result is >    equivalent to calling `model = compile(grammar); model.parse(input)`. Compiled grammars are cached for efficiency.
+
+This is an example of how to use **Grako** as a library:
+
+```python
+GRAMMAR = '''
+    @@grammar::Calc
+
+    start = expression $ ;
+
+    expression
+        =
+        | term '+' ~ expression
+        | term '-' ~ expression
+        | term
+        ;
+
+    term
+        =
+        | factor '*' ~ term
+        | factor '/' ~ term
+        | factor
+        ;
+
+    factor
+        =
+        | '(' ~ expression ')'
+        | number
+        ;
+
+    number = /\d+/ ;
+'''
+
+
+def main():
+    import pprint
+    import json
+    from grako import parse
+    from grako.util import asjson
+
+    ast = parse(GRAMMAR, '3 + 5 * ( 10 - 20 )')
+    print('PPRINT')
+    pprint.pprint(ast, indent=2, width=20)
+    print()
+
+    json_ast = asjson(ast)
+    print('JSON')
+    print(json.dumps(json_ast, indent=2))
+    print()
+
+
+if __name__ == '__main__':
+    main()
+```
+
+And this is the output:
+
+```bash
+PPRINT
+[ '3',
+  '+',
+  [ '5',
+    '*',
+    [ '(',
+      [ '10',
+        '-',
+        '20'],
+      ')']]]
+
+JSON
+[
+  "3",
+  "+",
+  [
+    "5",
+    "*",
+    [
+      "(",
+      [
+        "10",
+        "-",
+        "20"
+      ],
+      ")"
+    ]
+  ]
+]
+```
+
+
+### Compiling grammars to Python
+
 **Grako** can be run from the command line:
 
 ```bash

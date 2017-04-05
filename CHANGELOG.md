@@ -22,6 +22,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 -   Added a `grako.parse(grammar, input, **kwargs)` that will compile a grammar and uset to parse the given input. For efficiency, parsed grammars are cached.
 
 
+### Changed
+
+-   Document that **Grako** may be used as a library (with no code generation) by compiling grammars to `Grammar` objects that can be used to parse any given input, much like Python_'s `re` does with regular expressions.
 
 
 ### Fixed

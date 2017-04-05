@@ -43,6 +43,8 @@ languages, and more...*
 
 **Grako** (for *grammar compiler*) is a tool that takes grammars in a variation of EBNF_ as input, and outputs memoizing_ (Packrat_) PEG_ parsers in Python_.
 
+**Grako** can also compile a grammar stored in a string into a `Grammar` object that can be used to parse any given input, much like the re_ module does with regular expressions.
+
 **Grako** is *different* from other PEG_ parser generators:
 
 * Generated parsers use Python_'s very efficient exception-handling system to backtrack. **Grako** generated parsers simply assert what must be parsed. There are no complicated *if-then-else* sequences for decision making or backtracking. Memoization allows going over the same input sequence several times in linear time.
