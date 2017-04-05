@@ -20,6 +20,6 @@ class GrammarGenerator(EBNFBootstrapParser):
             semantics = EBNFGrammarSemantics(grammar_name)
         super(GrammarGenerator, self).__init__(
             semantics=semantics,
-            parseinfo=True,
+            parseinfo=parseinfo,
             **kwargs
         )
