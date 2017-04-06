@@ -452,6 +452,8 @@ class PositiveClosure(Closure):
 
 
 class Join(Decorator):
+    JOINOP = '%'
+
     def __init__(self, ast=None, **kwargs):
         super(Join, self).__init__(ast.exp)
         self.sep = ast.sep
@@ -472,9 +474,9 @@ class Join(Decorator):
         ssep = self.sep._to_str(lean=lean)
         sexp = ustr(self.exp._to_str(lean=lean))
         if len(sexp.splitlines()) <= 1:
-            return '%s.{%s}' % (ssep, sexp)
+            return '%s%s{%s}' % (ssep, self.JOINOP, sexp)
         else:
-            return '%s.{\n%s\n}' % (ssep, sexp)
+            return '%s%s{\n%s\n}' % (ssep, self.JOINOP, sexp)
 
 
 class PositiveJoin(Join):
@@ -496,13 +498,18 @@ class RightJoin(PositiveJoin):
 
 
 class Gather(Join):
+    JOINOP = '.'
+
     def _do_parse(self, ctx, exp, sep):
         return ctx._gather(exp, sep=sep)
 
 
-class PositiveGather(PositiveJoin):
+class PositiveGather(Gather):
     def _do_parse(self, ctx, exp, sep):
         return ctx._positive_gather(exp, sep=sep)
+
+    def _to_str(self, lean=False):
+        return super(PositiveGather, self)._to_str(lean=lean) + '+'
 
 
 class EmptyClosure(Model):

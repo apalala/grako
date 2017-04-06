@@ -738,36 +738,31 @@ class ParseContext(object):
         else:
             self._error('', etype=FailedLookahead)
 
-    @contextmanager
-    def _ignore(self):
+    def _isolate(self, block):
         self._push_cst()
         try:
-            self.cst = None
-            yield
+            block()
+            return self.cst
         finally:
             self._pop_cst()
 
+    def _repeater_inner(self, block, prefix, omitprefix):
+        with self._try():
+            if prefix:
+                cst = self._isolate(prefix)
+                self._cut()
+                if not omitprefix:
+                    self._add_cst_node(cst)
+
+            return self._isolate(block)
+
     def _repeater(self, block, prefix=None, omitprefix=False):
         while True:
+            p = self._pos
             self._push_cut()
-            self._push_cst()
             try:
-                p = self._pos
-                with self._try():
-                    if prefix:
-                        if omitprefix:
-                            with self._ignore():
-                                prefix()
-                        else:
-                            raise Exception
-                            prefix()
-                        self._cut()
-
-                    block()
-                    cst = self.cst
-
-                    if self._pos == p:
-                        self._error('empty closure')
+                cst = self._repeater_inner(block, prefix, omitprefix)
+                self._add_cst_node(cst)
             except FailedCut:
                 raise
             except FailedParse as e:
@@ -775,9 +770,9 @@ class ParseContext(object):
                     raise FailedCut(e)
                 break
             finally:
-                self._pop_cst()
                 self._pop_cut()
-            self._add_cst_node(cst)
+            if self._pos == p:
+                self._error('empty closure')
 
     def _closure(self, block, sep=None, omitsep=False):
         self._push_cst()

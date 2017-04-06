@@ -58,7 +58,7 @@ class JoinTests(unittest.TestCase):
         codegen(model)
 
         ast = model.parse("x y, x y z", nameguard=False)
-        self.assertEqual([[['x', 'y'], ['x', 'y']], 'z'], ast)
+        self.assertEqual([[['x', 'y'], ',', ['x', 'y']], 'z'], ast)
 
         ast = model.parse("x y z", nameguard=False)
         self.assertEqual([[['x', 'y']], 'z'], ast)
@@ -76,7 +76,7 @@ class JoinTests(unittest.TestCase):
         parser.suite(c)
 
         ast = model.parse("x a b x", nameguard=False)
-        self.assertEqual(['x', 'x'], ast)
+        self.assertEqual(['x', ['a', 'b'], 'x'], ast)
 
     def test_positive_gather(self):
         grammar = '''
