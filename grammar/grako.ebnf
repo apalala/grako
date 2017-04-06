@@ -193,6 +193,8 @@ term
     | void
     | gather
     | join
+    | left_join
+    | right_join
     | group
     | empty_closure
     | positive_closure
@@ -213,7 +215,7 @@ group::Group
 
 gather
     =
-    &(separator '.' '{') ~
+    &(separator '.{') ~
     (
     | positive_gather
     | normal_gather
@@ -223,19 +225,19 @@ gather
 
 positive_gather::PositiveGather
     =
-    sep:separator '.' '{' exp:expre '}' ('+'|'-') ~
+    sep:separator '.{' exp:expre '}' ('+'|'-') ~
     ;
 
 
 normal_gather::Gather
     =
-    sep:separator '.' ~ '{' ~ exp:expre '}' ['*' ~] ~
+    sep:separator '.{' ~ exp:expre '}' ['*' ~] ~
     ;
 
 
 join
     =
-    &(separator '%' '{') ~
+    &(separator '%{') ~
     (
     | positive_join
     | normal_join
@@ -245,13 +247,25 @@ join
 
 positive_join::PositiveJoin
     =
-    sep:separator '%' '{' exp:expre '}' ('+'|'-') ~
+    sep:separator '%{' exp:expre '}' ('+'|'-') ~
     ;
 
 
 normal_join::Join
     =
-    sep:separator '%' ~ '{' ~ exp:expre '}' ['*' ~] ~
+    sep:separator '%{' ~ exp:expre '}' ['*' ~] ~
+    ;
+
+
+left_join::LeftJoin
+    =
+    sep:separator '<{' ~ exp:expre '}' ('+'|'-') ~
+    ;
+
+
+right_join::RightJoin
+    =
+    sep:separator '>{' ~ exp:expre '}' ('+'|'-') ~
     ;
 
 

@@ -475,6 +475,10 @@ class EBNFBootstrapParser(Parser):
             with self._option():
                 self._join_()
             with self._option():
+                self._left_join_()
+            with self._option():
+                self._right_join_()
+            with self._option():
                 self._group_()
             with self._option():
                 self._empty_closure_()
@@ -512,8 +516,7 @@ class EBNFBootstrapParser(Parser):
         with self._if():
             with self._group():
                 self._separator_()
-                self._token('.')
-                self._token('{')
+                self._token('.{')
         self._cut()
         with self._group():
             with self._choice():
@@ -527,8 +530,7 @@ class EBNFBootstrapParser(Parser):
     def _positive_gather_(self):
         self._separator_()
         self.name_last_node('sep')
-        self._token('.')
-        self._token('{')
+        self._token('.{')
         self._expre_()
         self.name_last_node('exp')
         self._token('}')
@@ -549,9 +551,7 @@ class EBNFBootstrapParser(Parser):
     def _normal_gather_(self):
         self._separator_()
         self.name_last_node('sep')
-        self._token('.')
-        self._cut()
-        self._token('{')
+        self._token('.{')
         self._cut()
         self._expre_()
         self.name_last_node('exp')
@@ -570,8 +570,7 @@ class EBNFBootstrapParser(Parser):
         with self._if():
             with self._group():
                 self._separator_()
-                self._token('%')
-                self._token('{')
+                self._token('%{')
         self._cut()
         with self._group():
             with self._choice():
@@ -585,8 +584,7 @@ class EBNFBootstrapParser(Parser):
     def _positive_join_(self):
         self._separator_()
         self.name_last_node('sep')
-        self._token('%')
-        self._token('{')
+        self._token('%{')
         self._expre_()
         self.name_last_node('exp')
         self._token('}')
@@ -607,9 +605,7 @@ class EBNFBootstrapParser(Parser):
     def _normal_join_(self):
         self._separator_()
         self.name_last_node('sep')
-        self._token('%')
-        self._cut()
-        self._token('{')
+        self._token('%{')
         self._cut()
         self._expre_()
         self.name_last_node('exp')
@@ -617,6 +613,50 @@ class EBNFBootstrapParser(Parser):
         with self._optional():
             self._token('*')
             self._cut()
+        self._cut()
+        self.ast._define(
+            ['exp', 'sep'],
+            []
+        )
+
+    @graken('LeftJoin')
+    def _left_join_(self):
+        self._separator_()
+        self.name_last_node('sep')
+        self._token('<{')
+        self._cut()
+        self._expre_()
+        self.name_last_node('exp')
+        self._token('}')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('+')
+                with self._option():
+                    self._token('-')
+                self._error('expecting one of: + -')
+        self._cut()
+        self.ast._define(
+            ['exp', 'sep'],
+            []
+        )
+
+    @graken('LeftJoin')
+    def _right_join_(self):
+        self._separator_()
+        self.name_last_node('sep')
+        self._token('>{')
+        self._cut()
+        self._expre_()
+        self.name_last_node('exp')
+        self._token('}')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('+')
+                with self._option():
+                    self._token('-')
+                self._error('expecting one of: + -')
         self._cut()
         self.ast._define(
             ['exp', 'sep'],
@@ -974,6 +1014,12 @@ class EBNFBootstrapSemantics(object):
         return ast
 
     def normal_join(self, ast):
+        return ast
+
+    def left_join(self, ast):
+        return ast
+
+    def right_join(self, ast):
         return ast
 
     def separator(self, ast):
