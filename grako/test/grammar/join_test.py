@@ -147,21 +147,21 @@ class JoinTests(unittest.TestCase):
 
     def test_left_join(self):
         grammar = '''
-            start 
-                = 
-                (op)<{number}+ $ 
+            start
+                =
+                (op)<{number}+ $
                 ;
-            
-            
-            op 
-                = 
-                '+' | '-' 
+
+
+            op
+                =
+                '+' | '-'
                 ;
-            
-            
-            number 
-                = 
-                /\d+/ 
+
+
+            number
+                =
+                /\d+/
                 ;
         '''
         text = '1 + 2 - 3 + 4'
@@ -180,31 +180,31 @@ class JoinTests(unittest.TestCase):
                         '+',
                         '1',
                         '2'
-                     ),
-                 '3'
+                    ),
+                    '3'
                 ),
-             '4'
+                '4'
             ),
             ast
         )
 
     def test_right_join(self):
         grammar = '''
-            start 
-                = 
-                (op)>{number}+ $ 
+            start
+                =
+                (op)>{number}+ $
                 ;
-            
-            
-            op 
-                = 
-                '+' | '-' 
+
+
+            op
+                =
+                '+' | '-'
                 ;
-            
-            
-            number 
-                = 
-                /\d+/ 
+
+
+            number
+                =
+                /\d+/
                 ;
         '''
         text = '1 + 2 - 3 + 4'
@@ -217,16 +217,16 @@ class JoinTests(unittest.TestCase):
         self.assertEqual(
             (
                 '+',
-                 '1',
-                 (
+                '1',
+                (
                     '-',
                     '2',
                     (
                         '+',
                         '3',
                         '4'
-                     )
-                  )
-             ),
+                    )
+                )
+            ),
             ast
         )
