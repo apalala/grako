@@ -234,6 +234,28 @@ class PositiveGather(Join):
                 '''
 
 
+class LeftJoin(PositiveJoin):
+    template = '''\
+                def sep{n}():
+                {sep:1::}
+
+                def block{n}():
+                {exp:1::}
+                self._left_join(block{n}, sep{n})\
+                '''
+
+
+class RightJoin(PositiveJoin):
+    template = '''\
+                def sep{n}():
+                {sep:1::}
+
+                def block{n}():
+                {exp:1::}
+                self._right_join(block{n}, sep{n})\
+                '''
+
+
 class EmptyClosure(Base):
     template = 'self._empty_closure()'
 

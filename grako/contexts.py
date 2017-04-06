@@ -17,6 +17,7 @@ from ._unicode_characters import (
 )
 
 from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
+from grako.util import left_assoc, right_assoc
 from grako.ast import AST
 from grako import buffering
 from grako import color
@@ -826,6 +827,16 @@ class ParseContext(object):
 
     def _positive_join(self, block, sep):
         return self._positive_closure(block, sep=sep, omitsep=False)
+
+    def _left_join(self, block, sep):
+        self.cst = left_assoc(self._positive_join(block, sep))
+        self.last_node = self.cst
+        return self.cst
+
+    def _right_join(self, block, sep):
+        self.cst = right_assoc(self._positive_join(block, sep))
+        self.last_node = self.cst
+        return self.cst
 
     def _check_name(self):
         name = ustr(self.last_node)

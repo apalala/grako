@@ -485,6 +485,16 @@ class PositiveJoin(Join):
         return super(PositiveJoin, self)._to_str(lean=lean) + '+'
 
 
+class LeftJoin(PositiveJoin):
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._left_join(exp, sep=sep)
+
+
+class RightJoin(PositiveJoin):
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._right_join(exp, sep=sep)
+
+
 class Gather(Join):
     def _do_parse(self, ctx, exp, sep):
         return ctx._gather(exp, sep=sep)
