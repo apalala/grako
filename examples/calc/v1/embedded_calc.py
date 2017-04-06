@@ -26,7 +26,7 @@ GRAMMAR = '''
 
     factor
         =
-        | '(' ~ expression ')'
+        | '(' ~ @:expression ')'
         | number
         ;
 
