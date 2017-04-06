@@ -413,7 +413,7 @@ class EBNFBootstrapParser(Parser):
         self.name_last_node('name')
         self._token('+:')
         self._cut()
-        self._element_()
+        self._term_()
         self.name_last_node('exp')
         self.ast._define(
             ['exp', 'name'],
@@ -426,7 +426,7 @@ class EBNFBootstrapParser(Parser):
         self.name_last_node('name')
         self._token(':')
         self._cut()
-        self._element_()
+        self._term_()
         self.name_last_node('exp')
         self.ast._define(
             ['exp', 'name'],
@@ -448,21 +448,21 @@ class EBNFBootstrapParser(Parser):
     def _override_list_(self):
         self._token('@+:')
         self._cut()
-        self._element_()
+        self._term_()
         self.name_last_node('@')
 
     @graken('Override')
     def _override_single_(self):
         self._token('@:')
         self._cut()
-        self._element_()
+        self._term_()
         self.name_last_node('@')
 
     @graken('Override')
     def _override_single_deprecated_(self):
         self._token('@')
         self._cut()
-        self._element_()
+        self._term_()
         self.name_last_node('@')
 
     @graken()

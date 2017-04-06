@@ -32,7 +32,9 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
 
--   Document that **Grako** may be used as a library (with no code generation) by compiling grammars to `Grammar` objects that can be used to parse any given input, much like Python_'s `re` does with regular expressions.
+-   Document that **Grako** may be used as a library (with no code generation) by compiling grammars to `Grammar` objects that can be used to parse any given input, much like [Python][]'s `re` does with regular expressions.
+
+-   Refactored grammar so double naming (`name1:name2:exp`) is disallowed.
 
 
 ### Fixed
