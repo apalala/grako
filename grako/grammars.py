@@ -488,25 +488,29 @@ class PositiveJoin(Join):
 
 
 class LeftJoin(PositiveJoin):
+    JOINOP = '<'
+
     def _do_parse(self, ctx, exp, sep):
-        return ctx._left_join(exp, sep=sep)
+        return ctx._left_join(exp, sep)
 
 
 class RightJoin(PositiveJoin):
+    JOINOP = '>'
+
     def _do_parse(self, ctx, exp, sep):
-        return ctx._right_join(exp, sep=sep)
+        return ctx._right_join(exp, sep)
 
 
 class Gather(Join):
     JOINOP = '.'
 
     def _do_parse(self, ctx, exp, sep):
-        return ctx._gather(exp, sep=sep)
+        return ctx._gather(exp, sep)
 
 
 class PositiveGather(Gather):
     def _do_parse(self, ctx, exp, sep):
-        return ctx._positive_gather(exp, sep=sep)
+        return ctx._positive_gather(exp, sep)
 
     def _to_str(self, lean=False):
         return super(PositiveGather, self)._to_str(lean=lean) + '+'
