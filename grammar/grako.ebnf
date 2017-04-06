@@ -154,13 +154,13 @@ named
 
 named_list::NamedList
     =
-    name:name '+:' ~ exp:element
+    name:name '+:' ~ exp:term
     ;
 
 
 named_single::Named
     =
-    name:name ':' ~ exp:element
+    name:name ':' ~ exp:term
     ;
 
 
@@ -172,19 +172,19 @@ override
 
 override_list::OverrideList
     =
-    '@+:' ~ @:element
+    '@+:' ~ @:term
     ;
 
 
 override_single::Override
     =
-    '@:' ~ @:element
+    '@:' ~ @:term
     ;
 
 
 override_single_deprecated::Override
     =
-    '@' ~ @:element
+    '@' ~ @:term
     ;
 
 
