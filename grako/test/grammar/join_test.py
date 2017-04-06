@@ -8,6 +8,7 @@ import unittest
 from grako.exceptions import FailedParse
 from grako.tool import compile
 from grako.codegen import codegen
+from grako.util import trim
 
 
 class JoinTests(unittest.TestCase):
@@ -143,3 +144,81 @@ class JoinTests(unittest.TestCase):
 
         ast = model.parse("x a b x", nameguard=False)
         self.assertEqual(['x', 'x'], ast)
+
+    def test_left_join(self):
+        grammar = '''
+            start 
+                = 
+                (op)<{number}+ $ 
+                ;
+            
+            
+            op 
+                = 
+                '+' | '-' 
+                ;
+            
+            
+            number 
+                = 
+                /\d+/ 
+                ;
+        '''
+        text = '1 + 2 - 3 + 4'
+
+        model = compile(grammar, "test")
+        self.assertEqual(trim(grammar).strip(), str(model).strip())
+        codegen(model)
+
+        ast = model.parse(text)
+        self.assertEqual(
+            ('+',
+                ('-',
+                    ('+',
+                        '1',
+                        '2'
+                     ),
+                 '3'),
+             '4'),
+            ast
+        )
+
+    def test_right_join(self):
+        grammar = '''
+            start 
+                = 
+                (op)>{number}+ $ 
+                ;
+            
+            
+            op 
+                = 
+                '+' | '-' 
+                ;
+            
+            
+            number 
+                = 
+                /\d+/ 
+                ;
+        '''
+        text = '1 + 2 - 3 + 4'
+
+        model = compile(grammar, "test")
+        self.assertEqual(trim(grammar).strip(), str(model).strip())
+        codegen(model)
+
+        ast = model.parse(text)
+        self.assertEqual(
+            ('+',
+             '1',
+             ('-',
+                '2',
+                ('+',
+                    '3',
+                    '4'
+                 )
+              )
+             ),
+            ast
+        )
