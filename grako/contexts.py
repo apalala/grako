@@ -746,22 +746,20 @@ class ParseContext(object):
         finally:
             self._pop_cst()
 
-    def _repeater_inner(self, block, prefix, omitprefix):
-        with self._try():
-            if prefix:
-                cst = self._isolate(prefix)
-                self._cut()
-                if not omitprefix:
-                    self._add_cst_node(cst)
-
-            return self._isolate(block)
-
     def _repeater(self, block, prefix=None, omitprefix=False):
         while True:
             p = self._pos
             self._push_cut()
             try:
-                cst = self._repeater_inner(block, prefix, omitprefix)
+                if prefix:
+                    with self._try():
+                        cst = self._isolate(prefix)
+                        self._cut()
+                    if not omitprefix:
+                        self._add_cst_node(cst)
+
+                with self._try():
+                    cst = self._isolate(block)
                 self._add_cst_node(cst)
             except FailedCut:
                 raise
