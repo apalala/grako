@@ -331,7 +331,7 @@ class EBNFBootstrapParser(Parser):
 
         def block0():
             self._pair_()
-        self._positive_closure(block0, sep=sep0)
+        self._positive_gather(block0, sep0)
 
     @graken()
     def _pair_(self):
@@ -471,6 +471,8 @@ class EBNFBootstrapParser(Parser):
             with self._option():
                 self._void_()
             with self._option():
+                self._gather_()
+            with self._option():
                 self._join_()
             with self._option():
                 self._group_()
@@ -506,11 +508,69 @@ class EBNFBootstrapParser(Parser):
         )
 
     @graken()
-    def _join_(self):
+    def _gather_(self):
         with self._if():
             with self._group():
                 self._separator_()
                 self._token('.')
+                self._token('{')
+        self._cut()
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._positive_gather_()
+                with self._option():
+                    self._normal_gather_()
+                self._error('no available options')
+
+    @graken('PositiveGather')
+    def _positive_gather_(self):
+        self._separator_()
+        self.name_last_node('sep')
+        self._token('.')
+        self._token('{')
+        self._expre_()
+        self.name_last_node('exp')
+        self._token('}')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('+')
+                with self._option():
+                    self._token('-')
+                self._error('expecting one of: + -')
+        self._cut()
+        self.ast._define(
+            ['exp', 'sep'],
+            []
+        )
+
+    @graken('Gather')
+    def _normal_gather_(self):
+        self._separator_()
+        self.name_last_node('sep')
+        self._token('.')
+        self._cut()
+        self._token('{')
+        self._cut()
+        self._expre_()
+        self.name_last_node('exp')
+        self._token('}')
+        with self._optional():
+            self._token('*')
+            self._cut()
+        self._cut()
+        self.ast._define(
+            ['exp', 'sep'],
+            []
+        )
+
+    @graken()
+    def _join_(self):
+        with self._if():
+            with self._group():
+                self._separator_()
+                self._token('%')
                 self._token('{')
         self._cut()
         with self._group():
@@ -525,7 +585,7 @@ class EBNFBootstrapParser(Parser):
     def _positive_join_(self):
         self._separator_()
         self.name_last_node('sep')
-        self._token('.')
+        self._token('%')
         self._token('{')
         self._expre_()
         self.name_last_node('exp')
@@ -547,7 +607,7 @@ class EBNFBootstrapParser(Parser):
     def _normal_join_(self):
         self._separator_()
         self.name_last_node('sep')
-        self._token('.')
+        self._token('%')
         self._cut()
         self._token('{')
         self._cut()
@@ -782,7 +842,7 @@ class EBNFBootstrapParser(Parser):
 
         def block0():
             self._regex_()
-        self._positive_closure(block0, sep=sep0)
+        self._positive_gather(block0, sep0)
 
     @graken()
     def _regex_(self):
@@ -896,6 +956,15 @@ class EBNFBootstrapSemantics(object):
         return ast
 
     def group(self, ast):
+        return ast
+
+    def gather(self, ast):
+        return ast
+
+    def positive_gather(self, ast):
+        return ast
+
+    def normal_gather(self, ast):
         return ast
 
     def join(self, ast):

@@ -519,23 +519,38 @@ The expressions, in reverse order of operator precedence, can be:
             ;
 
 
-#### `s.{ e }+`
+#### `s%{ e }+`
 
-:   Positive join. Inspired by [Python]'s `str.join()`, is equivalent
-    to:
+:   Positive join. Inspired by [Python]'s `str.join()`, it parses the same as
+    this   expression:
 
         e {s ~ e}
 
-    The `s` part is not included in the resulting [AST][Abstract
-    Syntax Tree].
+    yet the result is a single list of the form:
+
+        [e, s, e, s, e....]
 
     Use grouping if `s` is more complex than a *token* or a *pattern*:
 
         (s t).{ e }+
 
+#### `s%{ e }` or `s%{ e }*`
+
+:   Join. Parses the list of `s`-separated expressions, or the empty closure.
+
+    It is equivalent to:
+
+        s%{e}+|{}
+
+
+#### `s.{ e }+`
+
+:   Positive _gather_. Like _positive join_, but the separator is not included in the resulting [AST][].
+
+
 #### `s.{ e }` or `s.{ e }*`
 
-:   Join. Parses the list of `s`-separated expressions, or nothing.
+:   _Gather_. Like the _join_, but the separator is not included in the resulting [AST][].
 
     It is equivalent to:
 
