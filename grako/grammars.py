@@ -452,6 +452,8 @@ class PositiveClosure(Closure):
 
 
 class Join(Decorator):
+    JOINOP = '%'
+
     def __init__(self, ast=None, **kwargs):
         super(Join, self).__init__(ast.exp)
         self.sep = ast.sep
@@ -466,33 +468,52 @@ class Join(Decorator):
         return self._do_parse(ctx, exp, sep)
 
     def _do_parse(self, ctx, exp, sep):
-        return ctx._closure(exp, sep=sep)
+        return ctx._join(exp, sep)
 
     def _to_str(self, lean=False):
         ssep = self.sep._to_str(lean=lean)
         sexp = ustr(self.exp._to_str(lean=lean))
         if len(sexp.splitlines()) <= 1:
-            return '%s.{%s}' % (ssep, sexp)
+            return '%s%s{%s}' % (ssep, self.JOINOP, sexp)
         else:
-            return '%s.{\n%s\n}' % (ssep, sexp)
+            return '%s%s{\n%s\n}' % (ssep, self.JOINOP, sexp)
 
 
 class PositiveJoin(Join):
     def _do_parse(self, ctx, exp, sep):
-        return ctx._positive_closure(exp, sep=sep)
+        return ctx._positive_join(exp, sep)
 
     def _to_str(self, lean=False):
         return super(PositiveJoin, self)._to_str(lean=lean) + '+'
 
 
+class LeftJoin(PositiveJoin):
+    JOINOP = '<'
+
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._left_join(exp, sep)
+
+
+class RightJoin(PositiveJoin):
+    JOINOP = '>'
+
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._right_join(exp, sep)
+
+
 class Gather(Join):
+    JOINOP = '.'
+
     def _do_parse(self, ctx, exp, sep):
-        return ctx._gather(exp, sep=sep)
+        return ctx._gather(exp, sep)
 
 
-class PositiveGather(PositiveJoin):
+class PositiveGather(Gather):
     def _do_parse(self, ctx, exp, sep):
-        return ctx._positive_gather(exp, sep=sep)
+        return ctx._positive_gather(exp, sep)
+
+    def _to_str(self, lean=False):
+        return super(PositiveGather, self)._to_str(lean=lean) + '+'
 
 
 class EmptyClosure(Model):

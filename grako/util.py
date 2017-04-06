@@ -338,3 +338,31 @@ def deprecated(fun):
         return fun(*args, **kwargs)
 
     return wrapper
+
+
+def left_assoc(elements):
+    if not elements:
+        return ()
+
+    it = iter(elements)
+    expre = next(it)
+    for e in it:
+        op = e
+        expre = (op, expre, next(it))
+    return expre
+
+
+def right_assoc(elements):
+    if not elements:
+        return ()
+
+    def assoc(it):
+        left = next(it)
+        try:
+            op = next(it)
+        except StopIteration:
+            return left
+        else:
+            return (op, left, assoc(it))
+
+    return assoc(iter(elements))

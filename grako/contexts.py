@@ -17,6 +17,7 @@ from ._unicode_characters import (
 )
 
 from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
+from grako.util import left_assoc, right_assoc
 from grako.ast import AST
 from grako import buffering
 from grako import color
@@ -737,36 +738,32 @@ class ParseContext(object):
         else:
             self._error('', etype=FailedLookahead)
 
-    @contextmanager
-    def _ignore(self):
+    def _isolate(self, block):
         self._push_cst()
         try:
-            self.cst = None
-            yield
+            with self._try():
+                block()
+                return self.cst
         finally:
             self._pop_cst()
 
     def _repeater(self, block, prefix=None, omitprefix=False):
         while True:
             self._push_cut()
-            self._push_cst()
             try:
                 p = self._pos
-                with self._try():
-                    if prefix:
-                        if omitprefix:
-                            with self._ignore():
-                                prefix()
-                        else:
-                            raise Exception
-                            prefix()
-                        self._cut()
 
-                    block()
-                    cst = self.cst
+                if prefix:
+                    cst = self._isolate(prefix)
+                    self._cut()
+                    if not omitprefix:
+                        self._add_cst_node(cst)
 
-                    if self._pos == p:
-                        self._error('empty closure')
+                cst = self._isolate(block)
+                self._add_cst_node(cst)
+
+                if self._pos == p:
+                    self._error('empty closure')
             except FailedCut:
                 raise
             except FailedParse as e:
@@ -774,9 +771,7 @@ class ParseContext(object):
                     raise FailedCut(e)
                 break
             finally:
-                self._pop_cst()
                 self._pop_cut()
-            self._add_cst_node(cst)
 
     def _closure(self, block, sep=None, omitsep=False):
         self._push_cst()
@@ -826,6 +821,16 @@ class ParseContext(object):
 
     def _positive_join(self, block, sep):
         return self._positive_closure(block, sep=sep, omitsep=False)
+
+    def _left_join(self, block, sep):
+        self.cst = left_assoc(self._positive_join(block, sep))
+        self.last_node = self.cst
+        return self.cst
+
+    def _right_join(self, block, sep):
+        self.cst = right_assoc(self._positive_join(block, sep))
+        self.last_node = self.cst
+        return self.cst
 
     def _check_name(self):
         name = ustr(self.last_node)
