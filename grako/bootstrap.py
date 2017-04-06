@@ -641,7 +641,7 @@ class EBNFBootstrapParser(Parser):
             []
         )
 
-    @graken('LeftJoin')
+    @graken('RightJoin')
     def _right_join_(self):
         self._separator_()
         self.name_last_node('sep')
