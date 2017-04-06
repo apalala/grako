@@ -5,8 +5,19 @@ image: python:3.6.1
 pipelines:
   default:
     - step:
-        script: # Modify the commands below to build your repository.
+        script:
           - pip install -U tox
           - pip --version
           - tox --version
-          - tox -r -e py27,py35,py36,cython
+          - tox -r -e py36,cython
+
+image: python:3.5.2
+
+pipelines:
+  default:
+    - step:
+        script:
+          - pip install -U tox
+          - pip --version
+          - tox --version
+          - tox -r -e py27,py35,cython
