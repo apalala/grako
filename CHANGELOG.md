@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
-## [3.20.0][] @ 2017-03-05
+## [3.20.0][] @ 2017-03-06
 
 ### Added
 
@@ -21,7 +21,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Added a `grako.parse(grammar, input, **kwargs)` that will compile a grammar and uset to parse the given input. For efficiency, parsed grammars are cached.
 
-*   Added a `grako.to_python_sourcecode(grammar, name=None, filename=None, **kwargs)` that compiles the grammar to the [Python][] sourcecode that implements the parser.
+-   Added a `grako.to_python_sourcecode(grammar, name=None, filename=None, **kwargs)` that compiles the grammar to the [Python][] sourcecode that implements the parser.
 
 
 ### Changed

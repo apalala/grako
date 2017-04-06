@@ -212,6 +212,28 @@ class PositiveJoin(Join):
                 '''
 
 
+class KeeperJoin(Join):
+    template = '''\
+                def sep{n}():
+                {sep:1::}
+
+                def block{n}():
+                {exp:1::}
+                self._closure(block{n}, sep=sep{n}, keepsep=True)\
+                '''
+
+
+class KeeperPositiveJoin(Join):
+    template = '''\
+                def sep{n}():
+                {sep:1::}
+
+                def block{n}():
+                {exp:1::}
+                self._positive_closure(block{n}, sep=sep{n}, keepsep=True)\
+                '''
+
+
 class EmptyClosure(Base):
     template = 'self._empty_closure()'
 
