@@ -466,7 +466,7 @@ class Join(Decorator):
         return self._do_parse(ctx, exp, sep)
 
     def _do_parse(self, ctx, exp, sep):
-        return ctx._closure(exp, sep=sep)
+        return ctx._join(exp, sep)
 
     def _to_str(self, lean=False):
         ssep = self.sep._to_str(lean=lean)
@@ -479,7 +479,7 @@ class Join(Decorator):
 
 class PositiveJoin(Join):
     def _do_parse(self, ctx, exp, sep):
-        return ctx._positive_closure(exp, sep=sep)
+        return ctx._positive_join(exp, sep)
 
     def _to_str(self, lean=False):
         return super(PositiveJoin, self)._to_str(lean=lean) + '+'
