@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
-## [3.20.0][] @ 2017-03-06
+## [3.20.0a1][] @ 2017-03-06
 
 ### Added
 
@@ -28,30 +28,16 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 ### Changed
 
+-   Enable `python setup.py test` with [pytest][].
+
+-   Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
+
 -   Document that **Grako** may be used as a library (with no code generation) by compiling grammars to `Grammar` objects that can be used to parse any given input, much like Python_'s `re` does with regular expressions.
 
 
 ### Fixed
 
 -   The `parseinfo=` keyword parameter was unused in `GrammarGenerator.__init__()`.
-
-
-## [3.19.4][] @ 2017-03-02
-
-### Added
-
--   Request funding for future development of **Grako**.
-
-[paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
-
-
-### Changed
-
--   Enable `python setup.py test` with [pytest][].
--   Remove the deprecated `prefix=` argument to `ParseContext.closure()`.
-
-
-### Fixed
 
 -   The incomplete `examples/python` example was the source of confusion, as users expected it to work even when the example is not mentioned in the documentation. The directory is removed from the distribution and the mail repository branch until the example is complete ans working.
 
@@ -827,8 +813,8 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/apalala/grako/issue/109
 [115]: https://bitbucket.org/apalala/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.20.0
-[3.20.0]: https://bitbucket.org/apalala/grako/branches/compare/3.20.0%0D3.19.4
+[X.Y.Z]: https://bitbucket.org/apalala/grako/branches/compare/default%0D3.20.0a1
+[3.20.0a1]: https://bitbucket.org/apalala/grako/branches/compare/3.20.0%0D3.19.1
 [3.19.4]: https://bitbucket.org/apalala/grako/branches/compare/3.19.4%0D3.19.1
 [3.19.1]: https://bitbucket.org/apalala/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/apalala/grako/branches/compare/3.18.2%0D3.18.1
