@@ -543,6 +543,64 @@ The expressions, in reverse order of operator precedence, can be:
         s%{e}+|{}
 
 
+#### `op<{ e }+`
+
+:   Left join. Like the _join expression_, but the result is a left-associative tree built with `tuple()`, in wich the first elelemnt is the separator (`op`), and the other two elements are the operands.
+
+    The expression:
+
+        '+'<{/\d+/}+
+
+    Will parse this input:
+
+        1 + 2 - 3 + 4
+
+    To this tree:
+
+        (
+            '+',
+            (
+                '-',
+                (
+                    '+',
+                    '1',
+                    '2'
+                ),
+                '3'
+            ),
+            '4'
+        )
+
+
+#### `op>{ e }+`
+
+:   Right join. Like the _join expression_, but the result is a right-associative tree built with `tuple()`, in wich the first elelemnt is the separator (`op`), and the other two elements are the operands.
+
+    The expression:
+
+        '+'>{/\d+/}+
+
+    Will parse this input:
+
+        1 + 2 - 3 + 4
+
+    To this tree:
+
+        (
+            '+',
+            '1',
+            (
+                '-',
+                '2',
+                (
+                    '+',
+                    '3',
+                    '4'
+                )
+            )
+        )
+
+
 #### `s.{ e }+`
 
 :   Positive _gather_. Like _positive join_, but the separator is not included in the resulting [AST][].
