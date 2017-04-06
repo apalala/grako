@@ -1586,4 +1586,4 @@ See the [CHANGELOG] for details.
   [vinay.sajip]: https://bitbucket.org/vinay.sajip/
   [brouhaha]: https://bitbucket.org/brouhaha/
   [sjbrownBitbucket]: https://bitbucket.org/sjbrownBitbucket/
-  [CHANGELOG]: src/default/CHANGELOG.md
+  [CHANGELOG]: https://bitbucket.org/neogeny/grako/src/default/CHANGELOG.md
