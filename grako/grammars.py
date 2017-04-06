@@ -452,10 +452,9 @@ class PositiveClosure(Closure):
 
 
 class Join(Decorator):
-    def __init__(self, ast=None, keepsep=False, **kwargs):
+    def __init__(self, ast=None, **kwargs):
         super(Join, self).__init__(ast.exp)
         self.sep = ast.sep
-        self.keepsep = keepsep
 
     def parse(self, ctx):
         def sep():
@@ -464,10 +463,10 @@ class Join(Decorator):
         def exp():
             return self.exp.parse(ctx)
 
-        return self._closure(ctx, exp, sep, self.keepsep)
+        return self._do_parse(ctx, exp, sep)
 
-    def _closure(self, ctx, exp, sep, keepsep):
-        return ctx._closure(exp, sep=sep, keepsep=keepsep)
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._closure(exp, sep=sep)
 
     def _to_str(self, lean=False):
         ssep = self.sep._to_str(lean=lean)
@@ -479,21 +478,21 @@ class Join(Decorator):
 
 
 class PositiveJoin(Join):
-    def _closure(self, ctx, exp, sep, keepsep):
-        return ctx._positive_closure(exp, sep=sep, keepsep=keepsep)
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._positive_closure(exp, sep=sep)
 
     def _to_str(self, lean=False):
         return super(PositiveJoin, self)._to_str(lean=lean) + '+'
 
 
-class KeeperJoin(Join):
-    def __init__(self, ast=None, **kwargs):
-        super(KeeperJoin, self).__init__(ast=ast, keepsep=True, **kwargs)
+class Gather(Join):
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._gather(exp, sep=sep)
 
 
-class KeeperPositiveJoin(PositiveJoin):
-    def __init__(self, ast=None, **kwargs):
-        super(KeeperPositiveJoin, self).__init__(ast=ast, keepsep=True, **kwargs)
+class PositiveGather(PositiveJoin):
+    def _do_parse(self, ctx, exp, sep):
+        return ctx._positive_gather(exp, sep=sep)
 
 
 class EmptyClosure(Model):

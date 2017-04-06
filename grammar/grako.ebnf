@@ -191,6 +191,7 @@ override_single_deprecated::Override
 term
     =
     | void
+    | gather
     | join
     | group
     | empty_closure
@@ -210,9 +211,31 @@ group::Group
     ;
 
 
-join
+gather
     =
     &(separator '.' '{') ~
+    (
+    | positive_gather
+    | normal_gather
+    )
+    ;
+
+
+positive_gather::PositiveGather
+    =
+    sep:separator '.' '{' exp:expre '}' ('+'|'-') ~
+    ;
+
+
+normal_gather::Gather
+    =
+    sep:separator '.' ~ '{' ~ exp:expre '}' ['*' ~] ~
+    ;
+
+
+join
+    =
+    &(separator '%' '{') ~
     (
     | positive_join
     | normal_join
@@ -222,13 +245,13 @@ join
 
 positive_join::PositiveJoin
     =
-    sep:separator '.' '{' exp:expre '}' ('+'|'-') ~
+    sep:separator '%' '{' exp:expre '}' ('+'|'-') ~
     ;
 
 
 normal_join::Join
     =
-    sep:separator '.' ~ '{' ~ exp:expre '}' ['*' ~] ~
+    sep:separator '%' ~ '{' ~ exp:expre '}' ['*' ~] ~
     ;
 
 

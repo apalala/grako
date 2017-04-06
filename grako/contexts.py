@@ -746,7 +746,7 @@ class ParseContext(object):
         finally:
             self._pop_cst()
 
-    def _repeater(self, block, prefix=None, keep_prefix=False):
+    def _repeater(self, block, prefix=None, omitprefix=False):
         while True:
             self._push_cut()
             self._push_cst()
@@ -754,11 +754,12 @@ class ParseContext(object):
                 p = self._pos
                 with self._try():
                     if prefix:
-                        if keep_prefix:
-                            prefix()
-                        else:
+                        if omitprefix:
                             with self._ignore():
                                 prefix()
+                        else:
+                            raise Exception
+                            prefix()
                         self._cut()
 
                     block()
@@ -777,7 +778,7 @@ class ParseContext(object):
                 self._pop_cut()
             self._add_cst_node(cst)
 
-    def _closure(self, block, sep=None, keepsep=False):
+    def _closure(self, block, sep=None, omitsep=False):
         self._push_cst()
         try:
             self.cst = []
@@ -785,7 +786,7 @@ class ParseContext(object):
                 with self._try():
                     block()
                 self.cst = [self.cst]
-                self._repeater(block, prefix=sep, keep_prefix=keepsep)
+                self._repeater(block, prefix=sep, omitprefix=omitsep)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()
@@ -793,14 +794,14 @@ class ParseContext(object):
         self.last_node = cst
         return cst
 
-    def _positive_closure(self, block, sep=None, keepsep=False):
+    def _positive_closure(self, block, sep=None, omitsep=False):
         self._push_cst()
         try:
             self.cst = None
             with self._try():
                 block()
             self.cst = [self.cst]
-            self._repeater(block, prefix=sep, keep_prefix=keepsep)
+            self._repeater(block, prefix=sep, omitprefix=omitsep)
             cst = Closure(self.cst)
         finally:
             self._pop_cst()
@@ -813,6 +814,18 @@ class ParseContext(object):
         self._add_cst_node(cst)
         self.last_node = cst
         return cst
+
+    def _gather(self, block, sep):
+        return self._closure(block, sep=sep, omitsep=True)
+
+    def _positive_gather(self, block, sep):
+        return self._positive_closure(block, sep=sep, omitsep=True)
+
+    def _join(self, block, sep):
+        return self._closure(block, sep=sep, omitsep=False)
+
+    def _positive_join(self, block, sep):
+        return self._positive_closure(block, sep=sep, omitsep=False)
 
     def _check_name(self):
         name = ustr(self.last_node)

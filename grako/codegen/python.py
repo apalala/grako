@@ -197,7 +197,7 @@ class Join(_Decorator):
 
                 def block{n}():
                 {exp:1::}
-                self._closure(block{n}, sep=sep{n})\
+                self._join(block{n}, sep{n})\
                 '''
 
 
@@ -208,29 +208,29 @@ class PositiveJoin(Join):
 
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n}, sep=sep{n})\
+                self._positive_join(block{n}, sep{n})\
                 '''
 
 
-class KeeperJoin(Join):
+class Gather(Join):
     template = '''\
                 def sep{n}():
                 {sep:1::}
 
                 def block{n}():
                 {exp:1::}
-                self._closure(block{n}, sep=sep{n}, keepsep=True)\
+                self._gather(block{n}, sep{n})\
                 '''
 
 
-class KeeperPositiveJoin(Join):
+class PositiveGather(Join):
     template = '''\
                 def sep{n}():
                 {sep:1::}
 
                 def block{n}():
                 {exp:1::}
-                self._positive_closure(block{n}, sep=sep{n}, keepsep=True)\
+                self._positive_gather(block{n}, sep{n})\
                 '''
 
 

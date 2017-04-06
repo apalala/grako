@@ -23,6 +23,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 
 -   Added a `grako.to_python_sourcecode(grammar, name=None, filename=None, **kwargs)` that compiles the grammar to the [Python][] sourcecode that implements the parser.
 
+-   Rename the existing _join_ operator to _gather_, and use _join_ for a new operator that keeps the separator in the resulting [AST][].
+
 
 ### Changed
 
