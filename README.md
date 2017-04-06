@@ -195,7 +195,7 @@ Using the Tool
 >    Compiles the grammar and generates a _model_ that can subsequently be used for parsing input with.
 
 *   `grako.parse(grammar, input, **kwargs)`
->    Compiles the grammar and parses the given input producing an [AST][] as result. The result is >    equivalent to calling `model = compile(grammar); model.parse(input)`. Compiled grammars are cached for efficiency.
+>    Compiles the grammar and parses the given input producing an [AST][] as result. The result is equivalent to calling `model = compile(grammar); model.parse(input)`. Compiled grammars are cached for efficiency.
 
 *   `grako.to_python_sourcecode(grammar, name=None, filename=None, **kwargs)`
 >   Compiles the grammar to the [Python][] sourcecode that implements the parser.
