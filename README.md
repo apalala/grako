@@ -553,14 +553,14 @@ The expressions, in reverse order of operator precedence, can be:
 
     Will parse this input:
 
-        1 + 2 - 3 + 4
+        1 + 2 + 3 + 4
 
     To this tree:
 
         (
             '+',
             (
-                '-',
+                '+',
                 (
                     '+',
                     '1',
@@ -582,7 +582,7 @@ The expressions, in reverse order of operator precedence, can be:
 
     Will parse this input:
 
-        1 + 2 - 3 + 4
+        1 + 2 + 3 + 4
 
     To this tree:
 
@@ -590,7 +590,7 @@ The expressions, in reverse order of operator precedence, can be:
             '+',
             '1',
             (
-                '-',
+                '+',
                 '2',
                 (
                     '+',
