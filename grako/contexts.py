@@ -741,26 +741,29 @@ class ParseContext(object):
     def _isolate(self, block):
         self._push_cst()
         try:
-            block()
-            return self.cst
+            with self._try():
+                block()
+                return self.cst
         finally:
             self._pop_cst()
 
     def _repeater(self, block, prefix=None, omitprefix=False):
         while True:
-            p = self._pos
             self._push_cut()
             try:
+                p = self._pos
+
                 if prefix:
-                    with self._try():
-                        cst = self._isolate(prefix)
-                        self._cut()
+                    cst = self._isolate(prefix)
+                    self._cut()
                     if not omitprefix:
                         self._add_cst_node(cst)
 
-                with self._try():
-                    cst = self._isolate(block)
+                cst = self._isolate(block)
                 self._add_cst_node(cst)
+
+                if self._pos == p:
+                    self._error('empty closure')
             except FailedCut:
                 raise
             except FailedParse as e:
@@ -769,8 +772,6 @@ class ParseContext(object):
                 break
             finally:
                 self._pop_cut()
-            if self._pos == p:
-                self._error('empty closure')
 
     def _closure(self, block, sep=None, omitsep=False):
         self._push_cst()
