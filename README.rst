@@ -142,7 +142,7 @@ Changes
 
 See the CHANGELOG_ for details.
 
-.. _CHANGELOG: https://bitbucket.org/apalala/grako/src/default/CHANGELOG.md
+.. _CHANGELOG: https://bitbucket.org/neogeny/grako/src/default/CHANGELOG.md
 .. |fury| image:: https://badge.fury.io/py/grako.svg
    :target: https://badge.fury.io/py/grako
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
