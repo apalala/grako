@@ -25,7 +25,9 @@ setuptools.setup(
     zip_safe=False,
     name='grako',
     version=grako.__version__,
-    url='http://bitbucket.org/neogeny/{package}'.format(package=grako.__package__),
+    url='https://bitbucket.org/neogeny/{package}'.format(
+        package=grako.__toolname__.lower(),
+    ),
     author='Juancarlo Añez',
     author_email='apalala@gmail.com',
     description=SHORT_DESCRIPTION,
