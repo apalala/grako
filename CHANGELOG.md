@@ -13,7 +13,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
-## [3.20.0a1][] @ 2017-03-06
+## [3.20.0][] @ 2017-03-06
 
 ### Added
 
@@ -817,8 +817,8 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/neogeny/grako/issue/109
 [115]: https://bitbucket.org/neogeny/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.20.0a1
-[3.20.0a1]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.0a1%0D3.19.1
+[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.20.0
+[3.20.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.0%0D3.19.1
 [3.19.4]: https://bitbucket.org/neogeny/grako/branches/compare/3.19.4%0D3.19.1
 [3.19.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/neogeny/grako/branches/compare/3.18.2%0D3.18.1
