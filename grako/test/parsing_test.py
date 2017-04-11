@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
+import grako
 from grako.util import trim, eval_escapes
 from grako.grammars import EBNFBuffer
 
@@ -40,6 +41,24 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual(u'this ís a test', eval_escapes(r'this \xeds a test'))
         self.assertEqual(u'\nañez', eval_escapes(r'\na\xf1ez'))
         self.assertEqual(u'\nañez', eval_escapes(r'\nañez'))
+
+    def test_rule_name(self):
+        grammar = '''
+            @@grammar :: Test
+
+            start = test $;
+            test = "test";
+        '''
+        model = grako.compile(grammar=grammar)
+        self.assertEqual('Test', model.directives.get('grammar'))
+        self.assertEqual('Test', model.name)
+
+        ast = model.parse("test")
+        self.assertEqual(ast, "test")
+
+        ast = grako.parse(grammar, "test", rule_name='start')
+        self.assertEqual(ast, "test")
+
 
 
 def suite():

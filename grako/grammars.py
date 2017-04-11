@@ -870,6 +870,7 @@ class Grammar(Model):
 
     def parse(self,
               text,
+              rule_name=None,
               start=None,
               filename=None,
               semantics=None,
@@ -881,6 +882,9 @@ class Grammar(Model):
               eol_comments_re=None,
               parseinfo=None,
               **kwargs):
+        start = start if start is not None else rule_name
+        start = start if start is not None else self.rules[0].name
+
         ctx = context or ModelContext(
             self.rules,
             trace=trace,
@@ -906,7 +910,7 @@ class Grammar(Model):
 
         return ctx.parse(
             text,
-            start or self.rules[0].name,
+            rule_name=start,
             filename=filename,
             semantics=semantics,
             trace=trace,
