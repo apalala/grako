@@ -13,6 +13,15 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
+### Fixed
+
+-   [1g][] Keyword args of method grako.parse, including rule_name, are forwarded to grako.compile
+-   [2g][] FailedRef is thrown when a semantic rule raises a KeyError
+
+[1g]: https://github.com/apalala/grako/issues/1
+[2g]: https://github.com/apalala/grako/issues/2
+
+
 ## [3.20.0][] @ 2017-03-06
 
 ### Added
