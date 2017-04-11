@@ -627,9 +627,10 @@ class RuleRef(Model):
     def parse(self, ctx):
         try:
             rule = ctx._find_rule(self.name)
-            return rule()
         except KeyError:
             ctx._error(self.name, etype=FailedRef)
+        else:
+            return rule()
 
     def _missing_rules(self, ruleset):
         if self.name not in ruleset:
