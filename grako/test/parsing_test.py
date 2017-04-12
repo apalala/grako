@@ -60,7 +60,6 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual(ast, "test")
 
 
-
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(ParsingTests)
 
