@@ -21,8 +21,12 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 -   [116][] Status information during parsing is now routed through
     `loggint.getLogger("grako")`.
 
+-   [119][] Methods in `objectmodel.Node` that require an `infos.ParseInfo`
+    will now raise `exceptions.NoParseInfo` if parse information is not available for the node.
+
 [116]: https://bitbucket.org/neogeny/grako/issue/116
 [118]: https://bitbucket.org/neogeny/grako/issue/118
+[119]: https://bitbucket.org/neogeny/grako/issue/119
 
 ## [3.20.1][] @ 2017-03-12
 

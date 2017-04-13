@@ -10,6 +10,7 @@ import weakref
 from grako.util import asjson, asjsons, Mapping
 from grako.infos import CommentInfo
 from grako.ast import AST
+from grako.exceptions import NoParseInfo
 
 
 BASE_CLASS_TOKEN = '::'
@@ -78,6 +79,9 @@ class Node(object):
 
     @property
     def parseinfo(self):
+        if self._parseinfo is None:
+            raise NoParseInfo(type(self).__name__)
+
         return self._parseinfo
 
     @property

@@ -46,6 +46,10 @@ class FailedKeywordSemantics(FailedSemantics):
     pass
 
 
+class NoParseInfo(ParseException):
+    pass
+
+
 class FailedParse(ParseError):
     def __init__(self, buf, stack, item):
         self.buf = buf
