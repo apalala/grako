@@ -8,7 +8,7 @@ import collections
 import weakref
 
 from grako.util import asjson, asjsons, Mapping
-from grako.buffering import Comments
+from grako.infos import CommentInfo
 from grako.ast import AST
 
 
@@ -16,11 +16,6 @@ BASE_CLASS_TOKEN = '::'
 
 
 class Node(object):
-    """ Base class for model nodes
-    """
-
-    inline = True
-
     def __init__(self, ctx=None, ast=None, parseinfo=None, **kwargs):
         super(Node, self).__init__()
         self._ctx = ctx
@@ -57,31 +52,21 @@ class Node(object):
 
     @property
     def line(self):
-        pi = self._parseinfo
-        if pi:
-            return pi.line
+        return self.parseinfo.line
 
     @property
     def endline(self):
-        pi = self._parseinfo
-        if pi:
-            return pi.line
+        return self.parseinfo.endline
 
     def text_lines(self):
-        pi = self._parseinfo
-        if pi:
-            return pi.buffer.get_lines(pi.line, pi.endline)
+        return self.parseinfo.text_lines()
 
     def line_index(self):
-        pi = self._parseinfo
-        if pi:
-            return pi.buffer.line_index(pi.line, pi.endline)
+        return self.parseinfo.line_index()
 
     @property
     def col(self):
-        info = self.line_info
-        if info:
-            return info.col
+        return self.line_info.col
 
     @property
     def ctx(self):
@@ -110,7 +95,7 @@ class Node(object):
     def comments(self):
         if self.parseinfo:
             return self.parseinfo.buffer.comments(self.parseinfo.pos)
-        return Comments([], [])
+        return CommentInfo([], [])
 
     def __cn(self, add_child, child_collection, child, seen=None):
         if seen is None:

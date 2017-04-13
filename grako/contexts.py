@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import sys
 import functools
-from collections import namedtuple
 from contextlib import contextmanager
 
 from ._unicode_characters import (
@@ -15,10 +14,10 @@ from ._unicode_characters import (
     C_FAILURE,
     C_RECURSION,
 )
-
 from grako.util import notnone, ustr, prune_dict, is_list, info, safe_name
 from grako.util import left_assoc, right_assoc
 from grako.ast import AST
+from grako.infos import ParseInfo
 from grako import buffering
 from grako import color
 from grako.exceptions import (
@@ -34,20 +33,7 @@ from grako.exceptions import (
     OptionSucceeded
 )
 
-__all__ = ['ParseInfo', 'ParseContext']
-
-
-ParseInfo = namedtuple(
-    'ParseInfo',
-    [
-        'buffer',
-        'rule',
-        'pos',
-        'endpos',
-        'line',
-        'endline',
-    ]
-)
+__all__ = ['ParseContext']
 
 
 # decorator for rule implementation methods

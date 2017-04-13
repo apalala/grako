@@ -13,6 +13,12 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 ## [X.Y.Z][] @ 2017
 
 
+### Changed
+
+-   [118][] Name all _"info"_ as `...Info`, make them classes that descend from `namedtuple` and have `__slots__ = ()`, and move them all to module `infos`.
+
+[118]: https://bitbucket.org/neogeny/grako/issue/118
+
 ## [3.20.1][] @ 2017-03-12
 
 ### Fixed
