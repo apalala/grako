@@ -59,7 +59,7 @@ class Node(object):
     def line(self):
         pi = self._parseinfo
         if pi:
-            return pi.line
+            return pi.endline
 
     @property
     def endline(self):
