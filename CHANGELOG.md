@@ -5,7 +5,7 @@
 [Semantic Versioning]: http://semver.org/
 
 
-The format of this *Change Log* is inspired by [keeapachangelog.org].
+The format of this *Change Log* is inspired by [keeapachangelog.org][].
 
 [keeapachangelog.org]: http://keepachangelog.com/
 
@@ -13,10 +13,13 @@ The format of this *Change Log* is inspired by [keeapachangelog.org].
 ## [X.Y.Z][] @ 2017
 
 
+## [3.20.1][] @ 2017-03-12
+
 ### Fixed
 
--   [1g][] Keyword args of method grako.parse, including rule_name, are forwarded to grako.compile
--   [2g][] FailedRef is thrown when a semantic rule raises a KeyError
+-   [1g][] Ambiguous use of `rule_name` and `start` led to failure if `rule_name` was passed to `grako.parse()`.
+
+-   [2g][] `FailedRef` is thrown when a semantic rule raises a `KeyError`.
 
 [1g]: https://github.com/apalala/grako/issues/1
 [2g]: https://github.com/apalala/grako/issues/2
@@ -826,9 +829,9 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/neogeny/grako/issue/109
 [115]: https://bitbucket.org/neogeny/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.20.0
+[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.20.1
+[3.20.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.1%0D3.20.0
 [3.20.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.0%0D3.19.1
-[3.19.4]: https://bitbucket.org/neogeny/grako/branches/compare/3.19.4%0D3.19.1
 [3.19.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.19.1%0D3.18.2
 [3.18.2]: https://bitbucket.org/neogeny/grako/branches/compare/3.18.2%0D3.18.1
 [3.18.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.18.1%0D3.17.0
