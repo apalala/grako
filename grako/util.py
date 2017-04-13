@@ -13,6 +13,16 @@ import itertools
 import keyword
 import functools
 import warnings
+import logging
+
+
+logger = logging.getLogger('grako')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 try:
     import regex as re
@@ -39,6 +49,7 @@ if PY3:
     zip_longest = itertools.zip_longest
     import builtins
     imap = map
+    from io import StringIO
 else:
     strtype = basestring  # noqa
     _unicode = unicode
@@ -46,6 +57,7 @@ else:
     zip_longest = itertools.izip_longest
     imap = itertools.imap
     import __builtin__ as builtins
+    from StringIO import StringIO
 assert builtins
 
 
@@ -53,22 +65,27 @@ def is_posix():
     return os.name == 'posix'
 
 
-def info(*args, **kwargs):
-    kwargs['file'] = sys.stderr
+def _prints(*args, **kwargs):
+    io = StringIO()
+    kwargs['file'] = io
+    kwargs['end'] = ''
     if PY3:
         print(*args, **kwargs)
     else:
         print(*(a.encode('utf-8') for a in args), **kwargs)
+    return io.getvalue()
+
+
+def info(*args, **kwargs):
+    logger.info(_prints(*args, **kwargs))
 
 
 def debug(*args, **kwargs):
-    kwargs['file'] = sys.stderr
-    print(*args, **kwargs)
+    logger.debug(_prints(*args, **kwargs))
 
 
 def warning(*args, **kwargs):
-    kwargs['file'] = sys.stderr
-    print('WARNING:', *args, **kwargs)
+    logger.warning(_prints('WARNING:', *args, **kwargs))
 
 
 def identity(*args):
