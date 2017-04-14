@@ -29,7 +29,7 @@ class KeywordTests(unittest.TestCase):
 
     def test_python_keywords_in_rule_names(self):
         # This is a regression test for
-        # https://bitbucket.org/apalala/grako/issues/59
+        # https://bitbucket.org/neogeny/grako/issues/59
         # (semantic actions not called for rules with the same name as a python
         # keyword).
         grammar = '''

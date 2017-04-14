@@ -121,8 +121,8 @@ Documentation
 
 The `complete documentation`_ is available at **Grako**'s `home page`_.
 
-.. _`complete documentation`: https://bitbucket.org/apalala/grako/src/default/README.rst
-.. _`home page`: https://bitbucket.org/apalala/grako/
+.. _`complete documentation`: https://bitbucket.org/neogeny/grako/src/default/README.rst
+.. _`home page`: https://bitbucket.org/neogeny/grako/
 
 
 License
@@ -147,13 +147,13 @@ See the CHANGELOG_ for details.
 .. |fury| image:: https://badge.fury.io/py/grako.svg
    :target: https://badge.fury.io/py/grako
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
-   :target: https://raw.githubusercontent.com/apalala/grako/master/LICENSE.txt
+   :target: https://raw.githubusercontent.com/neogeny/grako/master/LICENSE.txt
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/grako.svg
    :target: https://pypi.python.org/pypi/grako
-.. |travis| image:: https://secure.travis-ci.org/apalala/grako.svg
-   :target: http://travis-ci.org/apalala/grako
-.. |landscape| image:: https://landscape.io/github/apalala/grako/release/landscape.png
-   :target: https://landscape.io/github/apalala/grako/release
+.. |travis| image:: https://secure.travis-ci.org/neogeny/grako.svg
+   :target: http://travis-ci.org/neogeny/grako
+.. |landscape| image:: https://landscape.io/github/neogeny/grako/release/landscape.png
+   :target: https://landscape.io/github/neogeny/grako/release
 .. |donate| image:: https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif
    :target: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P9PV7ZACB669J
 
