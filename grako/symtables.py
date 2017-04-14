@@ -8,10 +8,10 @@ from copy import copy
 from collections import OrderedDict as odict  # noqa:N813
 from collections import defaultdict
 
-from .util import asjson
-from .util import join_lists
-from .exceptions import ParseException
-from .buffering import LineIndexEntry
+from grako.util import asjson
+from grako.util import join_lists
+from grako.exceptions import ParseException
+from grako.infos import LineIndexInfo
 
 
 DEFAULT_SEPARATOR = '.'
@@ -238,7 +238,7 @@ class Symbol(Namespace):
                 )
                 result.update(index)
         assert isinstance(result, set)
-        assert all(isinstance(i, LineIndexEntry) for i in result)
+        assert all(isinstance(i, LineIndexInfo) for i in result)
         return list(sorted(result))
 
     def reference_line_index(self):
@@ -246,7 +246,7 @@ class Symbol(Namespace):
         for r in self.references:
             result.update(r.line_index())
         assert isinstance(result, set)
-        assert all(isinstance(i, LineIndexEntry) for i in result)
+        assert all(isinstance(i, LineIndexInfo) for i in result)
         return result
 
     def __repr__(self):

@@ -13,61 +13,15 @@ from __future__ import (absolute_import, division, print_function,
 
 import os
 from itertools import takewhile, repeat
-from collections import namedtuple
 
 from grako.util import identity, imap, ustr, strtype
 from grako.util import extend_list, contains_sublist
 from grako.util import re as regexp
 from grako.util import WHITESPACE_RE, RE_FLAGS
 from grako.exceptions import ParseError
-
-# TODO: There could be a file buffer using random access
-
-__all__ = ['Buffer']
+from grako.infos import PosLine, LineIndexInfo, LineInfo, CommentInfo
 
 RETYPE = type(regexp.compile('.'))
-
-
-class PosLine(namedtuple('PosLineBase', ['start', 'line', 'length'])):
-
-    @staticmethod
-    def build_line_cache(lines):
-        cache = []
-        n = 0
-        i = 0
-        for n, line in enumerate(lines):
-            pl = PosLine(i, n, len(line))
-            for c in line:
-                cache.append(pl)
-            i += len(line)
-        n += 1
-        if lines and lines[-1] and lines[-1][-1] in '\r\n':
-            n += 1
-        cache.append(PosLine(i, n, 0))
-        return cache, n
-
-
-class LineIndexEntry(namedtuple('LineIndexEntryBase', ['filename', 'line'])):
-
-    @staticmethod
-    def block_index(name, n):
-        return list(LineIndexEntry(l, i) for l, i in zip(n * [name], range(n)))
-
-
-LineInfo = namedtuple(
-    'LineInfo',
-    ['filename', 'line', 'col', 'start', 'end', 'text']
-)
-
-
-Comments = namedtuple(
-    'Comments',
-    ['inline', 'eol']
-)
-
-
-def new_comment():
-    return Comments([], [])
 
 
 class Buffer(object):
@@ -151,7 +105,7 @@ class Buffer(object):
 
     def _preprocess_block(self, name, block, **kwargs):
         lines = self.split_block_lines(block)
-        index = LineIndexEntry.block_index(name, len(lines))
+        index = LineIndexInfo.block_index(name, len(lines))
         return self.process_block(name, lines, index, **kwargs)
 
     def split_block_lines(self, block):
@@ -259,11 +213,11 @@ class Buffer(object):
 
     def comments(self, p, clear=False):
         if not self.comment_recovery or not self._comment_index:
-            return Comments([], [])
+            return CommentInfo([], [])
 
         n = self.posline(p)
         if n >= len(self._comment_index):
-            return Comments([], [])
+            return CommentInfo([], [])
 
         eolcmm = []
         if n < len(self._comment_index):
@@ -278,12 +232,12 @@ class Buffer(object):
                 self._comment_index[n].inline = []
             n -= 1
 
-        return Comments(cmm, eolcmm)
+        return CommentInfo(cmm, eolcmm)
 
     def _index_comments(self, comments, selector):
         if comments and self.comment_recovery:
             n = self.line
-            extend_list(self._comment_index, n, default=new_comment)
+            extend_list(self._comment_index, n, default=CommentInfo.new_comment)
             previous = selector(self._comment_index[n])
             if not contains_sublist(previous, comments):  # FIXME: will discard repeated comments
                 previous.extend(comments)
