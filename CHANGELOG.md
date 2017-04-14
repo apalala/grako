@@ -13,6 +13,8 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 ## [X.Y.Z][] @ 2017
 
 
+## [3.21.0][] @ 2017-03-14
+
 ### Changed
 
 -   [118][] Name all _"info"_ as `...Info`, make them classes that descend
@@ -27,6 +29,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 [116]: https://bitbucket.org/neogeny/grako/issue/116
 [118]: https://bitbucket.org/neogeny/grako/issue/118
 [119]: https://bitbucket.org/neogeny/grako/issue/119
+
+
+### Fixed
+
+-   There were broken links in the documentation after repository was moved from _apalala_ to _neogeny_ on [Bitbucket][].
 
 ## [3.20.1][] @ 2017-03-12
 
@@ -769,6 +776,7 @@ integer::Integer::Literal
 [Visitor Pattern]: http://en.wikipedia.org/wiki/Visitor_pattern
 [Warth et al]: http://www.vpri.org/pdf/tr2007002_packrat.pdf
 [YAML]: https://en.wikipedia.org/wiki/YAML
+[bitbucket]: https://bitbucket.org/neogeny/grako/
 [colorama]: https://pypi.python.org/pypi/colorama/
 [commit log]: https://bitbucket.org/neogeny/grako/commits/
 [context managers]: http://docs.python.org/2/library/contextlib.html
@@ -844,7 +852,8 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/neogeny/grako/issue/109
 [115]: https://bitbucket.org/neogeny/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.20.1
+[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.21.0
+[3.21.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.21.0%0D3.20.1
 [3.20.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.1%0D3.20.0
 [3.20.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.0%0D3.19.1
 [3.19.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.19.1%0D3.18.2
