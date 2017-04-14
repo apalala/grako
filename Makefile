@@ -59,3 +59,5 @@ distributions: clean release_check
 
 upload: distributions
 	twine upload dist/*
+	hg tag -f `python -m grako --version`
+	hg bookmark master release
