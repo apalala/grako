@@ -1455,7 +1455,7 @@ License
 -------
 
 You may use **Grako** under the terms of the [BSD]-style license
-described in the enclosed **LICENSE.txt** file. *If your project
+described in the enclosed **[LICENSE.txt](LICENSE.txt)** file. *If your project
 requires different licensing* please [email][Juancarlo Añez].
 
 Contact and Updates
