@@ -121,7 +121,7 @@ Documentation
 
 The `complete documentation`_ is available at **Grako**'s `home page`_.
 
-.. _`complete documentation`: https://bitbucket.org/neogeny/grako/src/default/README.rst
+.. _`complete documentation`: https://bitbucket.org/neogeny/grako/src/default/README.md
 .. _`home page`: https://bitbucket.org/neogeny/grako/
 
 
