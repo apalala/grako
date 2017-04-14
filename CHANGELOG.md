@@ -18,7 +18,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 ### Changed
 
 -   [118][] Name all _"info"_ as `...Info`, make them classes that descend
-    from `namedtuple` and have `__slots__ = ()`, and move them all to module `infos`.
+    from `namedtuple`, have `__slots__ = ()`, and move them all to module `infos`.
 
 -   [116][] Status information during parsing is now routed through
     `logging.getLogger("grako")`.
