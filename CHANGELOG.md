@@ -21,7 +21,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
     from `namedtuple` and have `__slots__ = ()`, and move them all to module `infos`.
 
 -   [116][] Status information during parsing is now routed through
-    `loggint.getLogger("grako")`.
+    `logging.getLogger("grako")`.
 
 -   [119][] Methods in `objectmodel.Node` that require an `infos.ParseInfo`
     will now raise `exceptions.NoParseInfo` if parse information is not available for the node.
