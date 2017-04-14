@@ -33,7 +33,7 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 
 ### Fixed
 
--   There were broken links in the documentation after repository was moved from _apalala_ to _neogeny_ on [Bitbucket][].
+-   There were broken links in the documentation after the repository was moved from _apalala_ to _neogeny_ on [Bitbucket][].
 
 ## [3.20.1][] @ 2017-03-12
 
