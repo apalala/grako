@@ -11,9 +11,21 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 
 
 ## [X.Y.Z][] @ 2017
+[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.21.1
+
+
+## [3.21.1][] @ 2017-03-16
+[3.21.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.21.1%0D3.21.0
+
+
+### Fixed
+
+-   Backwards compatibility. Renaming of `buffering.LineIndexEntry` broke existing parsers.
+
 
 
 ## [3.21.0][] @ 2017-03-14
+[3.21.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.21.0%0D3.20.1
 
 ### Changed
 
@@ -852,8 +864,6 @@ integer::Integer::Literal
 [109]: https://bitbucket.org/neogeny/grako/issue/109
 [115]: https://bitbucket.org/neogeny/grako/issue/115
 
-[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.21.0
-[3.21.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.21.0%0D3.20.1
 [3.20.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.1%0D3.20.0
 [3.20.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.20.0%0D3.19.1
 [3.19.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.19.1%0D3.18.2

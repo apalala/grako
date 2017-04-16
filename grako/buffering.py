@@ -23,6 +23,9 @@ from grako.infos import PosLine, LineIndexInfo, LineInfo, CommentInfo
 
 RETYPE = type(regexp.compile('.'))
 
+# for backwards compatibility with existing parsers
+LineIndexEntry = LineIndexInfo
+
 
 class Buffer(object):
     def __init__(self,
