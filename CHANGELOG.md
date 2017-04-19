@@ -11,8 +11,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 
 
 ## [X.Y.Z][] @ 2017
-[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.21.1
+[X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.22.0
 
+## [3.22.0][] @ 2017-03-19
+[3.22.0]: https://bitbucket.org/neogeny/grako/branches/compare/3.22.0%0D3.21.1
 
 ### Added
 
