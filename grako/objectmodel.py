@@ -77,6 +77,9 @@ class Node(object):
     def context(self):
         return self._ctx
 
+    def has_parseinfo(self):
+        return self._parseinfo is not None
+
     @property
     def parseinfo(self):
         if self._parseinfo is None:
