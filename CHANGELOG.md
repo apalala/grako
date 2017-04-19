@@ -14,6 +14,11 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 [X.Y.Z]: https://bitbucket.org/neogeny/grako/branches/compare/default%0D3.21.1
 
 
+### Added
+
+-   Add `objectmodel.Node.has_parseinfo()` for querying if `ParseInfo` is available for the node without raising exceptions.
+
+
 ## [3.21.1][] @ 2017-03-16
 [3.21.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.21.1%0D3.21.0
 
