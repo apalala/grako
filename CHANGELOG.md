@@ -18,6 +18,10 @@ The format of this *Change Log* is inspired by [keeapachangelog.org][].
 
 -   Add `objectmodel.Node.has_parseinfo()` for querying if `ParseInfo` is available for the node without raising exceptions.
 
+### Fixed
+
+-   Raising `NoParseInfo` when `objectmodel.Node.parseinfo` is `None` broke several existing parsers. The change must wait for a major release. Reverted.
+
 
 ## [3.21.1][] @ 2017-03-16
 [3.21.1]: https://bitbucket.org/neogeny/grako/branches/compare/3.21.1%0D3.21.0
