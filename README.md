@@ -1552,27 +1552,27 @@ Contributors
 The following, among others, have contributted to **Grako** with
 features, bug fixes, or suggestions:
 
->   [basel-shishani](https://bitbucket.org/basel-shishani)<br/>
-    [drothlis](https://bitbucket.org/drothlis)<br/>
-    [franz_g](https://bitbucket.org/franz_g)<br/>
-    [gapag](https://bitbucket.org/gapag)<br/>
-    [gegenschall](https://bitbucket.org/gegenschall)<br/>
-    [gkimbar](https://bitbucket.org/gkimbar)<br/>
-    [jimon](https://bitbucket.org/jimon)<br/>
-    [lambdafu](https://bitbucket.org/lambdafu)<br/>
-    [leewz](https://bitbucket.org/leewz)<br/>
-    [linkdd](https://bitbucket.org/linkdd)<br/>
-    [nehz](https://bitbucket.org/nehz)<br/>
-    [neumond](https://bitbucket.org/neumond)<br/>
-    [pauls](https://bitbucket.org/pauls)<br/>
-    [pgebhard](https://bitbucket.org/pgebhard)<br/>
-    [r_speer](https://bitbucket.org/r_speer)<br/>
-    [siemer](https://bitbucket.org/siemer)<br/>
-    [sjbrownBitbucket](https://bitbucket.org/sjbrownBitbucket)<br/>
-    [starkat](https://bitbucket.org/starkat)<br/>
-    [tonico_strasser](https://bitbucket.org/tonico_strasser)<br/>
-    [vinay.sajip](https://bitbucket.org/vinay.sajip)<br/>
-    [vmuriart](https://bitbucket.org/vmuriart)<br/>
+>   [basel-shishani](https://bitbucket.org/basel-shishani),
+    [drothlis](https://bitbucket.org/drothlis),
+    [franz_g](https://bitbucket.org/franz_g),
+    [gapag](https://bitbucket.org/gapag),
+    [gegenschall](https://bitbucket.org/gegenschall),
+    [gkimbar](https://bitbucket.org/gkimbar),
+    [jimon](https://bitbucket.org/jimon),
+    [lambdafu](https://bitbucket.org/lambdafu),
+    [leewz](https://bitbucket.org/leewz),
+    [linkdd](https://bitbucket.org/linkdd),
+    [nehz](https://bitbucket.org/nehz),
+    [neumond](https://bitbucket.org/neumond),
+    [pauls](https://bitbucket.org/pauls),
+    [pgebhard](https://bitbucket.org/pgebhard),
+    [r_speer](https://bitbucket.org/r_speer),
+    [siemer](https://bitbucket.org/siemer),
+    [sjbrownBitbucket](https://bitbucket.org/sjbrownBitbucket),
+    [starkat](https://bitbucket.org/starkat),
+    [tonico_strasser](https://bitbucket.org/tonico_strasser),
+    [vinay.sajip](https://bitbucket.org/vinay.sajip),
+    [vmuriart](https://bitbucket.org/vmuriart),
 
 Changes
 -------
