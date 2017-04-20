@@ -532,7 +532,7 @@ The expressions, in reverse order of operator precedence, can be:
 
     Use grouping if `s` is more complex than a *token* or a *pattern*:
 
-        (s t).{ e }+
+        (s t)%{ e }+
 
 #### `s%{ e }` or `s%{ e }*`
 
@@ -679,7 +679,7 @@ The expressions, in reverse order of operator precedence, can be:
 
 
 
-#### `` `constant ``\`
+#### `` `constant` ``
 
 :   Match nothing, but behave as if `constant` had been parsed.
 
