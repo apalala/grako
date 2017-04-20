@@ -679,7 +679,7 @@ The expressions, in reverse order of operator precedence, can be:
 
 
 
-#### `` `constant ` ``
+#### `` `constant\` ``
 
 :   Match nothing, but behave as if `constant` had been parsed.
 
