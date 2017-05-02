@@ -189,7 +189,7 @@ Using the Tool
 
 ### As a Library
 
-**Grako** can be uses as a library, much like [Python][]'s `re`, by embedding grammars as strings and generating grammar models instead of generating code.
+**Grako** can be used as a library, much like [Python][]'s `re`, by embedding grammars as strings and generating grammar models instead of generating code.
 
 *   `grako.compile(grammar, name=None, **kwargs)`
 >    Compiles the grammar and generates a _model_ that can subsequently be used for parsing input with.
